@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeDash - Productivity Tracker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <header class="popup-header">
+            <div class="header-content">
+                <img src="../icons/icon48.png" alt="TimeDash" class="logo">
+                <div class="header-text">
+                    <h1>TimeDash</h1>
+                    <p class="tagline">Focus. Track. Optimize.</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="settingsBtn" class="icon-btn" title="Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                    </svg>
+                </button>
+                <button id="exportBtn" class="icon-btn" title="Export Data">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Current Site Info -->
+        <section class="current-site" id="currentSite">
+            <div class="site-info">
+                <img class="site-favicon" id="siteFavicon" src="" alt="">
+                <div class="site-details">
+                    <h3 class="site-name" id="siteName">Loading...</h3>
+                    <p class="site-time" id="siteTime">Calculating...</p>
+                </div>
+            </div>
+            <div class="site-actions">
+                <button id="blockBtn" class="action-btn block-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z"/>
+                    </svg>
+                    Block Site
+                </button>
+                <button id="speedBtn" class="action-btn speed-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13,2.05V5.08C16.39,5.57 19,8.47 19,12C19,12.9 18.82,13.75 18.5,14.54L21.12,16.07C21.68,14.83 22,13.45 22,12C22,6.82 18.05,2.55 13,2.05M12,19C8.13,19 5,15.87 5,12C5,8.13 8.13,5 12,5V1C5.93,1 1,5.93 1,12C1,18.07 5.93,23 12,23C15.14,23 18.03,21.38 19.78,18.78L17.25,17.1C16.01,18.29 14.1,19 12,19M8,12A4,4 0 0,1 12,8V12L15.29,15.29C14.27,16.22 12.9,16.76 11.4,16.76C9.18,16.76 7.37,15.17 7.06,13.06L8,12Z"/>
+                    </svg>
+                    Speed: <span id="currentSpeed">1.0x</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="todayTotal">0m</div>
+                <div class="stat-label">Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="weekAverage">0m</div>
+                <div class="stat-label">Daily Avg</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalTime">0h</div>
+                <div class="stat-label">All Time</div>
+            </div>
+        </section>
+
+        <!-- Top Sites -->
+        <section class="top-sites">
+            <div class="section-header">
+                <h3>Top Sites Today</h3>
+                <button id="refreshBtn" class="refresh-btn" title="Refresh">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="sites-list" id="sitesList">
+                <div class="loading">Loading sites...</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="popup-footer">
+            <div class="footer-stats">
+                <span id="trackingStatus" class="tracking-status active">● Tracking Active</span>
+                <span id="sitesCount" class="sites-count">0 sites tracked</span>
+            </div>
+            <div class="footer-actions">
+                <button id="toggleTracking" class="toggle-btn">Pause Tracking</button>
+                <button id="openDashboard" class="dashboard-btn">Dashboard</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- First Time Setup Modal -->
+    <div id="setupModal" class="modal">
+        <div class="modal-content">
+            <div class="setup-header">
+                <h2>Welcome to TimeDash!</h2>
+                <p>Let's get you set up for optimal productivity tracking.</p>
+            </div>
+            <div class="setup-content">
+                <div class="setup-step">
+                    <h3>Default Video Speed</h3>
+                    <select id="defaultSpeed">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1.0" selected>1.0x (Normal)</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2.0">2.0x</option>
+                    </select>
+                </div>
+                <div class="setup-step">
+                    <h3>Maximum Video Speed</h3>
+                    <select id="maxSpeed">
+                        <option value="2.0">2.0x</option>
+                        <option value="4.0">4.0x</option>
+                        <option value="8.0">8.0x</option>
+                        <option value="16.0" selected>16.0x</option>
+                    </select>
+                </div>
+                <div class="setup-step">
+                    <h3>Daily Time Limit (Optional)</h3>
+                    <select id="dailyLimit">
+                        <option value="0" selected>No limit</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 hour</option>
+                        <option value="120">2 hours</option>
+                        <option value="180">3 hours</option>
+                        <option value="240">4 hours</option>
+                    </select>
+                </div>
+                <div class="setup-step">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enableNotifications" checked>
+                        <span class="checkmark"></span>
+                        Enable notifications for limits and milestones
+                    </label>
+                </div>
+            </div>
+            <div class="setup-footer">
+                <button id="completeSetup" class="primary-btn">Complete Setup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup-helpers.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
