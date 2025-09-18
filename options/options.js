@@ -18,7 +18,9 @@ class OptionsController {
         this.usage = {};
         this.blockList = [];
         this.videoSpeeds = {};
-        
+        this.autoSaveInterval = null;
+        this.boundKeyHandler = null;
+
         this.init();
     }
 
@@ -27,22 +29,26 @@ class OptionsController {
      */
     async init() {
         try {
+            I18n.init(document);
             // StorageManager is now loaded via <script> tag
             this.storageManager = new StorageManager();
-            
+
             // Load initial data
             await this.loadAllData();
-            
+
             // Set up event listeners
             this.setupEventListeners();
-            
+
             // Initialize UI
             this.initializeUI();
-            
+
+            // Announce loaded
+            this.showBanner?.('Settings loaded', 'success');
+            window.addEventListener('beforeunload', () => this.cleanup());
             console.log('Options page initialized successfully');
         } catch (error) {
             console.error('Failed to initialize options page:', error);
-            this.showError('Failed to load settings. Please refresh the page.');
+            this.showBanner?.('Failed to load settings', 'error');
         }
     }
 
@@ -55,7 +61,7 @@ class OptionsController {
                 this.storageManager.getSettings(),
                 this.storageManager.getAllUsage(),
                 this.storageManager.getBlockList(),
-                this.storageManager.getVideoSpeeds()
+                this.storageManager.getVideoSpeeds(),
             ]);
 
             this.settings = settings;
@@ -73,7 +79,7 @@ class OptionsController {
      */
     setupEventListeners() {
         // Tab navigation
-        document.querySelectorAll('.tab-btn').forEach(button => {
+        document.querySelectorAll('.tab-btn').forEach((button) => {
             button.addEventListener('click', (e) => {
                 this.switchTab(e.target.dataset.tab);
             });
@@ -81,25 +87,25 @@ class OptionsController {
 
         // General settings
         this.setupGeneralSettings();
-        
+
         // Video settings
         this.setupVideoSettings();
-        
+
         // Blocking settings
         this.setupBlockingSettings();
-        
+
         // Analytics settings
         this.setupAnalyticsSettings();
-        
+
         // Privacy settings
         this.setupPrivacySettings();
-        
+
         // Action buttons
         this.setupActionButtons();
-        
+
         // Keyboard shortcuts
         this.setupKeyboardShortcuts();
-        
+
         // Auto-save on changes
         this.setupAutoSave();
     }
@@ -113,7 +119,7 @@ class OptionsController {
             notifications: document.getElementById('notifications'),
             badgeDisplay: document.getElementById('badgeDisplay'),
             startupBehavior: document.getElementById('startupBehavior'),
-            language: document.getElementById('language')
+            language: document.getElementById('language'),
         };
 
         Object.entries(elements).forEach(([key, element]) => {
@@ -138,7 +144,7 @@ class OptionsController {
             overlayPosition: document.getElementById('overlayPosition'),
             keyboardShortcuts: document.getElementById('keyboardShortcuts'),
             increaseKey: document.getElementById('increaseKey'),
-            decreaseKey: document.getElementById('decreaseKey')
+            decreaseKey: document.getElementById('decreaseKey'),
         };
 
         Object.entries(elements).forEach(([key, element]) => {
@@ -186,7 +192,7 @@ class OptionsController {
             blockSchedule: document.getElementById('blockSchedule'),
             scheduleStart: document.getElementById('scheduleStart'),
             scheduleEnd: document.getElementById('scheduleEnd'),
-            weekendBlocking: document.getElementById('weekendBlocking')
+            weekendBlocking: document.getElementById('weekendBlocking'),
         };
 
         Object.entries(elements).forEach(([key, element]) => {
@@ -225,7 +231,7 @@ class OptionsController {
             dataRetention: document.getElementById('dataRetention'),
             includeWeekends: document.getElementById('includeWeekends'),
             categoryTracking: document.getElementById('categoryTracking'),
-            productivityScoring: document.getElementById('productivityScoring')
+            productivityScoring: document.getElementById('productivityScoring'),
         };
 
         Object.entries(elements).forEach(([key, element]) => {
@@ -245,7 +251,7 @@ class OptionsController {
             incognitoTracking: document.getElementById('incognitoTracking'),
             dataSharing: document.getElementById('dataSharing'),
             crashReporting: document.getElementById('crashReporting'),
-            usageAnalytics: document.getElementById('usageAnalytics')
+            usageAnalytics: document.getElementById('usageAnalytics'),
         };
 
         Object.entries(elements).forEach(([key, element]) => {
@@ -304,13 +310,13 @@ class OptionsController {
                 e.preventDefault();
                 this.saveSettings();
             }
-            
+
             // Ctrl+R to reset
             if (e.ctrlKey && e.key === 'r') {
                 e.preventDefault();
                 this.resetSettings();
             }
-            
+
             // Escape to cancel changes
             if (e.key === 'Escape' && this.isDirty) {
                 this.loadAllData().then(() => {
@@ -411,7 +417,7 @@ class OptionsController {
      */
     updateStatistics() {
         const stats = this.calculateStatistics();
-        
+
         // Update stat elements
         this.updateStatElement('totalSites', stats.totalSites);
         this.updateStatElement('totalTime', stats.totalTime);
@@ -429,15 +435,15 @@ class OptionsController {
         const sites = Object.keys(this.usage);
         const totalSites = sites.length;
         const blockedSites = this.blockList.length;
-        
+
         let totalTime = 0;
         let topSite = { domain: 'None', time: 0 };
-        
-        sites.forEach(domain => {
+
+        sites.forEach((domain) => {
             const siteData = this.usage[domain];
             const siteTotal = siteData.cumulative || 0;
             totalTime += siteTotal;
-            
+
             if (siteTotal > topSite.time) {
                 topSite = { domain, time: siteTotal };
             }
@@ -452,7 +458,7 @@ class OptionsController {
             blockedSites,
             avgDaily: `${avgDaily} min`,
             topSite: topSite.domain,
-            dataSize: `${Math.round(dataSize / 1024)} KB`
+            dataSize: `${Math.round(dataSize / 1024)} KB`,
         };
     }
 
@@ -465,7 +471,7 @@ class OptionsController {
             usage: this.usage,
             blockList: this.blockList,
             settings: this.settings,
-            videoSpeeds: this.videoSpeeds
+            videoSpeeds: this.videoSpeeds,
         });
         return new Blob([dataStr]).size;
     }
@@ -478,7 +484,7 @@ class OptionsController {
     formatTime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
-        
+
         if (hours > 0) {
             return `${hours}h ${minutes}m`;
         }
@@ -491,7 +497,7 @@ class OptionsController {
      */
     switchTab(tabName) {
         // Update tab buttons
-        document.querySelectorAll('.tab-btn').forEach(button => {
+        document.querySelectorAll('.tab-btn').forEach((button) => {
             button.classList.remove('active');
             if (button.dataset.tab === tabName) {
                 button.classList.add('active');
@@ -499,7 +505,7 @@ class OptionsController {
         });
 
         // Update tab content
-        document.querySelectorAll('.tab-pane').forEach(content => {
+        document.querySelectorAll('.tab-pane').forEach((content) => {
             content.classList.remove('active');
             if (content.id === tabName) {
                 content.classList.add('active');
@@ -517,7 +523,7 @@ class OptionsController {
     updateSetting(key, value) {
         this.settings[key] = value;
         this.markDirty();
-        
+
         // Apply immediate changes if needed
         this.applyImmediateChanges(key, value);
     }
@@ -623,17 +629,16 @@ class OptionsController {
         try {
             await this.storageManager.saveSettings(this.settings);
             this.markClean();
-            
+
             if (!silent) {
                 this.showSuccess('Settings saved successfully');
             }
-            
+
             // Notify background script of changes
             chrome.runtime.sendMessage({
                 type: 'SETTINGS_UPDATED',
-                settings: this.settings
+                settings: this.settings,
             });
-            
         } catch (error) {
             console.error('Failed to save settings:', error);
             this.showError('Failed to save settings. Please try again.');
@@ -644,10 +649,13 @@ class OptionsController {
      * Reset settings to defaults
      */
     async resetSettings() {
-        if (!confirm('Are you sure you want to reset all settings to defaults? This cannot be undone.')) {
+        if (
+            !confirm(
+                'Are you sure you want to reset all settings to defaults? This cannot be undone.'
+            )
+        ) {
             return;
         }
-        
 
         try {
             await this.storageManager.resetSettings();
@@ -672,11 +680,11 @@ class OptionsController {
                 settings: this.settings,
                 videoSpeeds: this.videoSpeeds,
                 exportDate: new Date().toISOString(),
-                version: '1.0.0'
+                version: '1.0.0',
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], {
-                type: 'application/json'
+                type: 'application/json',
             });
 
             const url = URL.createObjectURL(blob);
@@ -684,7 +692,7 @@ class OptionsController {
             a.href = url;
             a.download = `timedash-export-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
-            
+
             URL.revokeObjectURL(url);
             this.showSuccess('Data exported successfully');
         } catch (error) {
@@ -704,13 +712,17 @@ class OptionsController {
         try {
             const text = await file.text();
             const data = JSON.parse(text);
-            
+
             // Validate data structure
             if (!this.validateImportData(data)) {
                 throw new Error('Invalid data format');
             }
 
-            if (!confirm('Are you sure you want to import this data? This will overwrite your current data.')) {
+            if (
+                !confirm(
+                    'Are you sure you want to import this data? This will overwrite your current data.'
+                )
+            ) {
                 return;
             }
 
@@ -740,22 +752,23 @@ class OptionsController {
      */
     validateImportData(data) {
         if (!data || typeof data !== 'object') return false;
-        
+
         // Check for required fields
         const requiredFields = ['usage', 'blockList', 'settings'];
-        return requiredFields.some(field => data.hasOwnProperty(field));
+        return requiredFields.some((field) => data.hasOwnProperty(field));
     }
 
     /**
      * Clear all data
      */
     async clearAllData() {
-        const message = 'Are you sure you want to delete ALL data? This includes:\n' +
-                       '• All usage statistics\n' +
-                       '• Block list\n' +
-                       '• Video speed settings\n' +
-                       '• All preferences\n\n' +
-                       'This action cannot be undone.';
+        const message =
+            'Are you sure you want to delete ALL data? This includes:\n' +
+            '• All usage statistics\n' +
+            '• Block list\n' +
+            '• Video speed settings\n' +
+            '• All preferences\n\n' +
+            'This action cannot be undone.';
 
         if (!confirm(message)) return;
 
@@ -830,7 +843,7 @@ class OptionsController {
      */
     showNotification(message, type = 'info') {
         // Remove existing notifications
-        document.querySelectorAll('.notification').forEach(n => n.remove());
+        document.querySelectorAll('.notification').forEach((n) => n.remove());
 
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
@@ -842,6 +855,45 @@ class OptionsController {
         setTimeout(() => {
             notification.remove();
         }, 5000);
+    }
+
+    setupAutoSave() {
+        this.autoSaveInterval = setInterval(() => {
+            if (this.isDirty) this.saveSettings(true);
+        }, 30000);
+
+        window.addEventListener('beforeunload', (e) => {
+            if (this.isDirty) {
+                this.saveSettings(true);
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    }
+
+    cleanup() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
+        if (this.boundKeyHandler) {
+            document.removeEventListener('keydown', this.boundKeyHandler);
+            this.boundKeyHandler = null;
+        }
+    }
+
+    // Non-intrusive banner helpers (fallback to existing showSuccess/showError if present)
+    showBanner(message, type = 'info') {
+        const el = document.getElementById('banner');
+        if (!el) return;
+        el.className = `banner ${type}`;
+        el.textContent = message;
+        el.style.display = 'block';
+        if (type !== 'error') {
+            setTimeout(() => {
+                if (el) el.style.display = 'none';
+            }, 2500);
+        }
     }
 }
 

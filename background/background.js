@@ -15,7 +15,7 @@ class TimeDashBackground {
         this.TRACKING_INTERVAL = 1000; // 1 second
         this.BATCH_UPDATE_INTERVAL = 5000; // 5 seconds
         this.pendingUpdates = new Map(); // domain -> totalTime
-        
+
         this.init();
     }
 
@@ -27,7 +27,7 @@ class TimeDashBackground {
         this.setupEventListeners();
         this.startTrackingLoop();
         this.setupAlarms();
-        
+
         console.log('TimeDash background service worker initialized');
     }
 
@@ -82,7 +82,7 @@ class TimeDashBackground {
         try {
             // Stop tracking previous active tab
             this.stopTrackingAllTabs();
-            
+
             // Get tab info and start tracking if appropriate
             const tab = await chrome.tabs.get(tabId);
             if (tab.url && DomainUtils.shouldTrackUrl(tab.url)) {
@@ -109,7 +109,7 @@ class TimeDashBackground {
 
             const domain = DomainUtils.extractDomain(url);
             const tab = await chrome.tabs.get(tabId);
-            
+
             // Check if this is the active tab
             if (tab.active) {
                 this.stopTrackingAllTabs();
@@ -162,35 +162,35 @@ class TimeDashBackground {
                 case 'GET_TAB_INFO':
                     sendResponse(await this.getTabInfo(sender.tab?.id));
                     break;
-                    
+
                 case 'UPDATE_VIDEO_SPEED':
                     await this.updateVideoSpeed(message.domain, message.speed);
                     sendResponse({ success: true });
                     break;
-                    
+
                 case 'GET_SETTINGS':
                     sendResponse(await this.storage.getSettings());
                     break;
-                    
+
                 case 'UPDATE_SETTINGS':
                     const success = await this.storage.setSettings(message.settings);
                     sendResponse({ success });
                     break;
-                    
+
                 case 'GET_USAGE_DATA':
                     sendResponse(await this.getUsageData());
                     break;
-                    
+
                 case 'TOGGLE_BLOCK':
                     await this.toggleSiteBlock(message.domain);
                     sendResponse({ success: true });
                     break;
-                    
+
                 case 'EXPORT_DATA':
                     const csvData = await this.storage.exportDataAsCSV();
                     sendResponse({ data: csvData });
                     break;
-                    
+
                 default:
                     sendResponse({ error: 'Unknown message type' });
             }
@@ -216,7 +216,7 @@ class TimeDashBackground {
                 case 'toggle-tracking':
                     await this.toggleTracking();
                     break;
-                    
+
                 case 'toggle-block':
                     await this.toggleSiteBlock(domain);
                     break;
@@ -235,7 +235,7 @@ class TimeDashBackground {
             case 'daily-reset':
                 await this.handleDailyReset();
                 break;
-                
+
             case 'batch-update':
                 await this.processPendingUpdates();
                 break;
@@ -254,7 +254,7 @@ class TimeDashBackground {
         this.activeTabInfo.set(tabId, {
             domain,
             startTime: Date.now(),
-            isActive: true
+            isActive: true,
         });
 
         // Update badge
@@ -335,7 +335,9 @@ class TimeDashBackground {
                     const tab = await chrome.tabs.get(tabId);
                     if (tab.active) {
                         // Send message to content script to check visibility
-                        const response = await chrome.tabs.sendMessage(tabId, { type: 'CHECK_VISIBILITY' });
+                        const response = await chrome.tabs.sendMessage(tabId, {
+                            type: 'CHECK_VISIBILITY',
+                        });
                         if (!response?.visible) {
                             tabInfo.isActive = false;
                         }
@@ -358,7 +360,9 @@ class TimeDashBackground {
     async checkAndHandleBlocking(tab, domain) {
         const blockList = await this.storage.getBlockList();
         if (blockList.includes(domain)) {
-            const blockPageUrl = chrome.runtime.getURL('block/block.html') + `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}`;
+            const blockPageUrl =
+                chrome.runtime.getURL('block/block.html') +
+                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}`;
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
         }
     }
@@ -380,7 +384,7 @@ class TimeDashBackground {
             domain: tabInfo.domain,
             todayTime,
             totalTime,
-            isTracking: tabInfo.isActive
+            isTracking: tabInfo.isActive,
         };
     }
 
@@ -406,7 +410,7 @@ class TimeDashBackground {
                 totalTime,
                 averageTime,
                 isBlocked: blockList.includes(domain),
-                productivity: DomainUtils.getProductivityScore(domain)
+                productivity: DomainUtils.getProductivityScore(domain),
             });
         }
 
@@ -417,7 +421,7 @@ class TimeDashBackground {
             domains: processedData,
             settings,
             totalToday: processedData.reduce((sum, d) => sum + d.todayTime, 0),
-            totalOverall: processedData.reduce((sum, d) => sum + d.totalTime, 0)
+            totalOverall: processedData.reduce((sum, d) => sum + d.totalTime, 0),
         };
     }
 
@@ -457,7 +461,7 @@ class TimeDashBackground {
     async toggleTracking() {
         const settings = await this.storage.getSettings();
         await this.storage.setSettings({
-            trackingEnabled: !settings.trackingEnabled
+            trackingEnabled: !settings.trackingEnabled,
         });
 
         if (!settings.trackingEnabled) {
@@ -470,15 +474,15 @@ class TimeDashBackground {
      */
     async exportData() {
         const csvData = await this.storage.exportDataAsCSV();
-        
+
         // Create download
         const blob = new Blob([csvData], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
-        
+
         await chrome.downloads.download({
             url,
             filename: `timedash-export-${TimeUtils.getCurrentDate()}.csv`,
-            saveAs: true
+            saveAs: true,
         });
     }
 
@@ -490,10 +494,10 @@ class TimeDashBackground {
         try {
             const usage = await this.storage.getDomainUsage(domain);
             const todayTime = TimeUtils.calculateTodayTime(usage);
-            
+
             let badgeText = '';
             let badgeColor = '#4CAF50';
-            
+
             if (todayTime > 0) {
                 if (todayTime < 60) {
                     badgeText = `${todayTime}s`;
@@ -525,7 +529,7 @@ class TimeDashBackground {
         // Daily reset at midnight
         chrome.alarms.create('daily-reset', {
             when: this.getNextMidnight(),
-            periodInMinutes: 24 * 60
+            periodInMinutes: 24 * 60,
         });
     }
 

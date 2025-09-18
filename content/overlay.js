@@ -10,7 +10,8 @@ class SpeedOverlay {
         this.isVisible = false;
         this.currentVideo = null;
         this.speeds = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
-        
+        this.boundKeyHandler = null;
+
         this.init();
     }
 
@@ -37,9 +38,12 @@ class SpeedOverlay {
                 </div>
                 <div class="speed-overlay-controls">
                     <div class="speed-buttons">
-                        ${this.speeds.map(speed => 
-                            `<button class="speed-btn" data-speed="${speed}">${speed}x</button>`
-                        ).join('')}
+                        ${this.speeds
+                            .map(
+                                (speed) =>
+                                    `<button class="speed-btn" data-speed="${speed}">${speed}x</button>`
+                            )
+                            .join('')}
                     </div>
                     <div class="speed-slider-container">
                         <input type="range" class="speed-slider" 
@@ -225,7 +229,7 @@ class SpeedOverlay {
         });
 
         // Speed buttons
-        this.overlay.querySelectorAll('.speed-btn').forEach(btn => {
+        this.overlay.querySelectorAll('.speed-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
                 const speed = parseFloat(btn.dataset.speed);
                 this.setSpeed(speed);
@@ -246,20 +250,25 @@ class SpeedOverlay {
             }
         });
 
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isVisible) {
+        // Close on outside click
+        this.overlay.addEventListener('click', (e) => {
+            if (e.target === this.overlay) {
                 this.hide();
             }
         });
 
-        // Show overlay on Ctrl+Shift+S
-        document.addEventListener('keydown', (e) => {
+        // Keyboard shortcuts
+        const onDocKeydown = (e) => {
+            // Escape to close overlay
+            if (e.key === 'Escape') this.hide();
+            // Show overlay on Ctrl+Shift+S
             if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
                 e.preventDefault();
                 this.toggle();
             }
-        });
+        };
+        this.boundKeyHandler = onDocKeydown;
+        document.addEventListener('keydown', onDocKeydown);
     }
 
     /**
@@ -272,7 +281,7 @@ class SpeedOverlay {
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
 
         // Initial setup
@@ -284,10 +293,10 @@ class SpeedOverlay {
      */
     addOverlayTriggers() {
         const videos = document.querySelectorAll('video:not([data-timedash-trigger])');
-        
-        videos.forEach(video => {
+
+        videos.forEach((video) => {
             video.setAttribute('data-timedash-trigger', 'true');
-            
+
             // Add double-click trigger
             video.addEventListener('dblclick', (e) => {
                 e.preventDefault();
@@ -334,6 +343,12 @@ class SpeedOverlay {
         if (this.currentVideo) {
             this.currentVideo.focus();
         }
+
+        // Remove keydown listener when overlay hidden
+        if (this.boundKeyHandler) {
+            document.removeEventListener('keydown', this.boundKeyHandler);
+            this.boundKeyHandler = null;
+        }
     }
 
     /**
@@ -345,7 +360,7 @@ class SpeedOverlay {
         } else {
             // Find current video
             const videos = document.querySelectorAll('video');
-            this.currentVideo = Array.from(videos).find(v => !v.paused) || videos[0];
+            this.currentVideo = Array.from(videos).find((v) => !v.paused) || videos[0];
             this.show();
         }
     }
@@ -364,7 +379,7 @@ class SpeedOverlay {
         chrome.runtime.sendMessage({
             type: 'UPDATE_VIDEO_SPEED',
             domain: window.location.hostname.replace(/^www\./, ''),
-            speed: speed
+            speed: speed,
         });
 
         // Show temporary notification
@@ -378,15 +393,15 @@ class SpeedOverlay {
         if (!this.currentVideo) return;
 
         const currentSpeed = this.currentVideo.playbackRate;
-        
+
         // Update buttons
-        this.overlay.querySelectorAll('.speed-btn').forEach(btn => {
+        this.overlay.querySelectorAll('.speed-btn').forEach((btn) => {
             const btnSpeed = parseFloat(btn.dataset.speed);
             btn.classList.toggle('active', Math.abs(btnSpeed - currentSpeed) < 0.01);
         });
 
         // Update slider
-        const speedIndex = this.speeds.findIndex(s => Math.abs(s - currentSpeed) < 0.01);
+        const speedIndex = this.speeds.findIndex((s) => Math.abs(s - currentSpeed) < 0.01);
         if (speedIndex !== -1) {
             this.overlay.querySelector('.speed-slider').value = speedIndex;
         }
@@ -449,9 +464,9 @@ class SpeedOverlay {
      * Destroy overlay
      */
     destroy() {
-        if (this.overlay && this.overlay.parentNode) {
-            this.overlay.parentNode.removeChild(this.overlay);
-        }
+        this.hide();
+        this.overlay?.remove();
+        this.overlay = null;
 
         const styles = document.getElementById('timedash-overlay-styles');
         if (styles) {
@@ -461,11 +476,14 @@ class SpeedOverlay {
 }
 
 // Initialize overlay if enabled
-chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }).then(settings => {
-    if (settings?.showSpeedOverlay !== false) {
+chrome.runtime
+    .sendMessage({ type: 'GET_SETTINGS' })
+    .then((settings) => {
+        if (settings?.showSpeedOverlay !== false) {
+            new SpeedOverlay();
+        }
+    })
+    .catch(() => {
+        // Default to showing overlay if can't get settings
         new SpeedOverlay();
-    }
-}).catch(() => {
-    // Default to showing overlay if can't get settings
-    new SpeedOverlay();
-});
+    });

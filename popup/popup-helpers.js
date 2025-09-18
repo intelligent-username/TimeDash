@@ -75,7 +75,7 @@ class PopupHelpers {
      */
     static createElement(tag, attributes = {}, content = '') {
         const element = document.createElement(tag);
-        
+
         Object.entries(attributes).forEach(([key, value]) => {
             if (key === 'className') {
                 element.className = value;
@@ -85,13 +85,13 @@ class PopupHelpers {
                 element.setAttribute(key, value);
             }
         });
-        
+
         if (typeof content === 'string') {
             element.textContent = content;
         } else if (content instanceof Node) {
             element.appendChild(content);
         }
-        
+
         return element;
     }
 
@@ -102,47 +102,55 @@ class PopupHelpers {
      */
     static createSiteItem(siteData) {
         const { domain, todayTime, totalTime, isBlocked, productivity } = siteData;
-        
+
         const siteItem = this.createElement('div', { className: 'site-item' });
-        
+
         // Site info
         const siteInfo = this.createElement('div', { className: 'site-item-info' });
-        
+
         const favicon = this.createElement('img', {
             className: 'site-item-favicon',
             src: this.getFaviconUrl(domain),
             alt: domain,
-            onerror: "this.style.display='none'"
+            onerror: "this.style.display='none'",
         });
-        
+
         const details = this.createElement('div', { className: 'site-item-details' });
-        const name = this.createElement('div', { className: 'site-item-name' }, this.capitalize(domain));
-        const time = this.createElement('div', { className: 'site-item-time' }, this.formatDetailedTime(todayTime));
-        
+        const name = this.createElement(
+            'div',
+            { className: 'site-item-name' },
+            this.capitalize(domain)
+        );
+        const time = this.createElement(
+            'div',
+            { className: 'site-item-time' },
+            this.formatDetailedTime(todayTime)
+        );
+
         details.appendChild(name);
         details.appendChild(time);
-        
+
         siteInfo.appendChild(favicon);
         siteInfo.appendChild(details);
-        
+
         // Site actions
         const actions = this.createElement('div', { className: 'site-item-actions' });
-        
+
         const blockBtn = this.createElement('button', {
             className: `site-item-btn ${isBlocked ? 'blocked' : ''}`,
             title: isBlocked ? 'Unblock site' : 'Block site',
-            'data-domain': domain
+            'data-domain': domain,
         });
-        
-        blockBtn.innerHTML = isBlocked ? 
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z"/></svg>' :
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"/></svg>';
-        
+
+        blockBtn.innerHTML = isBlocked
+            ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z"/></svg>'
+            : '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"/></svg>';
+
         actions.appendChild(blockBtn);
-        
+
         siteItem.appendChild(siteInfo);
         siteItem.appendChild(actions);
-        
+
         return siteItem;
     }
 
@@ -158,42 +166,46 @@ class PopupHelpers {
         if (existingToast) {
             existingToast.remove();
         }
-        
+
         const colors = {
             success: '#4CAF50',
             error: '#F44336',
             warning: '#FF9800',
-            info: '#2196F3'
+            info: '#2196F3',
         };
-        
-        const toast = this.createElement('div', {
-            className: 'toast',
-            style: {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                background: colors[type] || colors.info,
-                color: 'white',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                zIndex: '10000',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                transform: 'translateX(100%)',
-                transition: 'transform 0.3s ease, opacity 0.3s ease',
-                maxWidth: '300px',
-                wordWrap: 'break-word'
-            }
-        }, message);
-        
+
+        const toast = this.createElement(
+            'div',
+            {
+                className: 'toast',
+                style: {
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    background: colors[type] || colors.info,
+                    color: 'white',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    zIndex: '10000',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    transform: 'translateX(100%)',
+                    transition: 'transform 0.3s ease, opacity 0.3s ease',
+                    maxWidth: '300px',
+                    wordWrap: 'break-word',
+                },
+            },
+            message
+        );
+
         document.body.appendChild(toast);
-        
+
         // Animate in
         requestAnimationFrame(() => {
             toast.style.transform = 'translateX(0)';
         });
-        
+
         // Auto-hide
         setTimeout(() => {
             toast.style.opacity = '0';
@@ -213,7 +225,7 @@ class PopupHelpers {
      */
     static updateWithFade(element, content) {
         element.style.opacity = '0.5';
-        
+
         setTimeout(() => {
             if (typeof content === 'string') {
                 element.textContent = content;
@@ -233,7 +245,7 @@ class PopupHelpers {
         element.style.opacity = '0';
         element.style.transform = 'translateY(10px)';
         element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        
+
         requestAnimationFrame(() => {
             element.style.opacity = '1';
             element.style.transform = 'translateY(0)';
@@ -270,7 +282,7 @@ class PopupHelpers {
             if (!inThrottle) {
                 func.apply(this, args);
                 inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
+                setTimeout(() => (inThrottle = false), limit);
             }
         };
     }
@@ -341,10 +353,10 @@ class PopupHelpers {
                 borderTop: '2px solid #2196F3',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
-                display: 'inline-block'
-            }
+                display: 'inline-block',
+            },
         });
-        
+
         // Add spinner animation if not already added
         if (!document.getElementById('spinner-styles')) {
             const styles = this.createElement('style', { id: 'spinner-styles' });
@@ -356,7 +368,7 @@ class PopupHelpers {
             `;
             document.head.appendChild(styles);
         }
-        
+
         return spinner;
     }
 
@@ -384,6 +396,65 @@ class PopupHelpers {
             rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
             rect.right <= (window.innerWidth || document.documentElement.clientWidth)
         );
+    }
+
+    /**
+     * Show a banner message to the user
+     * @param {string} message - Message to display
+     * @param {string} type - Banner type (info, success, warning, error)
+     */
+    static showBanner(message, type = 'info') {
+        let banner = document.getElementById('banner');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'banner';
+            document.body.prepend(banner);
+        }
+        banner.className = `banner ${type}`;
+        banner.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        banner.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+        banner.textContent = message;
+        banner.style.display = 'block';
+    }
+
+    /**
+     * Hide the banner message
+     */
+    static hideBanner() {
+        const banner = document.getElementById('banner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    /**
+     * Create a skeleton loading line
+     * @param {string} width - Width of the skeleton line
+     * @returns {HTMLDivElement} Skeleton line element
+     */
+    static createSkeletonLine(width = '100%') {
+        const line = document.createElement('div');
+        line.className = 'skeleton-line';
+        line.style.width = width;
+        return line;
+    }
+
+    /**
+     * Inject skeleton loading list into container
+     * @param {HTMLElement} container - Container to inject skeleton into
+     * @param {number} rows - Number of skeleton rows to create
+     */
+    static injectSkeletonList(container, rows = 3) {
+        if (!container) return;
+        container.innerHTML = '';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'skeleton-list';
+        for (let i = 0; i < rows; i++) {
+            const row = document.createElement('div');
+            row.className = 'skeleton-row';
+            row.appendChild(this.createSkeletonLine('60%'));
+            row.appendChild(this.createSkeletonLine('30%'));
+            wrapper.appendChild(row);
+        }
+        container.appendChild(wrapper);
     }
 }
 

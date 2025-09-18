@@ -1,0 +1,16 @@
+{
+    "plugins": ["plugins/markdown"],
+    "source": {
+        "include": ["background", "content", "block", "popup", "options", "utils"],
+        "includePattern": ".+\\.js(doc|x)?$"
+    },
+    "opts": {
+        "destination": "./_dev/jsdoc",
+        "recurse": true,
+        "readme": "./README.md"
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true
+    }
+}

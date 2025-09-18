@@ -1,186 +1,228 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeDash Settings</title>
-    <link rel="stylesheet" href="options.css">
-</head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <img src="../icons/icon48.png" alt="TimeDash" class="logo">
-                <div class="header-text">
-                    <h1>TimeDash Settings</h1>
-                    <p>Configure your productivity tracking and focus tools</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TimeDash Settings</title>
+        <link rel="stylesheet" href="options.css" />
+    </head>
+    <body>
+        <div class="container" role="region" aria-label="TimeDash settings">
+            <div
+                id="banner"
+                class="banner"
+                role="status"
+                aria-live="polite"
+                style="display: none"
+            ></div>
+            <!-- Header -->
+            <header class="header" role="banner">
+                <div class="header-content">
+                    <img src="../icons/icon48.png" alt="TimeDash" class="logo" />
+                    <div class="header-text">
+                        <h1 data-i18n="settings">TimeDash Settings</h1>
+                        <p>Configure your productivity tracking and focus tools</p>
+                    </div>
                 </div>
+                <div class="header-actions">
+                    <button id="exportBtn" class="btn btn-outline">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                            />
+                        </svg>
+                        Export Data
+                    </button>
+                    <button id="resetBtn" class="btn btn-danger">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                            />
+                        </svg>
+                        Reset All Data
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Navigation Tabs -->
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="general">General</button>
+                    <button class="tab-btn" data-tab="video">Video Control</button>
+                    <button class="tab-btn" data-tab="blocking">Site Blocking</button>
+                    <button class="tab-btn" data-tab="analytics">Analytics</button>
+                    <button class="tab-btn" data-tab="privacy">Privacy</button>
+                </nav>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- General Settings -->
+                    <div id="general" class="tab-pane active">
+                        <div class="settings-section">
+                            <h2>Time Tracking</h2>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <input type="checkbox" id="trackingEnabled" checked />
+                                    <span class="checkmark"></span>
+                                    Enable time tracking
+                                    <small>Track time spent on websites</small>
+                                </label>
+                            </div>
+                            <div class="setting-group">
+                                <label for="dailyLimit">Daily Time Limit (minutes)</label>
+                                <input
+                                    type="number"
+                                    id="dailyLimit"
+                                    min="0"
+                                    max="1440"
+                                    placeholder="0 = no limit"
+                                />
+                                <small>Set 0 for no daily limit</small>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2>Notifications</h2>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <input type="checkbox" id="notificationsEnabled" checked />
+                                    <span class="checkmark"></span>
+                                    Enable notifications
+                                    <small>Get alerts for limits and milestones</small>
+                                </label>
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <input type="checkbox" id="quotaWarnings" checked />
+                                    <span class="checkmark"></span>
+                                    Quota warnings
+                                    <small>Warn when approaching daily limits</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2>Appearance</h2>
+                            <div class="setting-group">
+                                <label for="theme">Theme</label>
+                                <select id="theme">
+                                    <option value="auto">Auto (System)</option>
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <input type="checkbox" id="badgeEnabled" checked />
+                                    <span class="checkmark"></span>
+                                    Show badge counter
+                                    <small>Display time or status on extension icon</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Control Settings -->
+                    <div id="video" class="tab-pane">
+                        <div class="settings-section">
+                            <h2>Video Playback</h2>
+                            <div class="setting-group">
+                                <label for="defaultSpeed">Default Speed</label>
+                                <input
+                                    type="number"
+                                    id="defaultSpeed"
+                                    min="0.5"
+                                    max="16"
+                                    step="0.1"
+                                    placeholder="1.0"
+                                />
+                            </div>
+                            <div class="setting-group">
+                                <label for="maxSpeed">Max Speed</label>
+                                <input
+                                    type="number"
+                                    id="maxSpeed"
+                                    min="0.5"
+                                    max="16"
+                                    step="0.1"
+                                    placeholder="16.0"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Blocking Settings -->
+                    <div id="blocking" class="tab-pane">
+                        <div class="settings-section">
+                            <h2>Site Blocking</h2>
+                            <div class="setting-group">
+                                <label for="blockList">Blocked Sites</label>
+                                <textarea
+                                    id="blockList"
+                                    placeholder="Enter one site per line"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Settings -->
+                    <div id="analytics" class="tab-pane">
+                        <div class="settings-section">
+                            <h2>Analytics</h2>
+                            <div class="setting-group">
+                                <label for="trackingFrequency">Tracking Frequency (seconds)</label>
+                                <input
+                                    type="number"
+                                    id="trackingFrequency"
+                                    min="1"
+                                    max="60"
+                                    step="1"
+                                    placeholder="1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div id="privacy" class="tab-pane">
+                        <div class="settings-section">
+                            <h2>Privacy</h2>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <input type="checkbox" id="incognitoTracking" />
+                                    <span class="checkmark"></span>
+                                    Enable Incognito Tracking
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Save Status -->
+            <div class="save-status" id="saveStatus">
+                <span class="save-message">Settings saved automatically</span>
             </div>
-            <div class="header-actions">
-                <button id="exportBtn" class="btn btn-outline">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                    </svg>
-                    Export Data
-                </button>
-                <button id="resetBtn" class="btn btn-danger">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
-                    </svg>
-                    Reset All Data
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Navigation Tabs -->
-            <nav class="tab-nav">
-                <button class="tab-btn active" data-tab="general">General</button>
-                <button class="tab-btn" data-tab="video">Video Control</button>
-                <button class="tab-btn" data-tab="blocking">Site Blocking</button>
-                <button class="tab-btn" data-tab="analytics">Analytics</button>
-                <button class="tab-btn" data-tab="privacy">Privacy</button>
-            </nav>
-
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- General Settings -->
-                <div id="general" class="tab-pane active">
-                    <div class="settings-section">
-                        <h2>Time Tracking</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="trackingEnabled" checked>
-                                <span class="checkmark"></span>
-                                Enable time tracking
-                                <small>Track time spent on websites</small>
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label for="dailyLimit">Daily Time Limit (minutes)</label>
-                            <input type="number" id="dailyLimit" min="0" max="1440" placeholder="0 = no limit">
-                            <small>Set 0 for no daily limit</small>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Notifications</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="notificationsEnabled" checked>
-                                <span class="checkmark"></span>
-                                Enable notifications
-                                <small>Get alerts for limits and milestones</small>
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="quotaWarnings" checked>
-                                <span class="checkmark"></span>
-                                Quota warnings
-                                <small>Warn when approaching daily limits</small>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Appearance</h2>
-                        <div class="setting-group">
-                            <label for="theme">Theme</label>
-                            <select id="theme">
-                                <option value="auto">Auto (System)</option>
-                                <option value="light">Light</option>
-                                <option value="dark">Dark</option>
-                            </select>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="badgeEnabled" checked>
-                                <span class="checkmark"></span>
-                                Show badge counter
-                                <small>Display time or status on extension icon</small>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video Control Settings -->
-                <div id="video" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Video Playback</h2>
-                        <div class="setting-group">
-                            <label for="defaultSpeed">Default Speed</label>
-                            <input type="number" id="defaultSpeed" min="0.5" max="16" step="0.1" placeholder="1.0">
-                        </div>
-                        <div class="setting-group">
-                            <label for="maxSpeed">Max Speed</label>
-                            <input type="number" id="maxSpeed" min="0.5" max="16" step="0.1" placeholder="16.0">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Site Blocking Settings -->
-                <div id="blocking" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Site Blocking</h2>
-                        <div class="setting-group">
-                            <label for="blockList">Blocked Sites</label>
-                            <textarea id="blockList" placeholder="Enter one site per line"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analytics Settings -->
-                <div id="analytics" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Analytics</h2>
-                        <div class="setting-group">
-                            <label for="trackingFrequency">Tracking Frequency (seconds)</label>
-                            <input type="number" id="trackingFrequency" min="1" max="60" step="1" placeholder="1">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Privacy Settings -->
-                <div id="privacy" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Privacy</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="incognitoTracking">
-                                <span class="checkmark"></span>
-                                Enable Incognito Tracking
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Save Status -->
-        <div class="save-status" id="saveStatus">
-            <span class="save-message">Settings saved automatically</span>
         </div>
-    </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <h3 id="confirmTitle">Confirm Action</h3>
-            <p id="confirmMessage">Are you sure you want to proceed?</p>
-            <div class="modal-actions">
-                <button id="confirmCancel" class="btn btn-outline">Cancel</button>
-                <button id="confirmOk" class="btn btn-primary">Confirm</button>
+        <!-- Confirmation Modal -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <h3 id="confirmTitle">Confirm Action</h3>
+                <p id="confirmMessage">Are you sure you want to proceed?</p>
+                <div class="modal-actions">
+                    <button id="confirmCancel" class="btn btn-outline">Cancel</button>
+                    <button id="confirmOk" class="btn btn-primary">Confirm</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="toast-notification" class="toast"></div>
+        <div id="toast-notification" class="toast"></div>
 
-    <script src="../utils/storage.js"></script>
-    <script type="module" src="site-controls.js"></script>
-    <script type="module" src="options.js"></script>
-</body>
+        <script src="../utils/storage.js"></script>
+        <script src="../utils/i18n.js"></script>
+        <script type="module" src="site-controls.js"></script>
+        <script type="module" src="options.js"></script>
+    </body>
 </html>

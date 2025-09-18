@@ -16,9 +16,9 @@ class StorageManager {
             exportFormat: 'csv',
             trackingEnabled: true,
             showSpeedOverlay: true,
-            firstTimeSetup: true
+            firstTimeSetup: true,
         };
-        
+
         this.init();
     }
 
@@ -27,20 +27,25 @@ class StorageManager {
      */
     async init() {
         try {
-            const result = await chrome.storage.local.get(['settings', 'usage', 'blockList', 'videoSpeeds']);
-            
+            const result = await chrome.storage.local.get([
+                'settings',
+                'usage',
+                'blockList',
+                'videoSpeeds',
+            ]);
+
             if (!result.settings) {
                 await this.setSettings(this.DEFAULT_SETTINGS);
             }
-            
+
             if (!result.usage) {
                 await chrome.storage.local.set({ usage: {} });
             }
-            
+
             if (!result.blockList) {
                 await chrome.storage.local.set({ blockList: [] });
             }
-            
+
             if (!result.videoSpeeds) {
                 await chrome.storage.local.set({ videoSpeeds: {} });
             }
@@ -148,18 +153,18 @@ class StorageManager {
         try {
             const usage = await this.getAllUsage();
             const today = new Date().toISOString().split('T')[0];
-            
+
             if (!usage[domain]) {
                 usage[domain] = { cumulative: 0 };
             }
-            
+
             if (!usage[domain][today]) {
                 usage[domain][today] = 0;
             }
-            
+
             usage[domain][today] += timeSpent;
             usage[domain].cumulative += timeSpent;
-            
+
             await chrome.storage.local.set({ usage });
             return true;
         } catch (error) {
@@ -209,7 +214,7 @@ class StorageManager {
     async removeFromBlockList(domain) {
         try {
             const blockList = await this.getBlockList();
-            const updatedList = blockList.filter(d => d !== domain);
+            const updatedList = blockList.filter((d) => d !== domain);
             await chrome.storage.local.set({ blockList: updatedList });
             return true;
         } catch (error) {
@@ -276,7 +281,7 @@ class StorageManager {
         try {
             const usage = await this.getAllUsage();
             let csv = 'Domain,Date,Time Spent (seconds),Time Spent (formatted)\n';
-            
+
             for (const [domain, data] of Object.entries(usage)) {
                 for (const [date, timeSpent] of Object.entries(data)) {
                     if (date !== 'cumulative') {
@@ -285,7 +290,7 @@ class StorageManager {
                     }
                 }
             }
-            
+
             return csv;
         } catch (error) {
             console.error('Failed to export data:', error);
@@ -317,7 +322,7 @@ class StorageManager {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        
+
         if (hours > 0) {
             return `${hours}h ${minutes}m ${secs}s`;
         } else if (minutes > 0) {

@@ -20,11 +20,11 @@ class TimeUtils {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             const remainingSeconds = seconds % 60;
-            
+
             let result = `${hours}h`;
             if (minutes > 0) result += ` ${minutes}m`;
             if (remainingSeconds > 0) result += ` ${remainingSeconds}s`;
-            
+
             return result;
         }
     }
@@ -43,12 +43,12 @@ class TimeUtils {
         } else {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
-            
+
             let result = `${hours} hour${hours !== 1 ? 's' : ''}`;
             if (minutes > 0) {
                 result += ` ${minutes} minute${minutes !== 1 ? 's' : ''}`;
             }
-            
+
             return result;
         }
     }
@@ -69,13 +69,13 @@ class TimeUtils {
     static getDateRange(days) {
         const dates = [];
         const today = new Date();
-        
+
         for (let i = days - 1; i >= 0; i--) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
             dates.push(date.toISOString().split('T')[0]);
         }
-        
+
         return dates;
     }
 
@@ -108,14 +108,14 @@ class TimeUtils {
         const dateRange = this.getDateRange(days);
         let totalTime = 0;
         let activeDays = 0;
-        
-        dateRange.forEach(date => {
+
+        dateRange.forEach((date) => {
             if (domainData[date]) {
                 totalTime += domainData[date];
                 activeDays++;
             }
         });
-        
+
         return activeDays > 0 ? Math.round(totalTime / activeDays) : 0;
     }
 
@@ -127,7 +127,7 @@ class TimeUtils {
      */
     static getTimeRemaining(used, limit) {
         if (limit === 0) return Infinity; // No limit
-        return (limit * 60) - used;
+        return limit * 60 - used;
     }
 
     /**
@@ -148,14 +148,14 @@ class TimeUtils {
     static parseTimeString(timeStr) {
         const regex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;
         const match = timeStr.match(regex);
-        
+
         if (!match) return 0;
-        
+
         const hours = parseInt(match[1]) || 0;
         const minutes = parseInt(match[2]) || 0;
         const seconds = parseInt(match[3]) || 0;
-        
-        return (hours * 3600) + (minutes * 60) + seconds;
+
+        return hours * 3600 + minutes * 60 + seconds;
     }
 }
 

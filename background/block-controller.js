@@ -40,7 +40,7 @@ class BlockController {
     grantTemporaryAccess(domain, duration = this.TEMP_ACCESS_DURATION) {
         const expiry = Date.now() + duration;
         this.temporaryAccess.set(domain, expiry);
-        
+
         // Set timeout to clean up expired access
         setTimeout(() => {
             this.cleanupExpiredAccess();
@@ -55,12 +55,12 @@ class BlockController {
     hasTemporaryAccess(domain) {
         const expiry = this.temporaryAccess.get(domain);
         if (!expiry) return false;
-        
+
         if (Date.now() >= expiry) {
             this.temporaryAccess.delete(domain);
             return false;
         }
-        
+
         return true;
     }
 
@@ -72,7 +72,7 @@ class BlockController {
     getRemainingAccessTime(domain) {
         const expiry = this.temporaryAccess.get(domain);
         if (!expiry) return 0;
-        
+
         const remaining = expiry - Date.now();
         return remaining > 0 ? remaining : 0;
     }
@@ -104,30 +104,30 @@ class BlockController {
      */
     async handleBlockPageMessage(message) {
         const { type, domain, originalUrl } = message;
-        
+
         switch (type) {
             case 'REQUEST_TEMP_ACCESS':
                 this.grantTemporaryAccess(domain);
-                return { 
-                    success: true, 
+                return {
+                    success: true,
                     redirectUrl: originalUrl,
-                    duration: this.TEMP_ACCESS_DURATION / 1000 / 60 // minutes
+                    duration: this.TEMP_ACCESS_DURATION / 1000 / 60, // minutes
                 };
-                
+
             case 'REMOVE_FROM_BLOCKLIST':
                 try {
                     const result = await chrome.storage.local.get('blockList');
                     const blockList = result.blockList || [];
-                    const updatedList = blockList.filter(d => d !== domain);
+                    const updatedList = blockList.filter((d) => d !== domain);
                     await chrome.storage.local.set({ blockList: updatedList });
                     return { success: true, redirectUrl: originalUrl };
                 } catch (error) {
                     return { success: false, error: error.message };
                 }
-                
+
             case 'GO_BACK':
                 return { success: true, action: 'goBack' };
-                
+
             default:
                 return { success: false, error: 'Unknown message type' };
         }
@@ -143,18 +143,19 @@ class BlockController {
             // Extract domain from URL
             const urlObj = new URL(url);
             const domain = urlObj.hostname.replace(/^www\./, '');
-            
+
             // Check if domain is blocked
             if (await this.isBlocked(domain)) {
                 return {
                     shouldBlock: true,
                     domain,
                     originalUrl: url,
-                    blockPageUrl: chrome.runtime.getURL('block/block.html') + 
-                        `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(url)}`
+                    blockPageUrl:
+                        chrome.runtime.getURL('block/block.html') +
+                        `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(url)}`,
                 };
             }
-            
+
             return { shouldBlock: false };
         } catch (error) {
             console.error('Error checking redirect:', error);
@@ -174,16 +175,16 @@ class BlockController {
             const domainStats = stats[domain] || {
                 totalBlocks: 0,
                 lastBlocked: null,
-                tempAccessUsed: 0
+                tempAccessUsed: 0,
             };
-            
+
             return domainStats;
         } catch (error) {
             console.error('Error getting block stats:', error);
             return {
                 totalBlocks: 0,
                 lastBlocked: null,
-                tempAccessUsed: 0
+                tempAccessUsed: 0,
             };
         }
     }
@@ -196,18 +197,18 @@ class BlockController {
         try {
             const result = await chrome.storage.local.get('blockStats');
             const stats = result.blockStats || {};
-            
+
             if (!stats[domain]) {
                 stats[domain] = {
                     totalBlocks: 0,
                     lastBlocked: null,
-                    tempAccessUsed: 0
+                    tempAccessUsed: 0,
                 };
             }
-            
+
             stats[domain].totalBlocks++;
             stats[domain].lastBlocked = new Date().toISOString();
-            
+
             await chrome.storage.local.set({ blockStats: stats });
         } catch (error) {
             console.error('Error recording block event:', error);
@@ -222,17 +223,17 @@ class BlockController {
         try {
             const result = await chrome.storage.local.get('blockStats');
             const stats = result.blockStats || {};
-            
+
             if (!stats[domain]) {
                 stats[domain] = {
                     totalBlocks: 0,
                     lastBlocked: null,
-                    tempAccessUsed: 0
+                    tempAccessUsed: 0,
                 };
             }
-            
+
             stats[domain].tempAccessUsed++;
-            
+
             await chrome.storage.local.set({ blockStats: stats });
         } catch (error) {
             console.error('Error recording temp access usage:', error);

@@ -1,19 +1,19 @@
 /* TimeDash Options Page Styles */
 
 :root {
-    --primary-color: #2196F3;
-    --primary-dark: #1976D2;
-    --secondary-color: #FF9800;
-    --success-color: #4CAF50;
-    --danger-color: #F44336;
-    --warning-color: #FF9800;
+    --primary-color: #2196f3;
+    --primary-dark: #1976d2;
+    --secondary-color: #ff9800;
+    --success-color: #4caf50;
+    --danger-color: #f44336;
+    --warning-color: #ff9800;
     --text-primary: #212121;
     --text-secondary: #757575;
-    --text-disabled: #BDBDBD;
-    --background: #FFFFFF;
-    --surface: #F5F5F5;
-    --surface-elevated: #FFFFFF;
-    --border: #E0E0E0;
+    --text-disabled: #bdbdbd;
+    --background: #ffffff;
+    --surface: #f5f5f5;
+    --surface-elevated: #ffffff;
+    --border: #e0e0e0;
     --shadow: rgba(0, 0, 0, 0.1);
     --shadow-elevated: rgba(0, 0, 0, 0.15);
     --radius: 8px;
@@ -128,7 +128,7 @@ body {
 }
 
 .btn-danger:hover {
-    background: #D32F2F;
+    background: #d32f2f;
 }
 
 /* Main Content */
@@ -227,8 +227,8 @@ body {
     margin-bottom: var(--spacing-small);
 }
 
-.setting-group input[type="text"],
-.setting-group input[type="number"],
+.setting-group input[type='text'],
+.setting-group input[type='number'],
 .setting-group select {
     width: 100%;
     padding: 12px;
@@ -263,7 +263,7 @@ body {
     margin-bottom: var(--spacing-small) !important;
 }
 
-.setting-label input[type="checkbox"] {
+.setting-label input[type='checkbox'] {
     display: none;
 }
 
@@ -277,12 +277,12 @@ body {
     flex-shrink: 0;
 }
 
-.setting-label input[type="checkbox"]:checked + .checkmark {
+.setting-label input[type='checkbox']:checked + .checkmark {
     background: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.setting-label input[type="checkbox"]:checked + .checkmark::after {
+.setting-label input[type='checkbox']:checked + .checkmark::after {
     content: '✓';
     position: absolute;
     top: 50%;
@@ -582,41 +582,41 @@ body {
         margin: 0;
         box-shadow: none;
     }
-    
+
     .header {
         flex-direction: column;
         gap: var(--spacing);
         text-align: center;
     }
-    
+
     .header-actions {
         width: 100%;
         justify-content: center;
     }
-    
+
     .main-content {
         padding: var(--spacing);
     }
-    
+
     .tab-nav {
         flex-wrap: wrap;
     }
-    
+
     .tab-btn {
         flex: 1;
         min-width: 120px;
     }
-    
+
     .site-speed-header,
     .blocklist-header {
         flex-direction: column;
     }
-    
+
     .export-actions,
     .data-actions {
         flex-direction: column;
     }
-    
+
     .analytics-overview {
         grid-template-columns: 1fr;
     }
@@ -625,12 +625,12 @@ body {
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     :root {
-        --text-primary: #FFFFFF;
-        --text-secondary: #B3B3B3;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
         --text-disabled: #666666;
-        --background: #1E1E1E;
-        --surface: #2D2D2D;
-        --surface-elevated: #3D3D3D;
+        --background: #1e1e1e;
+        --surface: #2d2d2d;
+        --surface-elevated: #3d3d3d;
         --border: #404040;
         --shadow: rgba(0, 0, 0, 0.3);
         --shadow-elevated: rgba(0, 0, 0, 0.5);
@@ -657,4 +657,51 @@ body {
 .site-speeds-list::-webkit-scrollbar-thumb:hover,
 .blocked-sites-list::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
+}
+
+/* Banner */
+.banner {
+    display: none;
+    padding: 10px 14px;
+    margin: var(--spacing);
+    border-radius: var(--radius);
+    font-weight: 500;
+}
+
+.banner.info {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+
+.banner.success {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.banner.warning {
+    background: #fff8e1;
+    color: #e65100;
+}
+
+.banner.error {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+/* Skeletons */
+.skeleton-line {
+    height: 12px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+    background-size: 400% 100%;
+    border-radius: 6px;
+    animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
 }

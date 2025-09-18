@@ -26,7 +26,10 @@ class DomainUtils {
      * @returns {string} Normalized domain
      */
     static normalizeDomain(domain) {
-        return domain.toLowerCase().replace(/^www\./, '').trim();
+        return domain
+            .toLowerCase()
+            .replace(/^www\./, '')
+            .trim();
     }
 
     /**
@@ -35,7 +38,8 @@ class DomainUtils {
      * @returns {boolean} True if domain is valid
      */
     static isValidDomain(domain) {
-        const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(?:\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?)*$/;
+        const domainRegex =
+            /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(?:\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?)*$/;
         return domainRegex.test(domain) && domain.includes('.');
     }
 
@@ -46,23 +50,31 @@ class DomainUtils {
      */
     static shouldTrackUrl(url) {
         if (!url) return false;
-        
-        const excludedSchemes = ['chrome:', 'chrome-extension:', 'moz-extension:', 'edge:', 'about:', 'file:', 'data:'];
+
+        const excludedSchemes = [
+            'chrome:',
+            'chrome-extension:',
+            'moz-extension:',
+            'edge:',
+            'about:',
+            'file:',
+            'data:',
+        ];
         const excludedDomains = ['localhost', '127.0.0.1', '0.0.0.0'];
-        
+
         // Check for excluded schemes
-        if (excludedSchemes.some(scheme => url.startsWith(scheme))) {
+        if (excludedSchemes.some((scheme) => url.startsWith(scheme))) {
             return false;
         }
-        
+
         try {
             const domain = this.extractDomain(url);
-            
+
             // Check for excluded domains
             if (excludedDomains.includes(domain)) {
                 return false;
             }
-            
+
             // Check if it's a valid trackable domain
             return this.isValidDomain(domain);
         } catch (error) {
@@ -95,9 +107,7 @@ class DomainUtils {
      * @returns {boolean} True if domain matches pattern
      */
     static matchesPattern(domain, pattern) {
-        const escapedPattern = pattern
-            .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
-            .replace(/\*/g, '.*');
+        const escapedPattern = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
         const regex = new RegExp(`^${escapedPattern}$`, 'i');
         return regex.test(domain);
     }
@@ -109,14 +119,27 @@ class DomainUtils {
      */
     static categorizeDomains(domains) {
         const categories = {
-            social: ['facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com', 'reddit.com', 'tiktok.com'],
+            social: [
+                'facebook.com',
+                'twitter.com',
+                'instagram.com',
+                'linkedin.com',
+                'reddit.com',
+                'tiktok.com',
+            ],
             entertainment: ['youtube.com', 'netflix.com', 'twitch.tv', 'spotify.com', 'hulu.com'],
-            productivity: ['github.com', 'stackoverflow.com', 'docs.google.com', 'notion.so', 'trello.com'],
+            productivity: [
+                'github.com',
+                'stackoverflow.com',
+                'docs.google.com',
+                'notion.so',
+                'trello.com',
+            ],
             education: ['wikipedia.org', 'coursera.org', 'udemy.com', 'khanacademy.org', 'edx.org'],
             news: ['bbc.com', 'cnn.com', 'reuters.com', 'nytimes.com', 'theguardian.com'],
-            shopping: ['amazon.com', 'ebay.com', 'etsy.com', 'shopify.com', 'alibaba.com']
+            shopping: ['amazon.com', 'ebay.com', 'etsy.com', 'shopify.com', 'alibaba.com'],
         };
-        
+
         const categorized = {
             social: [],
             entertainment: [],
@@ -124,13 +147,13 @@ class DomainUtils {
             education: [],
             news: [],
             shopping: [],
-            other: []
+            other: [],
         };
-        
-        domains.forEach(domain => {
+
+        domains.forEach((domain) => {
             let matched = false;
             for (const [category, categoryDomains] of Object.entries(categories)) {
-                if (categoryDomains.some(catDomain => domain.includes(catDomain))) {
+                if (categoryDomains.some((catDomain) => domain.includes(catDomain))) {
                     categorized[category].push(domain);
                     matched = true;
                     break;
@@ -140,7 +163,7 @@ class DomainUtils {
                 categorized.other.push(domain);
             }
         });
-        
+
         return categorized;
     }
 
@@ -150,23 +173,38 @@ class DomainUtils {
      * @returns {number} Productivity score
      */
     static getProductivityScore(domain) {
-        const productiveKeywords = ['github', 'stackoverflow', 'docs', 'wiki', 'learn', 'course', 'edu'];
-        const distractingKeywords = ['facebook', 'twitter', 'instagram', 'youtube', 'reddit', 'tiktok'];
-        
+        const productiveKeywords = [
+            'github',
+            'stackoverflow',
+            'docs',
+            'wiki',
+            'learn',
+            'course',
+            'edu',
+        ];
+        const distractingKeywords = [
+            'facebook',
+            'twitter',
+            'instagram',
+            'youtube',
+            'reddit',
+            'tiktok',
+        ];
+
         let score = 50; // Neutral score
-        
-        productiveKeywords.forEach(keyword => {
+
+        productiveKeywords.forEach((keyword) => {
             if (domain.includes(keyword)) {
                 score += 15;
             }
         });
-        
-        distractingKeywords.forEach(keyword => {
+
+        distractingKeywords.forEach((keyword) => {
             if (domain.includes(keyword)) {
                 score -= 20;
             }
         });
-        
+
         return Math.max(0, Math.min(100, score));
     }
 }

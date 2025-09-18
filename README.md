@@ -1,8 +1,11 @@
 # TimeDash Browser
+
 <!-- Insert Icon from icons/icon377.png-->
+
 ![TimeDash Logo](/icons/icon377.png)
 
-A powerful productivity browser extension.
+A productivity browser extension.
+
 Goals: to help you track your time, control video playback speeds, block distracting websites, and maintain focus while browsing the web.
 
 ## 🚧In Progress🚧
@@ -85,26 +88,26 @@ Goals: to help you track your time, control video playback speeds, block distrac
 
 ## 🎮 Keyboard Shortcuts
 
-| Action | Default Shortcut | Customizable |
-|--------|------------------|--------------|
-| Increase video speed | `+` | ✅ |
-| Decrease video speed | `-` | ✅ |
-| Toggle time tracking | `Alt + T` | ✅ |
-| Toggle site blocking | `Alt + B` | ✅ |
+| Action               | Default Shortcut | Customizable |
+| -------------------- | ---------------- | ------------ |
+| Increase video speed | `+`              | ✅           |
+| Decrease video speed | `-`              | ✅           |
+| Toggle time tracking | `Alt + T`        | ✅           |
+| Toggle site blocking | `Alt + B`        | ✅           |
 
-*All shortcuts can be customized in Chrome's extension settings* [chrome://extensions/shortcuts]
+_All shortcuts can be customized in Chrome's extension settings_ [chrome://extensions/shortcuts]
 
 ## 📱 Supported Browsers
 
-| Browser | Version | Support Level |
-|---------|---------|---------------|
-| **Chrome** | 88+ | ✅ Full Support |
-| **Edge** | 88+ | ✅ Full Support |
-| **Brave** | 88+ | ✅ Full Support |
-| **Opera** | 74+ | ⚠️ Limited Testing |
-| **Firefox** | - | ❌ Not Currently Supported |
+| Browser     | Version | Support Level              |
+| ----------- | ------- | -------------------------- |
+| **Chrome**  | 88+     | ✅ Full Support            |
+| **Edge**    | 88+     | ✅ Full Support            |
+| **Brave**   | 88+     | ✅ Full Support            |
+| **Opera**   | 74+     | ⚠️ Limited Testing         |
+| **Firefox** | -       | ❌ Not Currently Supported |
 
-*Firefox support is planned for a future release using* **Manifest V2**
+_Firefox support is planned for a future release using_ **Manifest V2**
 
 ## 🔒 Privacy & Data
 
@@ -142,42 +145,42 @@ Goals: to help you track your time, control video playback speeds, block distrac
 
 ```md
 timedash/
-├── manifest.json          # Extension configuration
-├── background/            # Service worker scripts
-├── content/              # Content scripts for web pages
-├── popup/                # Extension popup UI
-├── options/              # Settings page
-├── block/                # Blocked site page
-├── utils/                # Shared utilities
-├── icons/                # Extension icons
-└── _dev/                 # Development tools
+├── manifest.json # Extension configuration
+├── background/ # Service worker scripts
+├── content/ # Content scripts for web pages
+├── popup/ # Extension popup UI
+├── options/ # Settings page
+├── block/ # Blocked site page
+├── utils/ # Shared utilities
+├── icons/ # Extension icons
+└── \_dev/ # Development tools
 ```
 
 ### Building from Source
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/timedash/extension.git
-   cd extension
-   ```
+    ```bash
+    git clone https://github.com/timedash/extension.git
+    cd extension
+    ```
 
 2. Install development dependencies:
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. Run tests:
 
-   ```bash
-   npm test
-   ```
+    ```bash
+    npm test
+    ```
 
 4. Load in Chrome:
-   - Open `chrome://extensions/`
-   - Enable Developer mode
-   - Click "Load unpacked" and select the project folder
+    - Open `chrome://extensions/`
+    - Enable Developer mode
+    - Click "Load unpacked" and select the project folder
 
 ### Contributing
 

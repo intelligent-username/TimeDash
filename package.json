@@ -1,0 +1,17 @@
+{
+    "name": "timedash-extension",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "lint": "eslint . --ext .js",
+        "format": "prettier --write .",
+        "lint:fix": "eslint . --ext .js --fix",
+        "jsdoc": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "eslint": "^9.9.0",
+        "eslint-plugin-jsdoc": "^48.10.1",
+        "prettier": "^3.3.3",
+        "jsdoc": "^4.0.2"
+    }
+}

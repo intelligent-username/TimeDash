@@ -13,7 +13,7 @@ class TimeDashContent {
         this.visibilityCheckInterval = null;
         this.speedOverlay = null;
         this.settings = {};
-        
+
         this.init();
     }
 
@@ -24,19 +24,19 @@ class TimeDashContent {
         try {
             // Load settings
             await this.loadSettings();
-            
+
             // Set up video detection
             this.setupVideoDetection();
-            
+
             // Set up message listeners
             this.setupMessageListeners();
-            
+
             // Set up keyboard shortcuts
             this.setupKeyboardShortcuts();
-            
+
             // Start visibility checking
             this.startVisibilityCheck();
-            
+
             console.log('TimeDash content script initialized for:', this.domain);
         } catch (error) {
             console.error('Error initializing TimeDash content script:', error);
@@ -50,11 +50,11 @@ class TimeDashContent {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = response || {};
-            
+
             // Load domain-specific video speed
             const speedResponse = await chrome.runtime.sendMessage({
                 type: 'GET_VIDEO_SPEED',
-                domain: this.domain
+                domain: this.domain,
             });
             this.currentSpeed = speedResponse?.speed || this.settings.defaultPlaybackSpeed || 1.0;
         } catch (error) {
@@ -70,7 +70,7 @@ class TimeDashContent {
     setupVideoDetection() {
         // Find existing videos
         this.findAndSetupVideos();
-        
+
         // Watch for new videos
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -80,16 +80,16 @@ class TimeDashContent {
                             this.setupVideo(node);
                         } else if (node.querySelectorAll) {
                             const videos = node.querySelectorAll('video');
-                            videos.forEach(video => this.setupVideo(video));
+                            videos.forEach((video) => this.setupVideo(video));
                         }
                     }
                 });
             });
         });
-        
+
         this.mutationObserver.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
     }
 
@@ -98,7 +98,7 @@ class TimeDashContent {
      */
     findAndSetupVideos() {
         const videos = document.querySelectorAll('video');
-        videos.forEach(video => this.setupVideo(video));
+        videos.forEach((video) => this.setupVideo(video));
     }
 
     /**
@@ -107,23 +107,24 @@ class TimeDashContent {
      */
     setupVideo(video) {
         if (this.videos.has(video)) return;
-        
+
         this.videos.add(video);
-        
+
         // Wait for video metadata to load
         const setupSpeed = () => {
-            if (video.readyState >= 1) { // HAVE_METADATA
+            if (video.readyState >= 1) {
+                // HAVE_METADATA
                 video.playbackRate = this.currentSpeed;
                 this.showSpeedIndicator(video);
             }
         };
-        
+
         if (video.readyState >= 1) {
             setupSpeed();
         } else {
             video.addEventListener('loadedmetadata', setupSpeed, { once: true });
         }
-        
+
         // Listen for manual speed changes
         video.addEventListener('ratechange', () => {
             if (Math.abs(video.playbackRate - this.currentSpeed) > 0.01) {
@@ -132,7 +133,7 @@ class TimeDashContent {
                 this.updateAllVideoSpeeds();
             }
         });
-        
+
         // Clean up when video is removed
         const cleanupObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -144,7 +145,7 @@ class TimeDashContent {
                 });
             });
         });
-        
+
         if (video.parentNode) {
             cleanupObserver.observe(video.parentNode, { childList: true, subtree: true });
         }
@@ -159,35 +160,35 @@ class TimeDashContent {
                 case 'CHECK_VISIBILITY':
                     sendResponse({ visible: this.isPageVisible() });
                     break;
-                    
+
                 case 'increase-speed':
                     this.increaseSpeed();
                     sendResponse({ success: true });
                     break;
-                    
+
                 case 'decrease-speed':
                     this.decreaseSpeed();
                     sendResponse({ success: true });
                     break;
-                    
+
                 case 'SET_SPEED':
                     this.setSpeed(message.speed);
                     sendResponse({ success: true });
                     break;
-                    
+
                 case 'GET_CURRENT_SPEED':
                     sendResponse({ speed: this.currentSpeed });
                     break;
-                    
+
                 case 'TOGGLE_OVERLAY':
                     this.toggleSpeedOverlay();
                     sendResponse({ success: true });
                     break;
-                    
+
                 default:
                     sendResponse({ error: 'Unknown message type' });
             }
-            
+
             return true; // Keep message channel open
         });
     }
@@ -197,11 +198,11 @@ class TimeDashContent {
      */
     setupKeyboardShortcuts() {
         if (!this.settings.keyboardShortcutsEnabled) return;
-        
+
         document.addEventListener('keydown', (event) => {
             // Only handle shortcuts if no input element is focused
             if (this.isInputFocused()) return;
-            
+
             // Direct shortcuts: Plus/Minus keys
             if (!event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey) {
                 switch (event.code) {
@@ -210,7 +211,7 @@ class TimeDashContent {
                         event.preventDefault();
                         this.increaseSpeed();
                         break;
-                        
+
                     case 'Minus': // Minus key
                     case 'NumpadSubtract': // Numpad minus
                         event.preventDefault();
@@ -218,7 +219,7 @@ class TimeDashContent {
                         break;
                 }
             }
-            
+
             // Alternative shortcuts for when videos are playing (same as above but with video check)
             if (this.videos.size > 0 && !event.ctrlKey && !event.altKey && !event.metaKey) {
                 switch (event.code) {
@@ -229,7 +230,7 @@ class TimeDashContent {
                             this.increaseSpeed();
                         }
                         break;
-                        
+
                     case 'Minus':
                     case 'NumpadSubtract':
                         if (this.isVideoPlaying()) {
@@ -266,8 +267,10 @@ class TimeDashContent {
     isInputFocused() {
         const activeElement = document.activeElement;
         const inputTypes = ['input', 'textarea', 'select'];
-        return inputTypes.includes(activeElement?.tagName?.toLowerCase()) ||
-               activeElement?.contentEditable === 'true';
+        return (
+            inputTypes.includes(activeElement?.tagName?.toLowerCase()) ||
+            activeElement?.contentEditable === 'true'
+        );
     }
 
     /**
@@ -275,7 +278,7 @@ class TimeDashContent {
      * @returns {boolean} True if any video is playing
      */
     isVideoPlaying() {
-        return Array.from(this.videos).some(video => !video.paused && !video.ended);
+        return Array.from(this.videos).some((video) => !video.paused && !video.ended);
     }
 
     /**
@@ -284,10 +287,12 @@ class TimeDashContent {
     increaseSpeed() {
         const increments = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
         const maxSpeed = this.settings.maxPlaybackSpeed || 16.0;
-        
-        const currentIndex = increments.findIndex(speed => Math.abs(speed - this.currentSpeed) < 0.01);
+
+        const currentIndex = increments.findIndex(
+            (speed) => Math.abs(speed - this.currentSpeed) < 0.01
+        );
         const nextIndex = currentIndex + 1;
-        
+
         if (nextIndex < increments.length && increments[nextIndex] <= maxSpeed) {
             this.setSpeed(increments[nextIndex]);
         }
@@ -298,10 +303,12 @@ class TimeDashContent {
      */
     decreaseSpeed() {
         const increments = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
-        
-        const currentIndex = increments.findIndex(speed => Math.abs(speed - this.currentSpeed) < 0.01);
+
+        const currentIndex = increments.findIndex(
+            (speed) => Math.abs(speed - this.currentSpeed) < 0.01
+        );
         const prevIndex = currentIndex - 1;
-        
+
         if (prevIndex >= 0) {
             this.setSpeed(increments[prevIndex]);
         }
@@ -314,7 +321,7 @@ class TimeDashContent {
     setSpeed(speed) {
         const maxSpeed = this.settings.maxPlaybackSpeed || 16.0;
         const clampedSpeed = Math.max(0.25, Math.min(maxSpeed, speed));
-        
+
         this.currentSpeed = clampedSpeed;
         this.updateAllVideoSpeeds();
         this.saveCurrentSpeed();
@@ -325,7 +332,7 @@ class TimeDashContent {
      * Update speed for all videos on the page
      */
     updateAllVideoSpeeds() {
-        this.videos.forEach(video => {
+        this.videos.forEach((video) => {
             if (video && !video.paused) {
                 video.playbackRate = this.currentSpeed;
             }
@@ -340,7 +347,7 @@ class TimeDashContent {
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_VIDEO_SPEED',
                 domain: this.domain,
-                speed: this.currentSpeed
+                speed: this.currentSpeed,
             });
         } catch (error) {
             console.error('Error saving video speed:', error);
@@ -353,13 +360,13 @@ class TimeDashContent {
      */
     showSpeedIndicator(video) {
         if (!this.settings.showSpeedOverlay) return;
-        
+
         // Remove existing indicator
         const existingIndicator = video.parentNode?.querySelector('.timedash-speed-indicator');
         if (existingIndicator) {
             existingIndicator.remove();
         }
-        
+
         // Create new indicator
         const indicator = document.createElement('div');
         indicator.className = 'timedash-speed-indicator';
@@ -378,7 +385,7 @@ class TimeDashContent {
             pointer-events: none;
             transition: opacity 0.3s ease;
         `;
-        
+
         // Position relative to video
         if (video.parentNode) {
             const parent = video.parentNode;
@@ -386,7 +393,7 @@ class TimeDashContent {
                 parent.style.position = 'relative';
             }
             parent.appendChild(indicator);
-            
+
             // Auto-hide after 3 seconds
             setTimeout(() => {
                 if (indicator.parentNode) {
@@ -410,7 +417,7 @@ class TimeDashContent {
         if (existingNotification) {
             existingNotification.remove();
         }
-        
+
         // Create notification
         const notification = document.createElement('div');
         notification.className = 'timedash-speed-notification';
@@ -430,14 +437,14 @@ class TimeDashContent {
             transform: translateX(100%);
             transition: transform 0.3s ease, opacity 0.3s ease;
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animate in
         requestAnimationFrame(() => {
             notification.style.transform = 'translateX(0)';
         });
-        
+
         // Auto-hide after 2 seconds
         setTimeout(() => {
             notification.style.opacity = '0';
@@ -455,10 +462,10 @@ class TimeDashContent {
      */
     toggleSpeedOverlay() {
         this.settings.showSpeedOverlay = !this.settings.showSpeedOverlay;
-        
+
         // Update all existing indicators
         const indicators = document.querySelectorAll('.timedash-speed-indicator');
-        indicators.forEach(indicator => {
+        indicators.forEach((indicator) => {
             indicator.style.display = this.settings.showSpeedOverlay ? 'block' : 'none';
         });
     }
@@ -484,17 +491,17 @@ class TimeDashContent {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
         }
-        
+
         if (this.visibilityCheckInterval) {
             clearInterval(this.visibilityCheckInterval);
         }
-        
+
         // Remove any UI elements
         const notifications = document.querySelectorAll('.timedash-speed-notification');
-        notifications.forEach(n => n.remove());
-        
+        notifications.forEach((n) => n.remove());
+
         const indicators = document.querySelectorAll('.timedash-speed-indicator');
-        indicators.forEach(i => i.remove());
+        indicators.forEach((i) => i.remove());
     }
 }
 

@@ -104,7 +104,7 @@ export class SiteControls {
         try {
             const response = await chrome.runtime.sendMessage({
                 type: 'ADD_BLOCKED_SITE',
-                domain: domain
+                domain: domain,
             });
 
             if (response.success) {
@@ -128,11 +128,11 @@ export class SiteControls {
         try {
             const response = await chrome.runtime.sendMessage({
                 type: 'REMOVE_BLOCKED_SITE',
-                domain: domain
+                domain: domain,
             });
 
             if (response.success) {
-                this.blockedSites = this.blockedSites.filter(site => site !== domain);
+                this.blockedSites = this.blockedSites.filter((site) => site !== domain);
                 this.renderBlockedSites();
                 this.showToast(`${domain} has been unblocked`, 'success');
             } else {
@@ -150,7 +150,7 @@ export class SiteControls {
     async addSiteSpeed() {
         const domainInput = document.getElementById('newSiteDomain');
         const speedInput = document.getElementById('newSiteSpeed');
-        
+
         const domain = this.normalizeDomain(domainInput.value.trim());
         const speed = parseFloat(speedInput.value);
 
@@ -168,7 +168,7 @@ export class SiteControls {
             const response = await chrome.runtime.sendMessage({
                 type: 'SET_SITE_SPEED',
                 domain: domain,
-                speed: speed
+                speed: speed,
             });
 
             if (response.success) {
@@ -194,7 +194,7 @@ export class SiteControls {
             const response = await chrome.runtime.sendMessage({
                 type: 'SET_SITE_SPEED',
                 domain: domain,
-                speed: speed
+                speed: speed,
             });
 
             if (response.success) {
@@ -216,7 +216,7 @@ export class SiteControls {
         try {
             const response = await chrome.runtime.sendMessage({
                 type: 'REMOVE_SITE_SPEED',
-                domain: domain
+                domain: domain,
             });
 
             if (response.success) {
@@ -237,7 +237,7 @@ export class SiteControls {
      */
     renderBlockedSites() {
         const container = document.getElementById('blockedSitesList');
-        
+
         if (this.blockedSites.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -248,7 +248,9 @@ export class SiteControls {
             return;
         }
 
-        const html = this.blockedSites.map(domain => `
+        const html = this.blockedSites
+            .map(
+                (domain) => `
             <div class="site-item" data-domain="${domain}">
                 <div class="site-item-info">
                     <img class="site-favicon" src="${this.getFaviconUrl(domain)}" alt="${domain}" onerror="this.style.display='none'">
@@ -263,7 +265,9 @@ export class SiteControls {
                     </button>
                 </div>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
 
         container.innerHTML = html;
     }
@@ -274,7 +278,7 @@ export class SiteControls {
     renderSiteSpeeds() {
         const container = document.getElementById('siteSpeedsList');
         const speeds = Object.entries(this.siteSpeeds);
-        
+
         if (speeds.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -286,8 +290,10 @@ export class SiteControls {
         }
 
         const speedOptions = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
-        
-        const html = speeds.map(([domain, speed]) => `
+
+        const html = speeds
+            .map(
+                ([domain, speed]) => `
             <div class="site-item" data-domain="${domain}">
                 <div class="site-item-info">
                     <img class="site-favicon" src="${this.getFaviconUrl(domain)}" alt="${domain}" onerror="this.style.display='none'">
@@ -298,16 +304,22 @@ export class SiteControls {
                 </div>
                 <div class="site-actions">
                     <select class="site-speed-select" data-domain="${domain}">
-                        ${speedOptions.map(opt => `
+                        ${speedOptions
+                            .map(
+                                (opt) => `
                             <option value="${opt}" ${opt === speed ? 'selected' : ''}>${opt}x</option>
-                        `).join('')}
+                        `
+                            )
+                            .join('')}
                     </select>
                     <button class="site-btn danger remove-speed" data-domain="${domain}">
                         Remove
                     </button>
                 </div>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
 
         container.innerHTML = html;
     }
@@ -320,7 +332,7 @@ export class SiteControls {
         if (!button) return;
 
         const domain = button.dataset.domain;
-        
+
         if (button.classList.contains('remove-blocked')) {
             this.confirmAction(
                 'Remove blocked site',
@@ -338,7 +350,7 @@ export class SiteControls {
         if (!button) return;
 
         const domain = button.dataset.domain;
-        
+
         if (button.classList.contains('remove-speed')) {
             this.confirmAction(
                 'Remove speed setting',
@@ -357,7 +369,7 @@ export class SiteControls {
 
         const domain = select.dataset.domain;
         const speed = parseFloat(select.value);
-        
+
         this.updateSiteSpeed(domain, speed);
     }
 
@@ -365,7 +377,8 @@ export class SiteControls {
      * Normalize domain name
      */
     normalizeDomain(domain) {
-        return domain.toLowerCase()
+        return domain
+            .toLowerCase()
             .replace(/^https?:\/\//, '')
             .replace(/^www\./, '')
             .replace(/\/.*$/, '')
@@ -376,7 +389,8 @@ export class SiteControls {
      * Validate domain format
      */
     isValidDomain(domain) {
-        const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(?:\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?)*$/;
+        const domainRegex =
+            /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(?:\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?)*$/;
         return domainRegex.test(domain) && domain.includes('.');
     }
 
@@ -436,14 +450,14 @@ export class SiteControls {
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
-        
+
         const colors = {
             success: '#4CAF50',
             error: '#F44336',
             warning: '#FF9800',
-            info: '#2196F3'
+            info: '#2196F3',
         };
-        
+
         toast.style.cssText = `
             position: fixed;
             top: 20px;
@@ -461,14 +475,14 @@ export class SiteControls {
             max-width: 300px;
             word-wrap: break-word;
         `;
-        
+
         document.body.appendChild(toast);
-        
+
         // Animate in
         requestAnimationFrame(() => {
             toast.style.transform = 'translateX(0)';
         });
-        
+
         // Auto-hide
         setTimeout(() => {
             toast.style.opacity = '0';
@@ -485,10 +499,11 @@ export class SiteControls {
      * Import blocked sites from text
      */
     async importBlockedSites(sitesText) {
-        const domains = sitesText.split(/[\n,;]/)
-            .map(domain => this.normalizeDomain(domain))
-            .filter(domain => domain && this.isValidDomain(domain))
-            .filter(domain => !this.blockedSites.includes(domain));
+        const domains = sitesText
+            .split(/[\n,;]/)
+            .map((domain) => this.normalizeDomain(domain))
+            .filter((domain) => domain && this.isValidDomain(domain))
+            .filter((domain) => !this.blockedSites.includes(domain));
 
         if (domains.length === 0) {
             this.showToast('No valid domains found to import', 'warning');
@@ -499,7 +514,7 @@ export class SiteControls {
             for (const domain of domains) {
                 await chrome.runtime.sendMessage({
                     type: 'ADD_BLOCKED_SITE',
-                    domain: domain
+                    domain: domain,
                 });
                 this.blockedSites.push(domain);
             }
@@ -522,7 +537,7 @@ export class SiteControls {
         }
 
         const text = this.blockedSites.join('\n');
-        
+
         // Create and download file
         const blob = new Blob([text], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -531,7 +546,7 @@ export class SiteControls {
         a.download = `timedash-blocked-sites-${new Date().toISOString().split('T')[0]}.txt`;
         a.click();
         URL.revokeObjectURL(url);
-        
+
         this.showToast('Blocked sites exported', 'success');
     }
 
@@ -552,10 +567,10 @@ export class SiteControls {
                     for (const domain of this.blockedSites) {
                         await chrome.runtime.sendMessage({
                             type: 'REMOVE_BLOCKED_SITE',
-                            domain: domain
+                            domain: domain,
                         });
                     }
-                    
+
                     this.blockedSites = [];
                     this.renderBlockedSites();
                     this.showToast('All blocked sites cleared', 'success');
@@ -572,7 +587,7 @@ export class SiteControls {
      */
     async clearAllSiteSpeeds() {
         const speedCount = Object.keys(this.siteSpeeds).length;
-        
+
         if (speedCount === 0) {
             this.showToast('No speed settings to clear', 'warning');
             return;
@@ -586,10 +601,10 @@ export class SiteControls {
                     for (const domain of Object.keys(this.siteSpeeds)) {
                         await chrome.runtime.sendMessage({
                             type: 'REMOVE_SITE_SPEED',
-                            domain: domain
+                            domain: domain,
                         });
                     }
-                    
+
                     this.siteSpeeds = {};
                     this.renderSiteSpeeds();
                     this.showToast('All speed settings cleared', 'success');

@@ -10,7 +10,10 @@ class TimeDashPopup {
         this.usageData = null;
         this.settings = null;
         this.updateInterval = null;
-        
+        this.autoUpdateInterval = null;
+        this.boundKeyHandler = null;
+        window.timeDashPopup = this;
+
         this.init();
     }
 
@@ -19,19 +22,28 @@ class TimeDashPopup {
      */
     async init() {
         try {
+            PopupHelpers.showBanner(I18n.t('loading'), 'info');
             await this.loadCurrentTab();
             await this.loadData();
+
+            // i18n apply
+            I18n.init(document);
+
+            // Skeletons while first render
+            PopupHelpers.injectSkeletonList(document.getElementById('sitesList'), 5);
+
             this.setupEventListeners();
             this.updateUI();
             this.startAutoUpdate();
-            
+            PopupHelpers.hideBanner();
+
             // Check for first-time setup
             if (this.settings?.firstTimeSetup) {
                 this.showSetupModal();
             }
         } catch (error) {
-            console.error('Error initializing popup:', error);
-            this.showError('Failed to load extension data');
+            console.error('Popup init failed:', error);
+            PopupHelpers.showBanner(I18n.t('errorGeneric'), 'error');
         }
     }
 
@@ -55,7 +67,7 @@ class TimeDashPopup {
             // Load usage data
             const usageResponse = await chrome.runtime.sendMessage({ type: 'GET_USAGE_DATA' });
             this.usageData = usageResponse;
-            
+
             // Load settings
             const settingsResponse = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = settingsResponse;
@@ -149,21 +161,21 @@ class TimeDashPopup {
         }
 
         const domain = this.extractDomain(this.currentTab.url);
-        const domainData = this.usageData?.domains?.find(d => d.domain === domain);
-        
+        const domainData = this.usageData?.domains?.find((d) => d.domain === domain);
+
         siteName.textContent = PopupHelpers.capitalize(domain);
-        siteTime.textContent = domainData ? 
-            `Today: ${PopupHelpers.formatDetailedTime(domainData.todayTime)}` : 
-            'No time recorded today';
-        
+        siteTime.textContent = domainData
+            ? `Today: ${PopupHelpers.formatDetailedTime(domainData.todayTime)}`
+            : 'No time recorded today';
+
         siteFavicon.src = PopupHelpers.getFaviconUrl(domain);
         siteFavicon.style.display = 'block';
-        
+
         // Update block button
         const isBlocked = domainData?.isBlocked || false;
         blockBtn.textContent = isBlocked ? 'Unblock Site' : 'Block Site';
         blockBtn.className = `action-btn block-btn ${isBlocked ? 'blocked' : ''}`;
-        
+
         // Update speed indicator (this would come from content script)
         this.updateCurrentSpeed(domain);
     }
@@ -174,8 +186,8 @@ class TimeDashPopup {
     async updateCurrentSpeed(domain) {
         try {
             if (this.currentTab) {
-                const response = await chrome.tabs.sendMessage(this.currentTab.id, { 
-                    type: 'GET_CURRENT_SPEED' 
+                const response = await chrome.tabs.sendMessage(this.currentTab.id, {
+                    type: 'GET_CURRENT_SPEED',
                 });
                 if (response?.speed) {
                     document.getElementById('currentSpeed').textContent = `${response.speed}x`;
@@ -198,10 +210,10 @@ class TimeDashPopup {
         if (!this.usageData) return;
 
         const { totalToday, totalOverall } = this.usageData;
-        
+
         todayTotal.textContent = PopupHelpers.formatTime(totalToday);
         totalTime.textContent = PopupHelpers.formatTime(totalOverall);
-        
+
         // Calculate week average
         const avgDaily = this.calculateWeeklyAverage();
         weekAverage.textContent = PopupHelpers.formatTime(avgDaily);
@@ -212,7 +224,7 @@ class TimeDashPopup {
      */
     updateTopSites() {
         const sitesList = document.getElementById('sitesList');
-        
+
         if (!this.usageData?.domains || this.usageData.domains.length === 0) {
             sitesList.innerHTML = `
                 <div class="empty-state">
@@ -226,9 +238,7 @@ class TimeDashPopup {
         }
 
         // Show top 5 sites with time today
-        const topSites = this.usageData.domains
-            .filter(site => site.todayTime > 0)
-            .slice(0, 5);
+        const topSites = this.usageData.domains.filter((site) => site.todayTime > 0).slice(0, 5);
 
         if (topSites.length === 0) {
             sitesList.innerHTML = `
@@ -240,7 +250,7 @@ class TimeDashPopup {
         }
 
         sitesList.innerHTML = '';
-        topSites.forEach(siteData => {
+        topSites.forEach((siteData) => {
             const siteItem = PopupHelpers.createSiteItem(siteData);
             PopupHelpers.animateIn(siteItem);
             sitesList.appendChild(siteItem);
@@ -260,9 +270,9 @@ class TimeDashPopup {
 
         trackingStatus.textContent = isTracking ? '● Tracking Active' : '● Tracking Paused';
         trackingStatus.className = `tracking-status ${isTracking ? 'active' : 'paused'}`;
-        
+
         sitesCount.textContent = `${totalSites} sites tracked`;
-        
+
         toggleBtn.textContent = isTracking ? 'Pause Tracking' : 'Resume Tracking';
         toggleBtn.className = `toggle-btn ${isTracking ? '' : 'paused'}`;
     }
@@ -287,11 +297,14 @@ class TimeDashPopup {
         try {
             await chrome.runtime.sendMessage({
                 type: 'TOGGLE_BLOCK',
-                domain: domain
+                domain: domain,
             });
 
-            PopupHelpers.showToast(`${domain} ${await this.isBlocked(domain) ? 'unblocked' : 'blocked'}`, 'success');
-            
+            PopupHelpers.showToast(
+                `${domain} ${(await this.isBlocked(domain)) ? 'unblocked' : 'blocked'}`,
+                'success'
+            );
+
             // Refresh data to update UI
             await this.refreshData();
         } catch (error) {
@@ -304,7 +317,7 @@ class TimeDashPopup {
      * Check if domain is blocked
      */
     async isBlocked(domain) {
-        const domainData = this.usageData?.domains?.find(d => d.domain === domain);
+        const domainData = this.usageData?.domains?.find((d) => d.domain === domain);
         return domainData?.isBlocked || false;
     }
 
@@ -327,7 +340,7 @@ class TimeDashPopup {
     async exportData() {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'EXPORT_DATA' });
-            
+
             if (response.data) {
                 // Create and download file
                 const blob = new Blob([response.data], { type: 'text/csv' });
@@ -337,7 +350,7 @@ class TimeDashPopup {
                 a.download = `timedash-export-${new Date().toISOString().split('T')[0]}.csv`;
                 a.click();
                 URL.revokeObjectURL(url);
-                
+
                 PopupHelpers.showToast('Data exported successfully', 'success');
             }
         } catch (error) {
@@ -355,10 +368,10 @@ class TimeDashPopup {
             const originalContent = refreshBtn.innerHTML;
             refreshBtn.innerHTML = '';
             refreshBtn.appendChild(PopupHelpers.createLoadingSpinner());
-            
+
             await this.loadData();
             this.updateUI();
-            
+
             refreshBtn.innerHTML = originalContent;
             PopupHelpers.showToast('Data refreshed', 'success');
         } catch (error) {
@@ -374,17 +387,17 @@ class TimeDashPopup {
         try {
             const newSettings = {
                 ...this.settings,
-                trackingEnabled: !this.settings.trackingEnabled
+                trackingEnabled: !this.settings.trackingEnabled,
             };
-            
+
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_SETTINGS',
-                settings: newSettings
+                settings: newSettings,
             });
-            
+
             this.settings = newSettings;
             this.updateFooter();
-            
+
             const status = newSettings.trackingEnabled ? 'enabled' : 'disabled';
             PopupHelpers.showToast(`Time tracking ${status}`, 'success');
         } catch (error) {
@@ -405,13 +418,53 @@ class TimeDashPopup {
      */
     showSetupModal() {
         const modal = document.getElementById('setupModal');
+        const content = modal.querySelector('.modal-content');
+        modal.hidden = false;
         modal.classList.add('show');
-        
+
+        // Focus trap
+        const focusable = content.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const onKeydown = (e) => {
+            if (e.key === 'Escape') {
+                this.closeSetupModal();
+            } else if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        };
+        this.boundKeyHandler = onKeydown;
+        document.addEventListener('keydown', onKeydown);
+        (first || content).focus();
+
         // Set default values
         document.getElementById('defaultSpeed').value = this.settings.defaultPlaybackSpeed || 1.0;
         document.getElementById('maxSpeed').value = this.settings.maxPlaybackSpeed || 16.0;
         document.getElementById('dailyLimit').value = this.settings.dailyTimeLimitMinutes || 0;
-        document.getElementById('enableNotifications').checked = this.settings.notificationsEnabled !== false;
+        document.getElementById('enableNotifications').checked =
+            this.settings.notificationsEnabled !== false;
+    }
+
+    /**
+     * Close setup modal
+     */
+    closeSetupModal() {
+        const modal = document.getElementById('setupModal');
+        modal.classList.remove('show');
+        modal.hidden = true;
+        if (this.boundKeyHandler) {
+            document.removeEventListener('keydown', this.boundKeyHandler);
+            this.boundKeyHandler = null;
+        }
+        document.getElementById('settingsBtn')?.focus();
     }
 
     /**
@@ -425,23 +478,21 @@ class TimeDashPopup {
                 maxPlaybackSpeed: parseFloat(document.getElementById('maxSpeed').value),
                 dailyTimeLimitMinutes: parseInt(document.getElementById('dailyLimit').value),
                 notificationsEnabled: document.getElementById('enableNotifications').checked,
-                firstTimeSetup: false
+                firstTimeSetup: false,
             };
-            
+
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_SETTINGS',
-                settings: newSettings
+                settings: newSettings,
             });
-            
+
             this.settings = newSettings;
-            
-            // Hide modal
-            document.getElementById('setupModal').classList.remove('show');
-            
-            PopupHelpers.showToast('Setup completed successfully!', 'success');
+
+            PopupHelpers.showBanner(I18n.t('setupComplete'), 'success');
+            this.closeSetupModal();
         } catch (error) {
             console.error('Error completing setup:', error);
-            PopupHelpers.showToast('Failed to save settings', 'error');
+            PopupHelpers.showBanner(I18n.t('setupFailed'), 'error');
         }
     }
 
@@ -449,10 +500,23 @@ class TimeDashPopup {
      * Start auto-update timer
      */
     startAutoUpdate() {
-        // Update every 5 seconds
-        this.updateInterval = setInterval(() => {
-            this.refreshData();
-        }, 5000);
+        this.stopAutoUpdate();
+        this.autoUpdateInterval = setInterval(() => this.updateUI(), 30000);
+    }
+
+    stopAutoUpdate() {
+        if (this.autoUpdateInterval) {
+            clearInterval(this.autoUpdateInterval);
+            this.autoUpdateInterval = null;
+        }
+    }
+
+    cleanup() {
+        this.stopAutoUpdate();
+        if (this.boundKeyHandler) {
+            document.removeEventListener('keydown', this.boundKeyHandler);
+            this.boundKeyHandler = null;
+        }
     }
 
     /**
@@ -460,25 +524,25 @@ class TimeDashPopup {
      */
     calculateWeeklyAverage() {
         if (!this.usageData?.domains) return 0;
-        
+
         const last7Days = [];
         const today = new Date();
-        
+
         for (let i = 0; i < 7; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
             const dateStr = date.toISOString().split('T')[0];
-            
+
             let dayTotal = 0;
-            this.usageData.domains.forEach(domain => {
+            this.usageData.domains.forEach((domain) => {
                 // This would need to be implemented in the background script
                 // to provide daily breakdowns
                 dayTotal += domain.todayTime || 0; // Simplified for now
             });
-            
+
             last7Days.push(dayTotal);
         }
-        
+
         const total = last7Days.reduce((sum, day) => sum + day, 0);
         return Math.round(total / 7);
     }
@@ -500,9 +564,17 @@ class TimeDashPopup {
      */
     shouldTrackUrl(url) {
         if (!url) return false;
-        
-        const excludedSchemes = ['chrome:', 'chrome-extension:', 'moz-extension:', 'edge:', 'about:', 'file:', 'data:'];
-        return !excludedSchemes.some(scheme => url.startsWith(scheme));
+
+        const excludedSchemes = [
+            'chrome:',
+            'chrome-extension:',
+            'moz-extension:',
+            'edge:',
+            'about:',
+            'file:',
+            'data:',
+        ];
+        return !excludedSchemes.some((scheme) => url.startsWith(scheme));
     }
 
     /**

@@ -1,75 +1,67 @@
 {
-  "manifest_version": 3,
-  "name": "[TD2 Testing] TimeDash - Advanced Productivity Tracker",
-  "version": "1.0.0",
-  "description": "A productivity-focused extension with time tracking, site blocking, and video speed control for enhanced digital habits and learning efficiency.",
-  
-  "permissions": [
-    "storage",
-    "tabs",
-    "activeTab",
-    "alarms",
-    "notifications",
-    "downloads"
-  ],
-  
-  "host_permissions": [
-    "<all_urls>"
-  ],
-  
-  "background": {
-    "service_worker": "background/background.js"
-  },
-  
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content/content.js"],
-      "run_at": "document_start"
-    }
-  ],
-  
-  "action": {
-    "default_popup": "popup/popup.html",
-    "default_title": "TimeDash",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
-  
-  "options_page": "options/options.html",
-  
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  
-  "commands": {
-    "toggle-tracking": {
-      "suggested_key": {
-        "default": "Alt+T"
-      },
-      "description": "Toggle time tracking"
+    "manifest_version": 3,
+    "name": "[TD2 Testing] TimeDash - Advanced Productivity Tracker",
+    "version": "1.0.0",
+    "description": "A productivity-focused extension with time tracking, site blocking, and video speed control for enhanced digital habits and learning efficiency.",
+    "default_locale": "en",
+
+    "permissions": ["storage", "tabs", "activeTab", "alarms", "notifications", "downloads"],
+
+    "host_permissions": ["<all_urls>"],
+
+    "background": {
+        "service_worker": "background/background.js"
     },
-    "toggle-block": {
-      "suggested_key": {
-        "default": "Alt+B"
-      },
-      "description": "Block/unblock current site"
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content/content.js"],
+            "run_at": "document_start"
+        }
+    ],
+
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_title": "TimeDash",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
+    },
+
+    "options_page": "options/options.html",
+
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+
+    "commands": {
+        "toggle-tracking": {
+            "suggested_key": {
+                "default": "Alt+T"
+            },
+            "description": "Toggle time tracking"
+        },
+        "toggle-block": {
+            "suggested_key": {
+                "default": "Alt+B"
+            },
+            "description": "Block/unblock current site"
+        }
+    },
+
+    "web_accessible_resources": [
+        {
+            "resources": ["content/overlay.js"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
     }
-  },
-  
-  "web_accessible_resources": [
-    {
-      "resources": ["content/overlay.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
-  
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'unsafe-inline'; object-src 'self'"
-  }
 }
