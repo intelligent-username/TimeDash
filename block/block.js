@@ -69,8 +69,7 @@ class BlockPageController {
     async init() {
         try {
             I18n?.init?.(document);
-            // Import storage manager
-            const { StorageManager } = await import('../utils/storage.js');
+            // StorageManager is loaded via <script> tag in block.html
             this.storageManager = new StorageManager();
 
             // Get blocked URL from query parameters

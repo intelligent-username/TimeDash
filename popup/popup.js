@@ -525,26 +525,23 @@ class TimeDashPopup {
     calculateWeeklyAverage() {
         if (!this.usageData?.domains) return 0;
 
-        const last7Days = [];
-        const today = new Date();
+        // Calculate average based on total time and number of tracked domains
+        // Using totalToday as a representative daily sample
+        const todayTotal = this.usageData.totalToday || 0;
 
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
+        // If we have totalOverall and domains, estimate average daily usage
+        // by dividing total time by estimated active days (conservative: use 7)
+        const totalOverall = this.usageData.totalOverall || 0;
 
-            let dayTotal = 0;
-            this.usageData.domains.forEach((domain) => {
-                // This would need to be implemented in the background script
-                // to provide daily breakdowns
-                dayTotal += domain.todayTime || 0; // Simplified for now
-            });
-
-            last7Days.push(dayTotal);
+        if (totalOverall > 0 && todayTotal > 0) {
+            // Estimate days of usage based on ratio of total to today
+            // Cap at 7 days for weekly average
+            const estimatedDays = Math.min(7, Math.max(1, Math.round(totalOverall / todayTotal)));
+            return Math.round(totalOverall / estimatedDays);
         }
 
-        const total = last7Days.reduce((sum, day) => sum + day, 0);
-        return Math.round(total / 7);
+        // Fallback: just return today's total as the average
+        return todayTotal;
     }
 
     /**

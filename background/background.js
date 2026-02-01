@@ -1,7 +1,7 @@
 'use strict';
 
 // Import utilities
-importScripts('../utils/storage.js', '../utils/time-utils.js', '../utils/domain-utils.js');
+importScripts('../utils/storage.js', '../utils/time-utils.js', '../utils/domain-utils.js', './block-controller.js');
 
 /**
  * Background service worker
@@ -10,6 +10,7 @@ importScripts('../utils/storage.js', '../utils/time-utils.js', '../utils/domain-
 class TimeDashBackground {
     constructor() {
         this.storage = new StorageManager();
+        this.blockController = new BlockController();
         this.activeTabInfo = new Map(); // tabId -> { domain, startTime, isActive }
         this.updateInterval = null;
         this.TRACKING_INTERVAL = 1000; // 1 second
@@ -189,6 +190,33 @@ class TimeDashBackground {
                 case 'EXPORT_DATA':
                     const csvData = await this.storage.exportDataAsCSV();
                     sendResponse({ data: csvData });
+                    break;
+
+                case 'GET_VIDEO_SPEED':
+                    const speed = await this.storage.getVideoSpeed(message.domain);
+                    sendResponse({ speed });
+                    break;
+
+                case 'REQUEST_TEMP_ACCESS':
+                    // Grant temporary access via block controller
+                    if (this.blockController) {
+                        this.blockController.grantTemporaryAccess(message.domain, message.duration * 60 * 1000);
+                    }
+                    sendResponse({ success: true });
+                    break;
+
+                case 'CHECK_TEMP_ACCESS':
+                    const hasAccess = this.blockController?.hasTemporaryAccess(message.domain) || false;
+                    const remainingTime = this.blockController?.getRemainingAccessTime(message.domain) || 0;
+                    sendResponse({ hasAccess, remainingTime });
+                    break;
+
+                case 'LOG_TEMP_ACCESS':
+                    // Log temp access request for analytics
+                    if (this.blockController) {
+                        await this.blockController.recordTempAccessUsage(message.domain);
+                    }
+                    sendResponse({ success: true });
                     break;
 
                 default:
@@ -460,11 +488,13 @@ class TimeDashBackground {
      */
     async toggleTracking() {
         const settings = await this.storage.getSettings();
+        const wasEnabled = settings.trackingEnabled;
         await this.storage.setSettings({
-            trackingEnabled: !settings.trackingEnabled,
+            trackingEnabled: !wasEnabled,
         });
 
-        if (!settings.trackingEnabled) {
+        // If tracking was enabled, now it's disabled - stop tracking
+        if (wasEnabled) {
             this.stopTrackingAllTabs();
         }
     }

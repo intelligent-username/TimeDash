@@ -333,7 +333,7 @@ class TimeDashContent {
      */
     updateAllVideoSpeeds() {
         this.videos.forEach((video) => {
-            if (video && !video.paused) {
+            if (video) {
                 video.playbackRate = this.currentSpeed;
             }
         });
