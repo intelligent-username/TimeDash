@@ -31,6 +31,9 @@ class TimeDashContent {
             // Set up message listeners
             this.setupMessageListeners();
 
+            // Set up storage listener for live updates
+            this.setupStorageListener();
+
             // Set up keyboard shortcuts
             this.setupKeyboardShortcuts();
 
@@ -59,7 +62,13 @@ class TimeDashContent {
             this.currentSpeed = speedResponse?.speed || this.settings.defaultPlaybackSpeed || 1.0;
         } catch (error) {
             console.error('Error loading settings:', error);
-            this.settings = { defaultPlaybackSpeed: 1.0, maxPlaybackSpeed: 16.0 };
+            this.settings = {
+                defaultPlaybackSpeed: 1.0,
+                maxPlaybackSpeed: 16.0,
+                speedStep: 0.25,
+                increaseSpeedKey: 'Plus',
+                decreaseSpeedKey: 'Minus'
+            };
             this.currentSpeed = 1.0;
         }
     }
@@ -87,10 +96,12 @@ class TimeDashContent {
             });
         });
 
-        this.mutationObserver.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
+        if (document.body) {
+            this.mutationObserver.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+        }
     }
 
     /**
@@ -194,50 +205,61 @@ class TimeDashContent {
     }
 
     /**
+     * Set up storage listener for live settings updates
+     */
+    setupStorageListener() {
+        chrome.storage.onChanged.addListener((changes, area) => {
+            if (area === 'local' && changes.settings) {
+                console.log('TimeDash settings updated live');
+                this.settings = changes.settings.newValue || {};
+            }
+        });
+    }
+
+    /**
      * Set up keyboard shortcuts
      */
     setupKeyboardShortcuts() {
-        if (!this.settings.keyboardShortcutsEnabled) return;
+        const getAliases = (code) => {
+            const map = {
+                'Plus': ['Equal', 'NumpadAdd'],
+                'Minus': ['Minus', 'NumpadSubtract'],
+                'Enter': ['Enter', 'NumpadEnter'],
+                'Period': ['Period', 'NumpadDecimal', 'NumpadComma'],
+                'Asterisk': ['NumpadMultiply'],
+                'Slash': ['Slash', 'NumpadDivide'],
+                'Equal': ['Plus', 'NumpadAdd']
+            };
 
+            // Add number aliases
+            for (let i = 0; i <= 9; i++) {
+                map['' + i] = [`Digit${i}`, `Numpad${i}`];
+            }
+
+            return [code, ...(map[code] || [])];
+        };
         document.addEventListener('keydown', (event) => {
+            // Check enabled state dynamically
+            if (!this.settings.keyboardShortcutsEnabled) return;
+
             // Only handle shortcuts if no input element is focused
             if (this.isInputFocused()) return;
 
-            // Direct shortcuts: Plus/Minus keys
-            if (!event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey) {
-                switch (event.code) {
-                    case 'Equal': // Plus key (= key, which is + when shifted, but we want it without shift)
-                    case 'NumpadAdd': // Numpad plus
-                        event.preventDefault();
-                        this.increaseSpeed();
-                        break;
+            // Get current key bindings dynamically
+            const increaseKey = this.settings.increaseSpeedKey || 'Plus';
+            const decreaseKey = this.settings.decreaseSpeedKey || 'Minus';
 
-                    case 'Minus': // Minus key
-                    case 'NumpadSubtract': // Numpad minus
-                        event.preventDefault();
-                        this.decreaseSpeed();
-                        break;
-                }
-            }
+            const increaseKeys = getAliases(increaseKey);
+            const decreaseKeys = getAliases(decreaseKey);
 
-            // Alternative shortcuts for when videos are playing (same as above but with video check)
-            if (this.videos.size > 0 && !event.ctrlKey && !event.altKey && !event.metaKey) {
-                switch (event.code) {
-                    case 'Equal': // Plus key
-                    case 'NumpadAdd':
-                        if (this.isVideoPlaying()) {
-                            event.preventDefault();
-                            this.increaseSpeed();
-                        }
-                        break;
-
-                    case 'Minus':
-                    case 'NumpadSubtract':
-                        if (this.isVideoPlaying()) {
-                            event.preventDefault();
-                            this.decreaseSpeed();
-                        }
-                        break;
+            // Check for custom keybinds and their Numpad equivalents
+            if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+                if (increaseKeys.includes(event.code)) {
+                    event.preventDefault();
+                    this.increaseSpeed();
+                } else if (decreaseKeys.includes(event.code)) {
+                    event.preventDefault();
+                    this.decreaseSpeed();
                 }
             }
         });
@@ -285,16 +307,16 @@ class TimeDashContent {
      * Increase video playback speed
      */
     increaseSpeed() {
-        const increments = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
-        const maxSpeed = this.settings.maxPlaybackSpeed || 16.0;
+        const step = parseFloat(this.settings.speedStep) || 0.25;
+        const maxSpeed = parseFloat(this.settings.maxPlaybackSpeed) || 16.0;
 
-        const currentIndex = increments.findIndex(
-            (speed) => Math.abs(speed - this.currentSpeed) < 0.01
-        );
-        const nextIndex = currentIndex + 1;
+        let newSpeed = this.currentSpeed + step;
+        newSpeed = Math.round(newSpeed * 100) / 100;
 
-        if (nextIndex < increments.length && increments[nextIndex] <= maxSpeed) {
-            this.setSpeed(increments[nextIndex]);
+        if (newSpeed <= maxSpeed) {
+            this.setSpeed(newSpeed);
+        } else {
+            this.setSpeed(maxSpeed);
         }
     }
 
@@ -302,15 +324,15 @@ class TimeDashContent {
      * Decrease video playback speed
      */
     decreaseSpeed() {
-        const increments = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0, 8.0, 16.0];
+        const step = parseFloat(this.settings.speedStep) || 0.25;
 
-        const currentIndex = increments.findIndex(
-            (speed) => Math.abs(speed - this.currentSpeed) < 0.01
-        );
-        const prevIndex = currentIndex - 1;
+        let newSpeed = this.currentSpeed - step;
+        newSpeed = Math.round(newSpeed * 100) / 100;
 
-        if (prevIndex >= 0) {
-            this.setSpeed(increments[prevIndex]);
+        if (newSpeed >= 0.25) {
+            this.setSpeed(newSpeed);
+        } else {
+            this.setSpeed(0.25);
         }
     }
 

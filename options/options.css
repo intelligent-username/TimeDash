@@ -187,6 +187,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -277,12 +278,12 @@ body {
     flex-shrink: 0;
 }
 
-.setting-label input[type='checkbox']:checked + .checkmark {
+.setting-label input[type='checkbox']:checked+.checkmark {
     background: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.setting-label input[type='checkbox']:checked + .checkmark::after {
+.setting-label input[type='checkbox']:checked+.checkmark::after {
     content: '✓';
     position: absolute;
     top: 50%;
@@ -701,7 +702,145 @@ body {
     0% {
         background-position: 100% 0;
     }
+
     100% {
         background-position: 0 0;
     }
+}
+
+/* Section Descriptions */
+.section-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: var(--spacing);
+    padding: var(--spacing-small);
+    background: var(--surface);
+    border-radius: var(--radius-small);
+    border-left: 3px solid var(--primary-color);
+}
+
+.section-description strong {
+    color: var(--text-primary);
+}
+
+/* Info Box */
+.info-box {
+    margin-top: var(--spacing-small);
+    padding: var(--spacing);
+    background: #e3f2fd;
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.5;
+    color: #1565c0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.info-box em {
+    color: #0d47a1;
+}
+
+/* Info Tooltip (hover asterisk) */
+.info-tooltip {
+    color: var(--primary-color);
+    cursor: help;
+    font-weight: bold;
+    position: relative;
+    margin-left: 4px;
+}
+
+.info-tooltip:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    white-space: normal;
+    width: 280px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* Rule Manager */
+.rule-manager {
+    margin-top: var(--spacing);
+}
+
+.rule-input-group {
+    display: flex;
+    gap: var(--spacing-small);
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing);
+}
+
+.rule-domain-input {
+    flex: 2;
+    min-width: 200px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    background: var(--background);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Editable inputs in lists */
+.rule-limit-input-edit {
+    width: 70px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    font-size: 13px;
+    text-align: center;
+    background: var(--background);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.rule-limit-input-edit:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.restrict-item .rule-item-info {
+    display: flex;
+    align-items: center;
+}
+
+/* Keybind inputs */
+.keybind-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: monospace;
+    background: var(--background);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.keybind-input:focus,
+.keybind-input.recording {
+    border-color: var(--primary-color);
+    background: var(--surface-elevated);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }

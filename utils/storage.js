@@ -9,6 +9,9 @@ class StorageManager {
         this.DEFAULT_SETTINGS = {
             defaultPlaybackSpeed: 1.0,
             maxPlaybackSpeed: 16.0,
+            speedStep: 0.25,
+            increaseSpeedKey: 'Plus',
+            decreaseSpeedKey: 'Minus',
             dailyTimeLimitMinutes: 0, // 0 = no limit
             theme: 'auto',
             keyboardShortcutsEnabled: true,
@@ -224,6 +227,36 @@ class StorageManager {
     }
 
     /**
+     * Increment block count for a domain
+     * @param {string} domain - Domain to increment block count for
+     */
+    async incrementBlockCount(domain) {
+        try {
+            const result = await chrome.storage.local.get('usage');
+            const usage = result.usage || {};
+            const domainUsage = usage[domain] || {
+                cumulative: 0,
+                lastVisit: Date.now(),
+            };
+
+            const today = new Date().toDateString();
+            if (domainUsage.lastBlockDate !== today) {
+                domainUsage.blockedToday = 0;
+                domainUsage.lastBlockDate = today;
+            }
+
+            domainUsage.blockedToday = (domainUsage.blockedToday || 0) + 1;
+
+            usage[domain] = domainUsage;
+            await chrome.storage.local.set({ usage });
+            return true;
+        } catch (error) {
+            console.error('Failed to update block count:', error);
+            return false;
+        }
+    }
+
+    /**
      * Get video speed for a domain
      * @param {string} domain - Domain to get speed for
      * @returns {Promise<number>} Video speed
@@ -284,7 +317,7 @@ class StorageManager {
 
             for (const [domain, data] of Object.entries(usage)) {
                 for (const [date, timeSpent] of Object.entries(data)) {
-                    if (date !== 'cumulative') {
+                    if (date !== 'cumulative' && date !== 'lastVisit' && date !== 'blockedToday' && date !== 'lastBlockDate') {
                         const formatted = this.formatTime(timeSpent);
                         csv += `${domain},${date},${timeSpent},${formatted}\n`;
                     }

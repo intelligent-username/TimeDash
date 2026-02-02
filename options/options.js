@@ -113,21 +113,33 @@ class OptionsController {
     /**
      * Set up general settings event listeners
      */
-    setupGeneralSettings() {
-        const elements = {
-            theme: document.getElementById('theme'),
-            notifications: document.getElementById('notifications'),
-            badgeDisplay: document.getElementById('badgeDisplay'),
-            startupBehavior: document.getElementById('startupBehavior'),
-            language: document.getElementById('language'),
-        };
-
-        Object.entries(elements).forEach(([key, element]) => {
+    /**
+     * Helper to bind UI elements to settings keys
+     * @param {Object} mapping - Key to Element ID mapping
+     */
+    bindSettings(mapping) {
+        Object.entries(mapping).forEach(([key, elementId]) => {
+            const element = document.getElementById(elementId);
             if (element) {
-                element.addEventListener('change', () => {
+                const eventType = (element.type === 'checkbox' || element.tagName === 'SELECT') ? 'change' : 'input';
+                element.addEventListener(eventType, () => {
                     this.updateSetting(key, this.getInputValue(element));
                 });
             }
+        });
+    }
+
+    /**
+     * Set up general settings event listeners
+     */
+    setupGeneralSettings() {
+        this.bindSettings({
+            trackingEnabled: 'trackingEnabled',
+            dailyTimeLimitMinutes: 'dailyLimit',
+            notificationsEnabled: 'notificationsEnabled',
+            quotaWarnings: 'quotaWarnings',
+            theme: 'theme',
+            badgeEnabled: 'badgeEnabled'
         });
     }
 
@@ -135,111 +147,319 @@ class OptionsController {
      * Set up video settings event listeners
      */
     setupVideoSettings() {
-        const elements = {
-            defaultSpeed: document.getElementById('defaultSpeed'),
-            maxSpeed: document.getElementById('maxSpeed'),
-            speedStep: document.getElementById('speedStep'),
-            rememberSpeed: document.getElementById('rememberSpeed'),
-            showOverlay: document.getElementById('showOverlay'),
-            overlayPosition: document.getElementById('overlayPosition'),
-            keyboardShortcuts: document.getElementById('keyboardShortcuts'),
-            increaseKey: document.getElementById('increaseKey'),
-            decreaseKey: document.getElementById('decreaseKey'),
-        };
-
-        Object.entries(elements).forEach(([key, element]) => {
-            if (element) {
-                element.addEventListener('change', () => {
-                    this.updateSetting(key, this.getInputValue(element));
-                });
-            }
+        this.bindSettings({
+            defaultPlaybackSpeed: 'defaultSpeed',
+            maxPlaybackSpeed: 'maxSpeed',
+            speedStep: 'speedStep'
         });
 
         // Speed range validation
-        const defaultSpeed = elements.defaultSpeed;
-        const maxSpeed = elements.maxSpeed;
+        const defaultSpeed = document.getElementById('defaultSpeed');
+        const maxSpeed = document.getElementById('maxSpeed');
 
         if (defaultSpeed && maxSpeed) {
             defaultSpeed.addEventListener('input', () => {
                 const value = parseFloat(defaultSpeed.value);
                 const max = parseFloat(maxSpeed.value);
-                if (value > max) {
+                if (!isNaN(value) && !isNaN(max) && value > max) {
                     maxSpeed.value = value;
-                    this.updateSetting('maxSpeed', value);
+                    this.updateSetting('maxPlaybackSpeed', value);
                 }
             });
 
             maxSpeed.addEventListener('input', () => {
                 const value = parseFloat(maxSpeed.value);
                 const defaultVal = parseFloat(defaultSpeed.value);
-                if (value < defaultVal) {
+                if (!isNaN(value) && !isNaN(defaultVal) && value < defaultVal) {
                     defaultSpeed.value = value;
-                    this.updateSetting('defaultSpeed', value);
+                    this.updateSetting('defaultPlaybackSpeed', value);
                 }
             });
         }
+
+        // Keybinds recording
+        const keyInputs = [
+            { id: 'increaseSpeedKey', key: 'increaseSpeedKey' },
+            { id: 'decreaseSpeedKey', key: 'decreaseSpeedKey' }
+        ];
+
+        keyInputs.forEach(({ id, key }) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('click', () => {
+                    const originalValue = el.value;
+                    el.value = 'Press any key...';
+                    el.classList.add('recording');
+
+                    const handler = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+
+                        const normalizationMap = {
+                            'NumpadSubtract': 'Minus',
+                            'Minus': 'Minus',
+                            'NumpadAdd': 'Plus',
+                            'Equal': 'Plus',
+                            'NumpadEnter': 'Enter',
+                            'Enter': 'Enter',
+                            'NumpadDecimal': 'Period',
+                            'NumpadComma': 'Period',
+                            'Period': 'Period',
+                            'NumpadMultiply': 'Asterisk',
+                            'NumpadDivide': 'Slash',
+                            'Slash': 'Slash',
+                            'NumpadEqual': 'Equal'
+                        };
+
+                        // Add number mappings
+                        for (let i = 0; i <= 9; i++) {
+                            normalizationMap[`Numpad${i}`] = '' + i;
+                            normalizationMap[`Digit${i}`] = '' + i;
+                        }
+
+                        if (normalizationMap[code]) {
+                            code = normalizationMap[code];
+                        }
+
+                        el.value = code;
+                        el.classList.remove('recording');
+                        this.updateSetting(key, code);
+
+                        document.removeEventListener('keydown', handler, true);
+                        document.removeEventListener('click', cancelHandler);
+                    };
+
+                    const cancelHandler = (e) => {
+                        if (e.target !== el) {
+                            document.removeEventListener('keydown', handler, true);
+                            document.removeEventListener('click', cancelHandler);
+                            el.classList.remove('recording');
+                            if (el.value === 'Press any key...') {
+                                // Revert to saved or default
+                                el.value = this.settings[key] || (key === 'increaseSpeedKey' ? 'Plus' : 'Minus');
+                            }
+                        }
+                    };
+
+                    document.addEventListener('keydown', handler, true);
+                    setTimeout(() => document.addEventListener('click', cancelHandler), 0);
+                });
+            }
+        });
     }
 
     /**
      * Set up blocking settings event listeners
      */
     setupBlockingSettings() {
-        const elements = {
-            blockingEnabled: document.getElementById('blockingEnabled'),
-            strictMode: document.getElementById('strictMode'),
-            tempAccessDuration: document.getElementById('tempAccessDuration'),
-            blockRedirect: document.getElementById('blockRedirect'),
-            blockSchedule: document.getElementById('blockSchedule'),
-            scheduleStart: document.getElementById('scheduleStart'),
-            scheduleEnd: document.getElementById('scheduleEnd'),
-            weekendBlocking: document.getElementById('weekendBlocking'),
-        };
+        // Blocked sites UI
+        const addBlockedBtn = document.getElementById('addBlockedBtn');
+        const blockedDomainInput = document.getElementById('blockedDomainInput');
 
-        Object.entries(elements).forEach(([key, element]) => {
-            if (element) {
-                element.addEventListener('change', () => {
-                    this.updateSetting(key, this.getInputValue(element));
-                });
-            }
-        });
+        if (addBlockedBtn && blockedDomainInput) {
+            addBlockedBtn.addEventListener('click', () => {
+                this.addSiteRule(blockedDomainInput.value.trim(), 'BLOCKED');
+                blockedDomainInput.value = '';
+            });
 
-        // Schedule validation
-        const scheduleStart = elements.scheduleStart;
-        const scheduleEnd = elements.scheduleEnd;
-
-        if (scheduleStart && scheduleEnd) {
-            const validateSchedule = () => {
-                const start = scheduleStart.value;
-                const end = scheduleEnd.value;
-                if (start && end && start >= end) {
-                    this.showWarning('End time must be after start time');
+            blockedDomainInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.addSiteRule(blockedDomainInput.value.trim(), 'BLOCKED');
+                    blockedDomainInput.value = '';
                 }
-            };
-
-            scheduleStart.addEventListener('change', validateSchedule);
-            scheduleEnd.addEventListener('change', validateSchedule);
+            });
         }
+
+        // Restricted sites UI
+        const addRestrictedBtn = document.getElementById('addRestrictedBtn');
+        const restrictedDomainInput = document.getElementById('restrictedDomainInput');
+        const restrictedLimitInput = document.getElementById('restrictedLimitInput');
+
+        if (addRestrictedBtn && restrictedDomainInput) {
+            addRestrictedBtn.addEventListener('click', () => {
+                const limit = parseInt(restrictedLimitInput?.value) || 30;
+                this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
+                restrictedDomainInput.value = '';
+                if (restrictedLimitInput) restrictedLimitInput.value = '';
+            });
+
+            restrictedDomainInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const limit = parseInt(restrictedLimitInput?.value) || 30;
+                    this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
+                    restrictedDomainInput.value = '';
+                    if (restrictedLimitInput) restrictedLimitInput.value = '';
+                }
+            });
+        }
+
+        // Load initial rules
+        this.loadSiteRules();
+    }
+
+    /**
+     * Add a site rule via background script
+     * @param {string} domain - Domain to add
+     * @param {string} ruleType - BLOCKED or RESTRICTED
+     * @param {number} timeLimitMinutes - Time limit for restricted sites
+     */
+    async addSiteRule(domain, ruleType, timeLimitMinutes = 30) {
+        if (!domain) {
+            this.showWarning('Please enter a domain');
+            return;
+        }
+
+        // Basic domain validation
+        const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z0-9][a-zA-Z0-9-]*)+$/;
+        const cleanDomain = domain.toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+
+        if (!domainPattern.test(cleanDomain)) {
+            this.showWarning('Please enter a valid domain (e.g., facebook.com)');
+            return;
+        }
+
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'ADD_SITE_RULE',
+                domain: cleanDomain,
+                ruleType,
+                timeLimitMinutes,
+            });
+            this.loadSiteRules();
+            this.showSuccess(`Added ${cleanDomain} to ${ruleType.toLowerCase()} list`);
+        } catch (error) {
+            console.error('Error adding site rule:', error);
+            this.showError('Failed to add site rule');
+        }
+    }
+
+    /**
+     * Remove a site rule via background script
+     * @param {string} domain - Domain to remove
+     */
+    async removeSiteRule(domain) {
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'REMOVE_SITE_RULE',
+                domain,
+            });
+            this.loadSiteRules();
+            this.showSuccess(`Removed ${domain}`);
+        } catch (error) {
+            console.error('Error removing site rule:', error);
+            this.showError('Failed to remove site rule');
+        }
+    }
+
+    /**
+     * Load site rules from background and update UI
+     */
+    async loadSiteRules() {
+        try {
+            const response = await chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' });
+            this.renderBlockedList(response.blocked || []);
+            this.renderRestrictedList(response.restricted || []);
+        } catch (error) {
+            console.error('Error loading site rules:', error);
+        }
+    }
+
+    /**
+     * Render the blocked sites list
+     * @param {string[]} domains - Array of blocked domains
+     */
+    renderBlockedList(domains) {
+        const list = document.getElementById('blockedList');
+        if (!list) return;
+
+        list.innerHTML = '';
+        domains.forEach((domain) => {
+            const li = document.createElement('li');
+            li.className = 'rule-item';
+            li.innerHTML = `
+                <div class="rule-item-info">
+                    <span class="rule-domain">${domain}</span>
+                </div>
+                <button class="rule-delete-btn" data-domain="${domain}" data-type="blocked">Remove</button>
+            `;
+            li.querySelector('.rule-delete-btn').addEventListener('click', (e) => {
+                this.removeSiteRule(e.target.dataset.domain);
+            });
+            list.appendChild(li);
+        });
+    }
+
+    /**
+     * Render the restricted sites list
+     * @param {Array<{domain: string, timeLimitMinutes: number}>} sites - Array of restricted site objects
+     */
+    renderRestrictedList(sites) {
+        const list = document.getElementById('restrictedList');
+        if (!list) return;
+
+        list.innerHTML = '';
+        sites.forEach(({ domain, timeLimitMinutes }) => {
+            const li = document.createElement('li');
+            li.className = 'rule-item restrict-item'; // Added class for specific styling
+
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'rule-item-info';
+
+            const domainSpan = document.createElement('span');
+            domainSpan.className = 'rule-domain';
+            domainSpan.textContent = domain;
+
+            const limitInput = document.createElement('input');
+            limitInput.type = 'number';
+            limitInput.className = 'rule-limit-input-edit';
+            limitInput.value = timeLimitMinutes;
+            limitInput.min = 1;
+            limitInput.max = 1440;
+            limitInput.style.width = '60px'; // Inline style for safety, moved to CSS ideally
+            limitInput.style.marginLeft = '10px';
+            limitInput.style.padding = '4px';
+            limitInput.title = 'Edit daily limit (minutes)';
+
+            const suffixSpan = document.createElement('span');
+            suffixSpan.className = 'limit-suffix';
+            suffixSpan.textContent = 'min/day';
+            suffixSpan.style.marginLeft = '5px';
+
+            infoDiv.appendChild(domainSpan);
+            infoDiv.appendChild(limitInput);
+            infoDiv.appendChild(suffixSpan);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'rule-delete-btn';
+            deleteBtn.textContent = 'Remove';
+            deleteBtn.dataset.domain = domain;
+            deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
+
+            // Edit event on change (blur/enter)
+            limitInput.addEventListener('change', () => {
+                const newLimit = parseInt(limitInput.value);
+                if (!isNaN(newLimit) && newLimit > 0 && newLimit <= 1440) {
+                    // Add logic invokes save and reload, preserving the change
+                    this.addSiteRule(domain, 'RESTRICTED', newLimit);
+                } else {
+                    limitInput.value = timeLimitMinutes; // Revert
+                }
+            });
+
+            li.appendChild(infoDiv);
+            li.appendChild(deleteBtn);
+            list.appendChild(li);
+        });
     }
 
     /**
      * Set up analytics settings event listeners
      */
     setupAnalyticsSettings() {
-        const elements = {
-            trackingEnabled: document.getElementById('trackingEnabled'),
-            trackingFrequency: document.getElementById('trackingFrequency'),
-            dataRetention: document.getElementById('dataRetention'),
-            includeWeekends: document.getElementById('includeWeekends'),
-            categoryTracking: document.getElementById('categoryTracking'),
-            productivityScoring: document.getElementById('productivityScoring'),
-        };
-
-        Object.entries(elements).forEach(([key, element]) => {
-            if (element) {
-                element.addEventListener('change', () => {
-                    this.updateSetting(key, this.getInputValue(element));
-                });
-            }
+        this.bindSettings({
+            trackingFrequency: 'trackingFrequency'
         });
     }
 
@@ -247,19 +467,8 @@ class OptionsController {
      * Set up privacy settings event listeners
      */
     setupPrivacySettings() {
-        const elements = {
-            incognitoTracking: document.getElementById('incognitoTracking'),
-            dataSharing: document.getElementById('dataSharing'),
-            crashReporting: document.getElementById('crashReporting'),
-            usageAnalytics: document.getElementById('usageAnalytics'),
-        };
-
-        Object.entries(elements).forEach(([key, element]) => {
-            if (element) {
-                element.addEventListener('change', () => {
-                    this.updateSetting(key, this.getInputValue(element));
-                });
-            }
+        this.bindSettings({
+            incognitoTracking: 'incognitoTracking'
         });
     }
 
@@ -311,12 +520,6 @@ class OptionsController {
                 this.saveSettings();
             }
 
-            // Ctrl+R to reset
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                this.resetSettings();
-            }
-
             // Escape to cancel changes
             if (e.key === 'Escape' && this.isDirty) {
                 this.loadAllData().then(() => {
@@ -338,12 +541,10 @@ class OptionsController {
             }
         }, 30000);
 
-        // Save on page unload
-        window.addEventListener('beforeunload', (e) => {
+        // Save on page unload (silently, no prompt)
+        window.addEventListener('beforeunload', () => {
             if (this.isDirty) {
                 this.saveSettings(true);
-                e.preventDefault();
-                e.returnValue = '';
             }
         });
     }
@@ -354,7 +555,18 @@ class OptionsController {
     initializeUI() {
         this.populateAllSettings();
         this.updateStatistics();
-        this.switchTab('general');
+
+        // Check URL for tab parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        const tab = tabParam ? tabParam.toLowerCase() : null;
+
+        if (tab && document.getElementById(tab)) {
+            this.switchTab(tab, false);
+        } else {
+            this.switchTab('general', false);
+        }
+
         this.markClean();
     }
 
@@ -364,6 +576,9 @@ class OptionsController {
     populateVideoSettings() {
         this.setInputValue('defaultSpeed', this.settings.defaultPlaybackSpeed);
         this.setInputValue('maxSpeed', this.settings.maxPlaybackSpeed);
+        this.setInputValue('speedStep', this.settings.speedStep || 0.25);
+        this.setInputValue('increaseSpeedKey', this.settings.increaseSpeedKey || 'Plus');
+        this.setInputValue('decreaseSpeedKey', this.settings.decreaseSpeedKey || 'Minus');
     }
 
     /**
@@ -393,11 +608,12 @@ class OptionsController {
      */
     populateAllSettings() {
         // General settings
+        this.setInputValue('trackingEnabled', this.settings.trackingEnabled);
+        this.setInputValue('dailyLimit', this.settings.dailyTimeLimitMinutes);
+        this.setInputValue('notificationsEnabled', this.settings.notificationsEnabled);
+        this.setInputValue('quotaWarnings', this.settings.quotaWarnings);
         this.setInputValue('theme', this.settings.theme);
-        this.setInputValue('notifications', this.settings.notificationsEnabled);
-        this.setInputValue('badgeDisplay', this.settings.badgeDisplay);
-        this.setInputValue('startupBehavior', this.settings.startupBehavior);
-        this.setInputValue('language', this.settings.language);
+        this.setInputValue('badgeEnabled', this.settings.badgeEnabled);
 
         // Video settings
         this.populateVideoSettings();
@@ -494,8 +710,9 @@ class OptionsController {
     /**
      * Switch to a different tab
      * @param {string} tabName - Name of the tab to switch to
+     * @param {boolean} updateUrl - Whether to update URL
      */
-    switchTab(tabName) {
+    switchTab(tabName, updateUrl = true) {
         // Update tab buttons
         document.querySelectorAll('.tab-btn').forEach((button) => {
             button.classList.remove('active');
@@ -513,19 +730,46 @@ class OptionsController {
         });
 
         this.currentTab = tabName;
+
+        // Update URL
+        if (updateUrl) {
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('tab', tabName);
+            window.history.replaceState({ tab: tabName }, '', newUrl);
+        }
     }
 
     /**
-     * Update a setting and mark as dirty
+     * Update a setting and save immediately
      * @param {string} key - Setting key
      * @param {*} value - Setting value
      */
     updateSetting(key, value) {
+        // Validation for numeric fields
+        if (typeof value === 'number' && isNaN(value)) {
+            return; // Don't save invalid numbers
+        }
+
+        // Specific validation for speeds
+        if ((key === 'defaultPlaybackSpeed' || key === 'maxPlaybackSpeed') && value === 0) {
+            return; // Don't allow 0 speed
+        }
+
         this.settings[key] = value;
-        this.markDirty();
 
         // Apply immediate changes if needed
         this.applyImmediateChanges(key, value);
+
+        // Debounce save (500ms)
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+        }
+
+        this.saveTimeout = setTimeout(() => {
+            this.saveSettings(true);
+        }, 500);
+
+        this.markDirty(); // Updates UI state if needed (though we auto-save)
     }
 
     /**
@@ -856,17 +1100,14 @@ class OptionsController {
             notification.remove();
         }, 5000);
     }
-
     setupAutoSave() {
         this.autoSaveInterval = setInterval(() => {
             if (this.isDirty) this.saveSettings(true);
         }, 30000);
 
-        window.addEventListener('beforeunload', (e) => {
+        window.addEventListener('beforeunload', () => {
             if (this.isDirty) {
                 this.saveSettings(true);
-                e.preventDefault();
-                e.returnValue = '';
             }
         });
     }

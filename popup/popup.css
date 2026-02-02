@@ -38,7 +38,7 @@ body {
 
 .popup-container {
     width: 400px;
-    max-height: 600px;
+    max-height: 800px;
     overflow-y: auto;
 }
 
@@ -238,7 +238,7 @@ body {
 }
 
 .sites-list {
-    max-height: 200px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
@@ -504,12 +504,12 @@ body {
     transition: all 0.2s ease;
 }
 
-.checkbox-label input[type='checkbox']:checked + .checkmark {
+.checkbox-label input[type='checkbox']:checked+.checkmark {
     background: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.checkbox-label input[type='checkbox']:checked + .checkmark::after {
+.checkbox-label input[type='checkbox']:checked+.checkmark::after {
     content: '✓';
     position: absolute;
     top: 50%;
@@ -589,6 +589,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -603,9 +604,11 @@ body {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
+
     100% {
         opacity: 1;
     }
@@ -664,6 +667,7 @@ body {
     0% {
         background-position: 100% 0;
     }
+
     100% {
         background-position: 0 0;
     }

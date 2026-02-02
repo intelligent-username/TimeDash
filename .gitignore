@@ -3,3 +3,5 @@
 Specification.md
 _locales/
 node_modules/*
+
+.handmade/*

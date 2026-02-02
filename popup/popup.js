@@ -12,6 +12,7 @@ class TimeDashPopup {
         this.updateInterval = null;
         this.autoUpdateInterval = null;
         this.boundKeyHandler = null;
+        this.currentTabHasVideo = false;
         window.timeDashPopup = this;
 
         this.init();
@@ -81,9 +82,28 @@ class TimeDashPopup {
      * Set up event listeners for popup interactions
      */
     setupEventListeners() {
-        // Settings button
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            chrome.runtime.openOptionsPage();
+        // Settings Button
+        document.getElementById('settingsBtn').addEventListener('click', async () => {
+            let tab = 'general';
+
+            if (this.currentTab) {
+                // Check if we are on the blocked page
+                if (this.currentTab.url.includes('block.html')) {
+                    tab = 'blocking';
+                } else {
+                    const domain = this.extractDomain(this.currentTab.url);
+                    const isBlocked = await this.isBlocked(domain);
+
+                    if (isBlocked) {
+                        tab = 'blocking';
+                    } else if (this.currentTabHasVideo) {
+                        tab = 'video';
+                    }
+                }
+            }
+
+            const optionsUrl = chrome.runtime.getURL(`options/options.html?tab=${tab}`);
+            chrome.tabs.create({ url: optionsUrl });
         });
 
         // Export button
@@ -184,6 +204,7 @@ class TimeDashPopup {
      * Update current video speed display
      */
     async updateCurrentSpeed(domain) {
+        this.currentTabHasVideo = false;
         try {
             if (this.currentTab) {
                 const response = await chrome.tabs.sendMessage(this.currentTab.id, {
@@ -191,6 +212,7 @@ class TimeDashPopup {
                 });
                 if (response?.speed) {
                     document.getElementById('currentSpeed').textContent = `${response.speed}x`;
+                    this.currentTabHasVideo = true;
                 }
             }
         } catch (error) {

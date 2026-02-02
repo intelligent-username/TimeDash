@@ -1,7 +1,15 @@
 'use strict';
 
 // Import utilities
-importScripts('../utils/storage.js', '../utils/time-utils.js', '../utils/domain-utils.js', './block-controller.js');
+importScripts(
+    '../utils/storage.js',
+    '../utils/time-utils.js',
+    '../utils/domain-utils.js',
+    '../core/rules/site-rule.js',
+    '../core/rules/blocked-rule.js',
+    '../core/rules/restricted-rule.js',
+    '../core/rules/rule-manager.js'
+);
 
 /**
  * Background service worker
@@ -10,7 +18,7 @@ importScripts('../utils/storage.js', '../utils/time-utils.js', '../utils/domain-
 class TimeDashBackground {
     constructor() {
         this.storage = new StorageManager();
-        this.blockController = new BlockController();
+        this.ruleManager = new RuleManager();
         this.activeTabInfo = new Map(); // tabId -> { domain, startTime, isActive }
         this.updateInterval = null;
         this.TRACKING_INTERVAL = 1000; // 1 second
@@ -25,6 +33,7 @@ class TimeDashBackground {
      */
     async init() {
         await this.storage.init();
+        await this.ruleManager.init();
         this.setupEventListeners();
         this.startTrackingLoop();
         this.setupAlarms();
@@ -198,25 +207,58 @@ class TimeDashBackground {
                     break;
 
                 case 'REQUEST_TEMP_ACCESS':
-                    // Grant temporary access via block controller
-                    if (this.blockController) {
-                        this.blockController.grantTemporaryAccess(message.domain, message.duration * 60 * 1000);
+                    // Grant temporary access via rule manager
+                    if (this.ruleManager) {
+                        this.ruleManager.grantTemporaryAccess(message.domain, message.duration * 60 * 1000);
                     }
                     sendResponse({ success: true });
                     break;
 
                 case 'CHECK_TEMP_ACCESS':
-                    const hasAccess = this.blockController?.hasTemporaryAccess(message.domain) || false;
-                    const remainingTime = this.blockController?.getRemainingAccessTime(message.domain) || 0;
+                    const hasAccess = this.ruleManager?.hasTemporaryAccess(message.domain) || false;
+                    const remainingTime = this.ruleManager?.getRemainingAccessTime(message.domain) || 0;
                     sendResponse({ hasAccess, remainingTime });
                     break;
 
                 case 'LOG_TEMP_ACCESS':
                     // Log temp access request for analytics
-                    if (this.blockController) {
-                        await this.blockController.recordTempAccessUsage(message.domain);
-                    }
+                    // Note: Temp access logging can be added to RuleManager if needed
                     sendResponse({ success: true });
+                    break;
+
+                case 'GET_SITE_RULES':
+                    sendResponse({
+                        blocked: this.ruleManager.getBlockedDomains(),
+                        restricted: this.ruleManager.getRestrictedDomains(),
+                    });
+                    break;
+
+                case 'ADD_SITE_RULE':
+                    try {
+                        const { domain, ruleType, timeLimitMinutes } = message;
+                        if (ruleType === 'BLOCKED') {
+                            this.ruleManager.addRule(new BlockedRule(domain));
+                        } else if (ruleType === 'RESTRICTED') {
+                            this.ruleManager.addRule(new RestrictedRule(domain, timeLimitMinutes || 30));
+                        }
+                        await this.ruleManager.saveToStorage();
+                        sendResponse({ success: true });
+                    } catch (error) {
+                        sendResponse({ success: false, error: error.message });
+                    }
+                    break;
+
+                case 'REMOVE_SITE_RULE':
+                    this.ruleManager.removeRule(message.domain);
+                    await this.ruleManager.saveToStorage();
+                    sendResponse({ success: true });
+                    break;
+
+                case 'CHECK_ACCESS':
+                    const usage = await this.storage.getDomainUsage(message.domain);
+                    const todayTime = TimeUtils.calculateTodayTime(usage);
+                    const access = this.ruleManager.evaluateAccess(message.url, { todayTimeSeconds: todayTime });
+                    sendResponse(access);
                     break;
 
                 default:
@@ -386,11 +428,24 @@ class TimeDashBackground {
      * @param {string} domain - Domain to check
      */
     async checkAndHandleBlocking(tab, domain) {
-        const blockList = await this.storage.getBlockList();
-        if (blockList.includes(domain)) {
+        // Get usage stats for restricted site evaluation
+        const usage = await this.storage.getDomainUsage(domain);
+        const todayTimeSeconds = TimeUtils.calculateTodayTime(usage);
+
+        // Evaluate access using the rule manager
+        const accessResult = this.ruleManager.evaluateAccess(tab.url, { todayTimeSeconds });
+
+        if (accessResult.shouldBlock) {
+            // Increment block count
+            try {
+                await this.storage.incrementBlockCount(domain);
+            } catch (error) {
+                console.error('Failed to increment block count:', error);
+            }
+
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
-                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}`;
+                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}`;
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
         }
     }
@@ -514,6 +569,32 @@ class TimeDashBackground {
             filename: `timedash-export-${TimeUtils.getCurrentDate()}.csv`,
             saveAs: true,
         });
+    }
+
+    /**
+     * Toggle blocking for a domain
+     * @param {string} domain 
+     */
+    async toggleSiteBlock(domain) {
+        if (!domain) return;
+
+        // Remove existing rule if any (unblock)
+        if (this.ruleManager.getRule(domain)) {
+            this.ruleManager.removeRule(domain);
+        } else {
+            // Add blocked rule
+            this.ruleManager.addRule(new BlockedRule(domain));
+        }
+
+        await this.ruleManager.saveToStorage();
+
+        // Also update active tabs in case we need to block immediately
+        const tabs = await chrome.tabs.query({});
+        for (const tab of tabs) {
+            if (tab.url && DomainUtils.extractDomain(tab.url) === domain) {
+                await this.checkAndHandleBlocking(tab, domain);
+            }
+        }
     }
 
     /**

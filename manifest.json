@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "[TD2 Testing] TimeDash - Advanced Productivity Tracker",
+    "name": "TimeDash",
     "version": "1.0.0",
-    "description": "A productivity-focused extension with time tracking, site blocking, and video speed control for enhanced digital habits and learning efficiency.",
+    "description": "Productivity-focused extension with site time tracking, blocking, and video speed control for enhanced digital habits and learning efficiency.",
     "default_locale": "en",
 
     "permissions": ["storage", "tabs", "activeTab", "alarms", "notifications", "downloads"],
