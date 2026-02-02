@@ -210,6 +210,7 @@ class TimeDashBackground {
                     // Grant temporary access via rule manager
                     if (this.ruleManager) {
                         this.ruleManager.grantTemporaryAccess(message.domain, message.duration * 60 * 1000);
+                        await this.storage.incrementTempAccessCount(message.domain);
                     }
                     sendResponse({ success: true });
                     break;
@@ -221,8 +222,7 @@ class TimeDashBackground {
                     break;
 
                 case 'LOG_TEMP_ACCESS':
-                    // Log temp access request for analytics
-                    // Note: Temp access logging can be added to RuleManager if needed
+                    await this.storage.incrementTempAccessCount(message.domain);
                     sendResponse({ success: true });
                     break;
 
@@ -375,7 +375,15 @@ class TimeDashBackground {
         this.pendingUpdates.clear();
 
         for (const [domain, timeSpent] of updates) {
-            await this.storage.updateUsage(domain, timeSpent);
+            // Determine usage type (GENERAL or RESTRICTED)
+            const rule = this.ruleManager.getRule(domain);
+            let type = 'GENERAL';
+
+            if (rule && rule.type === 'RESTRICTED') {
+                type = 'RESTRICTED';
+            }
+
+            await this.storage.updateUsage(domain, timeSpent, type);
         }
     }
 

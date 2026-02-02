@@ -152,7 +152,7 @@ class StorageManager {
      * @param {number} timeSpent - Time spent in seconds
      * @returns {Promise<boolean>} Success status
      */
-    async updateUsage(domain, timeSpent) {
+    async updateUsage(domain, timeSpent, usageType = 'GENERAL') {
         try {
             const usage = await this.getAllUsage();
             const today = new Date().toISOString().split('T')[0];
@@ -165,8 +165,24 @@ class StorageManager {
                 usage[domain][today] = 0;
             }
 
+            // Update total daily and cumulative
             usage[domain][today] += timeSpent;
             usage[domain].cumulative += timeSpent;
+
+            // Updated segmented data
+            if (usageType === 'RESTRICTED') {
+                const restrictedKey = `${today}_restricted`;
+                const cumulativeRestrictedKey = 'cumulative_restricted';
+
+                usage[domain][restrictedKey] = (usage[domain][restrictedKey] || 0) + timeSpent;
+                usage[domain][cumulativeRestrictedKey] = (usage[domain][cumulativeRestrictedKey] || 0) + timeSpent;
+            } else {
+                const generalKey = `${today}_general`;
+                const cumulativeGeneralKey = 'cumulative_general';
+
+                usage[domain][generalKey] = (usage[domain][generalKey] || 0) + timeSpent;
+                usage[domain][cumulativeGeneralKey] = (usage[domain][cumulativeGeneralKey] || 0) + timeSpent;
+            }
 
             await chrome.storage.local.set({ usage });
             return true;
@@ -252,6 +268,31 @@ class StorageManager {
             return true;
         } catch (error) {
             console.error('Failed to update block count:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Increment temporary access count for a domain
+     * @param {string} domain - Domain to increment count for
+     */
+    async incrementTempAccessCount(domain) {
+        try {
+            const result = await chrome.storage.local.get('usage');
+            const usage = result.usage || {};
+            const item = usage[domain] || {
+                cumulative: 0,
+                lastVisit: Date.now(),
+            };
+
+            item.tempAccessCount = (item.tempAccessCount || 0) + 1;
+            item.lastTempAccess = Date.now();
+
+            usage[domain] = item;
+            await chrome.storage.local.set({ usage });
+            return true;
+        } catch (error) {
+            console.error('Failed to update temp access count:', error);
             return false;
         }
     }
