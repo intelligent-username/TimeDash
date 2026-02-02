@@ -1,0 +1,69 @@
+.popup-footer {
+    background: var(--surface);
+    padding: var(--spacing);
+    border-top: 1px solid var(--border);
+}
+
+.footer-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.tracking-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+}
+
+.tracking-status.active {
+    color: var(--success-color);
+}
+
+.tracking-status.paused {
+    color: var(--warning-color);
+}
+
+.sites-count {
+    color: var(--text-secondary);
+}
+
+.footer-actions {
+    display: flex;
+    gap: var(--spacing-small);
+}
+
+.toggle-btn,
+.dashboard-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.toggle-btn:hover {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+    color: white;
+}
+
+.toggle-btn.paused {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.dashboard-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}

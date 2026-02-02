@@ -1,0 +1,29 @@
+.quick-stats {
+    display: flex;
+    padding: var(--spacing);
+    gap: var(--spacing-small);
+    background: var(--surface);
+}
+
+.stat-card {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    background: var(--background);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

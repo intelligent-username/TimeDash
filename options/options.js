@@ -380,6 +380,7 @@ class OptionsController {
             li.className = 'rule-item';
             li.innerHTML = `
                 <div class="rule-item-info">
+                    <img class="rule-favicon" src="${this.getFaviconUrl(domain)}" alt="" onerror="this.style.display='none'">
                     <span class="rule-domain">${domain}</span>
                 </div>
                 <button class="rule-delete-btn" data-domain="${domain}" data-type="blocked">Remove</button>
@@ -389,6 +390,15 @@ class OptionsController {
             });
             list.appendChild(li);
         });
+    }
+
+    /**
+     * Get favicon URL for domain
+     * @param {string} domain 
+     * @returns {string}
+     */
+    getFaviconUrl(domain) {
+        return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
     }
 
     /**
@@ -402,10 +412,15 @@ class OptionsController {
         list.innerHTML = '';
         sites.forEach(({ domain, timeLimitMinutes }) => {
             const li = document.createElement('li');
-            li.className = 'rule-item restrict-item'; // Added class for specific styling
+            li.className = 'rule-item restrict-item';
 
             const infoDiv = document.createElement('div');
             infoDiv.className = 'rule-item-info';
+
+            const favicon = document.createElement('img');
+            favicon.className = 'rule-favicon';
+            favicon.src = this.getFaviconUrl(domain);
+            favicon.onerror = () => { favicon.style.display = 'none'; };
 
             const domainSpan = document.createElement('span');
             domainSpan.className = 'rule-domain';
@@ -417,16 +432,13 @@ class OptionsController {
             limitInput.value = timeLimitMinutes;
             limitInput.min = 1;
             limitInput.max = 1440;
-            limitInput.style.width = '60px'; // Inline style for safety, moved to CSS ideally
-            limitInput.style.marginLeft = '10px';
-            limitInput.style.padding = '4px';
             limitInput.title = 'Edit daily limit (minutes)';
 
             const suffixSpan = document.createElement('span');
             suffixSpan.className = 'limit-suffix';
             suffixSpan.textContent = 'min/day';
-            suffixSpan.style.marginLeft = '5px';
 
+            infoDiv.appendChild(favicon);
             infoDiv.appendChild(domainSpan);
             infoDiv.appendChild(limitInput);
             infoDiv.appendChild(suffixSpan);
@@ -441,10 +453,9 @@ class OptionsController {
             limitInput.addEventListener('change', () => {
                 const newLimit = parseInt(limitInput.value);
                 if (!isNaN(newLimit) && newLimit > 0 && newLimit <= 1440) {
-                    // Add logic invokes save and reload, preserving the change
                     this.addSiteRule(domain, 'RESTRICTED', newLimit);
                 } else {
-                    limitInput.value = timeLimitMinutes; // Revert
+                    limitInput.value = timeLimitMinutes;
                 }
             });
 

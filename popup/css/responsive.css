@@ -1,0 +1,50 @@
+/* Scrollbar Styles */
+.popup-container::-webkit-scrollbar,
+.sites-list::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.popup-container::-webkit-scrollbar-track,
+.sites-list::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+    background: var(--surface);
+}
+
+.popup-container::-webkit-scrollbar-thumb,
+.sites-list::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.popup-container::-webkit-scrollbar-thumb:hover,
+.sites-list::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --text-disabled: #666666;
+        --background: #1e1e1e;
+        --surface: #2d2d2d;
+        --border: #404040;
+        --shadow: rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

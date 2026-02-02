@@ -1,0 +1,70 @@
+/* Privacy Section */
+.privacy-info {
+    display: grid;
+    gap: var(--spacing);
+}
+
+.info-card {
+    background: var(--surface);
+    padding: var(--spacing);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.info-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-small);
+    color: var(--text-primary);
+}
+
+.info-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-small);
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-card li {
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    padding-left: 16px;
+    position: relative;
+}
+
+.info-card li::before {
+    content: '•';
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+}
+
+.data-actions {
+    display: flex;
+    gap: var(--spacing-small);
+    flex-wrap: wrap;
+}
+
+/* Keybinds */
+.keybind-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: monospace;
+    background: var(--background);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.keybind-input:focus,
+.keybind-input.recording {
+    border-color: var(--primary-color);
+    background: var(--surface-elevated);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}

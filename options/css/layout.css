@@ -1,0 +1,90 @@
+/* Header */
+.header {
+    background: var(--primary-color);
+    color: white;
+    padding: var(--spacing-large);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+}
+
+.header-text h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.header-text p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--spacing-small);
+}
+
+/* Main Content Area */
+.main-content {
+    padding: var(--spacing-xl);
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    margin-bottom: var(--spacing-large);
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-content {
+    min-height: 600px;
+}
+
+.tab-pane {
+    display: none;
+    padding: var(--spacing-large);
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.tab-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}

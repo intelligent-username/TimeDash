@@ -1,0 +1,68 @@
+/* Loading & Empty States */
+.loading {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: var(--spacing-large);
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: var(--spacing-large);
+}
+
+.empty-state svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* Banner */
+.banner {
+    display: none;
+    padding: 8px 12px;
+    margin: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.banner.info {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+
+.banner.success {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.banner.warning {
+    background: #fff8e1;
+    color: #e65100;
+}
+
+.banner.error {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+/* Skeletons */
+.skeleton-list {
+    display: grid;
+    gap: 8px;
+}
+
+.skeleton-row {
+    display: grid;
+    gap: 6px;
+}
+
+.skeleton-line {
+    height: 12px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+    background-size: 400% 100%;
+    border-radius: 6px;
+    animation: shimmer 1.2s ease-in-out infinite;
+}
