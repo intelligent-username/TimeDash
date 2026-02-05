@@ -468,7 +468,7 @@ class TimeDashPopup {
         (first || content).focus();
 
         // Set default values
-        document.getElementById('defaultSpeed').value = this.settings.defaultPlaybackSpeed || 1.0;
+        document.getElementById('defaultSpeed').value = this.settings.currentPlaybackSpeed || 1.0;
         document.getElementById('maxSpeed').value = this.settings.maxPlaybackSpeed || 16.0;
         document.getElementById('dailyLimit').value = this.settings.dailyTimeLimitMinutes || 0;
         document.getElementById('enableNotifications').checked =
@@ -496,7 +496,7 @@ class TimeDashPopup {
         try {
             const newSettings = {
                 ...this.settings,
-                defaultPlaybackSpeed: parseFloat(document.getElementById('defaultSpeed').value),
+                currentPlaybackSpeed: parseFloat(document.getElementById('defaultSpeed').value),
                 maxPlaybackSpeed: parseFloat(document.getElementById('maxSpeed').value),
                 dailyTimeLimitMinutes: parseInt(document.getElementById('dailyLimit').value),
                 notificationsEnabled: document.getElementById('enableNotifications').checked,

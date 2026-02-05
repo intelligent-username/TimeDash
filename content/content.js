@@ -7,12 +7,13 @@
 class TimeDashContent {
     constructor() {
         this.videos = new Set();
-        this.currentSpeed = 1.0;
+        this.currentSpeed = null;  // Don't assume default until loaded
         this.domain = this.extractDomain(window.location.href);
         this.mutationObserver = null;
         this.visibilityCheckInterval = null;
         this.speedOverlay = null;
         this.settings = {};
+        this.initialized = false;  // Track initialization state
 
         this.init();
     }
@@ -22,10 +23,13 @@ class TimeDashContent {
      */
     async init() {
         try {
-            // Load settings
+            // Load settings FIRST (before anything else)
             await this.loadSettings();
 
-            // Set up video detection
+            // Mark as initialized AFTER settings are loaded
+            this.initialized = true;
+
+            // NOW set up video detection (speeds will be applied correctly)
             this.setupVideoDetection();
 
             // Set up message listeners
@@ -40,30 +44,31 @@ class TimeDashContent {
             // Start visibility checking
             this.startVisibilityCheck();
 
-            console.log('TimeDash content script initialized for:', this.domain);
+            console.log(`TimeDash initialized: speed=${this.currentSpeed}x, domain=${this.domain}`);
         } catch (error) {
             console.error('Error initializing TimeDash content script:', error);
+            // Set fallback values on error
+            this.currentSpeed = 1.0;
+            this.initialized = true;
         }
     }
 
     /**
-     * Load settings from storage
+     * Load settings from storage (universal speed model)
      */
     async loadSettings() {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = response || {};
 
-            // Load domain-specific video speed
-            const speedResponse = await chrome.runtime.sendMessage({
-                type: 'GET_VIDEO_SPEED',
-                domain: this.domain,
-            });
-            this.currentSpeed = speedResponse?.speed || this.settings.defaultPlaybackSpeed || 1.0;
+            // Use universal speed from settings (not domain-specific)
+            this.currentSpeed = this.settings.currentPlaybackSpeed || 1.0;
+
+            console.log(`Loaded universal speed: ${this.currentSpeed}x`);
         } catch (error) {
             console.error('Error loading settings:', error);
             this.settings = {
-                defaultPlaybackSpeed: 1.0,
+                currentPlaybackSpeed: 1.0,
                 maxPlaybackSpeed: 16.0,
                 speedStep: 0.25,
                 increaseSpeedKey: 'Plus',
@@ -121,19 +126,30 @@ class TimeDashContent {
 
         this.videos.add(video);
 
-        // Wait for video metadata to load
+        // Wait for video metadata AND initialization to complete
         const setupSpeed = () => {
-            if (video.readyState >= 1) {
-                // HAVE_METADATA
+            if (video.readyState >= 1 && this.initialized && this.currentSpeed !== null) {
                 video.playbackRate = this.currentSpeed;
                 this.showSpeedIndicator(video);
             }
         };
 
-        if (video.readyState >= 1) {
+        if (video.readyState >= 1 && this.initialized) {
             setupSpeed();
         } else {
             video.addEventListener('loadedmetadata', setupSpeed, { once: true });
+
+            // Also check periodically if we're waiting for initialization
+            if (!this.initialized) {
+                const checkInit = setInterval(() => {
+                    if (this.initialized) {
+                        clearInterval(checkInit);
+                        setupSpeed();
+                    }
+                }, 50);
+                // Safety timeout after 5 seconds
+                setTimeout(() => clearInterval(checkInit), 5000);
+            }
         }
 
         // Listen for manual speed changes
@@ -362,15 +378,15 @@ class TimeDashContent {
     }
 
     /**
-     * Save current speed to storage
+     * Save current speed to storage (universal - applies to all tabs)
      */
     async saveCurrentSpeed() {
         try {
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_VIDEO_SPEED',
-                domain: this.domain,
                 speed: this.currentSpeed,
             });
+            console.log(`Saved universal speed: ${this.currentSpeed}x`);
         } catch (error) {
             console.error('Error saving video speed:', error);
         }

@@ -7,7 +7,7 @@
 class StorageManager {
     constructor() {
         this.DEFAULT_SETTINGS = {
-            defaultPlaybackSpeed: 1.0,
+            currentPlaybackSpeed: 1.0,  // Universal speed for all videos
             maxPlaybackSpeed: 16.0,
             speedStep: 0.25,
             increaseSpeedKey: 'Plus',
@@ -34,11 +34,18 @@ class StorageManager {
                 'settings',
                 'usage',
                 'blockList',
-                'videoSpeeds',
             ]);
 
             if (!result.settings) {
                 await this.setSettings(this.DEFAULT_SETTINGS);
+            } else {
+                // Migration: rename defaultPlaybackSpeed to currentPlaybackSpeed
+                if (result.settings.defaultPlaybackSpeed !== undefined &&
+                    result.settings.currentPlaybackSpeed === undefined) {
+                    result.settings.currentPlaybackSpeed = result.settings.defaultPlaybackSpeed;
+                    delete result.settings.defaultPlaybackSpeed;
+                    await this.setSettings(result.settings);
+                }
             }
 
             if (!result.usage) {
@@ -47,10 +54,6 @@ class StorageManager {
 
             if (!result.blockList) {
                 await chrome.storage.local.set({ blockList: [] });
-            }
-
-            if (!result.videoSpeeds) {
-                await chrome.storage.local.set({ videoSpeeds: {} });
             }
         } catch (error) {
             console.error('StorageManager initialization failed:', error);
@@ -298,52 +301,31 @@ class StorageManager {
     }
 
     /**
-     * Get video speed for a domain
-     * @param {string} domain - Domain to get speed for
-     * @returns {Promise<number>} Video speed
+     * Get universal playback speed
+     * @returns {Promise<number>} Current playback speed
      */
-    async getVideoSpeed(domain) {
+    async getCurrentSpeed() {
         try {
-            const result = await chrome.storage.local.get('videoSpeeds');
-            const speeds = result.videoSpeeds || {};
             const settings = await this.getSettings();
-            return speeds[domain] || settings.defaultPlaybackSpeed;
+            return settings.currentPlaybackSpeed || 1.0;
         } catch (error) {
-            console.error('Failed to get video speed:', error);
+            console.error('Failed to get current speed:', error);
             return 1.0;
         }
     }
 
     /**
-     * Set video speed for a domain
-     * @param {string} domain - Domain to set speed for
-     * @param {number} speed - Video speed
+     * Set universal playback speed
+     * @param {number} speed - Playback speed
      * @returns {Promise<boolean>} Success status
      */
-    async setVideoSpeed(domain, speed) {
+    async setCurrentSpeed(speed) {
         try {
-            const result = await chrome.storage.local.get('videoSpeeds');
-            const speeds = result.videoSpeeds || {};
-            speeds[domain] = speed;
-            await chrome.storage.local.set({ videoSpeeds: speeds });
+            await this.setSettings({ currentPlaybackSpeed: speed });
             return true;
         } catch (error) {
-            console.error('Failed to set video speed:', error);
+            console.error('Failed to set current speed:', error);
             return false;
-        }
-    }
-
-    /**
-     * Get all video speeds
-     * @returns {Promise<Object>} All video speeds
-     */
-    async getVideoSpeeds() {
-        try {
-            const result = await chrome.storage.local.get('videoSpeeds');
-            return result.videoSpeeds || {};
-        } catch (error) {
-            console.error('Failed to get video speeds:', error);
-            return {};
         }
     }
 

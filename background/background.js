@@ -174,7 +174,7 @@ class TimeDashBackground {
                     break;
 
                 case 'UPDATE_VIDEO_SPEED':
-                    await this.updateVideoSpeed(message.domain, message.speed);
+                    await this.storage.setCurrentSpeed(message.speed);
                     sendResponse({ success: true });
                     break;
 
@@ -202,7 +202,7 @@ class TimeDashBackground {
                     break;
 
                 case 'GET_VIDEO_SPEED':
-                    const speed = await this.storage.getVideoSpeed(message.domain);
+                    const speed = await this.storage.getCurrentSpeed();
                     sendResponse({ speed });
                     break;
 
@@ -517,12 +517,11 @@ class TimeDashBackground {
     }
 
     /**
-     * Update video speed for domain
-     * @param {string} domain - Domain
+     * Update universal video speed
      * @param {number} speed - Video speed
      */
-    async updateVideoSpeed(domain, speed) {
-        await this.storage.setVideoSpeed(domain, speed);
+    async updateVideoSpeed(speed) {
+        await this.storage.setCurrentSpeed(speed);
     }
 
     /**

@@ -17,7 +17,6 @@ class OptionsController {
         this.settings = {};
         this.usage = {};
         this.blockList = [];
-        this.videoSpeeds = {};
         this.autoSaveInterval = null;
         this.boundKeyHandler = null;
 
@@ -57,17 +56,15 @@ class OptionsController {
      */
     async loadAllData() {
         try {
-            const [settings, usage, blockList, videoSpeeds] = await Promise.all([
+            const [settings, usage, blockList] = await Promise.all([
                 this.storageManager.getSettings(),
                 this.storageManager.getAllUsage(),
                 this.storageManager.getBlockList(),
-                this.storageManager.getVideoSpeeds(),
             ]);
 
             this.settings = settings;
             this.usage = usage;
             this.blockList = blockList;
-            this.videoSpeeds = videoSpeeds;
         } catch (error) {
             console.error('Failed to load data:', error);
             throw error;
@@ -148,7 +145,7 @@ class OptionsController {
      */
     setupVideoSettings() {
         this.bindSettings({
-            defaultPlaybackSpeed: 'defaultSpeed',
+            currentPlaybackSpeed: 'defaultSpeed',  // Universal speed setting
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep'
         });
@@ -172,7 +169,7 @@ class OptionsController {
                 const defaultVal = parseFloat(defaultSpeed.value);
                 if (!isNaN(value) && !isNaN(defaultVal) && value < defaultVal) {
                     defaultSpeed.value = value;
-                    this.updateSetting('defaultPlaybackSpeed', value);
+                    this.updateSetting('currentPlaybackSpeed', value);
                 }
             });
         }
@@ -585,7 +582,7 @@ class OptionsController {
      * Populate settings for Video Control tab
      */
     populateVideoSettings() {
-        this.setInputValue('defaultSpeed', this.settings.defaultPlaybackSpeed);
+        this.setInputValue('defaultSpeed', this.settings.currentPlaybackSpeed || 1.0);
         this.setInputValue('maxSpeed', this.settings.maxPlaybackSpeed);
         this.setInputValue('speedStep', this.settings.speedStep || 0.25);
         this.setInputValue('increaseSpeedKey', this.settings.increaseSpeedKey || 'Plus');
@@ -698,7 +695,6 @@ class OptionsController {
             usage: this.usage,
             blockList: this.blockList,
             settings: this.settings,
-            videoSpeeds: this.videoSpeeds,
         });
         return new Blob([dataStr]).size;
     }
@@ -762,7 +758,7 @@ class OptionsController {
         }
 
         // Specific validation for speeds
-        if ((key === 'defaultPlaybackSpeed' || key === 'maxPlaybackSpeed') && value === 0) {
+        if ((key === 'currentPlaybackSpeed' || key === 'maxPlaybackSpeed') && value === 0) {
             return; // Don't allow 0 speed
         }
 
@@ -933,7 +929,6 @@ class OptionsController {
                 usage: this.usage,
                 blockList: this.blockList,
                 settings: this.settings,
-                videoSpeeds: this.videoSpeeds,
                 exportDate: new Date().toISOString(),
                 version: '1.0.0',
             };
@@ -985,7 +980,6 @@ class OptionsController {
             if (data.usage) await this.storageManager.saveUsage(data.usage);
             if (data.blockList) await this.storageManager.saveBlockList(data.blockList);
             if (data.settings) await this.storageManager.saveSettings(data.settings);
-            if (data.videoSpeeds) await this.storageManager.saveVideoSpeeds(data.videoSpeeds);
 
             // Reload UI
             await this.loadAllData();
