@@ -17,8 +17,6 @@ class RuleManager {
     constructor() {
         /** @type {Map<string, SiteRule>} */
         this.rules = new Map();
-        this.temporaryAccess = new Map(); // domain -> expiry timestamp
-        this.TEMP_ACCESS_DURATION = 5 * 60 * 1000; // 5 minutes default
     }
 
     /**
@@ -143,64 +141,6 @@ class RuleManager {
     }
 
     /**
-     * Grant temporary access to a domain
-     * @param {string} domain - Domain to grant access
-     * @param {number} duration - Duration in milliseconds
-     */
-    grantTemporaryAccess(domain, duration = this.TEMP_ACCESS_DURATION) {
-        const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
-        const expiry = Date.now() + duration;
-        this.temporaryAccess.set(normalizedDomain, expiry);
-
-        setTimeout(() => {
-            this.cleanupExpiredAccess();
-        }, duration);
-    }
-
-    /**
-     * Check if domain has temporary access
-     * @param {string} domain - Domain to check
-     * @returns {boolean}
-     */
-    hasTemporaryAccess(domain) {
-        const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
-        const expiry = this.temporaryAccess.get(normalizedDomain);
-        if (!expiry) return false;
-
-        if (Date.now() >= expiry) {
-            this.temporaryAccess.delete(normalizedDomain);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Get remaining temporary access time
-     * @param {string} domain - Domain to check
-     * @returns {number} Remaining time in milliseconds
-     */
-    getRemainingAccessTime(domain) {
-        const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
-        const expiry = this.temporaryAccess.get(normalizedDomain);
-        if (!expiry) return 0;
-
-        const remaining = expiry - Date.now();
-        return remaining > 0 ? remaining : 0;
-    }
-
-    /**
-     * Clean up expired temporary access entries
-     */
-    cleanupExpiredAccess() {
-        const now = Date.now();
-        for (const [domain, expiry] of this.temporaryAccess.entries()) {
-            if (now >= expiry) {
-                this.temporaryAccess.delete(domain);
-            }
-        }
-    }
-
-    /**
      * Evaluate whether access to a URL should be blocked
      * @param {string} url - URL to evaluate
      * @param {Object} usageStats - Usage statistics {todayTimeSeconds}
@@ -210,11 +150,6 @@ class RuleManager {
         try {
             const urlObj = new URL(url);
             const domain = urlObj.hostname.toLowerCase().replace(/^www\./, '');
-
-            // Check temporary access first
-            if (this.hasTemporaryAccess(domain)) {
-                return { shouldBlock: false, reason: null, domain };
-            }
 
             const rule = this.rules.get(domain);
             if (!rule || !rule.isEnabled) {

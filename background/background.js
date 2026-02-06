@@ -206,25 +206,7 @@ class TimeDashBackground {
                     sendResponse({ speed });
                     break;
 
-                case 'REQUEST_TEMP_ACCESS':
-                    // Grant temporary access via rule manager
-                    if (this.ruleManager) {
-                        this.ruleManager.grantTemporaryAccess(message.domain, message.duration * 60 * 1000);
-                        await this.storage.incrementTempAccessCount(message.domain);
-                    }
-                    sendResponse({ success: true });
-                    break;
-
-                case 'CHECK_TEMP_ACCESS':
-                    const hasAccess = this.ruleManager?.hasTemporaryAccess(message.domain) || false;
-                    const remainingTime = this.ruleManager?.getRemainingAccessTime(message.domain) || 0;
-                    sendResponse({ hasAccess, remainingTime });
-                    break;
-
-                case 'LOG_TEMP_ACCESS':
-                    await this.storage.incrementTempAccessCount(message.domain);
-                    sendResponse({ success: true });
-                    break;
+                // Temporary access removed - keeping blocking simple
 
                 case 'GET_SITE_RULES':
                     sendResponse({

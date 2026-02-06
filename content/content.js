@@ -14,6 +14,7 @@ class TimeDashContent {
         this.speedOverlay = null;
         this.settings = {};
         this.initialized = false;  // Track initialization state
+        this.contextValid = true;  // Track if extension context is still valid 
 
         this.init();
     }
@@ -381,6 +382,9 @@ class TimeDashContent {
      * Save current speed to storage (universal - applies to all tabs)
      */
     async saveCurrentSpeed() {
+        // Skip if we already know extension context is invalid
+        if (!this.contextValid) return;
+
         try {
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_VIDEO_SPEED',
@@ -388,6 +392,12 @@ class TimeDashContent {
             });
             console.log(`Saved universal speed: ${this.currentSpeed}x`);
         } catch (error) {
+            // Extension context invalidated - extension was reloaded
+            if (error.message?.includes('Extension context invalidated')) {
+                this.contextValid = false;
+                console.log('TimeDash: Extension reloaded, speed changes will be local only until page refresh');
+                return;
+            }
             console.error('Error saving video speed:', error);
         }
     }

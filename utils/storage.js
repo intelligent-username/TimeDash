@@ -276,31 +276,6 @@ class StorageManager {
     }
 
     /**
-     * Increment temporary access count for a domain
-     * @param {string} domain - Domain to increment count for
-     */
-    async incrementTempAccessCount(domain) {
-        try {
-            const result = await chrome.storage.local.get('usage');
-            const usage = result.usage || {};
-            const item = usage[domain] || {
-                cumulative: 0,
-                lastVisit: Date.now(),
-            };
-
-            item.tempAccessCount = (item.tempAccessCount || 0) + 1;
-            item.lastTempAccess = Date.now();
-
-            usage[domain] = item;
-            await chrome.storage.local.set({ usage });
-            return true;
-        } catch (error) {
-            console.error('Failed to update temp access count:', error);
-            return false;
-        }
-    }
-
-    /**
      * Get universal playback speed
      * @returns {Promise<number>} Current playback speed
      */
