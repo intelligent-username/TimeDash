@@ -1,11 +1,470 @@
 /* Analytics Overview */
-.analytics-overview {
+.analytics-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: var(--spacing);
     margin-bottom: var(--spacing-large);
 }
 
+.analytics-stat-card {
+    background: var(--surface);
+    padding: var(--spacing-large);
+    border-radius: var(--radius);
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.analytics-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-small);
+}
+
+.analytics-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Chart Header & Controls */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing);
+    flex-wrap: wrap;
+    gap: var(--spacing);
+}
+
+.chart-header h2 {
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+}
+
+.chart-period-selector {
+    display: flex;
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.period-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.period-btn:hover {
+    color: var(--text-primary);
+    background: var(--border);
+}
+
+.period-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.chart-navigation {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-small);
+}
+
+.nav-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: var(--border);
+    color: var(--text-primary);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chart-period-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Chart Container */
+.chart-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacing-large);
+    min-height: 280px;
+    position: relative;
+}
+
+.chart-area {
+    display: flex;
+    height: 200px;
+    gap: var(--spacing-small);
+}
+
+.chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: right;
+    padding-right: var(--spacing-small);
+    min-width: 40px;
+}
+
+.chart-content {
+    flex: 1;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    min-height: 200px;
+}
+
+/* SVG Line Chart */
+.chart-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.chart-point {
+    transition: r 0.2s ease;
+}
+
+.chart-point:hover {
+    r: 7;
+}
+
+/* Tooltip overlay */
+.chart-points-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.chart-point-hitarea {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    transform: translate(-50%, -50%);
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.chart-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(33, 33, 33, 0.95);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    margin-bottom: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.chart-tooltip strong {
+    color: #64b5f6;
+    font-size: 14px;
+}
+
+.chart-point-hitarea:hover .chart-tooltip {
+    opacity: 1;
+}
+
+.chart-x-axis {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 48px;
+    margin-top: var(--spacing-small);
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Heatmap */
+.heatmap-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+}
+
+.heatmap-filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.heatmap-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacing-large);
+    overflow: visible;
+}
+
+.heatmap-months {
+    display: flex;
+    padding-left: 32px;
+    margin-bottom: var(--spacing-small);
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.heatmap-months span {
+    flex: 1;
+}
+
+.heatmap-grid-wrapper {
+    display: flex;
+    gap: var(--spacing-small);
+    overflow: visible;
+}
+
+.heatmap-days {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-size: 10px;
+    color: var(--text-secondary);
+    min-width: 28px;
+    height: 90px;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    grid-auto-flow: column;
+    gap: 3px;
+    flex: 1;
+    overflow: visible;
+    padding-top: 30px;
+    /* Space for tooltips */
+}
+
+.heatmap-cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--border);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    position: relative;
+}
+
+.heatmap-cell[data-level="0"] {
+    background: #ebedf0;
+}
+
+.heatmap-cell[data-level="1"] {
+    background: #9be9a8;
+}
+
+.heatmap-cell[data-level="2"] {
+    background: #40c463;
+}
+
+.heatmap-cell[data-level="3"] {
+    background: #30a14e;
+}
+
+.heatmap-cell[data-level="4"] {
+    background: #216e39;
+}
+
+.heatmap-cell.earliest {
+    box-shadow: 0 0 0 2px var(--secondary-color);
+}
+
+/* Custom heatmap tooltip */
+.heatmap-cell::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(33, 33, 33, 0.95);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.4);
+    z-index: 10;
+}
+
+.heatmap-cell:hover::after {
+    opacity: 1;
+}
+
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-small);
+    margin-top: var(--spacing);
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.heatmap-legend-scale {
+    display: flex;
+    gap: 3px;
+}
+
+.heatmap-earliest {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: var(--spacing);
+}
+
+.earliest-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--border);
+    box-shadow: 0 0 0 2px var(--secondary-color);
+}
+
+.earliest-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Top Sites List */
+.analytics-sites-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+.analytics-site-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+    padding: var(--spacing);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: background-color 0.2s ease;
+}
+
+.analytics-site-item:hover {
+    background: #f0f0f0;
+}
+
+.analytics-site-favicon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: contain;
+}
+
+.analytics-site-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.analytics-site-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.analytics-site-time {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.analytics-site-bar {
+    width: 100px;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.analytics-site-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.analytics-empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+}
+
+/* Legacy support */
 .stat-card {
     background: var(--surface);
     padding: var(--spacing-large);
@@ -26,18 +485,6 @@
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.chart-container {
-    background: var(--background);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: var(--spacing-large);
-    min-height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
 }
 
 .export-actions {

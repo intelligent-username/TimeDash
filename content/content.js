@@ -14,7 +14,7 @@ class TimeDashContent {
         this.speedOverlay = null;
         this.settings = {};
         this.initialized = false;  // Track initialization state
-        this.contextValid = true;  // Track if extension context is still valid 
+        this.contextValid = true;  // Track if extension context is still valid
 
         this.init();
     }

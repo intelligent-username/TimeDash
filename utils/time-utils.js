@@ -54,17 +54,21 @@ class TimeUtils {
     }
 
     /**
-     * Get current date in YYYY-MM-DD format
-     * @returns {string} Current date string
+     * Get current date in YYYY-MM-DD format (LOCAL timezone)
+     * @returns {string} Current date string in local time
      */
     static getCurrentDate() {
-        return new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     /**
-     * Get date range for analytics (last N days)
+     * Get date range for analytics (last N days) in LOCAL timezone
      * @param {number} days - Number of days to include
-     * @returns {Array<string>} Array of date strings
+     * @returns {Array<string>} Array of date strings in local time
      */
     static getDateRange(days) {
         const dates = [];
@@ -73,10 +77,26 @@ class TimeUtils {
         for (let i = days - 1; i >= 0; i--) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
-            dates.push(date.toISOString().split('T')[0]);
+            // Use local date formatting
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            dates.push(`${year}-${month}-${day}`);
         }
 
         return dates;
+    }
+
+    /**
+     * Format a Date object to YYYY-MM-DD in LOCAL timezone
+     * @param {Date} date - Date object to format
+     * @returns {string} Formatted date string
+     */
+    static formatLocalDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     /**

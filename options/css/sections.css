@@ -5,6 +5,11 @@
     padding: var(--spacing-large);
     margin-bottom: var(--spacing-large);
     box-shadow: 0 2px 8px var(--shadow);
+    transition: box-shadow 0.2s ease;
+}
+
+.settings-section:hover {
+    box-shadow: 0 4px 12px var(--shadow-elevated);
 }
 
 .settings-section h2 {

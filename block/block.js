@@ -42,11 +42,38 @@ class BlockPageController {
         try {
             this.storageManager = new StorageManager();
             this.parseUrlParameters();
+
+            // Check if access is now allowed (time limit may have been changed)
+            const stillBlocked = await this.checkIfStillBlocked();
+            if (!stillBlocked && this.blockedUrl) {
+                // Access is now allowed - redirect back to the original site
+                window.location.href = this.blockedUrl;
+                return;
+            }
+
             await this.loadBlockData();
             this.setupEventListeners();
             this.updateUI();
         } catch (error) {
             console.error('Failed to initialize block page:', error);
+        }
+    }
+
+    /**
+     * Check if the site should still be blocked
+     * @returns {Promise<boolean>} True if still blocked
+     */
+    async checkIfStillBlocked() {
+        try {
+            const response = await chrome.runtime.sendMessage({
+                type: 'CHECK_ACCESS',
+                url: this.blockedUrl || `https://${this.blockedDomain}`,
+                domain: this.blockedDomain
+            });
+            return response?.shouldBlock === true;
+        } catch (error) {
+            console.error('Error checking access:', error);
+            return true; // Assume still blocked on error
         }
     }
 
@@ -75,8 +102,12 @@ class BlockPageController {
             const usage = await this.storageManager.getAllUsage();
             const domainData = usage[this.blockedDomain] || {};
 
+            const now = new Date();
+            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
             this.blockStats.count = domainData.blockedToday || 1;
             this.blockStats.timeSpent = domainData.cumulative || 0;
+            this.blockStats.todayTime = domainData[today] || 0;
         } catch (error) {
             console.error('Failed to load block data:', error);
         }
@@ -98,22 +129,34 @@ class BlockPageController {
             blockedUrlEl.textContent = this.blockedDomain;
         }
 
-        // Update heading and reason based on block type
+        // Update heading, reason, and stats based on block type
         const headingEl = document.getElementById('blockHeading');
         const reasonEl = document.getElementById('blockReason');
+        const blockIcon = document.querySelector('.block-icon');
 
         if (this.blockReason === 'restricted') {
+            // Restricted site - time limit reached
             if (headingEl) headingEl.textContent = 'Daily Limit Reached';
-            if (reasonEl) reasonEl.textContent = `You've exceeded your daily time limit for ${this.blockedDomain}. Access will reset tomorrow.`;
+            if (reasonEl) reasonEl.textContent = `You've used all your allotted time for ${this.blockedDomain} today. Access will reset at midnight.`;
             document.title = `${this.blockedDomain} - Limit Reached`;
+
+            // Show time used today instead of block count
+            this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
+            this.updateStatLabel('blockCount', 'Time used today');
+
+            // Change icon color to orange for restricted
+            if (blockIcon) blockIcon.style.color = '#f59e0b';
         } else {
+            // Fully blocked site
             if (headingEl) headingEl.textContent = 'This site is blocked';
             if (reasonEl) reasonEl.textContent = 'This site is on your block list to help you stay focused.';
             document.title = `${this.blockedDomain} is blocked`;
+
+            this.updateStat('blockCount', this.blockStats.count);
+            this.updateStatLabel('blockCount', 'Times blocked today');
         }
 
-        // Stats
-        this.updateStat('blockCount', this.blockStats.count);
+        // Always show cumulative time spent
         this.updateStat('timeSpent', this.formatTime(this.blockStats.timeSpent));
 
         // Motivational content
@@ -123,6 +166,13 @@ class BlockPageController {
     updateStat(id, value) {
         const el = document.getElementById(id);
         if (el) el.textContent = value;
+    }
+
+    updateStatLabel(id, label) {
+        const el = document.getElementById(id);
+        if (el && el.nextElementSibling) {
+            el.nextElementSibling.textContent = label;
+        }
     }
 
     updateMotivationalContent() {

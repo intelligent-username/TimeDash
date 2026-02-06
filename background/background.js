@@ -301,7 +301,11 @@ class TimeDashBackground {
      */
     async startTrackingTab(tabId, domain) {
         const settings = await this.storage.getSettings();
+
         if (!settings.trackingEnabled) return;
+
+        // Check whitelist
+        if (settings.whitelist && settings.whitelist.includes(domain)) return;
 
         this.activeTabInfo.set(tabId, {
             domain,
@@ -649,6 +653,16 @@ class TimeDashBackground {
      */
     async handleDailyReset() {
         // Could implement daily reset logic here if needed
+        // Auto-purge old data if enabled
+        try {
+            const settings = await this.storage.getSettings();
+            if (settings && settings.autoPurgeEnabled && settings.autoPurgeDays) {
+                await this.storage.purgeOldData(settings.autoPurgeDays);
+                console.log(`Auto-purged data older than ${settings.autoPurgeDays} days`);
+            }
+        } catch (e) {
+            console.error('Auto-purge failed:', e);
+        }
         console.log('Daily reset triggered');
     }
 }

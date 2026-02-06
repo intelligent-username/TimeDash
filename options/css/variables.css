@@ -14,8 +14,8 @@
     --border: #e0e0e0;
     --shadow: rgba(0, 0, 0, 0.1);
     --shadow-elevated: rgba(0, 0, 0, 0.15);
-    --radius: 8px;
-    --radius-small: 4px;
+    --radius: 10px;
+    --radius-small: 6px;
     --spacing: 16px;
     --spacing-small: 8px;
     --spacing-large: 24px;

@@ -20,6 +20,9 @@ class StorageManager {
             trackingEnabled: true,
             showSpeedOverlay: true,
             firstTimeSetup: true,
+            whitelist: [],
+            autoPurgeEnabled: false,
+            autoPurgeDays: 30,
         };
 
         this.init();
@@ -158,7 +161,9 @@ class StorageManager {
     async updateUsage(domain, timeSpent, usageType = 'GENERAL') {
         try {
             const usage = await this.getAllUsage();
-            const today = new Date().toISOString().split('T')[0];
+            // Use LOCAL date for daily tracking (resets at user's midnight)
+            const now = new Date();
+            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
             if (!usage[domain]) {
                 usage[domain] = { cumulative: 0 };
@@ -340,6 +345,54 @@ class StorageManager {
             return true;
         } catch (error) {
             console.error('Failed to clear data:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Get storage bytes in use
+     * @returns {Promise<number>} Bytes used
+     */
+    async getStorageUsage() {
+        if (chrome.storage.local.getBytesInUse) {
+            return new Promise((resolve) => {
+                chrome.storage.local.getBytesInUse(null, (bytes) => resolve(bytes));
+            });
+        }
+        return 0;
+    }
+
+    /**
+     * Purge data older than X days
+     * @param {number} days 
+     */
+    async purgeOldData(days) {
+        if (!days || days < 1) return false;
+        try {
+            const usage = await this.getAllUsage();
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - days);
+            // Simple string comparison works for YYYY-MM-DD
+            const cutoffStr = `${cutoffDate.getFullYear()}-${String(cutoffDate.getMonth() + 1).padStart(2, '0')}-${String(cutoffDate.getDate()).padStart(2, '0')}`;
+
+            let changed = false;
+            for (const domain in usage) {
+                const domainData = usage[domain];
+                for (const date in domainData) {
+                    // Check if key is a date format YYYY-MM-DD
+                    if (date.match(/^\d{4}-\d{2}-\d{2}$/) && date < cutoffStr) {
+                        delete domainData[date];
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed) {
+                await chrome.storage.local.set({ usage });
+            }
+            return true;
+        } catch (e) {
+            console.error('Purge failed:', e);
             return false;
         }
     }

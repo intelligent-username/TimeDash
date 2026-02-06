@@ -17,6 +17,18 @@ class AlarmManager {
     }
 
     /**
+     * Get current date as YYYY-MM-DD in LOCAL timezone
+     * @param {Date} date - Optional date object, defaults to now
+     * @returns {string} Local date string
+     */
+    getLocalDateString(date = new Date()) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    /**
      * Initialize alarm manager
      */
     async init() {
@@ -141,8 +153,7 @@ class AlarmManager {
             // Reset daily quota warnings
             await chrome.storage.local.remove(['quotaWarningsSent']);
 
-            // Clean up old temporary access entries
-            await this.cleanupTemporaryAccess();
+
 
             // Send daily summary notification if enabled
             await this.sendDailySummaryNotification();
@@ -167,7 +178,7 @@ class AlarmManager {
 
             const usage = await chrome.storage.local.get('usage');
             const usageData = usage.usage || {};
-            const today = new Date().toISOString().split('T')[0];
+            const today = this.getLocalDateString();
             const dailyLimitSeconds = userSettings.dailyTimeLimitMinutes * 60;
 
             let totalTodayUsage = 0;
@@ -198,8 +209,6 @@ class AlarmManager {
             // Clean up old usage data (older than 90 days)
             await this.cleanupOldUsageData();
 
-            // Clean up expired temporary access
-            await this.cleanupTemporaryAccess();
 
             // Clean up old block statistics
             await this.cleanupOldBlockStats();
@@ -235,7 +244,7 @@ class AlarmManager {
     async checkAndSendQuotaWarnings(totalUsage, dailyLimit, percentage) {
         const warnings = await chrome.storage.local.get('quotaWarningsSent');
         const sentWarnings = warnings.quotaWarningsSent || {};
-        const today = new Date().toISOString().split('T')[0];
+        const today = this.getLocalDateString();
 
         if (!sentWarnings[today]) {
             sentWarnings[today] = [];
@@ -292,7 +301,7 @@ class AlarmManager {
             const usageData = usage.usage || {};
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            const yesterdayStr = this.getLocalDateString(yesterday);
 
             let totalYesterdayUsage = 0;
             let topDomain = '';
@@ -331,7 +340,7 @@ class AlarmManager {
         const usageData = usage.usage || {};
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - 90); // 90 days ago
-        const cutoffStr = cutoffDate.toISOString().split('T')[0];
+        const cutoffStr = this.getLocalDateString(cutoffDate);
 
         let cleaned = false;
 
@@ -350,14 +359,6 @@ class AlarmManager {
         }
     }
 
-    /**
-     * Clean up expired temporary access
-     */
-    async cleanupTemporaryAccess() {
-        // This would be called on the background script's block controller
-        // For now, just log that cleanup would happen
-        console.log('Temporary access cleanup completed');
-    }
 
     /**
      * Clean up old block statistics

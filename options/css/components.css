@@ -133,10 +133,30 @@
 /* Banners */
 .banner {
     display: none;
-    padding: 10px 14px;
-    margin: var(--spacing);
+    padding: 12px 24px;
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
     border-radius: var(--radius);
     font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    text-align: center;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        top: -50px;
+        opacity: 0;
+    }
+
+    to {
+        top: 24px;
+        opacity: 1;
+    }
 }
 
 .banner.info {

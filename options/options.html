@@ -195,15 +195,124 @@
                     </div>
                 </div>
 
-                <!-- Analytics Settings -->
+                <!-- Analytics Dashboard -->
                 <div id="analytics" class="tab-pane">
+                    <!-- Quick Stats -->
                     <div class="settings-section">
-                        <h2>Analytics</h2>
+                        <h2>Usage Overview</h2>
+                        <div class="analytics-stats">
+                            <div class="analytics-stat-card">
+                                <div class="analytics-stat-value" id="analyticsTodayTotal">0m</div>
+                                <div class="analytics-stat-label">Today</div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="analytics-stat-value" id="analyticsWeekAverage">0m</div>
+                                <div class="analytics-stat-label">Daily Average</div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="analytics-stat-value" id="analyticsTotalTime">0h</div>
+                                <div class="analytics-stat-label">All Time</div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="analytics-stat-value" id="analyticsSitesCount">0</div>
+                                <div class="analytics-stat-label">Sites Tracked</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Usage Trend Chart -->
+                    <div class="settings-section">
+                        <div class="chart-header">
+                            <h2>Usage Trends</h2>
+                            <div class="chart-controls">
+                                <div class="chart-period-selector">
+                                    <button class="period-btn active" data-period="week">Week</button>
+                                    <button class="period-btn" data-period="month">Month</button>
+                                    <button class="period-btn" data-period="year">Year</button>
+                                </div>
+                                <div class="chart-navigation">
+                                    <button class="nav-btn" id="chartPrev" title="Previous">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                                        </svg>
+                                    </button>
+                                    <span class="chart-period-label" id="chartPeriodLabel">This Week</span>
+                                    <button class="nav-btn" id="chartNext" title="Next">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container" id="usageChart">
+                            <div class="chart-area">
+                                <div class="chart-y-axis" id="chartYAxis"></div>
+                                <div class="chart-content" id="chartContent"></div>
+                            </div>
+                            <div class="chart-x-axis" id="chartXAxis"></div>
+                            <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none;">
+                                <div class="earliest-line"></div>
+                                <span class="earliest-label">Tracking started</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap Calendar -->
+                    <div class="settings-section">
+                        <div class="chart-header">
+                            <h2>Activity Heatmap</h2>
+                            <div class="heatmap-controls">
+                                <select id="heatmapFilter" class="heatmap-filter-select">
+                                    <option value="all">All Sites</option>
+                                    <option value="restricted">Restricted Sites Only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="heatmap-container" id="heatmapContainer">
+                            <div class="heatmap-months" id="heatmapMonths"></div>
+                            <div class="heatmap-grid-wrapper">
+                                <div class="heatmap-days">
+                                    <span>Mon</span>
+                                    <span>Wed</span>
+                                    <span>Fri</span>
+                                </div>
+                                <div class="heatmap-grid" id="heatmapGrid"></div>
+                            </div>
+                            <div class="heatmap-legend">
+                                <span class="heatmap-legend-label">Less</span>
+                                <div class="heatmap-legend-scale">
+                                    <div class="heatmap-cell" data-level="0"></div>
+                                    <div class="heatmap-cell" data-level="1"></div>
+                                    <div class="heatmap-cell" data-level="2"></div>
+                                    <div class="heatmap-cell" data-level="3"></div>
+                                    <div class="heatmap-cell" data-level="4"></div>
+                                </div>
+                                <span class="heatmap-legend-label">More</span>
+                                <div class="heatmap-earliest" id="heatmapEarliestIndicator">
+                                    <span class="earliest-dot"></span>
+                                    <span class="earliest-text">= Tracking started</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Sites -->
+                    <div class="settings-section">
+                        <h2>Top Sites Today</h2>
+                        <div class="analytics-sites-list" id="analyticsTopSites">
+                            <div class="analytics-empty-state">No activity recorded today.</div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="settings-section">
+                        <h2>Tracking Settings</h2>
                         <div class="setting-group">
                             <label for="trackingFrequency">
-                                Tracking Intervals (seconds)
+                                Tracking Interval (seconds)
                                 <span class="info-tooltip"
-                                    title="This setting determines how often the extension updates your time logs. A lower value (e.g., 0.5 seconds) provides more accurate tracking but uses slightly more resources. A higher value (e.g., 5-10 seconds) is lighter on resources but may be less precise. Default: 1 second.">*</span>
+                                    title="How often the extension updates your time logs. Lower values are more accurate but use more resources.">?</span>
                             </label>
                             <input type="number" id="trackingFrequency" min="0.1" max="60" step="0.01"
                                 placeholder="1.00" />
@@ -214,7 +323,15 @@
                 <!-- Privacy Settings -->
                 <div id="privacy" class="tab-pane">
                     <div class="settings-section">
-                        <h2>Privacy</h2>
+                        <h2>Tracking Control</h2>
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <input type="checkbox" id="trackingPaused" />
+                                <span class="checkmark"></span>
+                                Pause Tracking
+                                <small>Temporarily stop all data collection</small>
+                            </label>
+                        </div>
                         <div class="setting-group">
                             <label class="setting-label">
                                 <input type="checkbox" id="incognitoTracking" />
@@ -222,6 +339,80 @@
                                 Enable Incognito Tracking
                             </label>
                         </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Domain Whitelist</h2>
+                        <p class="section-description">These sites will never be tracked.</p>
+                        <div class="rule-manager">
+                            <div class="rule-input-group">
+                                <input type="text" id="whitelistInput" placeholder="e.g. localhost"
+                                    class="rule-domain-input" />
+                                <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
+                            </div>
+                            <ul class="rule-list" id="whitelistList">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Data Management</h2>
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <input type="checkbox" id="autoPurgeEnabled" />
+                                <span class="checkmark"></span>
+                                Auto-purge old data
+                            </label>
+                            <div class="dependent-setting" id="autoPurgeSettings"
+                                style="margin-left: 28px; margin-top: 10px; display: none;">
+                                <label>
+                                    Delete data older than
+                                    <input type="number" id="autoPurgeDays" min="1" max="3650" placeholder="30"
+                                        style="width: 80px; padding: 4px;" /> days
+                                </label>
+                            </div>
+                            <p class="setting-note"
+                                style="margin-top: 8px; color: var(--text-secondary); font-size: 0.9em;">
+                                Note: All data is stored locally on your device. We do not transmit your data.
+                            </p>
+                        </div>
+
+                        <div class="storage-meter-container"
+                            style="margin: 20px 0; background: var(--bg-secondary); padding: 16px; border-radius: var(--radius);">
+                            <div class="storage-header"
+                                style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500;">
+                                <span>Storage Usage</span>
+                                <span id="storageUsageValue">Checking...</span>
+                            </div>
+                            <div class="storage-bar-bg"
+                                style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                                <div class="storage-bar-fill" id="storageUsageFill"
+                                    style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;">
+                                </div>
+                            </div>
+                            <div id="storageQuotaValue"
+                                style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px; text-align: right;">
+                            </div>
+                        </div>
+
+                        <h3>Manage Stored Data</h3>
+                        <div class="data-search-group" style="margin-bottom: 15px;">
+                            <input type="text" id="deleteDataSearch" placeholder="Search domain to delete data..."
+                                style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--bg-secondary); color: var(--text-primary);" />
+                            <div id="deleteDataResults" class="rule-list"
+                                style="max-height: 200px; overflow-y: auto; display: none; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 var(--radius) var(--radius);">
+                            </div>
+                        </div>
+
+                        <button id="exportDataPrivacy" class="btn btn-outline" style="width: 100%;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+                                style="margin-right: 8px; vertical-align: text-bottom;">
+                                <path
+                                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            Export My Data
+                        </button>
                     </div>
                 </div>
             </div>
@@ -249,7 +440,6 @@
 
     <script src="../utils/storage.js"></script>
     <script src="../utils/i18n.js"></script>
-    <script type="module" src="site-controls.js"></script>
     <script type="module" src="options.js"></script>
 </body>
 
