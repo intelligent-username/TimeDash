@@ -12,8 +12,12 @@ class StorageManager {
             speedStep: 0.25,
             increaseSpeedKey: 'Plus',
             decreaseSpeedKey: 'Minus',
+            resetSpeedKey: 'Period',
             dailyTimeLimitMinutes: 0, // 0 = no limit
             theme: 'auto',
+            accentColor: 'blue',
+            overlayColor: 'blue',
+            badgeEnabled: true,
             keyboardShortcutsEnabled: true,
             notificationsEnabled: true,
             exportFormat: 'csv',

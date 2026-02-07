@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TimeDash - Productivity Tracker</title>
+    <title>TimeDash - Productivity Monitor</title>
     <link rel="stylesheet" href="popup.css" />
 </head>
 
@@ -16,7 +16,7 @@
         <!-- Header -->
         <header class="popup-header" role="banner">
             <div class="header-content">
-                <img src="../icons/icon48.png" alt="TimeDash" class="logo" />
+                <img src="../icons/Logo.svg" alt="TimeDash" class="logo" />
                 <div class="header-text">
                     <h1 data-i18n="appName">TimeDash</h1>
                     <p class="tagline" data-i18n="tagline">Take your time back.</p>
@@ -119,9 +119,16 @@
         <div class="modal-content" tabindex="-1">
             <div class="setup-header">
                 <h2 id="setupModalTitle" data-i18n="setupTitle">Welcome to TimeDash!</h2>
-                <p id="setupModalBody">
-                    Let's get you set up for optimal productivity tracking.
-                </p>
+                <p id="setupModalBody">Your all-in-one productivity companion:</p>
+                <div class="feature-list"
+                    style="text-align: left; background: var(--bg-secondary); padding: 12px; border-radius: 8px; margin: 12px 0;">
+                    <div style="font-size: 0.9em; margin-bottom: 6px;">⏱️ <strong>Time Tracking:</strong> Monitor your
+                        browsing habits.</div>
+                    <div style="font-size: 0.9em; margin-bottom: 6px;">⏩ <strong>Video Speed:</strong> Control speed on
+                        any site.</div>
+                    <div style="font-size: 0.9em;">🛡️ <strong>Site Blocking:</strong> Stay focused with limits.</div>
+                </div>
+                <p style="font-size: 0.9em; color: var(--text-muted);">Let's configure your initial settings:</p>
             </div>
             <div class="setup-content">
                 <div class="setup-step">

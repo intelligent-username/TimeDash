@@ -19,6 +19,31 @@ export class SettingsManager {
             theme: 'theme',
             badgeEnabled: 'badgeEnabled'
         });
+
+        // Color picker setup
+        this.setupColorPicker('accentColorPicker', 'accentColor');
+        this.setupColorPicker('overlayColorPicker', 'overlayColor');
+    }
+
+    setupColorPicker(pickerId, settingKey) {
+        const picker = document.getElementById(pickerId);
+        if (!picker) {
+            console.log('[TimeDash] Color picker not found:', pickerId);
+            return;
+        }
+
+        picker.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                console.log('[TimeDash] Color swatch clicked:', swatch.dataset.color);
+                // Remove active from all
+                picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                // Add active to clicked
+                swatch.classList.add('active');
+                // Update setting
+                const color = swatch.dataset.color;
+                this.controller.updateSetting(settingKey, color);
+            });
+        });
     }
 
     setupVideo() {
@@ -57,7 +82,8 @@ export class SettingsManager {
     setupKeyRecording() {
         const keyInputs = [
             { id: 'increaseSpeedKey', key: 'increaseSpeedKey' },
-            { id: 'decreaseSpeedKey', key: 'decreaseSpeedKey' }
+            { id: 'decreaseSpeedKey', key: 'decreaseSpeedKey' },
+            { id: 'resetSpeedKey', key: 'resetSpeedKey' }
         ];
 
         const normalizationMap = {
@@ -114,7 +140,10 @@ export class SettingsManager {
                         el.classList.remove('recording');
                         if (el.value === 'Press any key...') {
                             const current = this.controller.settings[key];
-                            el.value = current || (key === 'increaseSpeedKey' ? 'Plus' : 'Minus');
+                            let defaultKey = 'Plus';
+                            if (key === 'decreaseSpeedKey') defaultKey = 'Minus';
+                            if (key === 'resetSpeedKey') defaultKey = 'Period';
+                            el.value = current || defaultKey;
                         }
                     }
                 };
@@ -253,6 +282,8 @@ export class SettingsManager {
         if (incKey) incKey.value = settings.increaseSpeedKey || 'Plus';
         const decKey = document.getElementById('decreaseSpeedKey');
         if (decKey) decKey.value = settings.decreaseSpeedKey || 'Minus';
+        const resKey = document.getElementById('resetSpeedKey');
+        if (resKey) resKey.value = settings.resetSpeedKey || 'Period';
 
         // Privacy specific
         const paused = document.getElementById('trackingPaused');
@@ -262,5 +293,22 @@ export class SettingsManager {
         if (autoPurgeParams) autoPurgeParams.style.display = settings.autoPurgeEnabled ? 'block' : 'none';
 
         this.renderWhitelist(settings.whitelist || []);
+
+        // Color pickers
+        this.populateColorPicker('accentColorPicker', settings.accentColor || 'blue');
+        this.populateColorPicker('overlayColorPicker', settings.overlayColor || 'blue');
+
+        // Apply theme and accent to document
+        console.log('[TimeDash] Initial load - theme:', settings.theme, 'accent:', settings.accentColor);
+        document.documentElement.setAttribute('data-theme', settings.theme || 'auto');
+        document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
+    }
+
+    populateColorPicker(pickerId, value) {
+        const picker = document.getElementById(pickerId);
+        if (!picker) return;
+        picker.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.classList.toggle('active', swatch.dataset.color === value);
+        });
     }
 }

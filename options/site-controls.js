@@ -1,6 +1,6 @@
 /**
  * Legacy entry point for site controls.
- * Functionality has been moved to options/js/ui/site-speed-list.js
+ * Functionality in options/js/ui/site-speed-list.js
  * and options/js/ui/blocking-ui.js
  */
 export { SiteSpeedList as SiteControls } from './js/ui/site-speed-list.js';

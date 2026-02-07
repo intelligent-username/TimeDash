@@ -43,6 +43,9 @@ class BlockPageController {
             this.storageManager = new StorageManager();
             this.parseUrlParameters();
 
+            // Apply theme immediately
+            await this.applyTheme();
+
             // Check if access is now allowed (time limit may have been changed)
             const stillBlocked = await this.checkIfStillBlocked();
             if (!stillBlocked && this.blockedUrl) {
@@ -56,6 +59,14 @@ class BlockPageController {
             this.updateUI();
         } catch (error) {
             console.error('Failed to initialize block page:', error);
+        }
+    }
+
+    async applyTheme() {
+        const settings = await this.storageManager.getSettings();
+        if (settings) {
+            document.documentElement.setAttribute('data-theme', settings.theme || 'auto');
+            document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
         }
     }
 

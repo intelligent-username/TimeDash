@@ -1,4 +1,5 @@
-/* Analytics Overview */
+/* Analytics Stuff */
+
 .analytics-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

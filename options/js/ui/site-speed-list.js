@@ -90,7 +90,6 @@ export class SiteSpeedList {
             return;
         }
 
-        // ... Render logic from site-controls.js ...
         container.innerHTML = speeds.map(([domain, speed]) => `
             <div class="site-item" data-domain="${domain}">
                 <div class="site-item-info">

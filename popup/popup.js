@@ -155,6 +155,12 @@ class TimeDashPopup {
      * Update the entire UI
      */
     updateUI() {
+        // Apply theme and accent
+        if (this.settings) {
+            document.documentElement.setAttribute('data-theme', this.settings.theme || 'auto');
+            document.documentElement.setAttribute('data-accent', this.settings.accentColor || 'blue');
+        }
+
         this.updateCurrentSite();
         this.updateQuickStats();
         this.updateTopSites();

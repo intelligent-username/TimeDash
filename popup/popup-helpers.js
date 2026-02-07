@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Popup helper functions for DOM manipulation and utility operations
+ * Popup helpers for DOM & utilities
  */
 class PopupHelpers {
     /**

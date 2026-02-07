@@ -64,17 +64,37 @@ export class OptionsController {
     }
 
     updateSetting(key, value) {
+        // Always apply theme/accent changes immediately since DOM might be out of sync
+        if (key === 'theme' || key === 'accentColor') {
+            this.applyImmediateChanges(key, value);
+        }
+
         // Deep compare or simple check
         if (this.settings[key] === value) return;
         this.settings[key] = value;
         this.isDirty = true;
         this.updateSaveButton();
-        this.applyImmediateChanges(key, value);
+
+        // Apply other immediate changes
+        if (key !== 'theme' && key !== 'accentColor') {
+            this.applyImmediateChanges(key, value);
+        }
+
+        // Debounce save (1s) to ensure content scripts get updates quickly
+        if (this.saveTimeout) clearTimeout(this.saveTimeout);
+        this.saveTimeout = setTimeout(() => {
+            if (this.isDirty) this.saveSettings(true);
+        }, 1000);
     }
 
     applyImmediateChanges(key, value) {
         if (key === 'theme') {
+            console.log('[TimeDash] Applying theme:', value);
             document.documentElement.setAttribute('data-theme', value);
+        }
+        if (key === 'accentColor') {
+            console.log('[TimeDash] Applying accent:', value);
+            document.documentElement.setAttribute('data-accent', value);
         }
     }
 
@@ -109,12 +129,20 @@ export class OptionsController {
     }
 
     setupAutoSave() {
+        // Backup interval (keep it just in case)
         setInterval(() => {
             if (this.isDirty) this.saveSettings(true);
         }, 5000);
 
         window.addEventListener('beforeunload', () => {
             if (this.isDirty) this.saveSettings(true);
+        });
+
+        // Save immediately when switching tabs (e.g. to test usage)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this.isDirty) {
+                this.saveSettings(true);
+            }
         });
     }
 

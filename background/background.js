@@ -62,7 +62,7 @@ class TimeDashBackground {
             this.handleTabRemoved(tabId);
         });
 
-        // Window focus changes
+        // Window focus change
         chrome.windows.onFocusChanged.addListener((windowId) => {
             this.handleWindowFocusChanged(windowId);
         });
@@ -596,6 +596,13 @@ class TimeDashBackground {
      */
     async updateBadge(domain) {
         try {
+            // Check if badge is enabled
+            const settings = await this.storage.getSettings();
+            if (!settings.badgeEnabled) {
+                await chrome.action.setBadgeText({ text: '' });
+                return;
+            }
+
             const usage = await this.storage.getDomainUsage(domain);
             const todayTime = TimeUtils.calculateTodayTime(usage);
 

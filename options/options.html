@@ -14,7 +14,7 @@
         <!-- Header -->
         <header class="header" role="banner">
             <div class="header-content">
-                <img src="../icons/icon48.png" alt="TimeDash" class="logo" />
+                <img src="../icons/Logo.svg" alt="TimeDash" class="logo" />
                 <div class="header-text">
                     <h1 data-i18n="settings">TimeDash Settings</h1>
                     <p>Changes are saved automatically</p>
@@ -46,6 +46,7 @@
                 <button class="tab-btn" data-tab="blocking">Site Blocking</button>
                 <button class="tab-btn" data-tab="analytics">Analytics</button>
                 <button class="tab-btn" data-tab="privacy">Privacy</button>
+                <button class="tab-btn" data-tab="help">Help</button>
             </nav>
 
             <!-- Tab Content -->
@@ -100,6 +101,49 @@
                             </select>
                         </div>
                         <div class="setting-group">
+                            <label for="accentColor">Accent Color</label>
+                            <div class="color-picker-grid" id="accentColorPicker">
+                                <button type="button" class="color-swatch" data-color="blue"
+                                    style="background: #2196f3;" title="Blue"></button>
+                                <button type="button" class="color-swatch" data-color="purple"
+                                    style="background: #9c27b0;" title="Purple"></button>
+                                <button type="button" class="color-swatch" data-color="green"
+                                    style="background: #4caf50;" title="Green"></button>
+                                <button type="button" class="color-swatch" data-color="orange"
+                                    style="background: #ff9800;" title="Orange"></button>
+                                <button type="button" class="color-swatch" data-color="red" style="background: #f44336;"
+                                    title="Red"></button>
+                                <button type="button" class="color-swatch" data-color="teal"
+                                    style="background: #009688;" title="Teal"></button>
+                                <button type="button" class="color-swatch" data-color="pink"
+                                    style="background: #e91e63;" title="Pink"></button>
+                                <button type="button" class="color-swatch" data-color="cyan"
+                                    style="background: #00bcd4;" title="Cyan"></button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label for="overlayColor">Speed Popup Color</label>
+                            <div class="color-picker-grid" id="overlayColorPicker">
+                                <button type="button" class="color-swatch" data-color="blue"
+                                    style="background: #2196f3;" title="Blue"></button>
+                                <button type="button" class="color-swatch" data-color="purple"
+                                    style="background: #9c27b0;" title="Purple"></button>
+                                <button type="button" class="color-swatch" data-color="green"
+                                    style="background: #4caf50;" title="Green"></button>
+                                <button type="button" class="color-swatch" data-color="orange"
+                                    style="background: #ff9800;" title="Orange"></button>
+                                <button type="button" class="color-swatch" data-color="red" style="background: #f44336;"
+                                    title="Red"></button>
+                                <button type="button" class="color-swatch" data-color="teal"
+                                    style="background: #009688;" title="Teal"></button>
+                                <button type="button" class="color-swatch" data-color="pink"
+                                    style="background: #e91e63;" title="Pink"></button>
+                                <button type="button" class="color-swatch" data-color="cyan"
+                                    style="background: #00bcd4;" title="Cyan"></button>
+                            </div>
+                            <small>Color of the playback speed overlay on videos</small>
+                        </div>
+                        <div class="setting-group">
                             <label class="setting-label">
                                 <input type="checkbox" id="badgeEnabled" checked />
                                 <span class="checkmark"></span>
@@ -146,6 +190,11 @@
                         <div class="setting-group">
                             <label for="decreaseSpeedKey">Decrease Speed Key</label>
                             <input type="text" id="decreaseSpeedKey" class="keybind-input" placeholder="Click to set"
+                                readonly />
+                        </div>
+                        <div class="setting-group">
+                            <label for="resetSpeedKey">Reset Speed Key</label>
+                            <input type="text" id="resetSpeedKey" class="keybind-input" placeholder="Click to set"
                                 readonly />
                         </div>
                     </div>
@@ -323,6 +372,29 @@
                 <!-- Privacy Settings -->
                 <div id="privacy" class="tab-pane">
                     <div class="settings-section">
+                        <h2>Privacy Policy</h2>
+                        <p style="text-indent: 2em;">
+                            TimeDash follows a strict local-first design. The extension does not collect, log, transmit,
+                            aggregate, or monetize any data. No browsing history, usage metrics, identifiers, or
+                            personal information are observed or retained. We do not embed analytics frameworks,
+                            telemetry systems, advertising SDKs, or third-party scripts of any kind. Nothing is measured
+                            remotely because nothing is sent.
+                        </p>
+                        <p style="text-indent: 2em;">
+                            All data produced by TimeDash exists only inside your browser. This includes time tracking
+                            records, playback speed preferences, blocked site rules, and internal configuration state.
+                            Storage uses Chrome’s native secure storage APIs and remains bound to your local profile. No
+                            network requests ever carry user data. Nothing syncs to servers. Nothing leaves the device.
+                        </p>
+                        <p style="text-indent: 2em;">
+                            You retain complete control and ownership of all data at all times. You may export your data
+                            as a JSON file for inspection, backup, or migration whenever you choose. If you uninstall
+                            the extension, Chrome removes all associated storage immediately and irreversibly. No
+                            residual copies remain. No recovery is possible because nothing was externalized.
+                        </p>
+                    </div>
+
+                    <div class="settings-section">
                         <h2>Tracking Control</h2>
                         <div class="setting-group">
                             <label class="setting-label">
@@ -405,14 +477,83 @@
                             </div>
                         </div>
 
-                        <button id="exportDataPrivacy" class="btn btn-outline" style="width: 100%;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                                style="margin-right: 8px; vertical-align: text-bottom;">
-                                <path
-                                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                            </svg>
-                            Export My Data
-                        </button>
+                        <div style="display: flex; gap: 10px;">
+                            <button id="importData" class="btn btn-outline" style="flex: 1;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+                                    style="margin-right: 8px; vertical-align: text-bottom;">
+                                    <path
+                                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z" />
+                                </svg>
+                                Import Data
+                            </button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;" />
+
+                            <button id="exportDataPrivacy" class="btn btn-outline" style="flex: 1;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+                                    style="margin-right: 8px; vertical-align: text-bottom;">
+                                    <path
+                                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                                </svg>
+                                Export My Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Help & Documentation -->
+                <div id="help" class="tab-pane">
+                    <div class="settings-section">
+                        <h2>Features Overview</h2>
+                        <div class="help-item">
+                            <h3>Time Tracking</h3>
+                            <p>TimeDash automatically tracks how much time you spend on each website. View your daily
+                                usage in the popup or the Analytics tab.</p>
+                        </div>
+                        <div class="help-item">
+                            <h3>Video Speed Control</h3>
+                            <p>Control playback speed on YouTube, Vimeo, and most other video sites. Use keyboard
+                                shortcuts or the popup menu to adjust speed.</p>
+                        </div>
+                        <div class="help-item">
+                            <h3>Site Blocking</h3>
+                            <p><strong>Hard Block:</strong> Completely prevents access to a site.</p>
+                            <p><strong>Restricted Access:</strong> Allows a specific amount of time per day. Once
+                                exceeded, access is blocked until midnight.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Keyboard Shortcuts</h2>
+                        <table class="shortcuts-table" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Increase
+                                        Speed</strong></td>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Adjustable in Video
+                                    Settings</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Decrease
+                                        Speed</strong></td>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Adjustable in Video
+                                    Settings</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Toggle
+                                        Tracking</strong></td>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Alt + T</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Block
+                                        Site</strong></td>
+                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Alt + B</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Privacy Policy</h2>
+                        <p>Please see our full <a href="#privacy" id="viewPrivacyLink"
+                                style="color: var(--primary-color); text-decoration: underline;">Privacy Policy</a> in
+                            the Privacy tab.</p>
                     </div>
                 </div>
             </div>

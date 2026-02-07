@@ -42,7 +42,9 @@ export class AnalyticsChart {
         }
 
         const dailyTotals = this.calculateTotals(dates, isYearly, year);
-        const maxTime = Math.max(...dailyTotals.map(d => d.time), 0);
+        // Filter nulls for max calculation
+        const validTotals = dailyTotals.filter(d => d.time !== null);
+        const maxTime = Math.max(...validTotals.map(d => d.time), 0);
 
         // Render Y-axis
         const yLabels = [formatTime(maxTime), formatTime(maxTime / 2), '0'];
@@ -58,6 +60,10 @@ export class AnalyticsChart {
         const usage = this.dataContext.getUsage();
 
         if (isYearly) {
+            // Future check for year view if needed, but usually we just show 0 for months
+            // Assuming we want to show all months as 0 if not passed?
+            // Or just keep logic: Year view usually shows full year 0s.
+            // Let's keep existing Year logic (it calculates full year)
             for (let month = 0; month < 12; month++) {
                 let monthTotal = 0;
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -73,7 +79,10 @@ export class AnalyticsChart {
         } else {
             const todayStr = formatDateString(new Date());
             for (const date of dates) {
-                if (date > todayStr) continue;
+                if (date > todayStr) {
+                    dailyTotals.push({ date, time: null }); // Placeholder for future
+                    continue;
+                }
                 let dayTotal = 0;
                 for (const domain of Object.keys(usage)) {
                     dayTotal += (usage[domain][date] || 0) * 1000;
@@ -88,23 +97,37 @@ export class AnalyticsChart {
         const width = container.clientWidth || 600;
         const height = container.clientHeight || 180;
         const padding = 10;
+
+        // Spacing based on full range (dailyTotals now has full length)
         const pointSpacing = (width - padding * 2) / Math.max(dailyTotals.length - 1, 1);
 
         let pathD = '';
         const points = [];
         const earliestDate = this.dataContext.getEarliestDate();
 
+        // Track last valid x point for area closure
+        let lastX = padding;
+
         dailyTotals.forEach((day, i) => {
+            if (day.time === null) return; // Skip future
+
             const x = padding + (i * pointSpacing);
             const yRatio = maxTime > 0 ? day.time / maxTime : 0;
             const y = height - padding - (yRatio * (height - padding * 2));
 
-            if (i === 0) pathD = `M ${x} ${y}`;
+            if (pathD === '') pathD = `M ${x} ${y}`;
             else pathD += ` L ${x} ${y}`;
+
+            lastX = x;
 
             const isEarliest = !isYearly && day.date === earliestDate;
             points.push({ x, y, day, isEarliest });
         });
+
+        if (points.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
 
         container.innerHTML = `
             <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
@@ -118,7 +141,7 @@ export class AnalyticsChart {
                         <stop offset="100%" style="stop-color:#1976d2;stop-opacity:0.05" />
                     </linearGradient>
                 </defs>
-                <path d="${pathD} L ${padding + (dailyTotals.length - 1) * pointSpacing} ${height - padding} L ${padding} ${height - padding} Z" fill="url(#areaGradient)" />
+                <path d="${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z" fill="url(#areaGradient)" />
                 <path d="${pathD}" fill="none" stroke="url(#lineGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                 ${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${p.isEarliest ? '#ff9800' : '#1976d2'}" stroke="white" stroke-width="2" class="chart-point" />`).join('')}
             </svg>

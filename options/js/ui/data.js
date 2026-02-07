@@ -158,24 +158,6 @@ export class DataManager {
         try {
             await this.controller.storageManager.resetSettings();
             await this.controller.storageManager.saveBlockList([]); // Clear blocks?
-            // Usually resetSettings only resets preferences, not usage data.
-            // But resetAllData implies everything.
-            // options.js `resetSettings` calls `storageManager.resetSettings()` which resets settings.
-
-            // If the button is "Reset All Data" (header), it might mean clear everything.
-            // Let's look at `options.html`: "Reset All Data".
-            // Let's look at `options.js` `resetSettings` implementation (Step 720 line 1422).
-            // It calls `storageManager.resetSettings()`.
-
-            // I'll stick to `resetSettings` behavior for now.
-            // If user meant "Clear Data" (separate button?), I don't see one in `options.js` beyond `clearAllData` (line 1533).
-            // But `resetBtn` in header calls `resetSettings`? 
-            // In options.js step 702 line 550: `resetBtn.addEventListener('click', () => this.resetSettings());` 
-            // Wait, that was `resetSettings` button.
-            // Header button is `resetBtn` (id). 
-            // I don't see `resetBtn` listener in `setupActionButtons` in step 702.
-
-            // Actually, `options.js` handles `resetSettings` (the method) which does `resetSettings` (the storage call).
 
             await this.controller.loadAllData();
             this.controller.refreshUI();

@@ -1,10 +1,16 @@
+/* CSS Variables - Theme Support */
+
 :root {
+    /* Base Colors */
     --primary-color: #2196f3;
     --primary-dark: #1976d2;
+    --primary-light: #64b5f6;
     --secondary-color: #ff9800;
     --success-color: #4caf50;
     --danger-color: #f44336;
     --warning-color: #ff9800;
+
+    /* Light Theme (Default) */
     --text-primary: #212121;
     --text-secondary: #757575;
     --text-disabled: #bdbdbd;
@@ -14,10 +20,145 @@
     --border: #e0e0e0;
     --shadow: rgba(0, 0, 0, 0.1);
     --shadow-elevated: rgba(0, 0, 0, 0.15);
+
+    /* Sizing */
     --radius: 10px;
     --radius-small: 6px;
     --spacing: 16px;
     --spacing-small: 8px;
     --spacing-large: 24px;
     --spacing-xl: 32px;
+
+    /* Accent Color (customizable) */
+    --accent-color: var(--primary-color);
+    --accent-dark: var(--primary-dark);
+    --accent-light: var(--primary-light);
+}
+
+/* Light Theme - explicit */
+html[data-theme="light"],
+:root[data-theme="light"] {
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --text-disabled: #bdbdbd;
+    --background: #ffffff;
+    --surface: #f5f5f5;
+    --surface-elevated: #ffffff;
+    --border: #e0e0e0;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-elevated: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark Theme */
+html[data-theme="dark"],
+:root[data-theme="dark"] {
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-disabled: #606060;
+    --background: #1a1a1a;
+    --surface: #252525;
+    --surface-elevated: #2d2d2d;
+    --border: #3a3a3a;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow-elevated: rgba(0, 0, 0, 0.4);
+}
+
+/* System Auto Theme */
+@media (prefers-color-scheme: dark) {
+
+    html[data-theme="auto"],
+    html:not([data-theme]),
+    :root[data-theme="auto"],
+    :root:not([data-theme]) {
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --text-disabled: #606060;
+        --background: #1a1a1a;
+        --surface: #252525;
+        --surface-elevated: #2d2d2d;
+        --border: #3a3a3a;
+        --shadow: rgba(0, 0, 0, 0.3);
+        --shadow-elevated: rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Accent Color Schemes - must use html selector for specificity */
+html[data-accent="blue"],
+:root[data-accent="blue"] {
+    --accent-color: #2196f3;
+    --accent-dark: #1976d2;
+    --accent-light: #64b5f6;
+    --primary-color: #2196f3;
+    --primary-dark: #1976d2;
+    --primary-light: #64b5f6;
+}
+
+html[data-accent="purple"],
+:root[data-accent="purple"] {
+    --accent-color: #9c27b0;
+    --accent-dark: #7b1fa2;
+    --accent-light: #ba68c8;
+    --primary-color: #9c27b0;
+    --primary-dark: #7b1fa2;
+    --primary-light: #ba68c8;
+}
+
+html[data-accent="green"],
+:root[data-accent="green"] {
+    --accent-color: #4caf50;
+    --accent-dark: #388e3c;
+    --accent-light: #81c784;
+    --primary-color: #4caf50;
+    --primary-dark: #388e3c;
+    --primary-light: #81c784;
+}
+
+html[data-accent="orange"],
+:root[data-accent="orange"] {
+    --accent-color: #ff9800;
+    --accent-dark: #f57c00;
+    --accent-light: #ffb74d;
+    --primary-color: #ff9800;
+    --primary-dark: #f57c00;
+    --primary-light: #ffb74d;
+}
+
+html[data-accent="red"],
+:root[data-accent="red"] {
+    --accent-color: #f44336;
+    --accent-dark: #d32f2f;
+    --accent-light: #e57373;
+    --primary-color: #f44336;
+    --primary-dark: #d32f2f;
+    --primary-light: #e57373;
+}
+
+html[data-accent="teal"],
+:root[data-accent="teal"] {
+    --accent-color: #009688;
+    --accent-dark: #00796b;
+    --accent-light: #4db6ac;
+    --primary-color: #009688;
+    --primary-dark: #00796b;
+    --primary-light: #4db6ac;
+}
+
+html[data-accent="pink"],
+:root[data-accent="pink"] {
+    --accent-color: #e91e63;
+    --accent-dark: #c2185b;
+    --accent-light: #f48fb1;
+    --primary-color: #e91e63;
+    --primary-dark: #c2185b;
+    --primary-light: #f48fb1;
+}
+
+html[data-accent="cyan"],
+:root[data-accent="cyan"] {
+    --accent-color: #00bcd4;
+    --accent-dark: #0097a7;
+    --accent-light: #4dd0e1;
+    --primary-color: #00bcd4;
+    --primary-dark: #0097a7;
+    --primary-light: #4dd0e1;
 }

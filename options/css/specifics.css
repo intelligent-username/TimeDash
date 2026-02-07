@@ -1,4 +1,5 @@
-/* Privacy Section */
+/* Privacy Tab */
+
 .privacy-info {
     display: grid;
     gap: var(--spacing);

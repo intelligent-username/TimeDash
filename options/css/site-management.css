@@ -1,4 +1,5 @@
-/* Rule Manager (New Styles) */
+/* Rule Manager Styles */
+
 .rule-manager {
     margin-top: var(--spacing);
 }
@@ -14,7 +15,7 @@
 .rule-domain-input {
     flex: 2;
     min-width: 200px;
-    padding: 10px 12px;
+    padding: 10px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     font-size: 14px;
@@ -22,11 +23,13 @@
     background: var(--background);
     color: var(--text-primary);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.5;
+    font-weight: 500;
 }
 
 .rule-limit-input {
-    width: 80px;
-    padding: 10px 12px;
+    width: 90px;
+    padding: 10px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     font-size: 14px;
@@ -34,6 +37,8 @@
     background: var(--background);
     color: var(--text-primary);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.5;
+    font-weight: 600;
 }
 
 .rule-domain-input:focus,
@@ -85,9 +90,11 @@
 }
 
 .limit-suffix {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
     white-space: nowrap;
+    margin-right: 12px;
+    font-weight: 500;
 }
 
 .rule-delete-btn {
@@ -116,8 +123,8 @@
 
 /* Editable inputs in lists */
 .rule-limit-input-edit {
-    width: 70px;
-    padding: 6px 8px;
+    width: 75px;
+    padding: 7px 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius-small);
     font-size: 13px;
@@ -125,6 +132,8 @@
     background: var(--background);
     color: var(--text-primary);
     transition: all 0.2s ease;
+    line-height: 1.4;
+    font-weight: 600;
 }
 
 .rule-limit-input-edit:focus {
@@ -136,6 +145,7 @@
 .restrict-item .rule-item-info {
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
 /* Old Site Controls (Legacy support) */
