@@ -31,17 +31,22 @@ export class AnalyticsChart {
 
         if (!chartContent) return;
 
-        const { dates, label, xLabels, isYearly, year } = this.getDateRange();
+        const { dates, label, xLabels, isYearly, year, isAllTime, years } = this.getDateRange();
         if (periodLabel) periodLabel.textContent = label;
 
-        if (nextBtn) nextBtn.disabled = this.offset >= 0;
-
-        if (prevBtn) {
-            const minOffset = this.getMinOffset();
-            prevBtn.disabled = this.offset <= minOffset;
+        // Disable navigation for 'all' period
+        if (this.period === 'all') {
+            if (nextBtn) nextBtn.disabled = true;
+            if (prevBtn) prevBtn.disabled = true;
+        } else {
+            if (nextBtn) nextBtn.disabled = this.offset >= 0;
+            if (prevBtn) {
+                const minOffset = this.getMinOffset();
+                prevBtn.disabled = this.offset <= minOffset;
+            }
         }
 
-        const dailyTotals = this.calculateTotals(dates, isYearly, year);
+        const dailyTotals = this.calculateTotals(dates, isYearly, year, isAllTime, years);
         // Filter nulls for max calculation
         const validTotals = dailyTotals.filter(d => d.time !== null);
         const maxTime = Math.max(...validTotals.map(d => d.time), 0);
@@ -50,20 +55,32 @@ export class AnalyticsChart {
         const yLabels = [formatTime(maxTime), formatTime(maxTime / 2), '0'];
         if (chartYAxis) chartYAxis.innerHTML = yLabels.map(l => `<span>${l}</span>`).join('');
 
-        this.renderSvgChart(chartContent, dailyTotals, maxTime, isYearly);
+        this.renderSvgChart(chartContent, dailyTotals, maxTime, isYearly || isAllTime);
 
         if (chartXAxis) chartXAxis.innerHTML = xLabels.map(l => `<span>${l}</span>`).join('');
     }
 
-    calculateTotals(dates, isYearly, year) {
+    calculateTotals(dates, isYearly, year, isAllTime = false, years = []) {
         const dailyTotals = [];
         const usage = this.dataContext.getUsage();
 
-        if (isYearly) {
-            // Future check for year view if needed, but usually we just show 0 for months
-            // Assuming we want to show all months as 0 if not passed?
-            // Or just keep logic: Year view usually shows full year 0s.
-            // Let's keep existing Year logic (it calculates full year)
+        if (isAllTime && years.length > 0) {
+            // Calculate yearly totals for all-time view
+            for (const y of years) {
+                let yearTotal = 0;
+                for (let month = 0; month < 12; month++) {
+                    const daysInMonth = new Date(y, month + 1, 0).getDate();
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dateStr = formatDateString(new Date(y, month, day));
+                        for (const domain of Object.keys(usage)) {
+                            yearTotal += (usage[domain][dateStr] || 0) * 1000;
+                        }
+                    }
+                }
+                dailyTotals.push({ date: y.toString(), time: yearTotal });
+            }
+        } else if (isYearly) {
+            // Monthly totals for a single year
             for (let month = 0; month < 12; month++) {
                 let monthTotal = 0;
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -197,6 +214,47 @@ export class AnalyticsChart {
             else if (this.offset === -1) label = 'Last Year';
             else label = year.toString();
             return { dates: [], label, xLabels, isYearly: true, year };
+        } else if (this.period === 'all') {
+            // All-time: show daily breakdown from earliest date to now
+            const earliestDate = this.dataContext.getEarliestDate();
+            const todayStr = formatDateString(now);
+            const startStr = earliestDate || todayStr;
+
+            // Parse start date safely (avoiding UTC conversion issues)
+            const [sy, sm, sd] = startStr.split('-').map(Number);
+            const d = new Date(sy, sm - 1, sd);
+
+            // Generate daily dates up to today
+            while (true) {
+                const currentStr = formatDateString(d);
+                if (currentStr > todayStr) break;
+                dates.push(currentStr);
+                d.setDate(d.getDate() + 1);
+            }
+
+            // Generate sparse labels for X-axis
+            const count = dates.length;
+            const numLabels = 6;
+            xLabels = [];
+
+            if (count <= numLabels) {
+                xLabels = dates.map(ds => {
+                    const [y, m, day] = ds.split('-').map(Number);
+                    return new Date(y, m - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                });
+            } else {
+                for (let i = 0; i < numLabels; i++) {
+                    const idx = Math.round(i * (count - 1) / (numLabels - 1));
+                    if (idx < dates.length) {
+                        const [y, m, day] = dates[idx].split('-').map(Number);
+                        const labelDate = new Date(y, m - 1, day);
+                        xLabels.push(labelDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }));
+                    }
+                }
+            }
+
+            label = 'All Time';
+            return { dates, label, xLabels, isYearly: false, isAllTime: false };
         }
         return { dates, label, xLabels, isYearly: false, year: null };
     }

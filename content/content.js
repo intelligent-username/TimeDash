@@ -58,6 +58,11 @@ class TimeDashContent {
      * Load settings from storage
      */
     async loadSettings() {
+        if (!chrome.runtime?.id) {
+            this.contextValid = false;
+            return;
+        }
+
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = response || {};
@@ -66,6 +71,10 @@ class TimeDashContent {
             // Pass settings to UI if needed (e.g. for theme or preferences)
             if (this.ui) this.ui.updateSettings(this.settings);
         } catch (error) {
+            if (error.message?.includes('Extension context invalidated')) {
+                this.contextValid = false;
+                return;
+            }
             console.error('Error loading settings:', error);
             // Fallbacks
             this.settings = {
@@ -142,21 +151,10 @@ class TimeDashContent {
                 this.currentSpeed = video.playbackRate;
                 this.saveCurrentSpeed();
                 this.updateAllVideoSpeeds(); // Sync other videos
-                if (this.ui) this.ui.showToast(`Speed: ${this.currentSpeed}x`);
             }
         });
 
-        // Double click to open Modal Overlay
-        video.addEventListener('dblclick', (e) => {
-            // Respect setting if exists, or default to enabled
-            if (this.settings.disableOverlayTrigger) return;
 
-            // Optional: prevent default if it conflicts, but many users like fullscreen on dblclick.
-            // Perhaps we only trigger if modifier key is held? 
-            // Or only if NOT fullscreen?
-            // For now, let's trigger it.
-            if (this.ui) this.ui.showModal(video);
-        });
 
         // Cleanup on removal
         const cleanupObserver = new MutationObserver((mutations) => {
@@ -209,7 +207,8 @@ class TimeDashContent {
     }
 
     resetSpeed() {
-        this.setSpeed(1.0);
+        const defaultSpeed = parseFloat(this.settings.defaultPlaybackSpeed) || 1.0;
+        this.setSpeed(defaultSpeed);
     }
 
     setSpeed(speed) {
@@ -221,12 +220,17 @@ class TimeDashContent {
 
         this.updateAllVideoSpeeds();
         this.saveCurrentSpeed();
-
-        if (this.ui) this.ui.showToast(`Speed: ${this.currentSpeed}x`);
     }
 
     async saveCurrentSpeed() {
-        if (!this.contextValid) return;
+        if (this.isOrphaned) return;
+
+        // Final sanity check before network request
+        if (!chrome.runtime?.id) {
+            this.handleOrphanedState();
+            return;
+        }
+
         try {
             await chrome.runtime.sendMessage({
                 type: 'UPDATE_VIDEO_SPEED',
@@ -234,10 +238,41 @@ class TimeDashContent {
             });
         } catch (error) {
             if (error.message?.includes('Extension context invalidated')) {
-                this.contextValid = false;
+                this.handleOrphanedState();
+                return; // Stop here, script is now dead
             }
             console.error('Error saving speed:', error);
         }
+    }
+
+    /**
+     * Handle the state where the extension has been reloaded/updated
+     * and this content script is now "orphaned" (disconnected from backend).
+     */
+    handleOrphanedState() {
+        if (this.isOrphaned) return;
+
+        console.log('TimeDash: Extension context invalidated. Cleaning up orphaned script.');
+        this.isOrphaned = true;
+        this.contextValid = false;
+
+        // 1. Disconnect observers to stop detecting new videos
+        if (this.mutationObserver) {
+            this.mutationObserver.disconnect();
+            this.mutationObserver = null;
+        }
+
+        // 2. Stop visibility polling
+        if (this.visibilityCheckInterval) {
+            clearInterval(this.visibilityCheckInterval);
+            this.visibilityCheckInterval = null;
+        }
+
+        // 3. Clear video set references (helps GC)
+        this.videos.clear();
+
+        // 4. (Optional) Remove UI elements if desired, or leave them static
+        // if (this.ui) this.ui.remove(); 
     }
 
     /**
@@ -262,14 +297,8 @@ class TimeDashContent {
         };
 
         document.addEventListener('keydown', (event) => {
+            if (this.isOrphaned) return; // Stop handling if orphaned
             if (this.isInputFocused()) return;
-
-            // Toggle Overlay: Ctrl+Shift+S (Global shortcut)
-            if (event.ctrlKey && event.shiftKey && event.code === 'KeyS') {
-                event.preventDefault();
-                if (this.ui) this.ui.toggleModal();
-                return;
-            }
 
             if (!this.settings.keyboardShortcutsEnabled) return;
 
@@ -309,6 +338,8 @@ class TimeDashContent {
 
     setupMessageListeners() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (this.isOrphaned) return false;
+
             switch (message.type) {
                 case 'CHECK_VISIBILITY':
                     sendResponse({ visible: !document.hidden });
@@ -338,19 +369,25 @@ class TimeDashContent {
     }
 
     setupStorageListener() {
-        chrome.storage.onChanged.addListener((changes, area) => {
-            if (area === 'local' && changes.settings) {
-                this.settings = changes.settings.newValue || {};
-                if (this.ui) this.ui.updateSettings(this.settings);
+        // We can't easily remove this listener, but it won't fire if context is invalid
+        try {
+            chrome.storage.onChanged.addListener((changes, area) => {
+                if (this.isOrphaned) return;
 
-                // If max speed changed, might need to clamp current speed?
-                // If speed step changed, will apply next time.
-            }
-        });
+                if (area === 'local' && changes.settings) {
+                    this.settings = changes.settings.newValue || {};
+                    if (this.ui) this.ui.updateSettings(this.settings);
+                }
+            });
+        } catch (e) { /* Ignore setup error */ }
     }
 
     startVisibilityCheck() {
         this.visibilityCheckInterval = setInterval(() => {
+            if (this.isOrphaned) {
+                clearInterval(this.visibilityCheckInterval);
+                return;
+            }
             // Keep alive check or visibility reporting
         }, 1000);
     }

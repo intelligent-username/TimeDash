@@ -65,6 +65,8 @@ export class AnalyticsHeatmap {
             cellIndex++;
         }
 
+        const weeks = Math.ceil(cells.length / 7);
+        grid.style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
         grid.innerHTML = cells.join('');
 
         if (monthsRow) {

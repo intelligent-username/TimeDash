@@ -9,567 +9,814 @@
 </head>
 
 <body>
-    <div class="container" role="region" aria-label="TimeDash settings">
-        <div id="banner" class="banner" role="status" aria-live="polite" style="display: none"></div>
-        <!-- Header -->
-        <header class="header" role="banner">
-            <div class="header-content">
-                <img src="../icons/Logo.svg" alt="TimeDash" class="logo" />
-                <div class="header-text">
-                    <h1 data-i18n="settings">TimeDash Settings</h1>
-                    <p>Changes are saved automatically</p>
-                </div>
+    <div class="dashboard-container" role="region" aria-label="TimeDash Dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../icons/Logo.svg" alt="TimeDash" class="sidebar-logo" />
+                <span class="sidebar-title">TimeDash</span>
             </div>
-            <div class="header-actions">
-                <button id="exportBtn" class="btn btn-outline">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                    </svg>
-                    Export Data
-                </button>
-                <button id="resetBtn" class="btn btn-danger">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                    </svg>
-                    Reset All Data
-                </button>
-            </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Navigation Tabs -->
-            <nav class="tab-nav">
-                <button class="tab-btn active" data-tab="general">General</button>
-                <button class="tab-btn" data-tab="video">Video Control</button>
-                <button class="tab-btn" data-tab="blocking">Site Blocking</button>
-                <button class="tab-btn" data-tab="analytics">Analytics</button>
-                <button class="tab-btn" data-tab="privacy">Privacy</button>
-                <button class="tab-btn" data-tab="help">Help</button>
+            <nav class="sidebar-nav" role="navigation">
+                <button class="nav-item active" data-tab="general">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                    </svg>
+                    <span>General</span>
+                </button>
+                <button class="nav-item" data-tab="analytics">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
+                    </svg>
+                    <span>Analytics</span>
+                </button>
+                <button class="nav-item" data-tab="video">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </svg>
+                    <span>Video Control</span>
+                </button>
+                <button class="nav-item" data-tab="blocking">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z" />
+                    </svg>
+                    <span>Site Blocking</span>
+                </button>
+                <button class="nav-item" data-tab="privacy">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12,17A2,2 0 0,0 14,19A2,2 0 0,0 16,17A2,2 0 0,0 14,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                    </svg>
+                    <span>Privacy</span>
+                </button>
+                <button class="nav-item" data-tab="help">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
+                    </svg>
+                    <span>Help</span>
+                </button>
             </nav>
 
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- General Settings -->
-                <div id="general" class="tab-pane active">
-                    <div class="settings-section">
-                        <h2>Time Tracking</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="trackingEnabled" checked />
-                                <span class="checkmark"></span>
-                                Enable time tracking
-                                <small>Track time spent on websites</small>
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label for="dailyLimit">Daily Time Limit (minutes)</label>
-                            <input type="number" id="dailyLimit" min="0" max="1440" placeholder="0 = no limit" />
-                            <small>Set 0 for no daily limit</small>
-                        </div>
-                    </div>
+            <div class="sidebar-footer">
+                <span class="version-text">v1.0.0</span>
+            </div>
+        </aside>
 
-                    <div class="settings-section">
-                        <h2>Notifications</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="notificationsEnabled" checked />
-                                <span class="checkmark"></span>
-                                Enable notifications
-                                <small>Get alerts for limits and milestones</small>
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="quotaWarnings" checked />
-                                <span class="checkmark"></span>
-                                Quota warnings
-                                <small>Warn when approaching daily limits</small>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Appearance</h2>
-                        <div class="setting-group">
-                            <label for="theme">Theme</label>
-                            <select id="theme">
-                                <option value="auto">Auto (System)</option>
-                                <option value="light">Light</option>
-                                <option value="dark">Dark</option>
-                            </select>
-                        </div>
-                        <div class="setting-group">
-                            <label for="accentColor">Accent Color</label>
-                            <div class="color-picker-grid" id="accentColorPicker">
-                                <button type="button" class="color-swatch" data-color="blue"
-                                    style="background: #2196f3;" title="Blue"></button>
-                                <button type="button" class="color-swatch" data-color="purple"
-                                    style="background: #9c27b0;" title="Purple"></button>
-                                <button type="button" class="color-swatch" data-color="green"
-                                    style="background: #4caf50;" title="Green"></button>
-                                <button type="button" class="color-swatch" data-color="orange"
-                                    style="background: #ff9800;" title="Orange"></button>
-                                <button type="button" class="color-swatch" data-color="red" style="background: #f44336;"
-                                    title="Red"></button>
-                                <button type="button" class="color-swatch" data-color="teal"
-                                    style="background: #009688;" title="Teal"></button>
-                                <button type="button" class="color-swatch" data-color="pink"
-                                    style="background: #e91e63;" title="Pink"></button>
-                                <button type="button" class="color-swatch" data-color="cyan"
-                                    style="background: #00bcd4;" title="Cyan"></button>
-                            </div>
-                        </div>
-                        <div class="setting-group">
-                            <label for="overlayColor">Speed Popup Color</label>
-                            <div class="color-picker-grid" id="overlayColorPicker">
-                                <button type="button" class="color-swatch" data-color="blue"
-                                    style="background: #2196f3;" title="Blue"></button>
-                                <button type="button" class="color-swatch" data-color="purple"
-                                    style="background: #9c27b0;" title="Purple"></button>
-                                <button type="button" class="color-swatch" data-color="green"
-                                    style="background: #4caf50;" title="Green"></button>
-                                <button type="button" class="color-swatch" data-color="orange"
-                                    style="background: #ff9800;" title="Orange"></button>
-                                <button type="button" class="color-swatch" data-color="red" style="background: #f44336;"
-                                    title="Red"></button>
-                                <button type="button" class="color-swatch" data-color="teal"
-                                    style="background: #009688;" title="Teal"></button>
-                                <button type="button" class="color-swatch" data-color="pink"
-                                    style="background: #e91e63;" title="Pink"></button>
-                                <button type="button" class="color-swatch" data-color="cyan"
-                                    style="background: #00bcd4;" title="Cyan"></button>
-                            </div>
-                            <small>Color of the playback speed overlay on videos</small>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="badgeEnabled" checked />
-                                <span class="checkmark"></span>
-                                Show badge counter
-                                <small>Display time or status on extension icon</small>
-                            </label>
-                        </div>
-                    </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="header-titles">
+                    <h1 id="pageTitle" class="page-title">Analytics</h1>
+                    <p id="pageSubtitle" class="page-subtitle">Overview of your productivity</p>
                 </div>
+            </header>
 
-                <!-- Video Control Settings -->
-                <div id="video" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Video Playback</h2>
-                        <div class="setting-group">
-                            <label for="defaultSpeed">Default Speed</label>
-                            <input type="number" id="defaultSpeed" min="0.5" max="16" step="0.1" placeholder="1.0" />
-                        </div>
-                        <div class="setting-group">
-                            <label for="maxSpeed">Max Speed</label>
-                            <input type="number" id="maxSpeed" min="0.5" max="16" step="0.1" placeholder="16.0" />
-                        </div>
-                        <div class="setting-group">
-                            <label for="speedStep">Speed Step</label>
-                            <input type="number" id="speedStep" min="0.05" max="1" step="0.05" placeholder="0.25" />
-                            <small>Amount to change speed when using shortcuts</small>
-                        </div>
-                    </div>
+            <!-- Scrollable Content -->
+            <div class="content-scrollable">
+                <div id="banner" class="banner" role="status" aria-live="polite" style="display: none"></div>
 
-                    <div class="settings-section">
-                        <h2>Keyboard Shortcuts</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="keyboardShortcuts" checked />
-                                <span class="checkmark"></span>
-                                Enable keyboard shortcuts
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label for="increaseSpeedKey">Increase Speed Key</label>
-                            <input type="text" id="increaseSpeedKey" class="keybind-input" placeholder="Click to set"
-                                readonly />
-                        </div>
-                        <div class="setting-group">
-                            <label for="decreaseSpeedKey">Decrease Speed Key</label>
-                            <input type="text" id="decreaseSpeedKey" class="keybind-input" placeholder="Click to set"
-                                readonly />
-                        </div>
-                        <div class="setting-group">
-                            <label for="resetSpeedKey">Reset Speed Key</label>
-                            <input type="text" id="resetSpeedKey" class="keybind-input" placeholder="Click to set"
-                                readonly />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Site Blocking Settings -->
-                <div id="blocking" class="tab-pane">
-                    <!-- Hard Blocked Section -->
-                    <div class="settings-section">
-                        <h2>Hard Blocked Sites</h2>
-                        <p class="section-description">
-                            These sites are <strong>completely inaccessible</strong>. Any attempt to visit them will
-                            immediately redirect to the block page.
-                        </p>
-                        <div class="rule-manager" id="blockedManager">
-                            <div class="rule-input-group">
-                                <input type="text" id="blockedDomainInput" placeholder="e.g., facebook.com"
-                                    class="rule-domain-input" />
-                                <button id="addBlockedBtn" class="btn btn-primary">Add</button>
-                            </div>
-                            <ul class="rule-list" id="blockedList">
-                                <!-- Populated by JS -->
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Restricted Access Section -->
-                    <div class="settings-section">
-                        <h2>Restricted Access Sites</h2>
-                        <p class="section-description">
-                            These sites are allowed for a <strong>limited time per day</strong>. Once the limit is
-                            exceeded, they will be blocked until the next day.
-                        </p>
-                        <div class="rule-manager" id="restrictedManager">
-                            <div class="rule-input-group">
-                                <input type="text" id="restrictedDomainInput" placeholder="e.g., youtube.com"
-                                    class="rule-domain-input" />
-                                <input type="number" id="restrictedLimitInput" placeholder="30" min="1" max="1440"
-                                    class="rule-limit-input" title="Daily limit in minutes" />
-                                <span class="limit-suffix">min/day</span>
-                                <button id="addRestrictedBtn" class="btn btn-primary">Add</button>
-                            </div>
-                            <ul class="rule-list" id="restrictedList">
-                                <!-- Populated by JS -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analytics Dashboard -->
-                <div id="analytics" class="tab-pane">
-                    <!-- Quick Stats -->
-                    <div class="settings-section">
-                        <h2>Usage Overview</h2>
-                        <div class="analytics-stats">
-                            <div class="analytics-stat-card">
-                                <div class="analytics-stat-value" id="analyticsTodayTotal">0m</div>
-                                <div class="analytics-stat-label">Today</div>
-                            </div>
-                            <div class="analytics-stat-card">
-                                <div class="analytics-stat-value" id="analyticsWeekAverage">0m</div>
-                                <div class="analytics-stat-label">Daily Average</div>
-                            </div>
-                            <div class="analytics-stat-card">
-                                <div class="analytics-stat-value" id="analyticsTotalTime">0h</div>
-                                <div class="analytics-stat-label">All Time</div>
-                            </div>
-                            <div class="analytics-stat-card">
-                                <div class="analytics-stat-value" id="analyticsSitesCount">0</div>
-                                <div class="analytics-stat-label">Sites Tracked</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Usage Trend Chart -->
-                    <div class="settings-section">
-                        <div class="chart-header">
-                            <h2>Usage Trends</h2>
-                            <div class="chart-controls">
-                                <div class="chart-period-selector">
-                                    <button class="period-btn active" data-period="week">Week</button>
-                                    <button class="period-btn" data-period="month">Month</button>
-                                    <button class="period-btn" data-period="year">Year</button>
+                <div class="tab-content-wrapper">
+                    <!-- Analytics Dashboard (Default) -->
+                    <div id="analytics" class="tab-pane active fade-in">
+                        <!-- Quick Stats Row -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon-wrapper"
+                                    style="background: var(--primary-fade); color: var(--primary-color);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 20c4.42 0 8-3.58 8-8s-3.58-8-8-8-8 3.58-8 8 3.58 8 8 8zm0-18c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1-2h-2v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                                    </svg>
                                 </div>
-                                <div class="chart-navigation">
-                                    <button class="nav-btn" id="chartPrev" title="Previous">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                                <div class="stat-info">
+                                    <div class="stat-value" id="analyticsTodayTotal">0m</div>
+                                    <div class="stat-label">Time Today</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-wrapper"
+                                    style="background: var(--success-fade); color: var(--success-color);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+                                    </svg>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="analyticsWeekAverage">0m</div>
+                                    <div class="stat-label">Daily Average</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-wrapper"
+                                    style="background: var(--secondary-fade); color: var(--secondary-color);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M17.9,17.39C17.64,16.59 16.89,16 16,16H15V13A1,1 0 0,0 14,12H8V10H10A1,1 0 0,0 11,9V7H13A2,2 0 0,0 15,5V4.59C17.93,5.77 20,8.64 20,12C20,14.08 19.2,15.97 17.9,17.39M11,19.93C7.05,19.44 4,16.08 4,12C4,11.38 4.08,10.79 4.21,10.21L9,15V16A2,2 0 0,0 11,18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                                    </svg>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="analyticsSitesCount">0</div>
+                                    <div class="stat-label">Sites Tracked</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-wrapper"
+                                    style="background: var(--accent-fade); color: var(--accent-color);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                                    </svg>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="analyticsTotalTime">0h</div>
+                                    <div class="stat-label">All Time</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Usage Trend Chart -->
+                        <div class="content-card large-card">
+                            <div class="card-header">
+                                <h2>Usage Trends</h2>
+                                <div class="chart-controls">
+                                    <div class="chart-period-selector" role="group" aria-label="Chart Range">
+                                        <button class="period-btn active" data-period="week">Week</button>
+                                        <button class="period-btn" data-period="month">Month</button>
+                                        <button class="period-btn" data-period="year">Year</button>
+                                    </div>
+                                    <div class="chart-navigation">
+                                        <button class="nav-btn" id="chartPrev" title="Previous">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <path
+                                                    d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                                            </svg>
+                                        </button>
+                                        <span class="chart-period-label" id="chartPeriodLabel">This Week</span>
+                                        <button class="nav-btn" id="chartNext" title="Next">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" id="usageChart">
+                                    <!-- Chart content rendered by JS -->
+                                    <div class="chart-area">
+                                        <div class="chart-y-axis" id="chartYAxis"></div>
+                                        <div class="chart-content" id="chartContent"></div>
+                                    </div>
+                                    <div class="chart-x-axis" id="chartXAxis"></div>
+                                    <div class="chart-earliest-indicator" id="chartEarliestIndicator"
+                                        style="display: none;">
+                                        <div class="earliest-line"></div>
+                                        <span class="earliest-label">Tracking started</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Heatmap -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Activity Heatmap</h2>
+                                <div class="heatmap-controls">
+                                    <select id="heatmapFilter" class="modern-select">
+                                        <option value="all">All Sites</option>
+                                        <option value="restricted">Restricted Sites Only</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="heatmap-container" id="heatmapContainer">
+                                    <div class="heatmap-months" id="heatmapMonths"></div>
+                                    <div class="heatmap-grid-wrapper">
+                                        <div class="heatmap-days">
+                                            <span>Sun</span>
+                                            <span>Mon</span>
+                                            <span>Tue</span>
+                                            <span>Wed</span>
+                                            <span>Thu</span>
+                                            <span>Fri</span>
+                                            <span>Sat</span>
+                                        </div>
+                                        <div class="heatmap-grid" id="heatmapGrid"></div>
+                                    </div>
+                                    <div class="heatmap-legend">
+                                        <span class="heatmap-legend-label">Less</span>
+                                        <div class="heatmap-legend-scale">
+                                            <div class="heatmap-cell" data-level="0"></div>
+                                            <div class="heatmap-cell" data-level="1"></div>
+                                            <div class="heatmap-cell" data-level="2"></div>
+                                            <div class="heatmap-cell" data-level="3"></div>
+                                            <div class="heatmap-cell" data-level="4"></div>
+                                        </div>
+                                        <span class="heatmap-legend-label">More</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Sites -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Top Sites Today</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="analytics-sites-list" id="analyticsTopSites">
+                                    <div class="analytics-empty-state">No activity recorded today.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Settings</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-group">
+                                    <label for="trackingFrequency">
+                                        Tracking Interval (seconds)
+                                        <span class="info-tooltip"
+                                            title="How often the extension updates your time logs. Lower values are more accurate but use more resources.">?</span>
+                                    </label>
+                                    <input type="number" id="trackingFrequency" min="0.1" max="60" step="0.01"
+                                        placeholder="1.00" class="modern-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- General Settings -->
+                    <div id="general" class="tab-pane fade-in">
+                        <!-- Quick Access Hub -->
+                        <div class="content-card quick-access-hub">
+                            <div class="card-header">
+                                <h2>Quick Access</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="quick-links-grid">
+                                    <button class="quick-link" data-tab="analytics">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
                                         </svg>
+                                        <span>Analytics</span>
+                                        <small>View usage trends</small>
                                     </button>
-                                    <span class="chart-period-label" id="chartPeriodLabel">This Week</span>
-                                    <button class="nav-btn" id="chartNext" title="Next">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                                    <button class="quick-link" data-tab="video">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
                                         </svg>
+                                        <span>Video Control</span>
+                                        <small>Playback settings</small>
+                                    </button>
+                                    <button class="quick-link" data-tab="blocking">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M16.18,7.76L7.76,16.18L6.34,14.76L14.76,6.34L16.18,7.76Z" />
+                                        </svg>
+                                        <span>Site Blocking</span>
+                                        <small>Manage blocked sites</small>
+                                    </button>
+                                    <button class="quick-link" data-tab="privacy">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.1 14.8,9.5V11C15.4,11 16,11.6 16,12.3V15.8C16,16.4 15.4,17 14.7,17H9.2C8.6,17 8,16.4 8,15.7V12.2C8,11.6 8.6,11 9.2,11V9.5C9.2,8.1 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,9.5V11H13.5V9.5C13.5,8.7 12.8,8.2 12,8.2Z" />
+                                        </svg>
+                                        <span>Privacy & Data</span>
+                                        <small>Export & manage data</small>
+                                    </button>
+                                    <button class="quick-link" data-tab="help">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M15.07,11.25L14.17,12.17C13.45,12.89 13,13.5 13,15H11V14.5C11,13.39 11.45,12.39 12.17,11.67L13.41,10.41C13.78,10.05 14,9.55 14,9C14,7.89 13.1,7 12,7A2,2 0 0,0 10,9H8A4,4 0 0,1 12,5A4,4 0 0,1 16,9C16,9.88 15.64,10.67 15.07,11.25M13,19H11V17H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z" />
+                                        </svg>
+                                        <span>Help</span>
+                                        <small>Features & support</small>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="chart-container" id="usageChart">
-                            <div class="chart-area">
-                                <div class="chart-y-axis" id="chartYAxis"></div>
-                                <div class="chart-content" id="chartContent"></div>
-                            </div>
-                            <div class="chart-x-axis" id="chartXAxis"></div>
-                            <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none;">
-                                <div class="earliest-line"></div>
-                                <span class="earliest-label">Tracking started</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Heatmap Calendar -->
-                    <div class="settings-section">
-                        <div class="chart-header">
-                            <h2>Activity Heatmap</h2>
-                            <div class="heatmap-controls">
-                                <select id="heatmapFilter" class="heatmap-filter-select">
-                                    <option value="all">All Sites</option>
-                                    <option value="restricted">Restricted Sites Only</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="heatmap-container" id="heatmapContainer">
-                            <div class="heatmap-months" id="heatmapMonths"></div>
-                            <div class="heatmap-grid-wrapper">
-                                <div class="heatmap-days">
-                                    <span>Mon</span>
-                                    <span>Wed</span>
-                                    <span>Fri</span>
+                        <div class="two-column-grid">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h2>Tracking</h2>
                                 </div>
-                                <div class="heatmap-grid" id="heatmapGrid"></div>
-                            </div>
-                            <div class="heatmap-legend">
-                                <span class="heatmap-legend-label">Less</span>
-                                <div class="heatmap-legend-scale">
-                                    <div class="heatmap-cell" data-level="0"></div>
-                                    <div class="heatmap-cell" data-level="1"></div>
-                                    <div class="heatmap-cell" data-level="2"></div>
-                                    <div class="heatmap-cell" data-level="3"></div>
-                                    <div class="heatmap-cell" data-level="4"></div>
-                                </div>
-                                <span class="heatmap-legend-label">More</span>
-                                <div class="heatmap-earliest" id="heatmapEarliestIndicator">
-                                    <span class="earliest-dot"></span>
-                                    <span class="earliest-text">= Tracking started</span>
+                                <div class="card-body">
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Enable Time Tracking</div>
+                                            <div class="setting-desc">Monitor time spent on websites</div>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="trackingEnabled" checked />
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Daily Time Limit</div>
+                                            <div class="setting-desc">Set 0 for no limit</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <input type="number" id="dailyLimit" min="0" max="1440" placeholder="0"
+                                                class="modern-input short" />
+                                            <span class="unit">min</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Top Sites -->
-                    <div class="settings-section">
-                        <h2>Top Sites Today</h2>
-                        <div class="analytics-sites-list" id="analyticsTopSites">
-                            <div class="analytics-empty-state">No activity recorded today.</div>
-                        </div>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="settings-section">
-                        <h2>Tracking Settings</h2>
-                        <div class="setting-group">
-                            <label for="trackingFrequency">
-                                Tracking Interval (seconds)
-                                <span class="info-tooltip"
-                                    title="How often the extension updates your time logs. Lower values are more accurate but use more resources.">?</span>
-                            </label>
-                            <input type="number" id="trackingFrequency" min="0.1" max="60" step="0.01"
-                                placeholder="1.00" />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Privacy Settings -->
-                <div id="privacy" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Privacy Policy</h2>
-                        <p style="text-indent: 2em;">
-                            TimeDash follows a strict local-first design. The extension does not collect, log, transmit,
-                            aggregate, or monetize any data. No browsing history, usage metrics, identifiers, or
-                            personal information are observed or retained. We do not embed analytics frameworks,
-                            telemetry systems, advertising SDKs, or third-party scripts of any kind. Nothing is measured
-                            remotely because nothing is sent.
-                        </p>
-                        <p style="text-indent: 2em;">
-                            All data produced by TimeDash exists only inside your browser. This includes time tracking
-                            records, playback speed preferences, blocked site rules, and internal configuration state.
-                            Storage uses Chrome’s native secure storage APIs and remains bound to your local profile. No
-                            network requests ever carry user data. Nothing syncs to servers. Nothing leaves the device.
-                        </p>
-                        <p style="text-indent: 2em;">
-                            You retain complete control and ownership of all data at all times. You may export your data
-                            as a JSON file for inspection, backup, or migration whenever you choose. If you uninstall
-                            the extension, Chrome removes all associated storage immediately and irreversibly. No
-                            residual copies remain. No recovery is possible because nothing was externalized.
-                        </p>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Tracking Control</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="trackingPaused" />
-                                <span class="checkmark"></span>
-                                Pause Tracking
-                                <small>Temporarily stop all data collection</small>
-                            </label>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="incognitoTracking" />
-                                <span class="checkmark"></span>
-                                Enable Incognito Tracking
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Domain Whitelist</h2>
-                        <p class="section-description">These sites will never be tracked.</p>
-                        <div class="rule-manager">
-                            <div class="rule-input-group">
-                                <input type="text" id="whitelistInput" placeholder="e.g. localhost"
-                                    class="rule-domain-input" />
-                                <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
-                            </div>
-                            <ul class="rule-list" id="whitelistList">
-                                <!-- Populated by JS -->
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>Data Management</h2>
-                        <div class="setting-group">
-                            <label class="setting-label">
-                                <input type="checkbox" id="autoPurgeEnabled" />
-                                <span class="checkmark"></span>
-                                Auto-purge old data
-                            </label>
-                            <div class="dependent-setting" id="autoPurgeSettings"
-                                style="margin-left: 28px; margin-top: 10px; display: none;">
-                                <label>
-                                    Delete data older than
-                                    <input type="number" id="autoPurgeDays" min="1" max="3650" placeholder="30"
-                                        style="width: 80px; padding: 4px;" /> days
-                                </label>
-                            </div>
-                            <p class="setting-note"
-                                style="margin-top: 8px; color: var(--text-secondary); font-size: 0.9em;">
-                                Note: All data is stored locally on your device. We do not transmit your data.
-                            </p>
-                        </div>
-
-                        <div class="storage-meter-container"
-                            style="margin: 20px 0; background: var(--bg-secondary); padding: 16px; border-radius: var(--radius);">
-                            <div class="storage-header"
-                                style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500;">
-                                <span>Storage Usage</span>
-                                <span id="storageUsageValue">Checking...</span>
-                            </div>
-                            <div class="storage-bar-bg"
-                                style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                                <div class="storage-bar-fill" id="storageUsageFill"
-                                    style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h2>Notifications & Badge</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Enable Notifications</div>
+                                            <div class="setting-desc">Get alerts for limits and milestones</div>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="notificationsEnabled" checked />
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Quota Warnings</div>
+                                            <div class="setting-desc">Warn when approaching daily limits</div>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="quotaWarnings" checked />
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Show Badge Counter</div>
+                                            <div class="setting-desc">Display status on extension icon</div>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="badgeEnabled" checked />
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="storageQuotaValue"
-                                style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px; text-align: right;">
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Appearance</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Theme</label>
+                                    <div class="theme-picker">
+                                        <!-- Will replace select with visual cards later, keeping select for now but styled -->
+                                        <select id="theme" class="modern-select">
+                                            <option value="auto">Auto (System)</option>
+                                            <option value="light">Light</option>
+                                            <option value="dark">Dark</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Accent Color</label>
+                                    <div class="color-picker-grid" id="accentColorPicker">
+                                        <button type="button" class="color-swatch" data-color="red"
+                                            style="background: #ef4444;" title="Red"></button>
+                                        <button type="button" class="color-swatch" data-color="orange"
+                                            style="background: #f97316;" title="Orange"></button>
+                                        <button type="button" class="color-swatch" data-color="amber"
+                                            style="background: #f59e0b;" title="Amber"></button>
+                                        <button type="button" class="color-swatch" data-color="green"
+                                            style="background: #22c55e;" title="Green"></button>
+                                        <button type="button" class="color-swatch" data-color="teal"
+                                            style="background: #14b8a6;" title="Teal"></button>
+                                        <button type="button" class="color-swatch" data-color="cyan"
+                                            style="background: #06b6d4;" title="Cyan"></button>
+                                        <button type="button" class="color-swatch" data-color="blue"
+                                            style="background: #3b82f6;" title="Blue"></button>
+                                        <button type="button" class="color-swatch" data-color="indigo"
+                                            style="background: #6366f1;" title="Indigo"></button>
+                                        <button type="button" class="color-swatch" data-color="violet"
+                                            style="background: #8b5cf6;" title="Violet"></button>
+                                        <button type="button" class="color-swatch" data-color="purple"
+                                            style="background: #a855f7;" title="Purple"></button>
+                                        <button type="button" class="color-swatch" data-color="pink"
+                                            style="background: #ec4899;" title="Pink"></button>
+                                        <button type="button" class="color-swatch" data-color="rose"
+                                            style="background: #f43f5e;" title="Rose"></button>
+                                    </div>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Speed Popup Color</label>
+                                    <div class="color-picker-grid" id="overlayColorPicker">
+                                        <button type="button" class="color-swatch" data-color="red"
+                                            style="background: #ef4444;" title="Red"></button>
+                                        <button type="button" class="color-swatch" data-color="orange"
+                                            style="background: #f97316;" title="Orange"></button>
+                                        <button type="button" class="color-swatch" data-color="amber"
+                                            style="background: #f59e0b;" title="Amber"></button>
+                                        <button type="button" class="color-swatch" data-color="green"
+                                            style="background: #22c55e;" title="Green"></button>
+                                        <button type="button" class="color-swatch" data-color="teal"
+                                            style="background: #14b8a6;" title="Teal"></button>
+                                        <button type="button" class="color-swatch" data-color="cyan"
+                                            style="background: #06b6d4;" title="Cyan"></button>
+                                        <button type="button" class="color-swatch" data-color="blue"
+                                            style="background: #3b82f6;" title="Blue"></button>
+                                        <button type="button" class="color-swatch" data-color="indigo"
+                                            style="background: #6366f1;" title="Indigo"></button>
+                                        <button type="button" class="color-swatch" data-color="violet"
+                                            style="background: #8b5cf6;" title="Violet"></button>
+                                        <button type="button" class="color-swatch" data-color="purple"
+                                            style="background: #a855f7;" title="Purple"></button>
+                                        <button type="button" class="color-swatch" data-color="pink"
+                                            style="background: #ec4899;" title="Pink"></button>
+                                        <button type="button" class="color-swatch" data-color="rose"
+                                            style="background: #f43f5e;" title="Rose"></button>
+                                    </div>
+                                    <small class="setting-help">Color of the playback speed overlay on videos</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Control -->
+                    <div id="video" class="tab-pane fade-in">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Playback Settings</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Reset Speed (Default)</label>
+                                    <div class="range-input-wrapper">
+                                        <input type="number" id="defaultSpeed" min="0.5" max="16" step="0.1"
+                                            placeholder="1.0" class="modern-input" />
+                                    </div>
+                                    <small class="setting-help">Speed to restore when pressing the reset hotkey (e.g.,
+                                        pressing "." will set speed to this value)</small>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Max Speed</label>
+                                    <div class="range-input-wrapper">
+                                        <input type="number" id="maxSpeed" min="0.5" max="16" step="0.1"
+                                            placeholder="16.0" class="modern-input" />
+                                    </div>
+                                    <small class="setting-help">Maximum speed allowed when increasing playback</small>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label-block">Speed Step</label>
+                                    <div class="range-input-wrapper">
+                                        <input type="number" id="speedStep" min="0.05" max="1" step="0.05"
+                                            placeholder="0.25" class="modern-input" />
+                                        <small class="setting-help">Amount to change speed when using shortcuts</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <h3>Manage Stored Data</h3>
-                        <div class="data-search-group" style="margin-bottom: 15px;">
-                            <input type="text" id="deleteDataSearch" placeholder="Search domain to delete data..."
-                                style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--bg-secondary); color: var(--text-primary);" />
-                            <div id="deleteDataResults" class="rule-list"
-                                style="max-height: 200px; overflow-y: auto; display: none; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 var(--radius) var(--radius);">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Keyboard Shortcuts</h2>
+                                <div class="setting-item-right">
+                                    <label class="switch">
+                                        <input type="checkbox" id="keyboardShortcuts" checked />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="shortcuts-grid">
+                                    <div class="shortcut-item">
+                                        <label>Increase Speed</label>
+                                        <input type="text" id="increaseSpeedKey" class="keybind-input modern-input"
+                                            placeholder="Click to set" readonly />
+                                    </div>
+                                    <div class="shortcut-item">
+                                        <label>Decrease Speed</label>
+                                        <input type="text" id="decreaseSpeedKey" class="keybind-input modern-input"
+                                            placeholder="Click to set" readonly />
+                                    </div>
+                                    <div class="shortcut-item">
+                                        <label>Reset Speed</label>
+                                        <input type="text" id="resetSpeedKey" class="keybind-input modern-input"
+                                            placeholder="Click to set" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Blocking -->
+                    <div id="blocking" class="tab-pane fade-in">
+                        <div class="two-column-grid">
+                            <!-- Hard Blocked Section -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h2>Hard Blocked Sites</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p class="section-description">These sites are <strong>completely
+                                            inaccessible</strong>.</p>
+                                    <div class="rule-manager" id="blockedManager">
+                                        <div class="rule-input-group modern-input-group">
+                                            <input type="text" id="blockedDomainInput" placeholder="e.g., facebook.com"
+                                                class="modern-input" />
+                                            <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+                                        </div>
+                                        <ul class="rule-list modern-list" id="blockedList">
+                                            <!-- Populated by JS -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Restricted Access Section -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h2>Restricted Access</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p class="section-description">Sites allowed for a <strong>specific time</strong>
+                                        per day.</p>
+                                    <div class="rule-manager" id="restrictedManager">
+                                        <div class="rule-input-group modern-input-group">
+                                            <input type="text" id="restrictedDomainInput"
+                                                placeholder="e.g., youtube.com" class="modern-input" />
+                                            <input type="number" id="restrictedLimitInput" placeholder="30" min="1"
+                                                max="1440" class="modern-input limit-input" />
+                                            <button id="addRestrictedBtn" class="btn btn-primary">Add</button>
+                                        </div>
+                                        <ul class="rule-list modern-list" id="restrictedList">
+                                            <!-- Populated by JS -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy -->
+                    <div id="privacy" class="tab-pane fade-in">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Data Privacy Health</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="privacy-status">
+                                    <div class="status-item">
+                                        <span class="status-label">Data Storage</span>
+                                        <span class="status-value highlight-success">Local Only</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Telemetry</span>
+                                        <span class="status-value highlight-success">Disabled</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Account Required</span>
+                                        <span class="status-value highlight-success">No</span>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Pause Tracking</div>
+                                        <div class="setting-desc">Temporarily stop all data collection</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="trackingPaused" />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Incognito Tracking</div>
+                                        <div class="setting-desc">Enable tracking in incognito windows</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="incognitoTracking" />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 10px;">
-                            <button id="importData" class="btn btn-outline" style="flex: 1;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                                    style="margin-right: 8px; vertical-align: text-bottom;">
-                                    <path
-                                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z" />
-                                </svg>
-                                Import Data
-                            </button>
-                            <input type="file" id="importFile" accept=".json" style="display: none;" />
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Whitelisted Domains</h2>
+                            </div>
+                            <div class="card-body">
+                                <p class="section-description">These sites will never be tracked.</p>
+                                <div class="rule-manager">
+                                    <div class="rule-input-group modern-input-group">
+                                        <input type="text" id="whitelistInput" placeholder="e.g. localhost"
+                                            class="modern-input" />
+                                        <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
+                                    </div>
+                                    <ul class="rule-list modern-list" id="whitelistList"></ul>
+                                </div>
+                            </div>
+                        </div>
 
-                            <button id="exportDataPrivacy" class="btn btn-outline" style="flex: 1;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                                    style="margin-right: 8px; vertical-align: text-bottom;">
-                                    <path
-                                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                                </svg>
-                                Export My Data
-                            </button>
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Data Management</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Auto-purge Old Data</div>
+                                        <div class="setting-desc">Automatically delete data older than a specified
+                                            period</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoPurgeEnabled" />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div id="autoPurgeSettings"
+                                    style="display: none; padding-left: 16px; margin-bottom: 24px;">
+                                    <label>Keep data for <input type="number" id="autoPurgeDays" min="1" max="3650"
+                                            placeholder="30" class="modern-input short" /> days</label>
+                                </div>
+
+                                <div class="storage-meter-container">
+                                    <div class="storage-header">
+                                        <span>Storage Usage</span>
+                                        <span id="storageUsageValue">Checking...</span>
+                                    </div>
+                                    <div class="storage-bar-bg">
+                                        <div class="storage-bar-fill" id="storageUsageFill"></div>
+                                    </div>
+                                    <div id="storageQuotaValue" class="storage-quota"></div>
+                                </div>
+
+                                <h3 style="margin-top: 24px;">Delete Specific Data</h3>
+                                <div class="data-search-group">
+                                    <input type="text" id="deleteDataSearch"
+                                        placeholder="Search domain to delete data..." class="modern-input" />
+                                    <div id="deleteDataResults" class="rule-list modern-list"
+                                        style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                                </div>
+
+                                <h3 style="margin-top: 20px; margin-bottom: 12px;">Data Actions</h3>
+                                <div class="action-row data-actions">
+                                    <button id="importData" class="btn btn-outline">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z" />
+                                        </svg>
+                                        Import Data
+                                    </button>
+                                    <input type="file" id="importFile" accept=".json" style="display: none;" />
+                                    <button id="exportBtn" class="btn btn-outline">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,13V17H11V13H9L12,10L15,13H11Z" />
+                                        </svg>
+                                        Export Data
+                                    </button>
+                                    <button id="resetBtn" class="btn btn-danger">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                        </svg>
+                                        Delete All Data
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Help & Documentation -->
-                <div id="help" class="tab-pane">
-                    <div class="settings-section">
-                        <h2>Features Overview</h2>
-                        <div class="help-item">
-                            <h3>Time Tracking</h3>
-                            <p>TimeDash automatically tracks how much time you spend on each website. View your daily
-                                usage in the popup or the Analytics tab.</p>
-                        </div>
-                        <div class="help-item">
-                            <h3>Video Speed Control</h3>
-                            <p>Control playback speed on YouTube, Vimeo, and most other video sites. Use keyboard
-                                shortcuts or the popup menu to adjust speed.</p>
-                        </div>
-                        <div class="help-item">
-                            <h3>Site Blocking</h3>
-                            <p><strong>Hard Block:</strong> Completely prevents access to a site.</p>
-                            <p><strong>Restricted Access:</strong> Allows a specific amount of time per day. Once
-                                exceeded, access is blocked until midnight.</p>
+
+                        <div class="content-card" id="privacy-policy-card">
+                            <div class="card-header">
+                                <h2>Privacy Policy</h2>
+                            </div>
+                            <div class="card-body">
+                                <details class="privacy-accordion" open>
+                                    <summary>Read Full Policy</summary>
+                                    <p><strong>TimeDash follows a strict local-first design.</strong></p>
+                                    <p>The extension does not collect, log, transmit, aggregate, or monetize any data.
+                                        No browsing history, usage metrics, identifiers, or personal information are
+                                        observed or retained. We do not embed analytics frameworks, telemetry systems,
+                                        advertising SDKs, or third-party scripts of any kind. Nothing is measured
+                                        remotely because nothing is sent.</p>
+                                    <p>All data produced by TimeDash exists only inside your browser. This includes time
+                                        tracking records, playback speed preferences, blocked site rules, and internal
+                                        configuration state. Storage uses Chrome's native secure storage APIs and
+                                        remains bound to your local profile. No network requests ever carry user data.
+                                        Nothing syncs to servers. Nothing leaves the device.</p>
+                                    <p><strong>Data Storage:</strong> All user data is stored locally using
+                                        <code>chrome.storage.local</code>. This data never leaves your device and is
+                                        only accessible by this extension within your browser profile.
+                                    </p>
+                                    <p><strong>Network Activity:</strong> TimeDash makes zero network requests. The only
+                                        external resources loaded are website favicons for display purposes, which are
+                                        fetched directly by your browser through standard image loading (Google's
+                                        favicon service).</p>
+                                    <p><strong>Permissions Used:</strong></p>
+                                    <ul>
+                                        <li><code>storage</code> - Save your settings and usage data locally</li>
+                                        <li><code>tabs</code> - Track which website you're currently viewing</li>
+                                        <li><code>alarms</code> - Schedule periodic tracking updates</li>
+                                        <li><code>notifications</code> - Display optional usage alerts</li>
+                                    </ul>
+                                    <p><strong>No Account Required:</strong> TimeDash works entirely offline and
+                                        requires no registration, login, or account creation of any kind.</p>
+                                    <p><strong>Open Source:</strong> The complete source code is available for review.
+                                        You can verify these privacy claims by inspecting the code yourself.</p>
+                                </details>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h2>Keyboard Shortcuts</h2>
-                        <table class="shortcuts-table" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Increase
-                                        Speed</strong></td>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Adjustable in Video
-                                    Settings</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Decrease
-                                        Speed</strong></td>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Adjustable in Video
-                                    Settings</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Toggle
-                                        Tracking</strong></td>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Alt + T</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);"><strong>Block
-                                        Site</strong></td>
-                                <td style="padding: 8px; border-bottom: 1px solid var(--border);">Alt + B</td>
-                            </tr>
-                        </table>
+                    <!-- Help -->
+                    <div id="help" class="tab-pane fade-in">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Features Overview</h2>
+                            </div>
+                            <div class="card-body compact-help">
+                                <div class="feature-list">
+                                    <div class="feature-item">
+                                        <h3>Time Tracking</h3>
+                                        <p>Automatically tracks time spent on each website. View daily usage in the
+                                            popup or explore detailed analytics with weekly trends, monthly summaries,
+                                            and activity heatmaps.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Video Speed Control</h3>
+                                        <p>Control playback speed on YouTube, Vimeo, Netflix, and HTML5 video players.
+                                            Use customizable keyboard shortcuts to adjust speed.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Site Blocking</h3>
+                                        <p>Block distracting websites completely or set daily time limits with
+                                            restricted access rules.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Analytics Dashboard</h3>
+                                        <p>Visualize browsing habits with interactive charts. See daily, weekly,
+                                            monthly, and yearly trends with the GitHub-style activity heatmap.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Customization</h3>
+                                        <p>Choose from light, dark, or auto themes. Pick your accent color and customize
+                                            keyboard shortcuts.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Privacy First</h3>
+                                        <p>All data stays on your device. No accounts, cloud sync, tracking, or ads. <a
+                                                href="#privacy" class="help-link"
+                                                onclick="document.querySelector('[data-tab=privacy]').click(); return false;">Read
+                                                our privacy policy →</a></p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Data Export & Import</h3>
+                                        <p>Export data as JSON for backup. Import to restore settings or transfer to
+                                            another browser.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <h3>Keyboard Shortcuts</h3>
+                                        <p>Defaults: <kbd>+</kbd> increase speed, <kbd>-</kbd> decrease speed,
+                                            <kbd>.</kbd> reset. All customizable in Video Control settings.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h2>Privacy Policy</h2>
-                        <p>Please see our full <a href="#privacy" id="viewPrivacyLink"
-                                style="color: var(--primary-color); text-decoration: underline;">Privacy Policy</a> in
-                            the Privacy tab.</p>
-                    </div>
                 </div>
             </div>
         </main>
 
-        <!-- Save Status -->
-        <div class="save-status" id="saveStatus">
+        <!-- Save Status (Fixed Bottom Right) -->
+        <div class="save-toast" id="saveStatus">
             <span class="save-message">Settings saved automatically</span>
         </div>
     </div>
 
     <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <h3 id="confirmTitle">Confirm Action</h3>
-            <p id="confirmMessage">Are you sure you want to proceed?</p>
+    <div id="confirmModal" class="modal-backdrop">
+        <div class="modal-dialog">
+            <h3 id="confirmTitle" class="modal-title">Confirm Action</h3>
+            <p id="confirmMessage" class="modal-body">Are you sure you want to proceed?</p>
             <div class="modal-actions">
                 <button id="confirmCancel" class="btn btn-outline">Cancel</button>
                 <button id="confirmOk" class="btn btn-primary">Confirm</button>

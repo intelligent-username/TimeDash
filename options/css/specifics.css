@@ -1,71 +1,356 @@
-/* Privacy Tab */
+/* Tab-specific styles */
 
-.privacy-info {
+/* Privacy Tab */
+.privacy-status {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: var(--spacing);
+    background: var(--background);
+    border-radius: var(--radius-small);
+    margin-bottom: var(--spacing-lg);
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.status-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.highlight-success {
+    color: var(--success-color);
+}
+
+.privacy-accordion {
+    cursor: pointer;
+}
+
+.privacy-accordion summary {
+    padding: var(--spacing);
+    background: var(--background);
+    border-radius: var(--radius-small);
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+}
+
+.privacy-accordion summary:hover {
+    background: var(--border-subtle);
+}
+
+.privacy-accordion p {
+    padding: var(--spacing-sm) var(--spacing);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+/* Storage Meter */
+.storage-meter-container {
+    margin-top: var(--spacing-lg);
+}
+
+.storage-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.storage-bar-bg {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.storage-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.storage-quota {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Keybinds */
+.shortcuts-grid {
     display: grid;
     gap: var(--spacing);
 }
 
-.info-card {
-    background: var(--surface);
-    padding: var(--spacing);
-    border-radius: var(--radius);
-    border-left: 4px solid var(--primary-color);
+.shortcut-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.info-card h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: var(--spacing-small);
+.shortcut-item label {
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--text-primary);
 }
 
-.info-card p {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-small);
-}
-
-.info-card ul {
-    list-style: none;
-    padding: 0;
-}
-
-.info-card li {
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-    padding-left: 16px;
-    position: relative;
-}
-
-.info-card li::before {
-    content: '•';
-    color: var(--primary-color);
-    position: absolute;
-    left: 0;
-}
-
-.data-actions {
-    display: flex;
-    gap: var(--spacing-small);
-    flex-wrap: wrap;
-}
-
-/* Keybinds */
 .keybind-input {
-    width: 100%;
-    padding: 12px;
+    padding: 10px 12px;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    font-family: monospace;
+    border-radius: var(--radius-small);
+    font-size: 0.9rem;
+    font-family: 'Consolas', 'Monaco', monospace;
     background: var(--background);
+    color: var(--text-primary);
     cursor: pointer;
     text-align: center;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
 }
 
 .keybind-input:focus,
 .keybind-input.recording {
     border-color: var(--primary-color);
-    background: var(--surface-elevated);
-    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 3px var(--primary-fade);
+    outline: none;
+}
+
+/* Data Search */
+.data-search-group {
+    margin-top: var(--spacing);
+}
+
+/* Help Tab */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.feature-item h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.feature-item p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.compact-help .feature-item {
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.compact-help .feature-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Data Actions Row */
+.data-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/* Setting helpers */
+.setting-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting-group:last-child {
+    margin-bottom: 0;
+}
+
+.setting-label-block {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.setting-help {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.setting-control .unit {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.setting-item-right {
+    margin-left: auto;
+}
+
+/* Color Picker Grid */
+.color-picker-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow);
+}
+
+.color-swatch.active {
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 3px var(--border);
+}
+
+.color-swatch.active::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Action Row */
+.action-row {
+    display: flex;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+}
+
+/* Section Description */
+.section-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing);
+}
+
+/* Modern Input Group */
+.modern-input-group {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.modern-input-group .modern-input {
+    flex: 1;
+}
+
+.modern-input-group .btn {
+    flex-shrink: 0;
+}
+
+.limit-input {
+    width: 80px !important;
+    flex: 0 0 80px !important;
+}
+
+/* Modern List inherits from .rule-list in components.css */
+
+/* Quick Access Hub */
+.quick-access-hub {
+    margin-bottom: var(--spacing);
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.quick-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: var(--spacing);
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.quick-link:hover {
+    background: var(--primary-fade);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.quick-link svg {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.quick-link:hover svg {
+    opacity: 1;
+}
+
+.quick-link span {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.quick-link small {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+    .quick-links-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

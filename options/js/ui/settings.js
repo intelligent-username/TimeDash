@@ -48,7 +48,7 @@ export class SettingsManager {
 
     setupVideo() {
         this.bindSettings({
-            currentPlaybackSpeed: 'defaultSpeed',
+            defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep'
         });
@@ -71,7 +71,7 @@ export class SettingsManager {
                 const defaultVal = parseFloat(defaultSpeed.value);
                 if (!isNaN(value) && !isNaN(defaultVal) && value < defaultVal) {
                     defaultSpeed.value = value;
-                    this.controller.updateSetting('currentPlaybackSpeed', value);
+                    this.controller.updateSetting('defaultPlaybackSpeed', value);
                 }
             });
         }
@@ -260,7 +260,7 @@ export class SettingsManager {
             quotaWarnings: 'quotaWarnings',
             theme: 'theme',
             badgeEnabled: 'badgeEnabled',
-            currentPlaybackSpeed: 'defaultSpeed',
+            defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep',
             incognitoTracking: 'incognitoTracking',

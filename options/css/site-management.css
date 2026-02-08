@@ -1,78 +1,40 @@
-/* Rule Manager Styles */
+/* Site Management specific styles */
 
-.rule-manager {
-    margin-top: var(--spacing);
-}
-
+/* Rule Manager - Input Group */
 .rule-input-group {
     display: flex;
-    gap: var(--spacing-small);
-    align-items: center;
+    gap: var(--spacing-sm);
     flex-wrap: wrap;
+    align-items: center;
     margin-bottom: var(--spacing);
 }
 
-.rule-domain-input {
-    flex: 2;
+.rule-input-group .modern-input {
+    flex: 1;
     min-width: 200px;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    background: var(--background);
-    color: var(--text-primary);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    line-height: 1.5;
-    font-weight: 500;
+    /* Don't shrink too much */
 }
 
-.rule-limit-input {
-    width: 90px;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    text-align: center;
-    background: var(--background);
-    color: var(--text-primary);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    line-height: 1.5;
-    font-weight: 600;
-}
-
-.rule-domain-input:focus,
-.rule-limit-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-}
-
-/* Rule List Items */
-.rule-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-small);
-}
+/* Rule List Items in the Manager */
+/* .rule-list is defined in components.css */
 
 .rule-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    background: var(--background);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: all 0.2s ease;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: transparent;
+    /* Inherit from container usually, or make explicit */
+}
+
+.rule-item:last-child {
+    border-bottom: none;
 }
 
 .rule-item:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 2px 8px var(--shadow);
-    transform: translateY(-1px);
+    background-color: var(--background);
+    /* Use background color for hover effect inside card which is white */
 }
 
 .rule-item-info {
@@ -80,91 +42,51 @@
     align-items: center;
     gap: 12px;
     flex: 1;
-}
-
-.rule-domain {
-    font-weight: 500;
-    color: var(--text-primary);
-    font-family: 'Consolas', 'Monaco', monospace;
-    flex: 1;
-}
-
-.limit-suffix {
-    font-size: 13px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    margin-right: 12px;
-    font-weight: 500;
-}
-
-.rule-delete-btn {
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid var(--danger-color);
-    color: var(--danger-color);
-    border-radius: var(--radius-small);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.rule-delete-btn:hover {
-    background: var(--danger-color);
-    color: white;
-    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
+    overflow: hidden;
 }
 
 .rule-favicon {
     width: 16px;
     height: 16px;
     border-radius: 2px;
+    flex-shrink: 0;
 }
 
-/* Editable inputs in lists */
+.rule-domain {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.limit-suffix {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    margin-right: var(--spacing);
+}
+
+/* Editable Logic */
 .rule-limit-input-edit {
-    width: 75px;
-    padding: 7px 10px;
+    width: 70px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    text-align: center;
     border: 1px solid var(--border);
     border-radius: var(--radius-small);
-    font-size: 13px;
-    text-align: center;
-    background: var(--background);
     color: var(--text-primary);
-    transition: all 0.2s ease;
-    line-height: 1.4;
-    font-weight: 600;
+    background: var(--background);
 }
 
 .rule-limit-input-edit:focus {
     border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
-.restrict-item .rule-item-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Old Site Controls (Legacy support) */
-.site-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px var(--spacing);
-    border-bottom: 1px solid var(--border);
-    transition: background-color 0.2s ease;
-}
-
-.site-item:hover {
-    background: var(--surface);
-}
-
-.site-item-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
+/* Overriding conflict if any */
+.rule-delete-btn {
+    /* Defined in components.css */
+    flex-shrink: 0;
 }

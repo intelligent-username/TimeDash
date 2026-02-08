@@ -99,33 +99,90 @@ export class OptionsController {
     }
 
     setupNavigation() {
-        document.querySelectorAll('.tab-btn').forEach((button) => {
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach((button) => {
             button.addEventListener('click', (e) => {
-                const tab = e.target.dataset.tab;
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const target = e.currentTarget;
+                const tab = target.dataset.tab;
+
+                navItems.forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
-                e.target.classList.add('active');
+                target.classList.add('active');
                 const pane = document.getElementById(tab);
-                if (pane) pane.classList.add('active');
+                if (pane) {
+                    pane.classList.add('active');
+                    // Add fade-in animation re-trigger
+                    pane.classList.remove('fade-in');
+                    void pane.offsetWidth; // trigger reflow
+                    pane.classList.add('fade-in');
+                }
 
-                if (tab === 'analytics') this.analyticsUI.update();
+                this.updateHeader(tab);
+
+                if (tab === 'analytics' && this.analyticsUI) {
+                    this.analyticsUI.update();
+                }
             });
         });
 
         const hash = window.location.hash.substring(1);
         if (hash) {
-            const btn = document.querySelector(`[data-tab="${hash}"]`);
+            const btn = document.querySelector(`.nav-item[data-tab="${hash}"]`);
             if (btn) btn.click();
+        } else {
+            // Default to analytics or first tab
+            const first = document.querySelector('.nav-item');
+            if (first) {
+                first.click();
+                this.updateHeader(first.dataset.tab);
+            }
         }
+
+        // Quick Access Hub links
+        document.querySelectorAll('.quick-link[data-tab]').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                const tab = e.currentTarget.dataset.tab;
+                const navBtn = document.querySelector(`.nav-item[data-tab="${tab}"]`);
+                if (navBtn) navBtn.click();
+            });
+        });
 
         window.addEventListener('hashchange', () => {
             const h = window.location.hash.substring(1);
             if (h) {
-                const btn = document.querySelector(`[data-tab="${h}"]`);
+                const btn = document.querySelector(`.nav-item[data-tab="${h}"]`);
                 if (btn) btn.click();
             }
         });
+    }
+
+    updateHeader(tab) {
+        const titleEl = document.getElementById('pageTitle');
+        const subtitleEl = document.getElementById('pageSubtitle');
+        if (!titleEl || !subtitleEl) return;
+
+        const titles = {
+            'analytics': 'Analytics',
+            'general': 'General Settings',
+            'video': 'Video Control',
+            'blocking': 'Site Blocking',
+            'privacy': 'Privacy & Data',
+            'help': 'Help & About'
+        };
+        const subtitles = {
+            'analytics': 'Overview of your productivity',
+            'general': 'Manage appearance and notifications',
+            'video': 'Customize playback speed controls',
+            'blocking': 'Manage blocked and restricted sites',
+            'privacy': 'Control your data and privacy settings',
+            'help': 'Guides and feature overview',
+            'undefined': 'Settings'
+        };
+
+        titleEl.textContent = titles[tab] || 'Settings';
+        subtitleEl.textContent = subtitles[tab] || '';
     }
 
     setupAutoSave() {

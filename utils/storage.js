@@ -7,7 +7,8 @@
 class StorageManager {
     constructor() {
         this.DEFAULT_SETTINGS = {
-            currentPlaybackSpeed: 1.0,  // Universal speed for all videos
+            currentPlaybackSpeed: 1.0,  // Current active speed for all videos
+            defaultPlaybackSpeed: 1.0,  // Speed to reset to when hitting reset key
             maxPlaybackSpeed: 16.0,
             speedStep: 0.25,
             increaseSpeedKey: 'Plus',
