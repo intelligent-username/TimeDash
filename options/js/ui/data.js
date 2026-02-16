@@ -90,14 +90,31 @@ export class DataManager {
         const valEl = document.getElementById('storageUsageValue');
         if (valEl) valEl.textContent = usageText;
 
-        const quota = chrome.storage.local.QUOTA_BYTES || 5 * 1024 * 1024;
-        const percent = Math.min((bytes / quota) * 100, 100).toFixed(1);
+        // Use the user's custom storage limit, falling back to 10MB
+        const settings = this.controller.settings || {};
+        const limitMB = settings.storageLimitMB || 10;
+        const limitBytes = limitMB * 1024 * 1024;
+        const percent = Math.min((bytes / limitBytes) * 100, 100).toFixed(1);
+        const exceeded = bytes >= limitBytes;
 
         const fillEl = document.getElementById('storageUsageFill');
-        if (fillEl) fillEl.style.width = `${percent}%`;
+        if (fillEl) {
+            fillEl.style.width = `${percent}%`;
+            fillEl.classList.toggle('exceeded', exceeded);
+        }
 
         const quotaEl = document.getElementById('storageQuotaValue');
-        if (quotaEl) quotaEl.textContent = `${percent}% of ${Math.round(quota / 1024 / 1024)}MB quota`;
+        if (quotaEl) quotaEl.textContent = `${percent}% of ${limitMB}MB limit`;
+
+        // Show or hide the warning banner
+        const warningEl = document.getElementById('storageLimitWarning');
+        const warningDetailEl = document.getElementById('storageLimitWarningDetail');
+        if (warningEl) {
+            warningEl.style.display = exceeded ? 'flex' : 'none';
+        }
+        if (warningDetailEl && exceeded) {
+            warningDetailEl.textContent = `Using ${usageText} of your ${limitMB}MB limit. Consider purging old data or increasing your limit.`;
+        }
     }
 
     async exportData() {
@@ -107,7 +124,7 @@ export class DataManager {
                 blockList: this.controller.blockList,
                 settings: this.controller.settings,
                 exportDate: new Date().toISOString(),
-                version: '1.0.0',
+                version: '1.0.1',
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

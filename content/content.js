@@ -15,6 +15,7 @@ class TimeDashContent {
         this.settings = {};
         this.initialized = false;
         this.contextValid = true;
+        this._settingSpeed = false; // Guard flag to prevent ratechange loops
 
         // Initialize UI component (loaded via manifest before this script)
         this.ui = window.TimeDashOverlayUI ? new window.TimeDashOverlayUI({
@@ -40,6 +41,8 @@ class TimeDashContent {
             this.setupStorageListener();
             this.setupKeyboardShortcuts();
             this.startVisibilityCheck();
+            this.setupFullscreenListener();
+            this.setupVisibilityListener();
 
             console.log(`TimeDash initialized: speed=${this.currentSpeed}x`);
 
@@ -49,7 +52,7 @@ class TimeDashContent {
             }
         } catch (error) {
             console.error('Error initializing TimeDash content script:', error);
-            this.currentSpeed = 1.0;
+            this.currentSpeed = this.settings?.defaultPlaybackSpeed || 1.0;
             this.initialized = true;
         }
     }
@@ -66,7 +69,7 @@ class TimeDashContent {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = response || {};
-            this.currentSpeed = this.settings.currentPlaybackSpeed || 1.0;
+            this.currentSpeed = this.settings.currentPlaybackSpeed || this.settings.defaultPlaybackSpeed || 1.0;
 
             // Pass settings to UI if needed (e.g. for theme or preferences)
             if (this.ui) this.ui.updateSettings(this.settings);
@@ -79,12 +82,13 @@ class TimeDashContent {
             // Fallbacks
             this.settings = {
                 currentPlaybackSpeed: 1.0,
+                defaultPlaybackSpeed: 1.0,
                 maxPlaybackSpeed: 16.0,
                 speedStep: 0.25,
                 increaseSpeedKey: 'Plus',
                 decreaseSpeedKey: 'Minus'
             };
-            this.currentSpeed = 1.0;
+            this.currentSpeed = this.settings.defaultPlaybackSpeed || 1.0;
         }
     }
 
@@ -132,7 +136,9 @@ class TimeDashContent {
         // Apply speed when ready
         const setupSpeed = () => {
             if (this.currentSpeed !== null && this.initialized) {
+                this._settingSpeed = true;
                 video.playbackRate = this.currentSpeed;
+                this._settingSpeed = false;
                 if (this.ui && this.settings.showSpeedOverlay) {
                     this.ui.showIndicator(video, this.currentSpeed);
                 }
@@ -147,10 +153,16 @@ class TimeDashContent {
 
         // Listen for internal rate changes (e.g. YouTube controls)
         video.addEventListener('ratechange', () => {
-            if (Math.abs(video.playbackRate - this.currentSpeed) > 0.05) {
-                this.currentSpeed = video.playbackRate;
-                this.saveCurrentSpeed();
-                this.updateAllVideoSpeeds(); // Sync other videos
+            // Skip events we triggered ourselves
+            if (this._settingSpeed) return;
+
+            const externalSpeed = video.playbackRate;
+            if (Math.abs(externalSpeed - this.currentSpeed) > 0.05) {
+                // Site tried to change the speed - fight back by re-applying our speed
+                // This prevents site-initiated resets from being saved to storage
+                this._settingSpeed = true;
+                video.playbackRate = this.currentSpeed;
+                this._settingSpeed = false;
             }
         });
 
@@ -177,6 +189,7 @@ class TimeDashContent {
      * Update speed for all videos
      */
     updateAllVideoSpeeds() {
+        this._settingSpeed = true;
         this.videos.forEach((video) => {
             if (video) {
                 video.playbackRate = this.currentSpeed;
@@ -185,6 +198,7 @@ class TimeDashContent {
                 }
             }
         });
+        this._settingSpeed = false;
     }
 
     increaseSpeed() {
@@ -375,8 +389,17 @@ class TimeDashContent {
                 if (this.isOrphaned) return;
 
                 if (area === 'local' && changes.settings) {
-                    this.settings = changes.settings.newValue || {};
+                    const newSettings = changes.settings.newValue || {};
+                    const oldSettings = changes.settings.oldValue || {};
+                    this.settings = newSettings;
                     if (this.ui) this.ui.updateSettings(this.settings);
+
+                    // If speed changed in storage, apply it to all videos
+                    if (newSettings.currentPlaybackSpeed !== undefined &&
+                        newSettings.currentPlaybackSpeed !== oldSettings.currentPlaybackSpeed) {
+                        this.currentSpeed = newSettings.currentPlaybackSpeed;
+                        this.updateAllVideoSpeeds();
+                    }
                 }
             });
         } catch (e) { /* Ignore setup error */ }
@@ -391,6 +414,28 @@ class TimeDashContent {
             // Keep alive check or visibility reporting
         }, 1000);
     }
+
+    setupFullscreenListener() {
+        document.addEventListener('fullscreenchange', () => {
+            // Sites often reset playback speed during fullscreen transitions
+            // Re-apply our speed after a short delay
+            setTimeout(() => {
+                if (!this.isOrphaned) {
+                    this.updateAllVideoSpeeds();
+                }
+            }, 100);
+        });
+    }
+
+    setupVisibilityListener() {
+        document.addEventListener('visibilitychange', () => {
+            // Re-apply speed when tab becomes visible again
+            if (!document.hidden && !this.isOrphaned) {
+                setTimeout(() => this.updateAllVideoSpeeds(), 100);
+            }
+        });
+    }
+
 
     extractDomain(url) {
         try {

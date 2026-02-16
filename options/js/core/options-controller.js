@@ -121,18 +121,36 @@ export class OptionsController {
 
                 this.updateHeader(tab);
 
+                // Update URL so refreshing returns to this tab
+                const url = new URL(window.location);
+                url.searchParams.set('tab', tab);
+                url.hash = '';
+                history.replaceState(null, '', url);
+
                 if (tab === 'analytics' && this.analyticsUI) {
                     this.analyticsUI.update();
                 }
             });
         });
 
+        // Determine initial tab: hash takes priority, then ?tab= query param
         const hash = window.location.hash.substring(1);
-        if (hash) {
-            const btn = document.querySelector(`.nav-item[data-tab="${hash}"]`);
-            if (btn) btn.click();
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialTab = hash || urlParams.get('tab');
+
+        if (initialTab) {
+            const btn = document.querySelector(`.nav-item[data-tab="${initialTab}"]`);
+            if (btn) {
+                btn.click();
+            } else {
+                const first = document.querySelector('.nav-item');
+                if (first) {
+                    first.click();
+                    this.updateHeader(first.dataset.tab);
+                }
+            }
         } else {
-            // Default to analytics or first tab
+            // Default to first tab
             const first = document.querySelector('.nav-item');
             if (first) {
                 first.click();

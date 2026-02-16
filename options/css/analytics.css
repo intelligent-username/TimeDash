@@ -171,17 +171,14 @@
 }
 
 .chart-point {
-    fill: var(--card-bg);
-    /* Use card bg for circle fill */
-    stroke: var(--primary-color);
+    stroke: white;
     stroke-width: 2;
-    r: 4;
+    r: 5;
     transition: r 0.2s ease, fill 0.2s ease;
 }
 
 .chart-point:hover {
-    r: 6;
-    fill: var(--primary-color);
+    r: 7;
 }
 
 .chart-tooltip {
@@ -370,6 +367,12 @@ html[data-theme="dark"] .heatmap-cell[data-level="0"],
 .heatmap-cell[data-level="4"] {
     background: #22c55e;
     /* green-500 */
+}
+
+.heatmap-cell.earliest {
+    outline: 2px solid #f59e0b;
+    outline-offset: -1px;
+    z-index: 1;
 }
 
 .heatmap-legend {

@@ -153,6 +153,17 @@ export class AnalyticsUI {
         if (avgLabelEl) {
             avgLabelEl.textContent = 'Daily Average';
         }
+
+        // Update "Total Time" to reflect the selected period
+        const totalEl = document.getElementById('analyticsTotalTime');
+        const totalLabelEl = totalEl?.closest('.stat-card')?.querySelector('.stat-label');
+
+        if (totalEl) {
+            totalEl.textContent = formatTime(periodTotal);
+        }
+        if (totalLabelEl) {
+            totalLabelEl.textContent = `Total ${periodLabel}`;
+        }
     }
 
     calculatePeriodTotal(usage) {
@@ -171,13 +182,16 @@ export class AnalyticsUI {
         };
 
         if (this.currentPeriod === 'week') {
-            const startOfWeek = new Date(now);
-            startOfWeek.setDate(now.getDate() - now.getDay() + (this.chart.offset * 7));
-            periodLabel = this.chart.offset === 0 ? 'This Week' : 'Selected Week';
+            // Rolling 7-day window matching chart logic
+            const endDate = new Date(now);
+            endDate.setDate(now.getDate() + (this.chart.offset * 7));
+            const startDate = new Date(endDate);
+            startDate.setDate(endDate.getDate() - 6);
+            periodLabel = this.chart.offset === 0 ? 'Past 7 Days' : 'Selected Week';
 
             for (let i = 0; i < 7; i++) {
-                const d = new Date(startOfWeek);
-                d.setDate(startOfWeek.getDate() + i);
+                const d = new Date(startDate);
+                d.setDate(startDate.getDate() + i);
                 const dateStr = formatDateString(d);
 
                 if (isValidDay(dateStr)) {

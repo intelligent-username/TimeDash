@@ -158,8 +158,22 @@ export class SettingsManager {
         this.bindSettings({
             incognitoTracking: 'incognitoTracking',
             autoPurgeEnabled: 'autoPurgeEnabled',
-            autoPurgeDays: 'autoPurgeDays'
+            autoPurgeDays: 'autoPurgeDays',
+            storageLimitMB: 'storageLimitMB'
         });
+
+        // Refresh storage usage display when limit changes
+        const limitInput = document.getElementById('storageLimitMB');
+        if (limitInput) {
+            limitInput.addEventListener('input', () => {
+                // Delay slightly so the setting saves first
+                setTimeout(() => {
+                    if (this.controller.dataManager && this.controller.dataManager.updateStorageUsage) {
+                        this.controller.dataManager.updateStorageUsage();
+                    }
+                }, 100);
+            });
+        }
 
         // Tracking Paused logic (inverse)
         const pausedCheckbox = document.getElementById('trackingPaused');
@@ -266,7 +280,8 @@ export class SettingsManager {
             incognitoTracking: 'incognitoTracking',
             trackingFrequency: 'trackingFrequency',
             autoPurgeEnabled: 'autoPurgeEnabled',
-            autoPurgeDays: 'autoPurgeDays'
+            autoPurgeDays: 'autoPurgeDays',
+            storageLimitMB: 'storageLimitMB'
         };
 
         Object.entries(mapping).forEach(([key, id]) => {

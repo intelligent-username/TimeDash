@@ -179,19 +179,21 @@ export class AnalyticsChart {
         let xLabels = [];
 
         if (this.period === 'week') {
-            const startOfWeek = new Date(now);
-            startOfWeek.setDate(now.getDate() - now.getDay() + (this.offset * 7));
+            // Rolling "past 7 days" window: offset 0 = today back 6 days
+            const endDate = new Date(now);
+            endDate.setDate(now.getDate() + (this.offset * 7));
+            const startDate = new Date(endDate);
+            startDate.setDate(endDate.getDate() - 6);
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             for (let i = 0; i < 7; i++) {
-                const d = new Date(startOfWeek);
-                d.setDate(startOfWeek.getDate() + i);
+                const d = new Date(startDate);
+                d.setDate(startDate.getDate() + i);
                 dates.push(formatDateString(d));
+                xLabels.push(dayNames[d.getDay()]);
             }
-            xLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            if (this.offset === 0) label = 'This Week';
-            else if (this.offset === -1) label = 'Last Week';
+            if (this.offset === 0) label = 'Past 7 Days';
             else {
-                const weekStart = new Date(startOfWeek);
-                label = `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                label = `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
             }
         } else if (this.period === 'month') {
             const startOfMonth = new Date(now.getFullYear(), now.getMonth() + this.offset, 1);

@@ -91,6 +91,81 @@
     color: var(--text-muted);
 }
 
+/* Storage Footer (quota text + limit input) */
+.storage-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.storage-limit-setting {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.storage-limit-setting label {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.storage-limit-setting .modern-input.short {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+}
+
+.storage-limit-setting .unit {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Storage Limit Warning */
+.storage-limit-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--danger-fade);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--radius-small);
+    margin-bottom: var(--spacing);
+    color: var(--danger-color);
+    animation: fadeIn var(--transition) ease-out;
+}
+
+.storage-limit-warning svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.storage-limit-warning-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
+.storage-limit-warning-text strong {
+    font-size: 0.92rem;
+}
+
+.storage-limit-warning-text span {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+}
+
+/* Storage bar exceeded state */
+.storage-bar-fill.exceeded {
+    background: var(--danger-color);
+}
+
 /* Keybinds */
 .shortcuts-grid {
     display: grid;
@@ -352,5 +427,278 @@
 @media (max-width: 600px) {
     .quick-links-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================
+   Video Control Tab Styles
+   ============================ */
+
+/* Hero Banner */
+.video-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--radius-large);
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 24px -4px rgba(37, 99, 235, 0.35);
+}
+
+.video-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.video-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.video-hero-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.video-hero-text {
+    position: relative;
+    z-index: 1;
+}
+
+.video-hero-text h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.video-hero-text p {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.4;
+}
+
+/* Speed Settings Grid */
+.video-settings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.video-setting-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+    padding: var(--spacing) var(--spacing-lg);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.video-setting-card:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--primary-fade);
+    transform: translateY(-1px);
+}
+
+.video-setting-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.video-setting-card:hover .video-setting-icon {
+    transform: scale(1.08);
+}
+
+.video-setting-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.video-setting-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.video-setting-desc {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
+.video-setting-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.video-speed-input {
+    width: 80px !important;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem !important;
+    letter-spacing: 0.02em;
+}
+
+.video-input-unit {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-left: -2px;
+}
+
+/* Keyboard Shortcuts Card */
+.video-shortcuts-card {
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.video-shortcuts-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.video-shortcuts-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary-fade);
+    color: var(--primary-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.video-shortcuts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.video-shortcut-tile {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+    padding: 14px var(--spacing);
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    transition: all var(--transition-fast);
+}
+
+.video-shortcut-tile:hover {
+    border-color: var(--border);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+}
+
+.video-shortcut-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.video-shortcut-tile:hover .video-shortcut-badge {
+    transform: scale(1.1);
+}
+
+.video-shortcut-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.video-shortcut-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+}
+
+.video-shortcut-desc {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+.video-shortcut-tile .keybind-input {
+    width: 120px !important;
+    flex-shrink: 0;
+}
+
+/* Responsive adjustments for Video Control */
+@media (max-width: 600px) {
+    .video-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--spacing-lg) var(--spacing);
+    }
+
+    .video-setting-card {
+        flex-wrap: wrap;
+    }
+
+    .video-setting-input {
+        margin-left: auto;
+    }
+
+    .video-shortcut-tile {
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+
+    .video-shortcut-tile .keybind-input {
+        width: 100% !important;
     }
 }

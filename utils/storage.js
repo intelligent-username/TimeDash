@@ -28,9 +28,12 @@ class StorageManager {
             whitelist: [],
             autoPurgeEnabled: false,
             autoPurgeDays: 30,
+            storageLimitMB: 10,
         };
 
-        this.init();
+        // init() is called explicitly by background.js — don't fire-and-forget here
+        // This prevents a race condition in incognito where GET_SETTINGS might return
+        // defaults before storage has actually finished initializing
     }
 
     /**

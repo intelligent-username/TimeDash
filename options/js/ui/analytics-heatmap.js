@@ -54,7 +54,7 @@ export class AnalyticsHeatmap {
                 month: 'short',
                 day: 'numeric'
             });
-            const tooltip = `${displayDate} • ${formatTime(time)}`;
+            const tooltip = `${displayDate} • ${formatTime(time)}${isEarliest ? ' ⭐ First tracked' : ''}`;
 
             if (d.getMonth() !== lastMonth) {
                 monthPositions.push({ month: d.toLocaleDateString('en-US', { month: 'short' }), index: Math.floor(cellIndex / 7) });
