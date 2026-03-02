@@ -2,6 +2,8 @@
 
 <img src="icons/Logo.svg" width="128" height="128" alt="TimeDash Logo">
 
+Download the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb?utm_source=item-share-cb) or load it unpacked from this repository to start managing your time online with personalized rules, real-time stats, and motivational cues.
+
 ## Features
 
 - Custom blocked and restricted rules let the background rule manager decide when a tab should show a warning, a hard block, or a restricted view.

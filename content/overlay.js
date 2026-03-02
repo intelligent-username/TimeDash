@@ -59,25 +59,32 @@ class TimeDashOverlayUI {
      * Show Corner Indicator
      */
     showIndicator(video, speed) {
-        // Remove existing
-        const existing = video.parentNode?.querySelector('.timedash-speed-indicator');
-        if (existing) existing.remove();
+        // Reuse existing element so text updates are instant (no fade-overlap)
+        let indicator = video.parentNode?.querySelector('.timedash-speed-indicator');
 
-        const indicator = document.createElement('div');
-        indicator.className = 'timedash-speed-indicator';
-        indicator.textContent = `${speed}x`;
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'timedash-speed-indicator';
 
-        // Ensure relative positioning
-        if (video.parentNode && getComputedStyle(video.parentNode).position === 'static') {
-            video.parentNode.style.position = 'relative';
+            if (video.parentNode && getComputedStyle(video.parentNode).position === 'static') {
+                video.parentNode.style.position = 'relative';
+            }
+
+            video.parentNode?.appendChild(indicator);
         }
 
-        video.parentNode?.appendChild(indicator);
+        // Immediately update text and ensure fully visible
+        indicator.textContent = `${speed}x`;
+        indicator.style.opacity = '1';
 
-        // Auto hide
-        setTimeout(() => {
+        // Cancel any pending hide timers
+        clearTimeout(indicator._hideTimer);
+        clearTimeout(indicator._removeTimer);
+
+        // Auto hide after 2 s
+        indicator._hideTimer = setTimeout(() => {
             indicator.style.opacity = '0';
-            setTimeout(() => indicator.remove(), 300);
+            indicator._removeTimer = setTimeout(() => indicator.remove(), 300);
         }, 2000);
     }
 
