@@ -69,9 +69,6 @@
 /* Dark Theme */
 html[data-theme="dark"],
 :root[data-theme="dark"] {
-    --primary-color: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-light: #93c5fd;
 
     --background: #0f172a;
     /* Slate 900 */
@@ -101,9 +98,6 @@ html[data-theme="dark"],
     html[data-theme="auto"],
     :root[data-theme="auto"] {
         /* Matches Dark Theme */
-        --primary-color: #3b82f6;
-        --primary-dark: #2563eb;
-        --primary-light: #93c5fd;
 
         --background: #0f172a;
         --sidebar-bg: #1e293b;

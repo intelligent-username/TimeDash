@@ -167,6 +167,15 @@ export class OptionsController {
             });
         });
 
+        // Logo click -> General tab
+        const logoBtn = document.getElementById('sidebarLogoBtn');
+        if (logoBtn) {
+            logoBtn.addEventListener('click', () => {
+                const generalBtn = document.querySelector(`.nav-item[data-tab="general"]`);
+                if (generalBtn) generalBtn.click();
+            });
+        }
+
         window.addEventListener('hashchange', () => {
             const h = window.location.hash.substring(1);
             if (h) {
@@ -190,8 +199,8 @@ export class OptionsController {
             'help': 'Help & About'
         };
         const subtitles = {
-            'analytics': 'Overview of your productivity',
             'general': 'Manage appearance and notifications',
+            'analytics': 'Usage Overview',
             'video': 'Customize playback speed controls',
             'blocking': 'Manage blocked and restricted sites',
             'privacy': 'Control your data and privacy settings',

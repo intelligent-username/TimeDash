@@ -44,6 +44,13 @@ export class AnalyticsUI {
             this.updatePeriodStats();
         });
 
+        const todayBtn = document.getElementById('chartToday');
+        if (todayBtn) todayBtn.addEventListener('click', () => {
+            this.chart.offset = 0;
+            this.chart.render();
+            this.updatePeriodStats();
+        });
+
         // Heatmap filter
         const heatmapFilter = document.getElementById('heatmapFilter');
         if (heatmapFilter) {

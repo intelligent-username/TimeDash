@@ -48,10 +48,23 @@ export class SettingsManager {
 
     setupVideo() {
         this.bindSettings({
+            currentPlaybackSpeed: 'currentPlaybackSpeed',
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep'
         });
+
+        const currentSpeedNum = document.getElementById('currentPlaybackSpeed');
+        const currentSpeedSlider = document.getElementById('currentSpeedSlider');
+        if (currentSpeedNum && currentSpeedSlider) {
+            currentSpeedSlider.addEventListener('input', () => {
+                currentSpeedNum.value = currentSpeedSlider.value;
+                this.controller.updateSetting('currentPlaybackSpeed', parseFloat(currentSpeedSlider.value));
+            });
+            currentSpeedNum.addEventListener('input', () => {
+                currentSpeedSlider.value = currentSpeedNum.value;
+            });
+        }
 
         const defaultSpeed = document.getElementById('defaultSpeed');
         const maxSpeed = document.getElementById('maxSpeed');
@@ -274,6 +287,7 @@ export class SettingsManager {
             quotaWarnings: 'quotaWarnings',
             theme: 'theme',
             badgeEnabled: 'badgeEnabled',
+            currentPlaybackSpeed: 'currentPlaybackSpeed',
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep',
@@ -291,6 +305,11 @@ export class SettingsManager {
             if (el.type === 'checkbox') el.checked = Boolean(val);
             else el.value = val !== undefined ? val : '';
         });
+
+        const speedSlider = document.getElementById('currentSpeedSlider');
+        if (speedSlider && settings.currentPlaybackSpeed !== undefined) {
+            speedSlider.value = settings.currentPlaybackSpeed;
+        }
 
         // Keys
         const incKey = document.getElementById('increaseSpeedKey');

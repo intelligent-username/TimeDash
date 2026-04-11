@@ -270,13 +270,13 @@ export class AnalyticsChart {
         if (this.period === 'week') {
             const diffTime = Math.abs(now - earliest);
             const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
-            return -(diffWeeks + 1);
+            return -diffWeeks;
         } else if (this.period === 'month') {
             const monthDiff = (now.getFullYear() - earliest.getFullYear()) * 12 + (now.getMonth() - earliest.getMonth());
-            return -(monthDiff + 1);
+            return -monthDiff;
         } else if (this.period === 'year') {
             const yearDiff = now.getFullYear() - earliest.getFullYear();
-            return -(yearDiff + 1);
+            return -yearDiff;
         }
         return -10;
     }

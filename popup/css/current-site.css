@@ -71,3 +71,8 @@
     background: #d32f2f;
     border-color: #d32f2f;
 }
+
+.inline-speed-btn:hover {
+    opacity: 1 !important;
+    color: var(--primary-color) !important;
+}

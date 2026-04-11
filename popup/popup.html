@@ -19,7 +19,7 @@
                 <img src="../icons/Logo.svg" alt="TimeDash" class="logo" />
                 <div class="header-text">
                     <h1 data-i18n="appName">TimeDash</h1>
-                    <p class="tagline" data-i18n="tagline">Take your time back.</p>
+                    <p class="tagline">Use the dashboard for details</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -28,13 +28,6 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path
                             d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
-                    </svg>
-                </button>
-                <button id="exportBtn" class="icon-btn" title="Export Data" data-i18n-aria-label="exportData"
-                    aria-label="Export Data">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                     </svg>
                 </button>
             </div>
@@ -48,6 +41,15 @@
                 <div class="site-details">
                     <h3 class="site-name" id="siteName">Loading...</h3>
                     <p class="site-time" id="siteTime">Calculating...</p>
+                </div>
+                <div class="speed-inline-controls"
+                    style="margin-left: auto; display: flex; gap: 4px; align-items: center;">
+                    <button class="inline-speed-btn" id="decreaseSpeedBtn"
+                        style="background: transparent; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--text-secondary); padding: 0 4px;"
+                        title="Decrease Speed">-</button>
+                    <button class="inline-speed-btn" id="increaseSpeedBtn"
+                        style="background: transparent; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--text-secondary); padding: 0 4px;"
+                        title="Increase Speed">+</button>
                 </div>
             </div>
             <div class="site-actions">

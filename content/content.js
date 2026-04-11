@@ -193,9 +193,6 @@ class TimeDashContent {
         this.videos.forEach((video) => {
             if (video) {
                 video.playbackRate = this.currentSpeed;
-                if (this.ui && this.settings.showSpeedOverlay) {
-                    this.ui.showIndicator(video, this.currentSpeed);
-                }
             }
         });
         this._settingSpeed = false;
@@ -233,6 +230,14 @@ class TimeDashContent {
         this.currentSpeed = Math.round(clampedSpeed * 100) / 100;
 
         this.updateAllVideoSpeeds();
+
+        // Show indicator only on user-initiated changes (not silent re-applications).
+        // Show once on the first known video to avoid the multi-video loop race.
+        if (this.ui && this.settings.showSpeedOverlay && this.videos.size > 0) {
+            const firstVideo = this.videos.values().next().value;
+            if (firstVideo) this.ui.showIndicator(firstVideo, this.currentSpeed);
+        }
+
         this.saveCurrentSpeed();
     }
 

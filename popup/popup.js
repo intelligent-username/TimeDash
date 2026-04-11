@@ -82,6 +82,12 @@ class TimeDashPopup {
      * Set up event listeners for popup interactions
      */
     setupEventListeners() {
+        chrome.storage.local.onChanged.addListener((changes) => {
+            if (changes.settings && changes.settings.newValue) {
+                this.settings = changes.settings.newValue;
+                this.updateCurrentSpeed();
+            }
+        });
         // Settings Button
         document.getElementById('settingsBtn').addEventListener('click', async () => {
             let tab = 'general';
@@ -106,10 +112,16 @@ class TimeDashPopup {
             chrome.tabs.create({ url: optionsUrl });
         });
 
-        // Export button
-        document.getElementById('exportBtn').addEventListener('click', () => {
-            this.exportData();
-        });
+        // Decrease/Increase Speed buttons
+        const decSpeedBtn = document.getElementById('decreaseSpeedBtn');
+        if (decSpeedBtn) {
+            decSpeedBtn.addEventListener('click', () => this.changeSpeed(-1));
+        }
+        
+        const incSpeedBtn = document.getElementById('increaseSpeedBtn');
+        if (incSpeedBtn) {
+            incSpeedBtn.addEventListener('click', () => this.changeSpeed(1));
+        }
 
         // Block/unblock button
         document.getElementById('blockBtn').addEventListener('click', () => {
@@ -129,6 +141,47 @@ class TimeDashPopup {
         // Toggle tracking
         document.getElementById('toggleTracking').addEventListener('click', () => {
             this.toggleTracking();
+        });
+
+        // Global keybinds inside popup
+        document.addEventListener('keydown', (event) => {
+            if (this.settings?.firstTimeSetup) return; // Don't interfere with modal
+            
+            // Check if user is typing in an input
+            const activeElement = document.activeElement;
+            const isInput = activeElement && (
+                activeElement.tagName === 'INPUT' || 
+                activeElement.tagName === 'TEXTAREA' || 
+                activeElement.isContentEditable
+            );
+            if (isInput) return;
+
+            const getKeyAliases = (baseKey) => {
+                const map = {
+                    'Plus': ['Equal', 'NumpadAdd', 'Plus'],
+                    'Minus': ['Minus', 'NumpadSubtract'],
+                    'Period': ['Period', 'NumpadDecimal', 'NumpadComma'],
+                    'Enter': ['Enter', 'NumpadEnter']
+                };
+                return [baseKey, ...(map[baseKey] || [])];
+            };
+
+            const increaseKeys = getKeyAliases(this.settings?.increaseSpeedKey || 'Plus');
+            const decreaseKeys = getKeyAliases(this.settings?.decreaseSpeedKey || 'Minus');
+            const resetKeys = getKeyAliases(this.settings?.resetSpeedKey || 'Period');
+
+            if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+                if (increaseKeys.includes(event.code)) {
+                    event.preventDefault();
+                    this.changeSpeed(1);
+                } else if (decreaseKeys.includes(event.code)) {
+                    event.preventDefault();
+                    this.changeSpeed(-1);
+                } else if (resetKeys.includes(event.code)) {
+                    event.preventDefault();
+                    this.resetSpeed();
+                }
+            }
         });
 
         // Dashboard button
@@ -159,6 +212,7 @@ class TimeDashPopup {
         if (this.settings) {
             document.documentElement.setAttribute('data-theme', this.settings.theme || 'auto');
             document.documentElement.setAttribute('data-accent', this.settings.accentColor || 'blue');
+            this.updateCurrentSpeed();
         }
 
         this.updateCurrentSite();
@@ -201,29 +255,72 @@ class TimeDashPopup {
         const isBlocked = domainData?.isBlocked || false;
         blockBtn.textContent = isBlocked ? 'Unblock Site' : 'Block Site';
         blockBtn.className = `action-btn block-btn ${isBlocked ? 'blocked' : ''}`;
-
-        // Update speed indicator (this would come from content script)
-        this.updateCurrentSpeed(domain);
     }
 
     /**
      * Update current video speed display
      */
-    async updateCurrentSpeed(domain) {
-        this.currentTabHasVideo = false;
+    async updateCurrentSpeed() {
+        this.currentTabHasVideo = true; // universally assume speed applies
+        const speed = this.settings?.currentPlaybackSpeed || 1.0;
+        document.getElementById('currentSpeed').textContent = `${Number(speed).toFixed(2)}x`;
+    }
+
+    /**
+     * Change Speed
+     */
+    async changeSpeed(direction) {
+        if (!this.settings) return;
+        
+        const step = this.settings.speedStep || 0.25;
+        const max = this.settings.maxPlaybackSpeed || 16.0;
+        const min = 0.05;
+        
+        let newSpeed = (this.settings.currentPlaybackSpeed || 1.0) + (direction * step);
+        newSpeed = Math.round(newSpeed / step) * step; // avoids floats
+        
+        if (newSpeed > max) newSpeed = max;
+        if (newSpeed < min) newSpeed = min;
+        
+        const newSettings = {
+            ...this.settings,
+            currentPlaybackSpeed: newSpeed
+        };
+
         try {
-            if (this.currentTab) {
-                const response = await chrome.tabs.sendMessage(this.currentTab.id, {
-                    type: 'GET_CURRENT_SPEED',
-                });
-                if (response?.speed) {
-                    document.getElementById('currentSpeed').textContent = `${response.speed}x`;
-                    this.currentTabHasVideo = true;
-                }
-            }
+            await chrome.runtime.sendMessage({
+                type: 'UPDATE_SETTINGS',
+                settings: newSettings
+            });
+            this.settings = newSettings;
+            this.updateCurrentSpeed();
         } catch (error) {
-            // Content script might not be available, use default
-            document.getElementById('currentSpeed').textContent = '1.0x';
+            console.error('Failed to change speed:', error);
+            PopupHelpers.showToast('Failed to change speed', 'error');
+        }
+    }
+
+    /**
+     * Reset Speed
+     */
+    async resetSpeed() {
+        if (!this.settings) return;
+        const defaultSpeed = this.settings.defaultPlaybackSpeed || 1.0;
+        
+        const newSettings = {
+            ...this.settings,
+            currentPlaybackSpeed: defaultSpeed
+        };
+
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'UPDATE_SETTINGS',
+                settings: newSettings
+            });
+            this.settings = newSettings;
+            this.updateCurrentSpeed();
+        } catch (error) {
+            console.error('Failed to reset speed:', error);
         }
     }
 
@@ -353,13 +450,8 @@ class TimeDashPopup {
      * Show speed control interface
      */
     async showSpeedControl() {
-        if (!this.currentTab) return;
-
-        try {
-            await chrome.tabs.sendMessage(this.currentTab.id, { type: 'TOGGLE_OVERLAY' });
-        } catch (error) {
-            PopupHelpers.showToast('Speed control not available on this page', 'error');
-        }
+        const optionsUrl = chrome.runtime.getURL('options/options.html?tab=video');
+        chrome.tabs.create({ url: optionsUrl });
     }
 
     /**
@@ -375,7 +467,7 @@ class TimeDashPopup {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `timedash-export-${new Date().toISOString().split('T')[0]}.csv`;
+                a.download = `TDE_${new Date().toISOString().split('T')[0]}.csv`;
                 a.click();
                 URL.revokeObjectURL(url);
 
@@ -541,6 +633,10 @@ class TimeDashPopup {
 
     cleanup() {
         this.stopAutoUpdate();
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
         if (this.boundKeyHandler) {
             document.removeEventListener('keydown', this.boundKeyHandler);
             this.boundKeyHandler = null;
@@ -609,14 +705,7 @@ class TimeDashPopup {
         PopupHelpers.showToast(message, 'error');
     }
 
-    /**
-     * Cleanup when popup closes
-     */
-    cleanup() {
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
-        }
-    }
+
 }
 
 // Initialize popup when DOM is ready

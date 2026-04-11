@@ -559,7 +559,7 @@ class TimeDashBackground {
 
         await chrome.downloads.download({
             url,
-            filename: `timedash-export-${TimeUtils.getCurrentDate()}.csv`,
+            filename: `TDE_${TimeUtils.getCurrentDate()}.csv`,
             saveAs: true,
         });
     }
