@@ -9,6 +9,13 @@ export class CurrentlyPlayingUI {
         this.dismissedKeys = new Set();
     }
 
+    async sendMessageWithTimeout(message, timeoutMs = 10000) {
+        return await Promise.race([
+            chrome.runtime.sendMessage(message),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
+        ]);
+    }
+
     setup() {
         const refreshBtn = document.getElementById('currentlyPlayingRefresh');
         const list = document.getElementById('currentlyPlayingList');
@@ -46,7 +53,7 @@ export class CurrentlyPlayingUI {
                 const tabId = Number(button.dataset.tabId);
                 const videoId = button.dataset.videoId;
                 const action = button.dataset.action;
-                const frameId = button.dataset.frameId !== undefined ? Number(button.dataset.frameId) : undefined;
+                const frameId = this.parseFrameId(button.dataset.frameId);
                 if (!tabId || !videoId || !action) return;
 
                 const res = await chrome.runtime.sendMessage({
@@ -73,7 +80,7 @@ export class CurrentlyPlayingUI {
 
             const tabId = Number(slider.dataset.tabId);
             const videoId = slider.dataset.videoId;
-            const frameId = slider.dataset.frameId !== undefined ? Number(slider.dataset.frameId) : undefined;
+            const frameId = this.parseFrameId(slider.dataset.frameId);
             const value = Number(slider.value);
             if (!tabId || !videoId || !Number.isFinite(value)) return;
 
@@ -92,6 +99,15 @@ export class CurrentlyPlayingUI {
 
             this.refreshNow();
         });
+    }
+
+    parseFrameId(rawFrameId) {
+        if (rawFrameId === undefined || rawFrameId === null || rawFrameId === '') {
+            return undefined;
+        }
+
+        const parsed = Number(rawFrameId);
+        return Number.isInteger(parsed) ? parsed : undefined;
     }
 
     setActive(active) {
@@ -116,9 +132,25 @@ export class CurrentlyPlayingUI {
     }
 
     async forceRefresh() {
+        const list = document.getElementById('currentlyPlayingList');
+        if (list) {
+            list.innerHTML = '<div class="analytics-empty-state">Refreshing active videos...</div>';
+        }
+
+        this.dismissedKeys.clear();
+
         try {
-            await chrome.runtime.sendMessage({ type: 'REFRESH_VIDEO_DETECTION' });
+            const refreshResponse = await this.sendMessageWithTimeout({ type: 'REFRESH_VIDEO_DETECTION' }, 12000);
+            if (!refreshResponse || refreshResponse.success === false) {
+                showToast('Video refresh failed', 'error');
+            }
+
+            if (refreshResponse && Array.isArray(refreshResponse.sessions)) {
+                this.render(refreshResponse.sessions);
+                return;
+            }
         } catch {
+            showToast('Video refresh failed', 'error');
         }
 
         await this.refreshNow(true);
@@ -131,7 +163,7 @@ export class CurrentlyPlayingUI {
         if (!list) return;
 
         try {
-            const response = await chrome.runtime.sendMessage({ type: 'GET_CURRENTLY_PLAYING_VIDEOS' });
+            const response = await this.sendMessageWithTimeout({ type: 'GET_CURRENTLY_PLAYING_VIDEOS' }, 8000);
             if (!response || response.error) {
                 list.innerHTML = '<div class="analytics-empty-state">Failed to load active videos.</div>';
                 return;

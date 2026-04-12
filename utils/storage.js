@@ -316,6 +316,14 @@ class StorageManager {
      */
     async setCurrentSpeed(speed) {
         try {
+            const settings = await this.getSettings();
+            const current = Number(settings.currentPlaybackSpeed);
+            const next = Number(speed);
+
+            if (Number.isFinite(current) && Number.isFinite(next) && Math.abs(current - next) < 0.0001) {
+                return true;
+            }
+
             await this.setSettings({ currentPlaybackSpeed: speed });
             return true;
         } catch (error) {

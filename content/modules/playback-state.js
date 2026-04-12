@@ -15,69 +15,38 @@ class PlaybackState {
         detector.scanOpenShadowRoots(document);
 
         const videos = [];
+        const sourceLabel = this.getVideoSourceLabel();
 
         for (const video of this.instance.videos) {
             if (!video || !video.isConnected) continue;
-            const recentInteraction = this.instance.hasRecentVideoInteraction(video);
-            if (!this.isLikelyPrimaryVideo(video) && !recentInteraction) continue;
-            const hasAudio = this.hasAudioTrack(video);
+            let videoId = this.instance.videoIdMap.get(video);
+            if (!videoId) {
+                videoId = `v${this.instance.videoIdCounter++}`;
+                this.instance.videoIdMap.set(video, videoId);
+            }
 
             const duration = Number.isFinite(video.duration) ? video.duration : 0;
             const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
             const isLive = !Number.isFinite(video.duration) || video.duration === Infinity;
-            const hasPlaybackHistory = Boolean(video.played && video.played.length > 0);
-            const activeOrLooping = Boolean(!video.paused || video.seeking || video.loop || currentTime > 0);
 
             if (video.ended) continue;
-            if (!hasAudio && !activeOrLooping && !recentInteraction) continue;
-            if (video.paused && currentTime <= 0 && !video.seeking && !video.autoplay && !recentInteraction && !hasPlaybackHistory) continue;
+
+            const hasKnownTimeline = isLive || duration > 0 || currentTime > 0;
+            const isPlayingNow = !video.paused || video.seeking;
+            if (!hasKnownTimeline && !isPlayingNow) continue;
 
             videos.push({
-                id: this.instance.videoIdMap.get(video),
+                id: videoId,
                 currentTime,
                 duration,
                 paused: Boolean(video.paused),
                 playbackRate: Number(video.playbackRate || 1),
                 isLive,
-                sourceLabel: this.getVideoSourceLabel()
+                sourceLabel
             });
         }
 
         return videos;
-    }
-
-    isLikelyPrimaryVideo(video) {
-        if (!video) return false;
-
-        const rect = typeof video.getBoundingClientRect === 'function'
-            ? video.getBoundingClientRect()
-            : { width: 0, height: 0 };
-
-        const minWidth = 240;
-        const minHeight = 135;
-        if (rect.width < minWidth || rect.height < minHeight) return false;
-
-        const style = window.getComputedStyle ? window.getComputedStyle(video) : null;
-        if (style) {
-            if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) {
-                return false;
-            }
-        }
-
-        if (video.loop && video.muted) return false;
-        return true;
-    }
-
-    hasAudioTrack(video) {
-        if (!video) return false;
-        if (video.muted || video.volume === 0) return false;
-
-        if (Array.isArray(video.audioTracks) && video.audioTracks.length > 0) return true;
-        if (typeof video.audioTracks === 'object' && video.audioTracks && video.audioTracks.length > 0) return true;
-        if (video.mozHasAudio === true) return true;
-        if (typeof video.webkitAudioDecodedByteCount === 'number' && video.webkitAudioDecodedByteCount > 0) return true;
-
-        return !video.muted && video.volume > 0;
     }
 
     getVideoSourceLabel() {
@@ -112,6 +81,11 @@ class PlaybackState {
             '#owner #channel-name a',
             '#upload-info #channel-name a',
             '#upload-info #channel-name yt-formatted-string a',
+            '[itemprop="author"]',
+            '[itemprop="creator"]',
+            '[rel="author"]',
+            '.author',
+            '.channel',
             'meta[name="author"]',
             'meta[property="article:author"]'
         ];
@@ -135,6 +109,12 @@ class PlaybackState {
         const siteMeta = document.querySelector('meta[property="og:site_name"]');
         if (siteMeta) {
             const siteName = (siteMeta.getAttribute('content') || '').trim();
+            if (siteName) return siteName;
+        }
+
+        const twitterSite = document.querySelector('meta[name="twitter:site"]');
+        if (twitterSite) {
+            const siteName = (twitterSite.getAttribute('content') || '').trim().replace(/^@/, '');
             if (siteName) return siteName;
         }
 

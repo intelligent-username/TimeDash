@@ -197,11 +197,17 @@ export class OptionsController {
         chrome.storage.local.onChanged.addListener((changes, areaName) => {
             if (areaName !== 'local' || !changes.settings || !changes.settings.newValue) return;
 
+            const previousTheme = this.settings.theme;
+            const previousAccent = this.settings.accentColor;
             const incoming = changes.settings.newValue;
             this.settings = { ...this.settings, ...incoming };
 
-            if (incoming.theme !== undefined) this.applyImmediateChanges('theme', incoming.theme);
-            if (incoming.accentColor !== undefined) this.applyImmediateChanges('accentColor', incoming.accentColor);
+            if (incoming.theme !== undefined && incoming.theme !== previousTheme) {
+                this.applyImmediateChanges('theme', incoming.theme);
+            }
+            if (incoming.accentColor !== undefined && incoming.accentColor !== previousAccent) {
+                this.applyImmediateChanges('accentColor', incoming.accentColor);
+            }
 
             this.syncCurrentPlaybackSpeedUI();
         });

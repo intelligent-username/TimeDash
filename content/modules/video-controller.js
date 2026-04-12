@@ -148,7 +148,8 @@ class VideoController {
             return { success: false, error: 'Video not found' };
         }
 
-        const skipSeconds = this.instance.getControllerSkipPaceSeconds();
+        const stepSeconds = this.instance.getControllerSkipPaceSeconds();
+        const skipSeconds = Math.max(stepSeconds * 3, 10);
 
         try {
             switch (action) {
@@ -163,15 +164,22 @@ class VideoController {
                     await video.play();
                     break;
                 case 'skip-forward':
-                case 'step-forward':
                     video.currentTime = Math.min(
                         Number.isFinite(video.duration) ? video.duration : video.currentTime + skipSeconds,
                         video.currentTime + skipSeconds
                     );
                     break;
+                case 'step-forward':
+                    video.currentTime = Math.min(
+                        Number.isFinite(video.duration) ? video.duration : video.currentTime + stepSeconds,
+                        video.currentTime + stepSeconds
+                    );
+                    break;
                 case 'skip-back':
-                case 'step-back':
                     video.currentTime = Math.max(0, video.currentTime - skipSeconds);
+                    break;
+                case 'step-back':
+                    video.currentTime = Math.max(0, video.currentTime - stepSeconds);
                     break;
                 case 'seek': {
                     const target = Number(value);
@@ -192,12 +200,26 @@ class VideoController {
     }
 
     getVideoById(videoId) {
+        const connectedVideos = [];
+
         for (const video of this.instance.videos) {
             if (!video || !video.isConnected) continue;
+            connectedVideos.push(video);
             if (this.instance.videoIdMap.get(video) === videoId) {
                 return video;
             }
         }
+
+        if (!videoId && connectedVideos.length > 0) {
+            const recentVideo = connectedVideos.find((video) => this.instance.hasRecentVideoInteraction(video));
+            return recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+        }
+
+        if (connectedVideos.length > 0) {
+            const recentVideo = connectedVideos.find((video) => this.instance.hasRecentVideoInteraction(video));
+            return recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+        }
+
         return null;
     }
 }

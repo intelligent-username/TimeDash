@@ -19,6 +19,13 @@ body {
     background-color: var(--background);
 }
 
+#optionsSidebarMount {
+    height: 100%;
+    min-height: 100%;
+    display: flex;
+    align-self: stretch;
+}
+
 /* Sidebar */
 .sidebar {
     background-color: var(--sidebar-bg);
@@ -27,6 +34,9 @@ body {
     flex-direction: column;
     padding: var(--spacing);
     height: 100%;
+    min-height: 100%;
+    width: 100%;
+    flex: 1;
     box-sizing: border-box;
     z-index: 10;
 }

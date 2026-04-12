@@ -9,6 +9,13 @@ class VideoService {
         this.instance = instance;
     }
 
+    async sendMessageWithTimeout(tabId, payload, options = undefined, timeoutMs = 2000) {
+        return await Promise.race([
+            chrome.tabs.sendMessage(tabId, payload, options),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
+        ]);
+    }
+
     async getCurrentlyPlayingVideos() {
         const tabs = await chrome.tabs.query({});
         const sessionResults = await Promise.all(
@@ -20,10 +27,11 @@ class VideoService {
                         const frameResponses = await Promise.all(
                             frameIds.map(async (frameId) => {
                                 try {
-                                    const response = await chrome.tabs.sendMessage(
+                                    const response = await this.sendMessageWithTimeout(
                                         tab.id,
                                         { type: 'GET_VIDEO_PLAYBACK_STATE' },
-                                        { frameId }
+                                        { frameId },
+                                        1500
                                     );
 
                                     if (!response || !Array.isArray(response.videos) || response.videos.length === 0) {
@@ -67,15 +75,9 @@ class VideoService {
         }
 
         try {
-            const normalizedAction = message.action === 'step-back'
-                ? 'skip-back'
-                : message.action === 'step-forward'
-                    ? 'skip-forward'
-                    : message.action;
-
             const sendPayload = {
                 type: 'CONTROL_VIDEO_PLAYBACK',
-                action: normalizedAction,
+                action: message.action,
                 videoId: message.videoId,
                 value: message.value
             };
@@ -83,9 +85,9 @@ class VideoService {
             let response = null;
 
             if (Number.isInteger(message.frameId)) {
-                response = await chrome.tabs.sendMessage(message.tabId, sendPayload, { frameId: message.frameId });
+                response = await this.sendMessageWithTimeout(message.tabId, sendPayload, { frameId: message.frameId }, 2000);
             } else {
-                response = await chrome.tabs.sendMessage(message.tabId, sendPayload);
+                response = await this.sendMessageWithTimeout(message.tabId, sendPayload, undefined, 2000);
             }
 
             return response || { success: false, error: 'No response from content script' };
@@ -106,10 +108,11 @@ class VideoService {
                     const frameIds = await this.getTabFrameIds(tab.id);
                     await Promise.all(frameIds.map(async (frameId) => {
                         try {
-                            await chrome.tabs.sendMessage(
+                            await this.sendMessageWithTimeout(
                                 tab.id,
                                 { type: 'FORCE_VIDEO_RESCAN' },
-                                { frameId }
+                                { frameId },
+                                1200
                             );
                             refreshedFrames++;
                         } catch {

@@ -2,8 +2,6 @@
 @import 'css/base.css';
 @import 'css/layout.css';
 @import 'css/components.css';
-@import 'css/sections.css';
-/* Empty but kept for safety */
 @import 'css/site-management.css';
 @import 'css/analytics.css';
 @import 'css/specifics.css';
