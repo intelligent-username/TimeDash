@@ -118,12 +118,40 @@ export class AnalyticsChart {
         // Spacing based on full range (dailyTotals now has full length)
         const pointSpacing = (width - padding * 2) / Math.max(dailyTotals.length - 1, 1);
 
+        // Helper function to generate cubic Bezier curve
+        const generateCubicPath = (points) => {
+            if (points.length === 0) return '';
+            if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+            
+            let path = `M ${points[0].x} ${points[0].y}`;
+            
+            for (let i = 0; i < points.length - 1; i++) {
+                const p0 = points[i - 1] || points[i];
+                const p1 = points[i];
+                const p2 = points[i + 1];
+                const p3 = points[i + 2] || points[i + 1];
+                
+                // Catmull-Rom to Bezier conversion
+                const cp1x = p1.x + (p2.x - p0.x) / 6;
+                const cp1y = p1.y + (p2.y - p0.y) / 6;
+                const cp2x = p2.x - (p3.x - p1.x) / 6;
+                const cp2y = p2.y - (p3.y - p1.y) / 6;
+                
+                path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+            }
+            
+            return path;
+        };
+
         let pathD = '';
         const points = [];
         const earliestDate = this.dataContext.getEarliestDate();
 
         // Track last valid x point for area closure
         let lastX = padding;
+        
+        // Collect all valid points first
+        const validPoints = [];
 
         dailyTotals.forEach((day, i) => {
             if (day.time === null) return; // Skip future
@@ -132,14 +160,72 @@ export class AnalyticsChart {
             const yRatio = maxTime > 0 ? day.time / maxTime : 0;
             const y = height - padding - (yRatio * (height - padding * 2));
 
-            if (pathD === '') pathD = `M ${x} ${y}`;
-            else pathD += ` L ${x} ${y}`;
-
             lastX = x;
 
             const isEarliest = !isYearly && day.date === earliestDate;
             points.push({ x, y, day, isEarliest });
+            validPoints.push({ x, y });
         });
+        
+        // Generate smooth cubic Bezier path
+        pathD = generateCubicPath(validPoints);
+
+        // Rolling average logic
+        const rollingToggle = document.getElementById('rollingAverageToggle');
+        let avgPathD = '';
+        if (rollingToggle && rollingToggle.checked) {
+            const settings = this.dataContext.getSettings();
+            const usage = this.dataContext.getUsage();
+            const installDate = settings?.firstInstallDate || Date.now();
+            const daysSinceInstall = Math.max(1, (Date.now() - installDate) / (1000 * 60 * 60 * 24));
+            
+            // Reduced scope: smaller window for more responsive, curvy lines
+            const k = Math.max(2, Math.ceil(daysSinceInstall * 0.2)); // Uses 20% of history instead of log
+            
+            let rollingSum = 0;
+            const rollingQueue = [];
+            const avgValidPoints = [];
+            
+            // Pre-fill queue with data preceding the current view window to avoid "tracing" at the start
+            const firstDay = dailyTotals[0];
+            if (firstDay && firstDay.date.includes('-')) { // Only for daily views
+                const [y, m, d] = firstDay.date.split('-').map(Number);
+                const startDate = new Date(y, m - 1, d);
+                
+                for (let i = k - 1; i >= 1; i--) {
+                    const prevDate = new Date(startDate);
+                    prevDate.setDate(startDate.getDate() - i);
+                    const prevStr = formatDateString(prevDate);
+                    
+                    let prevTotal = 0;
+                    for (const domain of Object.keys(usage)) {
+                        prevTotal += (usage[domain][prevStr] || 0) * 1000;
+                    }
+                    rollingQueue.push(prevTotal);
+                    rollingSum += prevTotal;
+                }
+            }
+            
+            dailyTotals.forEach((day, i) => {
+                if (day.time === null) return;
+                
+                rollingQueue.push(day.time);
+                rollingSum += day.time;
+                if (rollingQueue.length > k) {
+                    rollingSum -= rollingQueue.shift();
+                }
+                
+                const avg = rollingSum / rollingQueue.length;
+                const x = padding + (i * pointSpacing);
+                const yRatio = maxTime > 0 ? avg / maxTime : 0;
+                const y = height - padding - (yRatio * (height - padding * 2));
+                
+                avgValidPoints.push({ x, y });
+            });
+            
+            // Use cubic Bezier for rolling average too
+            avgPathD = generateCubicPath(avgValidPoints);
+        }
 
         if (points.length === 0) {
             container.innerHTML = '';
@@ -160,6 +246,7 @@ export class AnalyticsChart {
                 </defs>
                 <path d="${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z" fill="url(#areaGradient)" />
                 <path d="${pathD}" fill="none" stroke="url(#lineGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                ${avgPathD ? `<path d="${avgPathD}" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="4,4" opacity="0.8" />` : ''}
                 ${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${p.isEarliest ? '#ff9800' : '#1976d2'}" stroke="white" stroke-width="2" class="chart-point" />`).join('')}
             </svg>
             <div class="chart-points-overlay">

@@ -124,7 +124,7 @@ export class DataManager {
                 blockList: this.controller.blockList,
                 settings: this.controller.settings,
                 exportDate: new Date().toISOString(),
-                version: '1.0.2',
+                version: chrome.runtime.getManifest().version,
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

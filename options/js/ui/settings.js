@@ -62,7 +62,27 @@ export class SettingsManager {
                 this.controller.updateSetting('currentPlaybackSpeed', parseFloat(currentSpeedSlider.value));
             });
             currentSpeedNum.addEventListener('input', () => {
-                currentSpeedSlider.value = currentSpeedNum.value;
+                const rawValue = parseFloat(currentSpeedNum.value);
+                if (isNaN(rawValue)) return;
+
+                const maxAllowed = parseFloat((this.controller.settings && this.controller.settings.maxPlaybackSpeed) || currentSpeedSlider.max || 16);
+                const clamped = Math.max(0.05, Math.min(maxAllowed, rawValue));
+
+                currentSpeedNum.value = clamped;
+                currentSpeedSlider.value = clamped;
+                this.controller.updateSetting('currentPlaybackSpeed', clamped);
+            });
+
+            currentSpeedNum.addEventListener('change', () => {
+                const rawValue = parseFloat(currentSpeedNum.value);
+                if (isNaN(rawValue)) return;
+
+                const maxAllowed = parseFloat((this.controller.settings && this.controller.settings.maxPlaybackSpeed) || currentSpeedSlider.max || 16);
+                const clamped = Math.max(0.05, Math.min(maxAllowed, rawValue));
+
+                currentSpeedNum.value = clamped;
+                currentSpeedSlider.value = clamped;
+                this.controller.updateSetting('currentPlaybackSpeed', clamped);
             });
         }
 
@@ -78,13 +98,26 @@ export class SettingsManager {
                     this.controller.updateSetting('maxPlaybackSpeed', value);
                 }
             });
-
             maxSpeed.addEventListener('input', () => {
                 const value = parseFloat(maxSpeed.value);
                 const defaultVal = parseFloat(defaultSpeed.value);
                 if (!isNaN(value) && !isNaN(defaultVal) && value < defaultVal) {
                     defaultSpeed.value = value;
                     this.controller.updateSetting('defaultPlaybackSpeed', value);
+                }
+                // Sync current speed slider max
+                if (currentSpeedSlider) {
+                    currentSpeedSlider.max = value;
+                }
+
+                // Clamp current speed immediately if max lowered below it
+                if (currentSpeedNum) {
+                    const currentVal = parseFloat(currentSpeedNum.value);
+                    if (!isNaN(currentVal) && !isNaN(value) && currentVal > value) {
+                        currentSpeedNum.value = value;
+                        if (currentSpeedSlider) currentSpeedSlider.value = value;
+                        this.controller.updateSetting('currentPlaybackSpeed', value);
+                    }
                 }
             });
         }
@@ -307,8 +340,13 @@ export class SettingsManager {
         });
 
         const speedSlider = document.getElementById('currentSpeedSlider');
-        if (speedSlider && settings.currentPlaybackSpeed !== undefined) {
-            speedSlider.value = settings.currentPlaybackSpeed;
+        if (speedSlider) {
+            if (settings.maxPlaybackSpeed !== undefined) {
+                speedSlider.max = settings.maxPlaybackSpeed;
+            }
+            if (settings.currentPlaybackSpeed !== undefined) {
+                speedSlider.value = settings.currentPlaybackSpeed;
+            }
         }
 
         // Keys

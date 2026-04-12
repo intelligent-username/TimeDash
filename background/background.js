@@ -8,7 +8,8 @@ importScripts(
     '../core/rules/site-rule.js',
     '../core/rules/blocked-rule.js',
     '../core/rules/restricted-rule.js',
-    '../core/rules/rule-manager.js'
+    '../core/rules/rule-manager.js',
+    'alarm-manager.js'
 );
 
 /**
@@ -20,10 +21,12 @@ class TimeDashBackground {
         this.storage = new StorageManager();
         this.ruleManager = new RuleManager();
         this.activeTabInfo = new Map(); // tabId -> { domain, startTime, isActive }
-        this.updateInterval = null;
+        this.batchUpdateInterval = null;
         this.TRACKING_INTERVAL = 1000; // 1 second
         this.BATCH_UPDATE_INTERVAL = 5000; // 5 seconds
         this.pendingUpdates = new Map(); // domain -> totalTime
+
+        this.alarmManager = new AlarmManager();
 
         this.init();
     }
@@ -36,7 +39,6 @@ class TimeDashBackground {
         await this.ruleManager.init();
         this.setupEventListeners();
         this.startTrackingLoop();
-        this.setupAlarms();
 
         console.log('TimeDash background service worker initialized');
     }
@@ -76,11 +78,6 @@ class TimeDashBackground {
         // Keyboard commands
         chrome.commands.onCommand.addListener((command) => {
             this.handleCommand(command);
-        });
-
-        // Alarm handling
-        chrome.alarms.onAlarm.addListener((alarm) => {
-            this.handleAlarm(alarm);
         });
     }
 
@@ -170,7 +167,7 @@ class TimeDashBackground {
         try {
             switch (message.type) {
                 case 'GET_TAB_INFO':
-                    sendResponse(await this.getTabInfo(sender.tab?.id));
+                    sendResponse(await this.getTabInfo(sender.tab ? sender.tab.id : undefined));
                     break;
 
                 case 'UPDATE_VIDEO_SPEED':
@@ -275,22 +272,6 @@ class TimeDashBackground {
             }
         } catch (error) {
             console.error('Error handling command:', error);
-        }
-    }
-
-    /**
-     * Handle alarms
-     * @param {Object} alarm - Alarm object
-     */
-    async handleAlarm(alarm) {
-        switch (alarm.name) {
-            case 'daily-reset':
-                await this.handleDailyReset();
-                break;
-
-            case 'batch-update':
-                await this.processPendingUpdates();
-                break;
         }
     }
 
@@ -402,8 +383,11 @@ class TimeDashBackground {
                         const response = await chrome.tabs.sendMessage(tabId, {
                             type: 'CHECK_VISIBILITY',
                         });
-                        if (!response?.visible) {
+                        if (!response || !response.visible) {
                             tabInfo.isActive = false;
+                        } else if (tab.active) {
+                            // Update badge every second while active
+                            await this.updateBadge(tabInfo.domain);
                         }
                     } else {
                         tabInfo.isActive = false;
@@ -604,7 +588,17 @@ class TimeDashBackground {
             }
 
             const usage = await this.storage.getDomainUsage(domain);
-            const todayTime = TimeUtils.calculateTodayTime(usage);
+            let todayTime = TimeUtils.calculateTodayTime(usage);
+
+            // Add pending time not yet in storage
+            todayTime += (this.pendingUpdates.get(domain) || 0);
+
+            // Add currently tracked session time
+            for (const info of this.activeTabInfo.values()) {
+                if (info.domain === domain && info.isActive) {
+                    todayTime += Math.floor((Date.now() - info.startTime) / 1000);
+                }
+            }
 
             let badgeText = '';
             let badgeColor = '#4CAF50';
@@ -631,46 +625,6 @@ class TimeDashBackground {
         } catch (error) {
             console.error('Error updating badge:', error);
         }
-    }
-
-    /**
-     * Set up daily reset alarm
-     */
-    setupAlarms() {
-        // Daily reset at midnight
-        chrome.alarms.create('daily-reset', {
-            when: this.getNextMidnight(),
-            periodInMinutes: 24 * 60,
-        });
-    }
-
-    /**
-     * Get timestamp for next midnight
-     * @returns {number} Timestamp for next midnight
-     */
-    getNextMidnight() {
-        const now = new Date();
-        const midnight = new Date(now);
-        midnight.setHours(24, 0, 0, 0);
-        return midnight.getTime();
-    }
-
-    /**
-     * Handle daily reset
-     */
-    async handleDailyReset() {
-        // Could implement daily reset logic here if needed
-        // Auto-purge old data if enabled
-        try {
-            const settings = await this.storage.getSettings();
-            if (settings && settings.autoPurgeEnabled && settings.autoPurgeDays) {
-                await this.storage.purgeOldData(settings.autoPurgeDays);
-                console.log(`Auto-purged data older than ${settings.autoPurgeDays} days`);
-            }
-        } catch (e) {
-            console.error('Auto-purge failed:', e);
-        }
-        console.log('Daily reset triggered');
     }
 }
 

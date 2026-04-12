@@ -38,8 +38,20 @@ export class OptionsController {
         this.setupNavigation();
         this.refreshUI();
         this.setupAutoSave();
+        this.setupHelpLinks();
 
         this.showBanner('Settings loaded', 'success');
+    }
+
+    setupHelpLinks() {
+        const privacyLink = document.getElementById('privacyPolicyLink');
+        if (privacyLink) {
+            privacyLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const privacyTab = document.querySelector('[data-tab=privacy]');
+                if (privacyTab) privacyTab.click();
+            });
+        }
     }
 
     async loadAllData() {
@@ -53,11 +65,18 @@ export class OptionsController {
         this.settings = settings;
         this.usage = usage;
         this.blockList = blockList;
-        this.restrictedDomains = rules?.restricted?.map(r => r.domain) || [];
+        this.restrictedDomains = (rules && rules.restricted) ? rules.restricted.map(r => r.domain) : [];
     }
 
     refreshUI() {
         this.settingsManager.populateAll(this.settings);
+        
+        // Update version text from manifest
+        const versionEl = document.querySelector('.version-text');
+        if (versionEl) {
+            versionEl.textContent = `v${chrome.runtime.getManifest().version}`;
+        }
+        
         this.blockingUI.loadSiteRules(); // Let it fetch and render its own rules
         this.analyticsUI.update();
         this.updateSaveButton();
@@ -199,9 +218,9 @@ export class OptionsController {
             'help': 'Help & About'
         };
         const subtitles = {
-            'general': 'Manage appearance and notifications',
-            'analytics': 'Usage Overview',
-            'video': 'Customize playback speed controls',
+            'general': 'Appearance and notifications',
+            'analytics': 'Usage overview',
+            'video': 'Customize speed controls',
             'blocking': 'Manage blocked and restricted sites',
             'privacy': 'Control your data and privacy settings',
             'help': 'Guides and feature overview',
@@ -232,29 +251,38 @@ export class OptionsController {
 
     async saveSettings(silent = false) {
         try {
+            this.updateSaveStatus('Saving changes...', true);
             await this.storageManager.saveSettings(this.settings);
             this.isDirty = false;
-            this.updateSaveButton();
+            
+            // Show "Saved" for a second then disappear
+            this.updateSaveStatus('Saved', true);
+            setTimeout(() => {
+                this.updateSaveStatus('', false);
+            }, 1000);
+
             if (!silent) this.showSuccess('Settings saved');
             chrome.runtime.sendMessage({ type: 'SETTINGS_UPDATED', settings: this.settings });
         } catch (e) {
             console.error(e);
+            this.updateSaveStatus('Error saving', true);
             this.showError('Failed to save settings');
         }
     }
 
-    updateSaveButton() {
+    updateSaveStatus(message, visible = true) {
         const status = document.getElementById('saveStatus');
         if (status) {
             const msg = status.querySelector('.save-message');
-            if (this.isDirty) {
-                status.style.opacity = '1';
-                if (msg) msg.textContent = 'Unsaved changes...';
-            } else {
-                status.style.opacity = '0.7';
-                if (msg) msg.textContent = 'Settings saved automatically';
-            }
+            if (message && msg) msg.textContent = message;
+            status.style.opacity = visible ? '1' : '0';
+            status.style.pointerEvents = visible ? 'auto' : 'none';
         }
+    }
+
+    updateSaveButton() {
+        // Obsolete but kept to avoid errors from other calls
+        this.updateSaveStatus('', false);
     }
 
     showSuccess(msg) { showToast(msg, 'success'); }

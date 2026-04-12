@@ -392,7 +392,7 @@ class AlarmManager {
         const data = await chrome.storage.local.get();
         return {
             timestamp: new Date().toISOString(),
-            version: '1.0.2',
+            version: chrome.runtime.getManifest().version,
             data,
         };
     }

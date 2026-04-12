@@ -39,7 +39,7 @@ class TimeDashPopup {
             PopupHelpers.hideBanner();
 
             // Check for first-time setup
-            if (this.settings?.firstTimeSetup) {
+            if (this.settings && this.settings.firstTimeSetup) {
                 this.showSetupModal();
             }
         } catch (error) {
@@ -145,7 +145,7 @@ class TimeDashPopup {
 
         // Global keybinds inside popup
         document.addEventListener('keydown', (event) => {
-            if (this.settings?.firstTimeSetup) return; // Don't interfere with modal
+            if (this.settings && this.settings.firstTimeSetup) return; // Don't interfere with modal
             
             // Check if user is typing in an input
             const activeElement = document.activeElement;
@@ -166,9 +166,9 @@ class TimeDashPopup {
                 return [baseKey, ...(map[baseKey] || [])];
             };
 
-            const increaseKeys = getKeyAliases(this.settings?.increaseSpeedKey || 'Plus');
-            const decreaseKeys = getKeyAliases(this.settings?.decreaseSpeedKey || 'Minus');
-            const resetKeys = getKeyAliases(this.settings?.resetSpeedKey || 'Period');
+            const increaseKeys = getKeyAliases((this.settings && this.settings.increaseSpeedKey) || 'Plus');
+            const decreaseKeys = getKeyAliases((this.settings && this.settings.decreaseSpeedKey) || 'Minus');
+            const resetKeys = getKeyAliases((this.settings && this.settings.resetSpeedKey) || 'Period');
 
             if (!event.ctrlKey && !event.altKey && !event.metaKey) {
                 if (increaseKeys.includes(event.code)) {
@@ -241,7 +241,7 @@ class TimeDashPopup {
         }
 
         const domain = this.extractDomain(this.currentTab.url);
-        const domainData = this.usageData?.domains?.find((d) => d.domain === domain);
+        const domainData = (this.usageData && this.usageData.domains) ? this.usageData.domains.find((d) => d.domain === domain) : null;
 
         siteName.textContent = PopupHelpers.capitalize(domain);
         siteTime.textContent = domainData
@@ -252,7 +252,7 @@ class TimeDashPopup {
         siteFavicon.style.display = 'block';
 
         // Update block button
-        const isBlocked = domainData?.isBlocked || false;
+        const isBlocked = (domainData && domainData.isBlocked) || false;
         blockBtn.textContent = isBlocked ? 'Unblock Site' : 'Block Site';
         blockBtn.className = `action-btn block-btn ${isBlocked ? 'blocked' : ''}`;
     }
@@ -262,7 +262,7 @@ class TimeDashPopup {
      */
     async updateCurrentSpeed() {
         this.currentTabHasVideo = true; // universally assume speed applies
-        const speed = this.settings?.currentPlaybackSpeed || 1.0;
+        const speed = (this.settings && this.settings.currentPlaybackSpeed) || 1.0;
         document.getElementById('currentSpeed').textContent = `${Number(speed).toFixed(2)}x`;
     }
 
@@ -350,7 +350,7 @@ class TimeDashPopup {
     updateTopSites() {
         const sitesList = document.getElementById('sitesList');
 
-        if (!this.usageData?.domains || this.usageData.domains.length === 0) {
+        if (!this.usageData || !this.usageData.domains || this.usageData.domains.length === 0) {
             sitesList.innerHTML = `
                 <div class="empty-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
@@ -390,8 +390,8 @@ class TimeDashPopup {
         const sitesCount = document.getElementById('sitesCount');
         const toggleBtn = document.getElementById('toggleTracking');
 
-        const isTracking = this.settings?.trackingEnabled !== false;
-        const totalSites = this.usageData?.domains?.length || 0;
+        const isTracking = (this.settings && this.settings.trackingEnabled) !== false;
+        const totalSites = (this.usageData && this.usageData.domains) ? this.usageData.domains.length : 0;
 
         trackingStatus.textContent = isTracking ? '● Tracking Active' : '● Tracking Paused';
         trackingStatus.className = `tracking-status ${isTracking ? 'active' : 'paused'}`;
@@ -442,8 +442,8 @@ class TimeDashPopup {
      * Check if domain is blocked
      */
     async isBlocked(domain) {
-        const domainData = this.usageData?.domains?.find((d) => d.domain === domain);
-        return domainData?.isBlocked || false;
+        const domainData = (this.usageData && this.usageData.domains) ? this.usageData.domains.find((d) => d.domain === domain) : null;
+        return (domainData && domainData.isBlocked) || false;
     }
 
     /**
@@ -584,7 +584,8 @@ class TimeDashPopup {
             document.removeEventListener('keydown', this.boundKeyHandler);
             this.boundKeyHandler = null;
         }
-        document.getElementById('settingsBtn')?.focus();
+        const settingsBtn = document.getElementById('settingsBtn');
+        if (settingsBtn) settingsBtn.focus();
     }
 
     /**

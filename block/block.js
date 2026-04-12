@@ -81,7 +81,7 @@ class BlockPageController {
                 url: this.blockedUrl || `https://${this.blockedDomain}`,
                 domain: this.blockedDomain
             });
-            return response?.shouldBlock === true;
+            return response && response.shouldBlock === true;
         } catch (error) {
             console.error('Error checking access:', error);
             return true; // Assume still blocked on error

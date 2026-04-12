@@ -11,6 +11,8 @@ class TimeDashContent {
         this.currentSpeed = null;  // Don't assume default until loaded
         this.domain = this.extractDomain(window.location.href);
         this.mutationObserver = null;
+        this.rootObservers = new Set();
+        this._deepScanTimer = null;
         this.visibilityCheckInterval = null;
         this.settings = {};
         this.initialized = false;
@@ -69,12 +71,12 @@ class TimeDashContent {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = response || {};
-            this.currentSpeed = this.settings.currentPlaybackSpeed || this.settings.defaultPlaybackSpeed || 1.0;
+            this.currentSpeed = (this.settings.currentPlaybackSpeed) ? this.settings.currentPlaybackSpeed : (this.settings.defaultPlaybackSpeed ? this.settings.defaultPlaybackSpeed : 1.0);
 
             // Pass settings to UI if needed (e.g. for theme or preferences)
             if (this.ui) this.ui.updateSettings(this.settings);
         } catch (error) {
-            if (error.message?.includes('Extension context invalidated')) {
+            if (error.message && error.message.indexOf('Extension context invalidated') !== -1) {
                 this.contextValid = false;
                 return;
             }
@@ -96,34 +98,98 @@ class TimeDashContent {
      * Set up video detection using MutationObserver
      */
     setupVideoDetection() {
-        this.findAndSetupVideos();
+        this.setupShadowDomHook();
+        this.findAndSetupVideos(document);
+        this.scanOpenShadowRoots(document);
 
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.tagName === 'VIDEO') {
-                            this.setupVideo(node);
-                        } else if (node.querySelectorAll) {
-                            const videos = node.querySelectorAll('video');
-                            videos.forEach((video) => this.setupVideo(video));
-                        }
-                    }
-                });
+                mutation.addedNodes.forEach((node) => this.scanNodeForVideos(node));
             });
         });
 
-        if (document.body) {
-            this.mutationObserver.observe(document.body, {
+        const root = document.documentElement || document.body;
+        if (root) {
+            this.mutationObserver.observe(root, {
                 childList: true,
                 subtree: true,
             });
         }
+
+        this._deepScanTimer = setInterval(() => {
+            if (this.isOrphaned) return;
+            this.findAndSetupVideos(document);
+            this.scanOpenShadowRoots(document);
+        }, 2000);
     }
 
-    findAndSetupVideos() {
-        const videos = document.querySelectorAll('video');
+    findAndSetupVideos(root = document) {
+        if (!root || !root.querySelectorAll) return;
+        const videos = root.querySelectorAll('video');
         videos.forEach((video) => this.setupVideo(video));
+    }
+
+    scanNodeForVideos(node) {
+        if (!node || node.nodeType !== Node.ELEMENT_NODE) return;
+
+        if (node.tagName === 'VIDEO') {
+            this.setupVideo(node);
+        }
+
+        if (node.querySelectorAll) {
+            const videos = node.querySelectorAll('video');
+            videos.forEach((video) => this.setupVideo(video));
+        }
+
+        if (node.shadowRoot) {
+            this.findAndSetupVideos(node.shadowRoot);
+            this.observeRoot(node.shadowRoot);
+            this.scanOpenShadowRoots(node.shadowRoot);
+        }
+    }
+
+    scanOpenShadowRoots(root = document) {
+        if (!root || !root.querySelectorAll) return;
+
+        const hosts = root.querySelectorAll('*');
+        hosts.forEach((el) => {
+            if (el.shadowRoot) {
+                this.findAndSetupVideos(el.shadowRoot);
+                this.observeRoot(el.shadowRoot);
+            }
+        });
+    }
+
+    observeRoot(root) {
+        if (!root || root.__timedashObserved) return;
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => this.scanNodeForVideos(node));
+            });
+        });
+
+        observer.observe(root, { childList: true, subtree: true });
+        root.__timedashObserved = true;
+        this.rootObservers.add(observer);
+    }
+
+    setupShadowDomHook() {
+        if (Element.prototype.__timedashPatchedAttachShadow) return;
+
+        const originalAttachShadow = Element.prototype.attachShadow;
+        const self = this;
+
+        Element.prototype.attachShadow = function(init) {
+            const shadowRoot = originalAttachShadow.call(this, init);
+            if (init && init.mode === 'open') {
+                self.findAndSetupVideos(shadowRoot);
+                self.observeRoot(shadowRoot);
+            }
+            return shadowRoot;
+        };
+
+        Element.prototype.__timedashPatchedAttachShadow = true;
     }
 
     /**
@@ -190,12 +256,28 @@ class TimeDashContent {
      */
     updateAllVideoSpeeds() {
         this._settingSpeed = true;
+        const staleVideos = [];
         this.videos.forEach((video) => {
+            if (!video || !video.isConnected) {
+                staleVideos.push(video);
+                return;
+            }
             if (video) {
                 video.playbackRate = this.currentSpeed;
             }
         });
+        staleVideos.forEach((video) => this.videos.delete(video));
         this._settingSpeed = false;
+    }
+
+    showSpeedOverlayIndicator() {
+        if (!this.ui || !this.settings.showSpeedOverlay || this.videos.size === 0) return;
+
+        const connectedVideos = [...this.videos].filter((video) => video && video.isConnected);
+        if (connectedVideos.length === 0) return;
+
+        const activeVideo = connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+        this.ui.showIndicator(activeVideo, this.currentSpeed);
     }
 
     increaseSpeed() {
@@ -230,13 +312,7 @@ class TimeDashContent {
         this.currentSpeed = Math.round(clampedSpeed * 100) / 100;
 
         this.updateAllVideoSpeeds();
-
-        // Show indicator only on user-initiated changes (not silent re-applications).
-        // Show once on the first known video to avoid the multi-video loop race.
-        if (this.ui && this.settings.showSpeedOverlay && this.videos.size > 0) {
-            const firstVideo = this.videos.values().next().value;
-            if (firstVideo) this.ui.showIndicator(firstVideo, this.currentSpeed);
-        }
+        this.showSpeedOverlayIndicator();
 
         this.saveCurrentSpeed();
     }
@@ -279,6 +355,16 @@ class TimeDashContent {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
             this.mutationObserver = null;
+        }
+
+        if (this.rootObservers.size > 0) {
+            this.rootObservers.forEach((observer) => observer.disconnect());
+            this.rootObservers.clear();
+        }
+
+        if (this._deepScanTimer) {
+            clearInterval(this._deepScanTimer);
+            this._deepScanTimer = null;
         }
 
         // 2. Stop visibility polling
@@ -404,6 +490,7 @@ class TimeDashContent {
                         newSettings.currentPlaybackSpeed !== oldSettings.currentPlaybackSpeed) {
                         this.currentSpeed = newSettings.currentPlaybackSpeed;
                         this.updateAllVideoSpeeds();
+                        this.showSpeedOverlayIndicator();
                     }
                 }
             });

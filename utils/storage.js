@@ -29,6 +29,7 @@ class StorageManager {
             autoPurgeEnabled: false,
             autoPurgeDays: 30,
             storageLimitMB: 10,
+            firstInstallDate: null,
         };
 
         // init() is called explicitly by background.js — don't fire-and-forget here
@@ -55,6 +56,12 @@ class StorageManager {
                     result.settings.currentPlaybackSpeed === undefined) {
                     result.settings.currentPlaybackSpeed = result.settings.defaultPlaybackSpeed;
                     delete result.settings.defaultPlaybackSpeed;
+                    await this.setSettings(result.settings);
+                }
+
+                // Ensure firstInstallDate exists for rolling average
+                if (result.settings.firstInstallDate === undefined || result.settings.firstInstallDate === null) {
+                    result.settings.firstInstallDate = Date.now();
                     await this.setSettings(result.settings);
                 }
             }

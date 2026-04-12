@@ -11,7 +11,8 @@ export class AnalyticsUI {
         const dataContext = {
             getUsage: () => this.controller.usage,
             getEarliestDate: () => this.earliestDate,
-            getRestrictedDomains: () => this.controller.restrictedDomains || []
+            getRestrictedDomains: () => this.controller.restrictedDomains || [],
+            getSettings: () => this.controller.settings
         };
 
         this.chart = new AnalyticsChart(dataContext);
@@ -50,6 +51,13 @@ export class AnalyticsUI {
             this.chart.render();
             this.updatePeriodStats();
         });
+
+        const rollingToggle = document.getElementById('rollingAverageToggle');
+        if (rollingToggle) {
+            rollingToggle.addEventListener('change', () => {
+                this.chart.render();
+            });
+        }
 
         // Heatmap filter
         const heatmapFilter = document.getElementById('heatmapFilter');
@@ -128,7 +136,7 @@ export class AnalyticsUI {
 
         // Sort and render top sites
         sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
-        this.renderTopSites(sitesWithTime, sitesWithTime[0]?.todayTime || 0);
+        this.renderTopSites(sitesWithTime, (sitesWithTime[0] ? sitesWithTime[0].todayTime : 0) || 0);
 
         this.chart.render();
         this.heatmap.render();
@@ -140,7 +148,7 @@ export class AnalyticsUI {
 
         // Update "Time Today" to show the period total with dynamic label
         const todayEl = document.getElementById('analyticsTodayTotal');
-        const todayLabelEl = todayEl?.closest('.stat-card')?.querySelector('.stat-label');
+        const todayLabelEl = (todayEl && todayEl.closest('.stat-card')) ? todayEl.closest('.stat-card').querySelector('.stat-label') : null;
 
         if (todayEl) {
             todayEl.textContent = formatTime(periodTotal);
@@ -152,7 +160,7 @@ export class AnalyticsUI {
         // Update average
         const avgTime = periodDays > 0 ? Math.round(periodTotal / periodDays) : 0;
         const avgEl = document.getElementById('analyticsWeekAverage');
-        const avgLabelEl = avgEl?.closest('.stat-card')?.querySelector('.stat-label');
+        const avgLabelEl = (avgEl && avgEl.closest('.stat-card')) ? avgEl.closest('.stat-card').querySelector('.stat-label') : null;
 
         if (avgEl) {
             avgEl.textContent = formatTime(avgTime);
@@ -163,7 +171,7 @@ export class AnalyticsUI {
 
         // Update "Total Time" to reflect the selected period
         const totalEl = document.getElementById('analyticsTotalTime');
-        const totalLabelEl = totalEl?.closest('.stat-card')?.querySelector('.stat-label');
+        const totalLabelEl = (totalEl && totalEl.closest('.stat-card')) ? totalEl.closest('.stat-card').querySelector('.stat-label') : null;
 
         if (totalEl) {
             totalEl.textContent = formatTime(periodTotal);
