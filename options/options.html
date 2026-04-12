@@ -484,13 +484,22 @@
                                             <input type="number" id="speedStep" min="0.05" max="1" step="0.05" placeholder="0.25" class="modern-input short" />
                                         </div>
                                     </div>
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-title">Controller Skip Pace</div>
+                                            <div class="setting-desc">Seconds for rewind/skip controls</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <input type="number" id="controllerSkipPace" min="1" max="600" step="1" placeholder="10" class="modern-input short" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Right: Keyboard Shortcuts -->
                             <div class="content-card">
                                 <div class="card-header">
-                                    <h2>Keyboard Shortcuts</h2>
+                                    <h2>Shortcuts</h2>
                                     <div class="setting-item-right">
                                         <label class="switch">
                                             <input type="checkbox" id="keyboardShortcuts" checked />
@@ -524,6 +533,16 @@
                                         </div>
                                         <div class="setting-control">
                                             <input type="text" id="resetSpeedKey" class="modern-input keybind-input short" placeholder="Click to set" readonly />
+                                        </div>
+                                    </div>
+
+                                    <div class="currently-playing-panel">
+                                        <div class="currently-playing-header">
+                                            <div class="setting-title">Currently Playing</div>
+                                            <button type="button" id="currentlyPlayingRefresh" class="btn btn-outline btn-sm">Refresh</button>
+                                        </div>
+                                        <div class="currently-playing-list" id="currentlyPlayingList">
+                                            <div class="analytics-empty-state">No active videos found.</div>
                                         </div>
                                     </div>
                                 </div>

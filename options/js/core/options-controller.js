@@ -3,6 +3,7 @@ import { DataManager } from '../ui/data.js';
 import { BlockingUI } from '../ui/blocking-ui.js';
 import { AnalyticsUI } from '../ui/analytics-ui.js';
 import { SiteSpeedList } from '../ui/site-speed-list.js';
+import { CurrentlyPlayingUI } from '../ui/currently-playing.js';
 import { showToast } from '../utils/dom.js';
 
 export class OptionsController {
@@ -13,6 +14,7 @@ export class OptionsController {
         this.blockingUI = new BlockingUI(this);
         this.analyticsUI = new AnalyticsUI(this);
         this.siteSpeedList = new SiteSpeedList(this);
+        this.currentlyPlayingUI = new CurrentlyPlayingUI(this);
 
         this.settings = {};
         this.usage = {};
@@ -34,6 +36,7 @@ export class OptionsController {
         this.blockingUI.setup();
         this.analyticsUI.setup();
         this.siteSpeedList.setup();
+        this.currentlyPlayingUI.setup();
 
         this.setupNavigation();
         this.refreshUI();
@@ -148,6 +151,10 @@ export class OptionsController {
 
                 if (tab === 'analytics' && this.analyticsUI) {
                     this.analyticsUI.update();
+                }
+
+                if (this.currentlyPlayingUI) {
+                    this.currentlyPlayingUI.setActive(tab === 'video');
                 }
             });
         });

@@ -138,7 +138,8 @@ export class SettingsManager {
             currentPlaybackSpeed: 'currentPlaybackSpeed',
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
-            speedStep: 'speedStep'
+            speedStep: 'speedStep',
+            controllerSkipPace: 'controllerSkipPace'
         });
 
         const currentSpeedNum = document.getElementById('currentPlaybackSpeed');
@@ -410,6 +411,7 @@ export class SettingsManager {
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep',
+            controllerSkipPace: 'controllerSkipPace',
             incognitoTracking: 'incognitoTracking',
             trackingFrequency: 'trackingFrequency',
             autoPurgeEnabled: 'autoPurgeEnabled',
@@ -433,6 +435,11 @@ export class SettingsManager {
             if (settings.currentPlaybackSpeed !== undefined) {
                 speedSlider.value = settings.currentPlaybackSpeed;
             }
+        }
+
+        const controllerSkipPace = document.getElementById('controllerSkipPace');
+        if (controllerSkipPace && (!Number.isFinite(settings.controllerSkipPace) || settings.controllerSkipPace <= 0)) {
+            controllerSkipPace.value = 10;
         }
 
         // Keys

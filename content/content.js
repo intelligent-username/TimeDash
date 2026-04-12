@@ -18,6 +18,9 @@ class TimeDashContent {
         this.initialized = false;
         this.contextValid = true;
         this._settingSpeed = false; // Guard flag to prevent ratechange loops
+        this.videoIdMap = new WeakMap();
+        this.videoIdCounter = 1;
+        this.videoInteractionTs = new WeakMap();
 
         // Initialize UI component (loaded via manifest before this script)
         this.ui = window.TimeDashOverlayUI ? new window.TimeDashOverlayUI({
@@ -28,6 +31,17 @@ class TimeDashContent {
         }) : null;
 
         this.init();
+    }
+
+    markVideoInteraction(video) {
+        if (!video) return;
+        this.videoInteractionTs.set(video, Date.now());
+    }
+
+    hasRecentVideoInteraction(video, withinMs = 45000) {
+        const ts = this.videoInteractionTs.get(video);
+        if (!Number.isFinite(ts)) return false;
+        return (Date.now() - ts) <= withinMs;
     }
 
     /**
@@ -199,12 +213,17 @@ class TimeDashContent {
         if (this.videos.has(video)) return;
         this.videos.add(video);
 
+        if (!this.videoIdMap.has(video)) {
+            this.videoIdMap.set(video, `v${this.videoIdCounter++}`);
+        }
+
         // Apply speed when ready
         const setupSpeed = () => {
             if (this.currentSpeed !== null && this.initialized) {
                 this._settingSpeed = true;
                 video.playbackRate = this.currentSpeed;
                 this._settingSpeed = false;
+                this.markVideoInteraction(video);
                 if (this.ui && this.settings.showSpeedOverlay) {
                     this.ui.showIndicator(video, this.currentSpeed);
                 }
@@ -222,6 +241,11 @@ class TimeDashContent {
             // Skip events we triggered ourselves
             if (this._settingSpeed) return;
 
+            this.markVideoInteraction(video);
+            if (this.ui) {
+                this.ui.showIndicator(video, this.currentSpeed);
+            }
+
             const externalSpeed = video.playbackRate;
             if (Math.abs(externalSpeed - this.currentSpeed) > 0.05) {
                 // Site tried to change the speed - fight back by re-applying our speed
@@ -229,8 +253,15 @@ class TimeDashContent {
                 this._settingSpeed = true;
                 video.playbackRate = this.currentSpeed;
                 this._settingSpeed = false;
+                if (this.ui) {
+                    this.ui.showIndicator(video, this.currentSpeed);
+                }
             }
         });
+
+        video.addEventListener('play', () => this.markVideoInteraction(video));
+        video.addEventListener('playing', () => this.markVideoInteraction(video));
+        video.addEventListener('seeking', () => this.markVideoInteraction(video));
 
 
 
@@ -264,19 +295,25 @@ class TimeDashContent {
             }
             if (video) {
                 video.playbackRate = this.currentSpeed;
+                this.markVideoInteraction(video);
             }
         });
         staleVideos.forEach((video) => this.videos.delete(video));
         this._settingSpeed = false;
     }
 
-    showSpeedOverlayIndicator() {
-        if (!this.ui || !this.settings.showSpeedOverlay || this.videos.size === 0) return;
+    showSpeedOverlayIndicator(force = false) {
+        if (!this.ui || this.videos.size === 0) return;
+        if (!force && !this.settings.showSpeedOverlay) return;
+
+        this.findAndSetupVideos(document);
+        this.scanOpenShadowRoots(document);
 
         const connectedVideos = [...this.videos].filter((video) => video && video.isConnected);
         if (connectedVideos.length === 0) return;
 
-        const activeVideo = connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+        const recentVideo = connectedVideos.find((video) => this.hasRecentVideoInteraction(video));
+        const activeVideo = recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
         this.ui.showIndicator(activeVideo, this.currentSpeed);
     }
 
@@ -312,7 +349,7 @@ class TimeDashContent {
         this.currentSpeed = Math.round(clampedSpeed * 100) / 100;
 
         this.updateAllVideoSpeeds();
-        this.showSpeedOverlayIndicator();
+        this.showSpeedOverlayIndicator(true);
 
         this.saveCurrentSpeed();
     }
@@ -441,6 +478,206 @@ class TimeDashContent {
         );
     }
 
+    getVideoById(videoId) {
+        for (const video of this.videos) {
+            if (!video || !video.isConnected) continue;
+            if (this.videoIdMap.get(video) === videoId) {
+                return video;
+            }
+        }
+        return null;
+    }
+
+    hasAudioTrack(video) {
+        if (!video) return false;
+        if (video.muted || video.volume === 0) return false;
+
+        if (Array.isArray(video.audioTracks) && video.audioTracks.length > 0) return true;
+        if (typeof video.audioTracks === 'object' && video.audioTracks && video.audioTracks.length > 0) return true;
+        if (video.mozHasAudio === true) return true;
+        if (typeof video.webkitAudioDecodedByteCount === 'number' && video.webkitAudioDecodedByteCount > 0) return true;
+
+        return !video.muted && video.volume > 0;
+    }
+
+    getVideoSourceLabel() {
+        const parseLdJsonAuthor = () => {
+            const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+            for (const script of scripts) {
+                const raw = (script.textContent || '').trim();
+                if (!raw) continue;
+                try {
+                    const parsed = JSON.parse(raw);
+                    const nodes = Array.isArray(parsed) ? parsed : [parsed];
+                    for (const node of nodes) {
+                        if (!node || typeof node !== 'object') continue;
+                        const author = node.author;
+                        if (author && typeof author === 'object' && typeof author.name === 'string' && author.name.trim()) {
+                            return author.name.trim();
+                        }
+                    }
+                } catch {
+                    // Ignore malformed json-ld
+                }
+            }
+            return '';
+        };
+
+        // Try author/channel first
+        const authorCandidates = [
+            'ytd-watch-metadata ytd-channel-name a',
+            'ytd-video-owner-renderer ytd-channel-name a',
+            '#owner-name a',
+            'ytd-channel-name a',
+            '#owner #channel-name a',
+            '#upload-info #channel-name a',
+            '#upload-info #channel-name yt-formatted-string a',
+            'meta[name="author"]',
+            'meta[property="article:author"]'
+        ];
+
+        const ldJsonAuthor = parseLdJsonAuthor();
+        if (ldJsonAuthor) return ldJsonAuthor;
+
+        for (const selector of authorCandidates) {
+            const element = document.querySelector(selector);
+            if (!element) continue;
+
+            if (element.tagName === 'META') {
+                const content = (element.getAttribute('content') || '').trim();
+                if (content) return content;
+            } else {
+                const value = (element.textContent || '').trim();
+                if (value) return value;
+            }
+        }
+
+        const siteMeta = document.querySelector('meta[property="og:site_name"]');
+        if (siteMeta) {
+            const siteName = (siteMeta.getAttribute('content') || '').trim();
+            if (siteName) return siteName;
+        }
+
+        const host = (window.location.hostname || '').replace(/^www\./, '');
+        return host || 'Unknown source';
+    }
+
+    isLikelyPrimaryVideo(video) {
+        if (!video) return false;
+
+        const rect = typeof video.getBoundingClientRect === 'function'
+            ? video.getBoundingClientRect()
+            : { width: 0, height: 0 };
+
+        const minWidth = 240;
+        const minHeight = 135;
+        if (rect.width < minWidth || rect.height < minHeight) return false;
+
+        const style = window.getComputedStyle ? window.getComputedStyle(video) : null;
+        if (style) {
+            if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) {
+                return false;
+            }
+        }
+
+        if (video.loop && video.muted) return false;
+        return true;
+    }
+
+    getControllerSkipPaceSeconds() {
+        const raw = Number(this.settings && this.settings.controllerSkipPace);
+        if (!Number.isFinite(raw)) return 10;
+        return Math.max(1, Math.min(600, raw));
+    }
+
+    getPlaybackState() {
+        // YouTube and SPA players may swap video nodes between route/state changes.
+        // Refresh discovery right before snapshot so we don't depend on stale set membership.
+        this.findAndSetupVideos(document);
+        this.scanOpenShadowRoots(document);
+
+        const videos = [];
+
+        for (const video of this.videos) {
+            if (!video || !video.isConnected) continue;
+            const recentInteraction = this.hasRecentVideoInteraction(video);
+            if (!this.isLikelyPrimaryVideo(video) && !recentInteraction) continue;
+            const hasAudio = this.hasAudioTrack(video);
+
+            const duration = Number.isFinite(video.duration) ? video.duration : 0;
+            const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+            const isLive = !Number.isFinite(video.duration) || video.duration === Infinity;
+            const hasPlaybackHistory = Boolean(video.played && video.played.length > 0);
+            const activeOrLooping = Boolean(!video.paused || video.seeking || video.loop || currentTime > 0);
+
+            if (video.ended) continue;
+            if (!hasAudio && !activeOrLooping && !recentInteraction) continue;
+            if (video.paused && currentTime <= 0 && !video.seeking && !video.autoplay && !recentInteraction && !hasPlaybackHistory) continue;
+
+            videos.push({
+                id: this.videoIdMap.get(video),
+                currentTime,
+                duration,
+                paused: Boolean(video.paused),
+                playbackRate: Number(video.playbackRate || 1),
+                isLive,
+                sourceLabel: this.getVideoSourceLabel()
+            });
+        }
+
+        return videos;
+    }
+
+    async controlPlayback(action, videoId, value) {
+        const video = this.getVideoById(videoId);
+        if (!video) {
+            return { success: false, error: 'Video not found' };
+        }
+
+        const skipSeconds = this.getControllerSkipPaceSeconds();
+
+        try {
+            switch (action) {
+                case 'toggle-play':
+                    if (video.paused) await video.play();
+                    else video.pause();
+                    break;
+                case 'pause':
+                    video.pause();
+                    break;
+                case 'play':
+                    await video.play();
+                    break;
+                case 'skip-forward':
+                case 'step-forward':
+                    video.currentTime = Math.min(
+                        Number.isFinite(video.duration) ? video.duration : video.currentTime + skipSeconds,
+                        video.currentTime + skipSeconds
+                    );
+                    break;
+                case 'skip-back':
+                case 'step-back':
+                    video.currentTime = Math.max(0, video.currentTime - skipSeconds);
+                    break;
+                case 'seek': {
+                    const target = Number(value);
+                    if (!Number.isFinite(target)) {
+                        return { success: false, error: 'Invalid seek value' };
+                    }
+                    const maxSeek = Number.isFinite(video.duration) ? video.duration : target;
+                    video.currentTime = Math.max(0, Math.min(maxSeek, target));
+                    break;
+                }
+                default:
+                    return { success: false, error: 'Unknown action' };
+            }
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.message || 'Playback control failed' };
+        }
+    }
+
     setupMessageListeners() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (this.isOrphaned) return false;
@@ -468,6 +705,19 @@ class TimeDashContent {
                     if (this.ui) this.ui.toggleModal();
                     sendResponse({ success: true });
                     break;
+                case 'GET_VIDEO_PLAYBACK_STATE':
+                    sendResponse({ videos: this.getPlaybackState() });
+                    break;
+                case 'FORCE_VIDEO_RESCAN':
+                    this.findAndSetupVideos(document);
+                    this.scanOpenShadowRoots(document);
+                    sendResponse({ success: true, count: this.videos.size });
+                    break;
+                case 'CONTROL_VIDEO_PLAYBACK':
+                    this.controlPlayback(message.action, message.videoId, message.value)
+                        .then(sendResponse)
+                        .catch((error) => sendResponse({ success: false, error: error.message }));
+                    return true;
             }
             return true;
         });
@@ -490,7 +740,7 @@ class TimeDashContent {
                         newSettings.currentPlaybackSpeed !== oldSettings.currentPlaybackSpeed) {
                         this.currentSpeed = newSettings.currentPlaybackSpeed;
                         this.updateAllVideoSpeeds();
-                        this.showSpeedOverlayIndicator();
+                        this.showSpeedOverlayIndicator(true);
                     }
                 }
             });
@@ -539,8 +789,12 @@ class TimeDashContent {
 }
 
 // Initialize
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new TimeDashContent());
-} else {
-    new TimeDashContent();
+if (!globalThis.__timedashContentBooted) {
+    globalThis.__timedashContentBooted = true;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => new TimeDashContent());
+    } else {
+        new TimeDashContent();
+    }
 }

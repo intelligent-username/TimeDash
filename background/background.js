@@ -203,6 +203,18 @@ class TimeDashBackground {
                     sendResponse({ speed });
                     break;
 
+                case 'GET_CURRENTLY_PLAYING_VIDEOS':
+                    sendResponse(await this.getCurrentlyPlayingVideos());
+                    break;
+
+                case 'CONTROL_VIDEO_PLAYBACK':
+                    sendResponse(await this.controlVideoPlayback(message));
+                    break;
+
+                case 'REFRESH_VIDEO_DETECTION':
+                    sendResponse(await this.refreshVideoDetection());
+                    break;
+
                 // Temporary access removed - keeping blocking simple
 
                 case 'GET_SITE_RULES':
@@ -484,6 +496,151 @@ class TimeDashBackground {
             totalToday: processedData.reduce((sum, d) => sum + d.todayTime, 0),
             totalOverall: processedData.reduce((sum, d) => sum + d.totalTime, 0),
         };
+    }
+
+    async getCurrentlyPlayingVideos() {
+        const tabs = await chrome.tabs.query({});
+        const sessionResults = await Promise.all(
+            tabs
+                .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
+                .map(async (tab) => {
+                    try {
+                        const frameIds = await this.getTabFrameIds(tab.id);
+                        const frameResponses = await Promise.all(
+                            frameIds.map(async (frameId) => {
+                                try {
+                                    const response = await chrome.tabs.sendMessage(
+                                        tab.id,
+                                        { type: 'GET_VIDEO_PLAYBACK_STATE' },
+                                        { frameId }
+                                    );
+
+                                    if (!response || !Array.isArray(response.videos) || response.videos.length === 0) {
+                                        return [];
+                                    }
+
+                                    return response.videos.map((video) => ({ ...video, frameId }));
+                                } catch {
+                                    return [];
+                                }
+                            })
+                        );
+
+                        const videos = frameResponses.flat();
+                        if (videos.length === 0) {
+                            return null;
+                        }
+
+                        return {
+                            tabId: tab.id,
+                            title: tab.title || 'Untitled tab',
+                            url: tab.url,
+                            favIconUrl: tab.favIconUrl || '',
+                            videos
+                        };
+                    } catch {
+                        return null;
+                    }
+                })
+        );
+
+        return {
+            sessions: sessionResults.filter(Boolean),
+            updatedAt: Date.now()
+        };
+    }
+
+    async controlVideoPlayback(message) {
+        if (!message || !message.tabId || !message.action) {
+            return { success: false, error: 'Invalid control request' };
+        }
+
+        try {
+            const normalizedAction = message.action === 'step-back'
+                ? 'skip-back'
+                : message.action === 'step-forward'
+                    ? 'skip-forward'
+                    : message.action;
+
+            const sendPayload = {
+                type: 'CONTROL_VIDEO_PLAYBACK',
+                action: normalizedAction,
+                videoId: message.videoId,
+                value: message.value
+            };
+
+            let response = null;
+
+            if (Number.isInteger(message.frameId)) {
+                response = await chrome.tabs.sendMessage(message.tabId, sendPayload, { frameId: message.frameId });
+            } else {
+                response = await chrome.tabs.sendMessage(message.tabId, sendPayload);
+            }
+
+            return response || { success: false, error: 'No response from content script' };
+        } catch (error) {
+            return { success: false, error: error.message || 'Failed to control video' };
+        }
+    }
+
+    async refreshVideoDetection() {
+        const tabs = await chrome.tabs.query({});
+        let refreshedFrames = 0;
+
+        await Promise.all(
+            tabs
+                .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
+                .map(async (tab) => {
+                    await this.ensureVideoScriptsInjected(tab.id);
+                    const frameIds = await this.getTabFrameIds(tab.id);
+                    await Promise.all(frameIds.map(async (frameId) => {
+                        try {
+                            const res = await chrome.tabs.sendMessage(
+                                tab.id,
+                                { type: 'FORCE_VIDEO_RESCAN' },
+                                { frameId }
+                            );
+                            if (res && res.success) refreshedFrames++;
+                        } catch {
+                            // Ignore tabs/frames without active content script context
+                        }
+                    }));
+                })
+        );
+
+        return { success: true, refreshedFrames };
+    }
+
+    async ensureVideoScriptsInjected(tabId) {
+        try {
+            if (!chrome.scripting || !chrome.scripting.executeScript) return;
+
+            await chrome.scripting.executeScript({
+                target: { tabId, allFrames: true },
+                files: ['content/overlay.js', 'content/content.js']
+            });
+        } catch {
+            // Ignore restricted pages or injection failures; caller falls back to normal messaging.
+        }
+    }
+
+    async getTabFrameIds(tabId) {
+        try {
+            if (!chrome.webNavigation || !chrome.webNavigation.getAllFrames) {
+                return [0];
+            }
+
+            const frames = await chrome.webNavigation.getAllFrames({ tabId });
+            if (!Array.isArray(frames) || frames.length === 0) {
+                return [0];
+            }
+
+            return frames
+                .map((frame) => frame.frameId)
+                .filter((frameId) => Number.isInteger(frameId));
+        } catch {
+            return [0];
+        }
     }
 
     /**
