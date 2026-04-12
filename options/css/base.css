@@ -10,13 +10,13 @@ body {
 }
 
 a {
-    color: var(--primary-color);
+    color: var(--link-color);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
-    color: var(--primary-dark);
+    color: var(--link-hover);
     text-decoration: underline;
 }
 

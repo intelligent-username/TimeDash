@@ -215,7 +215,7 @@ export class OptionsController {
             'video': 'Video Control',
             'blocking': 'Site Blocking',
             'privacy': 'Privacy & Data',
-            'help': 'Help & About'
+            'help': 'Help '
         };
         const subtitles = {
             'general': 'Appearance and notifications',
@@ -223,7 +223,7 @@ export class OptionsController {
             'video': 'Customize speed controls',
             'blocking': 'Manage blocked and restricted sites',
             'privacy': 'Control your data and privacy settings',
-            'help': 'Guides and feature overview',
+            'help': 'FAQ and support',
             'undefined': 'Settings'
         };
 

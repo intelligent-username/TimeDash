@@ -382,78 +382,57 @@
 
                         <div class="content-card">
                             <div class="card-header">
-                                <h2>Appearance</h2>
+                                <h2 class="appearance-heading">Appearance</h2>
                             </div>
                             <div class="card-body">
                                 <div class="setting-group">
-                                    <label class="setting-label-block">Theme</label>
-                                    <div class="theme-picker">
-                                        <!-- Will replace select with visual cards later, keeping select for now but styled -->
-                                        <select id="theme" class="modern-select">
-                                            <option value="auto">Auto (System)</option>
-                                            <option value="light">Light</option>
-                                            <option value="dark">Dark</option>
-                                        </select>
+                                    <div class="theme-toggle-row">
+                                        <label class="setting-label-block" for="themeToggle">Theme</label>
+                                        <label class="switch theme-switch">
+                                            <input type="checkbox" id="themeToggle" />
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="setting-group">
                                     <label class="setting-label-block">Accent Color</label>
                                     <div class="color-picker-grid" id="accentColorPicker">
-                                        <button type="button" class="color-swatch" data-color="red"
-                                            style="background: #ef4444;" title="Red"></button>
-                                        <button type="button" class="color-swatch" data-color="orange"
-                                            style="background: #f97316;" title="Orange"></button>
-                                        <button type="button" class="color-swatch" data-color="amber"
-                                            style="background: #f59e0b;" title="Amber"></button>
+                                        <button type="button" class="color-swatch" data-color="blue"
+                                            style="background: #00b7ff;" title="Blue"></button>
                                         <button type="button" class="color-swatch" data-color="green"
                                             style="background: #22c55e;" title="Green"></button>
-                                        <button type="button" class="color-swatch" data-color="teal"
-                                            style="background: #14b8a6;" title="Teal"></button>
-                                        <button type="button" class="color-swatch" data-color="cyan"
-                                            style="background: #06b6d4;" title="Cyan"></button>
-                                        <button type="button" class="color-swatch" data-color="blue"
-                                            style="background: #3b82f6;" title="Blue"></button>
-                                        <button type="button" class="color-swatch" data-color="indigo"
-                                            style="background: #6366f1;" title="Indigo"></button>
-                                        <button type="button" class="color-swatch" data-color="violet"
-                                            style="background: #8b5cf6;" title="Violet"></button>
                                         <button type="button" class="color-swatch" data-color="purple"
                                             style="background: #a855f7;" title="Purple"></button>
-                                        <button type="button" class="color-swatch" data-color="pink"
-                                            style="background: #ec4899;" title="Pink"></button>
-                                        <button type="button" class="color-swatch" data-color="rose"
-                                            style="background: #f43f5e;" title="Rose"></button>
+                                        <button type="button" class="color-swatch" data-color="orange"
+                                            style="background: #f97316;" title="Orange"></button>
+                                        <button type="button" class="color-swatch" data-color="red"
+                                            style="background: #ef4444;" title="Red"></button>
+                                        <div id="customAccentColors" class="custom-colors-wrapper"></div>
+                                        <div class="custom-color-container" id="customAccentContainer">
+                                            <input type="color" id="customAccentColor" class="custom-color-input" title="Add Custom Accent Color" />
+                                            <span class="custom-color-plus">+</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="setting-group">
                                     <label class="setting-label-block">Speed Popup Color</label>
                                     <div class="color-picker-grid" id="overlayColorPicker">
-                                        <button type="button" class="color-swatch" data-color="red"
-                                            style="background: #ef4444;" title="Red"></button>
-                                        <button type="button" class="color-swatch" data-color="orange"
-                                            style="background: #f97316;" title="Orange"></button>
-                                        <button type="button" class="color-swatch" data-color="amber"
-                                            style="background: #f59e0b;" title="Amber"></button>
+                                        <button type="button" class="color-swatch" data-color="blue"
+                                            style="background: #00b7ff;" title="Blue"></button>
                                         <button type="button" class="color-swatch" data-color="green"
                                             style="background: #22c55e;" title="Green"></button>
-                                        <button type="button" class="color-swatch" data-color="teal"
-                                            style="background: #14b8a6;" title="Teal"></button>
-                                        <button type="button" class="color-swatch" data-color="cyan"
-                                            style="background: #06b6d4;" title="Cyan"></button>
-                                        <button type="button" class="color-swatch" data-color="blue"
-                                            style="background: #3b82f6;" title="Blue"></button>
-                                        <button type="button" class="color-swatch" data-color="indigo"
-                                            style="background: #6366f1;" title="Indigo"></button>
-                                        <button type="button" class="color-swatch" data-color="violet"
-                                            style="background: #8b5cf6;" title="Violet"></button>
                                         <button type="button" class="color-swatch" data-color="purple"
                                             style="background: #a855f7;" title="Purple"></button>
-                                        <button type="button" class="color-swatch" data-color="pink"
-                                            style="background: #ec4899;" title="Pink"></button>
-                                        <button type="button" class="color-swatch" data-color="rose"
-                                            style="background: #f43f5e;" title="Rose"></button>
+                                        <button type="button" class="color-swatch" data-color="orange"
+                                            style="background: #f97316;" title="Orange"></button>
+                                        <button type="button" class="color-swatch" data-color="red"
+                                            style="background: #ef4444;" title="Red"></button>
+                                        <div id="customOverlayColors" class="custom-colors-wrapper"></div>
+                                        <div class="custom-color-container" id="customOverlayContainer">
+                                            <input type="color" id="customOverlayColor" class="custom-color-input" title="Add Custom Popup Color" />
+                                            <span class="custom-color-plus">+</span>
+                                        </div>
                                     </div>
-                                    <small class="setting-help">Color of the playback speed overlay on videos</small>
                                 </div>
                             </div>
                         </div>

@@ -16,13 +16,24 @@ export class SettingsManager {
             dailyTimeLimitMinutes: 'dailyLimit',
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
-            theme: 'theme',
             badgeEnabled: 'badgeEnabled'
         });
+
+        this.setupThemeToggle();
 
         // Color picker setup
         this.setupColorPicker('accentColorPicker', 'accentColor');
         this.setupColorPicker('overlayColorPicker', 'overlayColor');
+    }
+
+    setupThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) return;
+
+        themeToggle.addEventListener('change', () => {
+            const theme = themeToggle.checked ? 'dark' : 'light';
+            this.controller.updateSetting('theme', theme);
+        });
     }
 
     setupColorPicker(pickerId, settingKey) {
@@ -32,18 +43,94 @@ export class SettingsManager {
             return;
         }
 
-        picker.querySelectorAll('.color-swatch').forEach(swatch => {
-            swatch.addEventListener('click', () => {
-                console.log('[TimeDash] Color swatch clicked:', swatch.dataset.color);
-                // Remove active from all
-                picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                // Add active to clicked
-                swatch.classList.add('active');
-                // Update setting
-                const color = swatch.dataset.color;
-                this.controller.updateSetting(settingKey, color);
-            });
+        // Delegated click for all swatches (preset + custom)
+        picker.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.swatch-delete');
+            if (deleteBtn) {
+                e.stopPropagation();
+                const customSwatch = deleteBtn.closest('.custom-swatch');
+                const swatch = customSwatch ? customSwatch.querySelector('.color-swatch') : null;
+                if (!swatch) return;
+
+                const colorToDelete = swatch.dataset.color;
+                const customSettingKey = settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
+                const currentCustoms = this.controller.settings[customSettingKey] || [];
+                const updated = currentCustoms.filter(c => c !== colorToDelete);
+                
+                this.controller.updateSetting(customSettingKey, updated);
+                this.renderCustomColors(pickerId, updated, settingKey);
+                
+                // If we deleted the active color, reset to default
+                if (this.controller.settings[settingKey] === colorToDelete) {
+                    this.controller.updateSetting(settingKey, 'blue');
+                    this.populateColorPicker(pickerId, 'blue');
+                }
+                return;
+            }
+
+            const swatch = e.target.closest('.color-swatch');
+            if (!swatch) return;
+
+            console.log('[TimeDash] Color chosen:', swatch.dataset.color);
+            
+            // UI Update
+            picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+            
+            const color = swatch.dataset.color;
+            this.controller.updateSetting(settingKey, color);
         });
+
+        // Add custom color
+        const customInput = picker.querySelector('.custom-color-input');
+        if (customInput) {
+            customInput.addEventListener('change', () => {
+                const color = customInput.value.toLowerCase();
+                const customSettingKey = settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
+                const currentCustoms = this.controller.settings[customSettingKey] || [];
+                
+                if (currentCustoms.length >= 5) {
+                    console.warn('[TimeDash] Max 5 custom colors allowed');
+                    return;
+                }
+
+                if (!currentCustoms.includes(color)) {
+                    const updated = [...currentCustoms, color];
+                    this.controller.updateSetting(customSettingKey, updated);
+                    this.renderCustomColors(pickerId, updated, settingKey);
+                }
+
+                // Activate new color
+                this.controller.updateSetting(settingKey, color);
+                this.populateColorPicker(pickerId, color);
+            });
+        }
+    }
+
+    renderCustomColors(pickerId, colors, settingKey) {
+        const wrapperId = pickerId === 'accentColorPicker' ? 'customAccentColors' : 'customOverlayColors';
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+
+        const activeColor = this.controller.settings[settingKey];
+
+        wrapper.innerHTML = colors.map(color => `
+            <div class="custom-swatch">
+                <button type="button" class="color-swatch ${color === activeColor ? 'active' : ''}" 
+                    data-color="${color}" 
+                    style="background: ${color};" 
+                    title="${color}">
+                </button>
+                <div class="swatch-delete" title="Delete Color">×</div>
+            </div>
+        `).join('');
+
+        // Hide "+" button if at cap
+        const container = document.getElementById(pickerId);
+        const addBtn = container.querySelector('.custom-color-container');
+        if (addBtn) {
+            addBtn.style.display = colors.length >= 5 ? 'none' : 'flex';
+        }
     }
 
     setupVideo() {
@@ -318,7 +405,6 @@ export class SettingsManager {
             dailyTimeLimitMinutes: 'dailyLimit',
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
-            theme: 'theme',
             badgeEnabled: 'badgeEnabled',
             currentPlaybackSpeed: 'currentPlaybackSpeed',
             defaultPlaybackSpeed: 'defaultSpeed',
@@ -361,26 +447,52 @@ export class SettingsManager {
         const paused = document.getElementById('trackingPaused');
         if (paused) paused.checked = !settings.trackingEnabled;
 
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const effectiveTheme = settings.theme === 'dark' ? 'dark' : 'light';
+            themeToggle.checked = effectiveTheme === 'dark';
+        }
+
         const autoPurgeParams = document.getElementById('autoPurgeSettings');
         if (autoPurgeParams) autoPurgeParams.style.display = settings.autoPurgeEnabled ? 'block' : 'none';
 
         this.renderWhitelist(settings.whitelist || []);
 
         // Color pickers
+        this.renderCustomColors('accentColorPicker', settings.customAccentColors || [], 'accentColor');
+        this.renderCustomColors('overlayColorPicker', settings.customOverlayColors || [], 'overlayColor');
+        
         this.populateColorPicker('accentColorPicker', settings.accentColor || 'blue');
         this.populateColorPicker('overlayColorPicker', settings.overlayColor || 'blue');
 
         // Apply theme and accent to document
         console.log('[TimeDash] Initial load - theme:', settings.theme, 'accent:', settings.accentColor);
-        document.documentElement.setAttribute('data-theme', settings.theme || 'auto');
+        document.documentElement.setAttribute('data-theme', settings.theme === 'dark' ? 'dark' : 'light');
         document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
     }
 
     populateColorPicker(pickerId, value) {
         const picker = document.getElementById(pickerId);
         if (!picker) return;
+
+        let foundMatch = false;
         picker.querySelectorAll('.color-swatch').forEach(swatch => {
-            swatch.classList.toggle('active', swatch.dataset.color === value);
+            const isActive = swatch.dataset.color === value;
+            swatch.classList.toggle('active', isActive);
+            if (isActive) foundMatch = true;
         });
+
+        const customContainer = picker.querySelector('.custom-color-container');
+        const customInput = picker.querySelector('.custom-color-input');
+        if (customContainer && customInput) {
+            if (!foundMatch && value && value.startsWith('#')) {
+                customContainer.classList.add('active');
+                customContainer.style.background = value;
+                customInput.value = value;
+            } else {
+                customContainer.classList.remove('active');
+                customContainer.style.background = '';
+            }
+        }
     }
 }

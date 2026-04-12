@@ -103,7 +103,7 @@ class TimeDashOverlayUI {
                 green: '#22c55e',
                 teal: '#14b8a6',
                 cyan: '#06b6d4',
-                blue: '#3b82f6',
+                blue: '#00b7ff',
                 indigo: '#6366f1',
                 violet: '#8b5cf6',
                 purple: '#a855f7',

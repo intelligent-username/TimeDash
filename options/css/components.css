@@ -97,13 +97,13 @@
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background-color: var(--accent-color);
     color: #fff;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--accent-hover);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -229,9 +229,9 @@ input.modern-input.short[type="number"]:focus::-webkit-inner-spin-button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--border);
-    /* Gray initially */
+    background-color: color-mix(in srgb, var(--border) 78%, #8b949e 22%);
     transition: .4s;
+    border: 1px solid color-mix(in srgb, var(--border) 86%, #7c8794 14%);
 }
 
 .slider:before {
@@ -247,12 +247,18 @@ input.modern-input.short[type="number"]:focus::-webkit-inner-spin-button {
 }
 
 input:checked+.slider {
-    background-color: var(--success-color);
-    /* Green when active */
+    background: linear-gradient(90deg,
+            color-mix(in srgb, var(--success-color) 78%, #15803d 22%) 0%,
+            color-mix(in srgb, var(--success-color) 62%, var(--accent-color) 38%) 100%);
+    border-color: color-mix(in srgb, var(--success-color) 70%, var(--accent-color) 30%);
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px var(--success-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 45%, transparent 55%);
+}
+
+input:checked:focus+.slider {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 40%, var(--success-color) 60%);
 }
 
 input:checked+.slider:before {
@@ -265,6 +271,21 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.theme-switch .slider.round:before {
+    content: '☀';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #b45309;
+    line-height: 1;
+}
+
+.theme-switch input:checked+.slider.round:before {
+    content: '☾';
+    color: #475569;
 }
 
 /* Settings Items */
