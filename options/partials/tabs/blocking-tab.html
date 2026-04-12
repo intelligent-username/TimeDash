@@ -1,0 +1,34 @@
+<div class="two-column-grid">
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Hard-Blocked Sites</h2>
+        </div>
+        <div class="card-body">
+            <p class="section-description">These sites are <strong>completely inaccessible</strong>.</p>
+            <div class="rule-manager" id="blockedManager">
+                <div class="rule-input-group modern-input-group">
+                    <input type="text" id="blockedDomainInput" placeholder="e.g., facebook.com" class="modern-input" />
+                    <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+                </div>
+                <ul class="rule-list modern-list" id="blockedList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Restricted Access</h2>
+        </div>
+        <div class="card-body">
+            <p class="section-description">Sites allowed for a <strong>specific </strong> amount of time per day.</p>
+            <div class="rule-manager" id="restrictedManager">
+                <div class="rule-input-group modern-input-group">
+                    <input type="text" id="restrictedDomainInput" placeholder="e.g., youtube.com" class="modern-input" />
+                    <input type="number" id="restrictedLimitInput" placeholder="30" min="1" max="1440" class="modern-input limit-input" />
+                    <button id="addRestrictedBtn" class="btn btn-primary">Add</button>
+                </div>
+                <ul class="rule-list modern-list" id="restrictedList"></ul>
+            </div>
+        </div>
+    </div>
+</div>

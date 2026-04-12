@@ -1,4 +1,4 @@
-import { getFaviconUrl, showToast } from '../utils/dom.js';
+import { getFaviconUrl, showToast } from '../../utils/dom.js';
 
 export class SiteSpeedList {
     constructor(controller) {
@@ -7,7 +7,6 @@ export class SiteSpeedList {
     }
 
     async setup() {
-        // Load speeds
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SITE_SPEEDS' });
             this.siteSpeeds = response?.speeds || {};
@@ -36,9 +35,9 @@ export class SiteSpeedList {
 
     async addSiteSpeed() {
         const domainInput = document.getElementById('newSiteDomain');
-        const speedInput = document.getElementById('newSiteSpeed'); // Make sure this input exists in HTML if mimicking logic
+        const speedInput = document.getElementById('newSiteSpeed');
 
-        if (!domainInput) return; // Silent fail if elements missing
+        if (!domainInput) return;
 
         const domain = domainInput.value.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
         const speed = speedInput ? parseFloat(speedInput.value) : 1.0;

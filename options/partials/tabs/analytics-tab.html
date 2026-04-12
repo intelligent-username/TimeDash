@@ -1,0 +1,162 @@
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--primary-fade); color: var(--primary-color);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 20c4.42 0 8-3.58 8-8s-3.58-8-8-8-8 3.58-8 8 3.58 8 8 8zm0-18c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1-2h-2v6l5.25 3.15.75-1.23-4.5-2.67z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value" id="analyticsTodayTotal">0m</div>
+            <div class="stat-label">Time Today</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--success-fade); color: var(--success-color);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value" id="analyticsWeekAverage">0m</div>
+            <div class="stat-label">Daily Average</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--secondary-fade); color: var(--secondary-color);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M17.9,17.39C17.64,16.59 16.89,16 16,16H15V13A1,1 0 0,0 14,12H8V10H10A1,1 0 0,0 11,9V7H13A2,2 0 0,0 15,5V4.59C17.93,5.77 20,8.64 20,12C20,14.08 19.2,15.97 17.9,17.39M11,19.93C7.05,19.44 4,16.08 4,12C4,11.38 4.08,10.79 4.21,10.21L9,15V16A2,2 0 0,0 11,18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value" id="analyticsSitesCount">0</div>
+            <div class="stat-label">Sites Tracked</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--accent-fade); color: var(--accent-color);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value" id="analyticsTotalTime">0h</div>
+            <div class="stat-label">All Time</div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card large-card">
+    <div class="card-header">
+        <h2>Usage Trends</h2>
+        <div class="chart-controls">
+            <div class="chart-options" style="display: flex; align-items: center; gap: 12px; margin-right: 16px;">
+                <label class="modern-checkbox"
+                    style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
+                    <input type="checkbox" id="rollingAverageToggle" style="width: 14px; height: 14px;" />
+                    Rolling Average
+                </label>
+            </div>
+            <div class="chart-period-selector" role="group" aria-label="Chart Range">
+                <button class="period-btn active" data-period="week">Week</button>
+                <button class="period-btn" data-period="month">Month</button>
+                <button class="period-btn" data-period="year">Year</button>
+            </div>
+            <div class="chart-navigation">
+                <button class="nav-btn" id="chartPrev" title="Previous">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                    </svg>
+                </button>
+                <span class="chart-period-label" id="chartPeriodLabel">This Week</span>
+                <button class="nav-btn" id="chartNext" title="Next">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+                    </svg>
+                </button>
+                <button class="nav-btn" id="chartToday" title="Return to today"
+                    style="border-radius: 50%; padding: 4px; margin-left: 8px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" id="usageChart">
+            <div class="chart-area">
+                <div class="chart-y-axis" id="chartYAxis"></div>
+                <div class="chart-content" id="chartContent"></div>
+            </div>
+            <div class="chart-x-axis" id="chartXAxis"></div>
+            <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none;">
+                <div class="earliest-line"></div>
+                <span class="earliest-label">Tracking started</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header">
+        <h2>Activity Heatmap</h2>
+        <div class="heatmap-controls">
+            <select id="heatmapFilter" class="modern-select">
+                <option value="all">All Sites</option>
+                <option value="restricted">Restricted Sites Only</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="heatmap-container" id="heatmapContainer">
+            <div class="heatmap-months" id="heatmapMonths"></div>
+            <div class="heatmap-grid-wrapper">
+                <div class="heatmap-days">
+                    <span>Sun</span>
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                </div>
+                <div class="heatmap-grid" id="heatmapGrid"></div>
+            </div>
+            <div class="heatmap-legend">
+                <span class="heatmap-legend-label">Less</span>
+                <div class="heatmap-legend-scale">
+                    <div class="heatmap-cell" data-level="0"></div>
+                    <div class="heatmap-cell" data-level="1"></div>
+                    <div class="heatmap-cell" data-level="2"></div>
+                    <div class="heatmap-cell" data-level="3"></div>
+                    <div class="heatmap-cell" data-level="4"></div>
+                </div>
+                <span class="heatmap-legend-label">More</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Top Sites Today</h2>
+        <div class="setting-group" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+            <label for="trackingFrequency"
+                style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; display: flex; align-items: center; gap: 4px;">
+                Tracking Interval (s)
+                <span class="info-tooltip"
+                    title="How often the extension updates your time logs. Lower values are more accurate but use more resources.">?</span>
+            </label>
+            <input type="number" id="trackingFrequency" min="0.1" max="60" step="0.01" placeholder="1.00"
+                class="modern-input short" style="padding: 4px 8px; width: 64px; min-height: unset; height: auto;" />
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="analytics-sites-list" id="analyticsTopSites">
+            <div class="analytics-empty-state">No activity recorded today.</div>
+        </div>
+    </div>
+</div>

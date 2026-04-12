@@ -1,0 +1,78 @@
+/* Top Sites */
+.analytics-sites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.analytics-site-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--background);
+    border-radius: var(--radius-small);
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease;
+}
+
+.analytics-site-item:hover {
+    background: var(--border-subtle);
+}
+
+.analytics-site-favicon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.analytics-site-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.analytics-site-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 12px;
+}
+
+.analytics-site-bar-container {
+    flex: 0 0 100px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0 12px;
+}
+
+.analytics-site-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.analytics-site-time {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 60px;
+    text-align: right;
+}
+
+.analytics-empty-state {
+    padding: 32px;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--background);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+    font-size: 0.9rem;
+}

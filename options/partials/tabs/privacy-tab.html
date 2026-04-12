@@ -1,0 +1,177 @@
+<div class="content-card">
+    <div class="card-header">
+        <h2>Whitelisted Domains</h2>
+    </div>
+    <div class="card-body">
+        <p class="section-description">These sites will never be tracked.</p>
+        <div class="rule-manager">
+            <div class="rule-input-group modern-input-group">
+                <input type="text" id="whitelistInput" placeholder="e.g. test.com" class="modern-input" />
+                <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
+            </div>
+            <ul class="rule-list modern-list" id="whitelistList"></ul>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header">
+        <h2>Data Privacy Health</h2>
+    </div>
+    <div class="card-body">
+        <div class="privacy-status">
+            <div class="status-item">
+                <span class="status-label">Data Storage</span>
+                <span class="status-value highlight-success">Local Only</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Telemetry</span>
+                <span class="status-value highlight-success">Disabled</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Account Required</span>
+                <span class="status-value highlight-success">No</span>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-title">Pause Tracking</div>
+                <div class="setting-desc">Temporarily stop all data collection</div>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="trackingPaused" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-title">Incognito Tracking</div>
+                <div class="setting-desc">Enable tracking in incognito windows</div>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="incognitoTracking" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header">
+        <h2>Data Management</h2>
+    </div>
+    <div class="card-body">
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-title">Auto-purge Old Data</div>
+                <div class="setting-desc">Automatically delete data older than a specified period</div>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="autoPurgeEnabled" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div id="autoPurgeSettings" style="display: none; padding-left: 16px; margin-bottom: 24px;">
+            <label>Keep data for <input type="number" id="autoPurgeDays" min="1" max="3650" placeholder="30" class="modern-input short" /> days</label>
+        </div>
+
+        <div class="storage-limit-warning" id="storageLimitWarning" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
+            </svg>
+            <div class="storage-limit-warning-text">
+                <strong>Storage limit reached</strong>
+                <span id="storageLimitWarningDetail">You have exceeded your custom storage limit. Consider purging old data or increasing your limit.</span>
+            </div>
+        </div>
+
+        <div class="storage-meter-container">
+            <div class="storage-header">
+                <span>Storage Usage</span>
+                <span id="storageUsageValue">Checking...</span>
+            </div>
+            <div class="storage-bar-bg">
+                <div class="storage-bar-fill" id="storageUsageFill"></div>
+            </div>
+            <div class="storage-footer">
+                <div id="storageQuotaValue" class="storage-quota"></div>
+                <div class="storage-limit-setting">
+                    <label for="storageLimitMB">Limit:</label>
+                    <input type="number" id="storageLimitMB" min="1" max="100" step="1" placeholder="10" class="modern-input short" />
+                    <span class="unit">MB</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 24px;">Delete Specific Data</h3>
+        <div class="data-search-group">
+            <input type="text" id="deleteDataSearch" placeholder="Search domain to delete data..." class="modern-input" />
+            <div id="deleteDataResults" class="rule-list modern-list" style="display: none; max-height: 200px; overflow-y: auto;"></div>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 12px;">Data Actions</h3>
+        <div class="action-row data-actions">
+            <button id="importData" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z" />
+                </svg>
+                Import Data
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display: none;" />
+            <button id="exportBtn" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,13V17H11V13H9L12,10L15,13H11Z" />
+                </svg>
+                Export Data
+            </button>
+            <button id="resetBtn" class="btn btn-danger">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                </svg>
+                Delete All Data
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="content-card" id="privacy-policy-card">
+    <div class="card-header">
+        <h2>Privacy Policy</h2>
+    </div>
+    <div class="card-body">
+        <details class="privacy-accordion" open>
+            <summary>Read Full Policy</summary>
+            <p><strong>TimeDash follows a strict local-first design.</strong></p>
+            <p>The extension does not collect, log, transmit, aggregate, or monetize any data.
+                No browsing history, usage metrics, identifiers, or personal information are
+                observed or retained. We do not embed analytics frameworks, telemetry systems,
+                advertising SDKs, or third-party scripts of any kind. Nothing is measured
+                remotely because nothing is sent.</p>
+            <p>All data produced by TimeDash exists only inside your browser. This includes time
+                tracking records, playback speed preferences, blocked site rules, and internal
+                configuration state. Storage uses Chrome's native secure storage APIs and
+                remains bound to your local profile. No network requests ever carry user data.
+                Nothing syncs to servers. Nothing leaves the device.</p>
+            <p><strong>Data Storage:</strong> All user data is stored locally using
+                <code>chrome.storage.local</code>. This data never leaves your device and is
+                only accessible by this extension within your browser profile.
+            </p>
+            <p><strong>Network Activity:</strong> TimeDash makes zero network requests. The only
+                external resources loaded are website favicons for display purposes, which are
+                fetched directly by your browser through standard image loading (Google's
+                favicon service).</p>
+            <p><strong>Permissions Used:</strong></p>
+            <ul>
+                <li><code>storage</code> - Save your settings and usage data locally</li>
+                <li><code>tabs</code> - Track which website you're currently viewing</li>
+                <li><code>alarms</code> - Schedule periodic tracking updates</li>
+                <li><code>notifications</code> - Display optional usage alerts</li>
+            </ul>
+            <p><strong>No Account Required:</strong> TimeDash works entirely offline and
+                requires no registration, login, or account creation of any kind.</p>
+            <p><strong>Open Source:</strong> The complete source code is available for review.
+                You can verify these privacy claims by inspecting the code yourself.</p>
+        </details>
+    </div>
+</div>

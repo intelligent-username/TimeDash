@@ -1,0 +1,179 @@
+/* Privacy Tab Styles */
+
+/* Privacy Status Cards */
+.privacy-status {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: var(--spacing);
+    background: var(--background);
+    border-radius: var(--radius-small);
+    margin-bottom: var(--spacing-lg);
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.status-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.highlight-success {
+    color: var(--success-color);
+}
+
+/* Privacy Accordion */
+.privacy-accordion {
+    cursor: pointer;
+}
+
+.privacy-accordion summary {
+    padding: var(--spacing);
+    background: var(--background);
+    border-radius: var(--radius-small);
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+}
+
+.privacy-accordion summary:hover {
+    background: var(--border-subtle);
+}
+
+.privacy-accordion p {
+    padding: var(--spacing-sm) var(--spacing);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+/* Storage Meter */
+.storage-meter-container {
+    margin-top: var(--spacing-lg);
+}
+
+.storage-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.storage-bar-bg {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.storage-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.storage-quota {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Storage Footer  */
+.storage-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.storage-limit-setting {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.storage-limit-setting label {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.storage-limit-setting .modern-input.short {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+}
+
+.storage-limit-setting .unit {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Storage Limit Warning */
+.storage-limit-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--danger-fade);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--radius-small);
+    margin-bottom: var(--spacing);
+    color: var(--danger-color);
+    animation: fadeIn var(--transition) ease-out;
+}
+
+.storage-limit-warning svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.storage-limit-warning-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
+.storage-limit-warning-text strong {
+    font-size: 0.92rem;
+}
+
+.storage-limit-warning-text span {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+}
+
+.storage-bar-fill.exceeded {
+    background: var(--danger-color);
+}
+
+/* Data Search */
+.data-search-group {
+    margin-top: var(--spacing);
+}
+
+/* Data Actions Row */
+.data-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}

@@ -1,4 +1,4 @@
-import { showToast } from '../utils/dom.js';
+import { showToast } from '../../utils/dom.js';
 
 export class CurrentlyPlayingUI {
     constructor(controller) {
@@ -19,37 +19,52 @@ export class CurrentlyPlayingUI {
         });
 
         list.addEventListener('click', async (event) => {
-            const button = event.target.closest('[data-action]');
-            if (!button) return;
+            try {
+                const button = event.target.closest('[data-action]');
+                if (!button) return;
 
-            if (button.dataset.action === 'dismiss-item') {
-                const key = button.dataset.videoKey;
-                if (key) {
-                    this.dismissedKeys.add(key);
-                    this.refreshNow(true);
+                if (button.dataset.action === 'dismiss-item') {
+                    const key = button.dataset.videoKey;
+                    if (key) {
+                        this.dismissedKeys.add(key);
+                        this.refreshNow(true);
+                    }
+                    return;
                 }
-                return;
+
+                if (button.dataset.action === 'focus-tab') {
+                    const tabId = Number(button.dataset.tabId);
+                    if (!tabId) return;
+
+                    const focusRes = await chrome.runtime.sendMessage({ type: 'FOCUS_VIDEO_TAB', tabId });
+                    if (!focusRes || !focusRes.success) {
+                        showToast('Could not focus tab', 'error');
+                    }
+                    return;
+                }
+
+                const tabId = Number(button.dataset.tabId);
+                const videoId = button.dataset.videoId;
+                const action = button.dataset.action;
+                const frameId = button.dataset.frameId !== undefined ? Number(button.dataset.frameId) : undefined;
+                if (!tabId || !videoId || !action) return;
+
+                const res = await chrome.runtime.sendMessage({
+                    type: 'CONTROL_VIDEO_PLAYBACK',
+                    tabId,
+                    videoId,
+                    action,
+                    frameId: Number.isInteger(frameId) ? frameId : undefined
+                });
+
+                if (!res || !res.success) {
+                    showToast('Could not control video', 'error');
+                }
+
+                this.refreshNow();
+            } catch {
+                showToast('Action failed', 'error');
             }
-
-            const tabId = Number(button.dataset.tabId);
-            const videoId = button.dataset.videoId;
-            const action = button.dataset.action;
-            const frameId = button.dataset.frameId !== undefined ? Number(button.dataset.frameId) : undefined;
-            if (!tabId || !videoId || !action) return;
-
-            const res = await chrome.runtime.sendMessage({
-                type: 'CONTROL_VIDEO_PLAYBACK',
-                tabId,
-                videoId,
-                action,
-                frameId: Number.isInteger(frameId) ? frameId : undefined
-            });
-
-            if (!res || !res.success) {
-                showToast('Could not control video', 'error');
-            }
-
-            this.refreshNow();
         });
 
         list.addEventListener('change', async (event) => {
@@ -104,7 +119,6 @@ export class CurrentlyPlayingUI {
         try {
             await chrome.runtime.sendMessage({ type: 'REFRESH_VIDEO_DETECTION' });
         } catch {
-            // Ignore and still try reading sessions
         }
 
         await this.refreshNow(true);
@@ -137,6 +151,8 @@ export class CurrentlyPlayingUI {
         const items = [];
         sessions.forEach((session) => {
             (session.videos || []).forEach((video, index) => {
+                if (!video || !video.id || !session || !session.tabId) return;
+
                 items.push({
                     tabId: session.tabId,
                     tabTitle: session.title,
@@ -147,25 +163,27 @@ export class CurrentlyPlayingUI {
             });
         });
 
-        if (items.length === 0) {
+        const visibleItems = items.filter((item) => !this.dismissedKeys.has(this.getVideoKey(item)));
+
+        if (visibleItems.length === 0) {
             list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
             return;
         }
 
-        list.innerHTML = items.map((item) => {
+        list.innerHTML = visibleItems.map((item) => {
             const duration = Number(item.video.duration || 0);
             const currentTime = Number(item.video.currentTime || 0);
             const isLive = Boolean(item.video.isLive);
             const paused = Boolean(item.video.paused);
             const cleanedTitle = this.escapeHtml(this.cleanTitle(item.tabTitle));
-            const sourceLabel = this.escapeHtml(item.video.sourceLabel || this.getHostLabel(item.url));
+            const sourceLabel = this.escapeHtml(this.normalizeSourceLabel(item.video.sourceLabel, item.url));
             const videoKey = this.getVideoKey(item);
 
             return `
                 <div class="currently-playing-item">
                     <div class="currently-playing-meta currently-playing-meta-row">
                         <div>
-                            <div class="currently-playing-title" title="${cleanedTitle}">${cleanedTitle}</div>
+                            <button type="button" class="currently-playing-title currently-playing-title-btn" data-action="focus-tab" data-tab-id="${item.tabId}" title="Open tab">${cleanedTitle}</button>
                             <div class="currently-playing-subtitle">${sourceLabel} • ${isLive ? 'Live' : `${this.formatTime(currentTime)} / ${this.formatTime(duration)}`}</div>
                         </div>
                         <button type="button" class="currently-playing-dismiss" data-action="dismiss-item" data-video-key="${this.escapeHtml(videoKey)}" title="Hide video">×</button>
@@ -191,9 +209,6 @@ export class CurrentlyPlayingUI {
                     </div>
                 </div>
             `;
-        }).filter((markup, idx) => {
-            const item = items[idx];
-            return !this.dismissedKeys.has(this.getVideoKey(item));
         }).join('');
 
         if (!list.innerHTML) {
@@ -207,11 +222,43 @@ export class CurrentlyPlayingUI {
 
     getHostLabel(url) {
         try {
-            const host = new URL(url).hostname.replace(/^www\./, '');
-            return host || 'Unknown source';
+            const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase();
+            const hostMap = {
+                'youtube.com': 'YouTube',
+                'youtu.be': 'YouTube',
+                'facebook.com': 'Facebook',
+                'm.facebook.com': 'Facebook',
+                'vimeo.com': 'Vimeo',
+                'twitch.tv': 'Twitch',
+                'x.com': 'X',
+                'twitter.com': 'X'
+            };
+
+            if (hostMap[host]) return hostMap[host];
+
+            const base = host.split('.').slice(-2, -1)[0] || host;
+            return base
+                .replace(/[-_]+/g, ' ')
+                .replace(/\b\w/g, (m) => m.toUpperCase());
         } catch {
             return 'Unknown source';
         }
+    }
+
+    normalizeSourceLabel(sourceLabel, url) {
+        const source = String(sourceLabel || '').trim();
+        if (!source) return this.getHostLabel(url);
+
+        const looksLikeHost = /^[\w.-]+\.[a-z]{2,}$/i.test(source);
+        if (looksLikeHost) {
+            try {
+                return this.getHostLabel(`https://${source}`);
+            } catch {
+                return this.getHostLabel(url);
+            }
+        }
+
+        return source;
     }
 
     cleanTitle(title) {

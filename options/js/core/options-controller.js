@@ -1,9 +1,9 @@
 import { SettingsManager } from '../ui/settings.js';
 import { DataManager } from '../ui/data.js';
 import { BlockingUI } from '../ui/blocking-ui.js';
-import { AnalyticsUI } from '../ui/analytics-ui.js';
-import { SiteSpeedList } from '../ui/site-speed-list.js';
-import { CurrentlyPlayingUI } from '../ui/currently-playing.js';
+import { AnalyticsUI } from '../ui/analytics/analytics-ui.js';
+import { SiteSpeedList } from '../ui/video/site-speed-list.js';
+import { CurrentlyPlayingUI } from '../ui/video/currently-playing.js';
 import { showToast } from '../utils/dom.js';
 
 export class OptionsController {
@@ -23,7 +23,7 @@ export class OptionsController {
         this.earliestDate = null;
         this.isDirty = false;
 
-        this.init();
+        this.ready = this.init();
     }
 
     async init() {
@@ -42,6 +42,7 @@ export class OptionsController {
         this.refreshUI();
         this.setupAutoSave();
         this.setupHelpLinks();
+        this.setupExternalSettingsSync();
 
         this.showBanner('Settings loaded', 'success');
     }
@@ -73,6 +74,8 @@ export class OptionsController {
 
     refreshUI() {
         this.settingsManager.populateAll(this.settings);
+        this.applyImmediateChanges('theme', this.settings.theme || 'light');
+        this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
         
         // Update version text from manifest
         const versionEl = document.querySelector('.version-text');
@@ -116,8 +119,118 @@ export class OptionsController {
         }
         if (key === 'accentColor') {
             console.log('[TimeDash] Applying accent:', value);
-            document.documentElement.setAttribute('data-accent', value);
+            this.applyAccentColor(value);
         }
+    }
+
+    applyAccentColor(value) {
+        const root = document.documentElement;
+        const isCustomHex = typeof value === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
+
+        if (!isCustomHex) {
+            root.setAttribute('data-accent', value || 'blue');
+            root.style.removeProperty('--primary-color');
+            root.style.removeProperty('--primary-dark');
+            root.style.removeProperty('--primary-light');
+            root.style.removeProperty('--primary-fade');
+            root.style.removeProperty('--accent-color');
+            root.style.removeProperty('--accent-fade');
+            return;
+        }
+
+        const normalized = this.normalizeHex(value);
+        const rgb = this.hexToRgb(normalized);
+        if (!rgb) {
+            root.setAttribute('data-accent', 'blue');
+            return;
+        }
+
+        root.removeAttribute('data-accent');
+        root.style.setProperty('--primary-color', normalized);
+        root.style.setProperty('--primary-dark', this.mixHex(normalized, '#000000', 0.18));
+        root.style.setProperty('--primary-light', this.mixHex(normalized, '#ffffff', 0.22));
+        root.style.setProperty('--primary-fade', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`);
+        root.style.setProperty('--accent-color', normalized);
+        root.style.setProperty('--accent-fade', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`);
+    }
+
+    normalizeHex(hex) {
+        const value = hex.toLowerCase();
+        if (value.length === 4) {
+            return `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`;
+        }
+        return value;
+    }
+
+    hexToRgb(hex) {
+        const normalized = this.normalizeHex(hex).replace('#', '');
+        if (normalized.length !== 6) return null;
+
+        const int = parseInt(normalized, 16);
+        if (Number.isNaN(int)) return null;
+
+        return {
+            r: (int >> 16) & 255,
+            g: (int >> 8) & 255,
+            b: int & 255
+        };
+    }
+
+    rgbToHex(r, g, b) {
+        const toHex = (n) => n.toString(16).padStart(2, '0');
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+
+    mixHex(hexA, hexB, ratio) {
+        const a = this.hexToRgb(hexA);
+        const b = this.hexToRgb(hexB);
+        if (!a || !b) return hexA;
+
+        const clamp = (v) => Math.max(0, Math.min(255, Math.round(v)));
+        const r = clamp(a.r + (b.r - a.r) * ratio);
+        const g = clamp(a.g + (b.g - a.g) * ratio);
+        const bl = clamp(a.b + (b.b - a.b) * ratio);
+        return this.rgbToHex(r, g, bl);
+    }
+
+    setupExternalSettingsSync() {
+        chrome.storage.local.onChanged.addListener((changes, areaName) => {
+            if (areaName !== 'local' || !changes.settings || !changes.settings.newValue) return;
+
+            const incoming = changes.settings.newValue;
+            this.settings = { ...this.settings, ...incoming };
+
+            if (incoming.theme !== undefined) this.applyImmediateChanges('theme', incoming.theme);
+            if (incoming.accentColor !== undefined) this.applyImmediateChanges('accentColor', incoming.accentColor);
+
+            this.syncCurrentPlaybackSpeedUI();
+        });
+
+        document.addEventListener('visibilitychange', async () => {
+            if (document.hidden) return;
+
+            try {
+                const latestSettings = await this.storageManager.getSettings();
+                this.settings = { ...this.settings, ...latestSettings };
+
+                this.applyImmediateChanges('theme', this.settings.theme || 'light');
+                this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
+                this.syncCurrentPlaybackSpeedUI();
+            } catch (error) {
+                console.error('Failed to refresh settings on visibility change:', error);
+            }
+        });
+    }
+
+    syncCurrentPlaybackSpeedUI() {
+        const speed = parseFloat(this.settings.currentPlaybackSpeed);
+        if (!Number.isFinite(speed)) return;
+
+        const speedNum = document.getElementById('currentPlaybackSpeed');
+        const speedSlider = document.getElementById('currentSpeedSlider');
+
+        if (speedNum) speedNum.value = speed;
+        if (speedSlider) speedSlider.value = speed;
     }
 
     setupNavigation() {

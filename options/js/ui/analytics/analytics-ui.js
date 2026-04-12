@@ -1,6 +1,6 @@
-import { AnalyticsChart } from './analytics-chart.js';
-import { AnalyticsHeatmap } from './analytics-heatmap.js';
-import { formatTime, formatDateString, escapeHtml } from '../utils/formatting.js';
+import { AnalyticsChart } from '../analytics-chart.js';
+import { AnalyticsHeatmap } from '../analytics-heatmap.js';
+import { formatTime, formatDateString, escapeHtml } from '../../utils/formatting.js';
 
 export class AnalyticsUI {
     constructor(controller) {
@@ -20,7 +20,6 @@ export class AnalyticsUI {
     }
 
     setup() {
-        // Chart controls
         document.querySelectorAll('.period-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
@@ -28,7 +27,7 @@ export class AnalyticsUI {
                 this.currentPeriod = e.target.dataset.period;
                 this.chart.setPeriod(this.currentPeriod);
                 this.chart.render();
-                this.updatePeriodStats(); // Update stats for new period
+                this.updatePeriodStats();
             });
         });
 
@@ -59,13 +58,11 @@ export class AnalyticsUI {
             });
         }
 
-        // Heatmap filter
         const heatmapFilter = document.getElementById('heatmapFilter');
         if (heatmapFilter) {
             heatmapFilter.addEventListener('change', () => this.heatmap.render());
         }
 
-        // Add "All Time" period option dynamically if not present
         this.addAllTimePeriodOption();
     }
 
@@ -127,14 +124,11 @@ export class AnalyticsUI {
         this.earliestDate = earliestDate;
         this.controller.earliestDate = earliestDate;
 
-        // Update all-time stats
         this.updateStat('analyticsTotalTime', formatTime(totalOverall));
         this.updateStat('analyticsSitesCount', domains.length);
 
-        // Update period-specific stats
         this.updatePeriodStats();
 
-        // Sort and render top sites
         sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
         this.renderTopSites(sitesWithTime, (sitesWithTime[0] ? sitesWithTime[0].todayTime : 0) || 0);
 
@@ -146,7 +140,6 @@ export class AnalyticsUI {
         const usage = this.controller.usage || {};
         const { periodTotal, periodDays, periodLabel } = this.calculatePeriodTotal(usage);
 
-        // Update "Time Today" to show the period total with dynamic label
         const todayEl = document.getElementById('analyticsTodayTotal');
         const todayLabelEl = (todayEl && todayEl.closest('.stat-card')) ? todayEl.closest('.stat-card').querySelector('.stat-label') : null;
 
@@ -157,7 +150,6 @@ export class AnalyticsUI {
             todayLabelEl.textContent = `Time ${periodLabel}`;
         }
 
-        // Update average
         const avgTime = periodDays > 0 ? Math.round(periodTotal / periodDays) : 0;
         const avgEl = document.getElementById('analyticsWeekAverage');
         const avgLabelEl = (avgEl && avgEl.closest('.stat-card')) ? avgEl.closest('.stat-card').querySelector('.stat-label') : null;
@@ -169,7 +161,6 @@ export class AnalyticsUI {
             avgLabelEl.textContent = 'Daily Average';
         }
 
-        // Update "Total Time" to reflect the selected period
         const totalEl = document.getElementById('analyticsTotalTime');
         const totalLabelEl = (totalEl && totalEl.closest('.stat-card')) ? totalEl.closest('.stat-card').querySelector('.stat-label') : null;
 
@@ -191,13 +182,11 @@ export class AnalyticsUI {
         let periodDays = 0;
         let periodLabel = 'Today';
 
-        // Helper: Day is valid if it's not before tracking started AND not in future
         const isValidDay = (dStr) => {
             return dStr >= earliestStr && dStr <= todayStr;
         };
 
         if (this.currentPeriod === 'week') {
-            // Rolling 7-day window matching chart logic
             const endDate = new Date(now);
             endDate.setDate(now.getDate() + (this.chart.offset * 7));
             const startDate = new Date(endDate);
@@ -256,21 +245,17 @@ export class AnalyticsUI {
             }
         } else if (this.currentPeriod === 'all') {
             periodLabel = 'All Time';
-            // Count all days and sum cumulative
             for (const domain of domains) {
                 periodTotal += (usage[domain].cumulative || 0) * 1000;
             }
-            // Estimate days from earliest to now
             if (this.earliestDate) {
                 const earliest = new Date(this.earliestDate);
-                // Ensure we don't count partial days weirdly or negative
                 const diffTime = Math.max(0, now - earliest);
                 periodDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
             } else {
                 periodDays = 1;
             }
         } else {
-            // Default: today only
             const today = formatDateString(now);
             periodDays = 1;
             periodLabel = 'Today';

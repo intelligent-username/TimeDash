@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "TimeDash",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Boost productivity with time tracking, site blocking, and video speed control for better digital habits.",
     "default_locale": "en",
     "permissions": [
@@ -27,6 +27,11 @@
             ],
             "js": [
                 "content/overlay.js",
+                "content/modules/video-detector.js",
+                "content/modules/video-controller.js",
+                "content/modules/playback-state.js",
+                "content/modules/message-handler.js",
+                "content/modules/keyboard-handler.js",
                 "content/content.js"
             ],
             "all_frames": true,

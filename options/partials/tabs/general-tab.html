@@ -1,0 +1,165 @@
+<div class="content-card quick-access-hub">
+    <div class="card-header">
+        <h2>Quick Access</h2>
+    </div>
+    <div class="card-body">
+        <div class="quick-links-grid">
+            <button class="quick-link" data-tab="analytics">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
+                </svg>
+                <span>Analytics</span>
+                <small>View usage trends</small>
+            </button>
+            <button class="quick-link" data-tab="video">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
+                </svg>
+                <span>Video Control</span>
+                <small>Playback settings</small>
+            </button>
+            <button class="quick-link" data-tab="blocking">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M16.18,7.76L7.76,16.18L6.34,14.76L14.76,6.34L16.18,7.76Z" />
+                </svg>
+                <span>Site Blocking</span>
+                <small>Manage blocked sites</small>
+            </button>
+            <button class="quick-link" data-tab="privacy">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.1 14.8,9.5V11C15.4,11 16,11.6 16,12.3V15.8C16,16.4 15.4,17 14.7,17H9.2C8.6,17 8,16.4 8,15.7V12.2C8,11.6 8.6,11 9.2,11V9.5C9.2,8.1 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,9.5V11H13.5V9.5C13.5,8.7 12.8,8.2 12,8.2Z" />
+                </svg>
+                <span>Privacy & Data</span>
+                <small>Export & manage data</small>
+            </button>
+            <button class="quick-link" data-tab="help">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M15.07,11.25L14.17,12.17C13.45,12.89 13,13.5 13,15H11V14.5C11,13.39 11.45,12.39 12.17,11.67L13.41,10.41C13.78,10.05 14,9.55 14,9C14,7.89 13.1,7 12,7A2,2 0 0,0 10,9H8A4,4 0 0,1 12,5A4,4 0 0,1 16,9C16,9.88 15.64,10.67 15.07,11.25M13,19H11V17H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z" />
+                </svg>
+                <span>Help</span>
+                <small>Features & support</small>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="two-column-grid">
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Tracking</h2>
+        </div>
+        <div class="card-body">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Enable Time Tracking</div>
+                    <div class="setting-desc">Monitor time spent on websites</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="trackingEnabled" checked />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Daily Time Limit</div>
+                    <div class="setting-desc">Set 0 for no limit</div>
+                </div>
+                <div class="setting-control">
+                    <input type="number" id="dailyLimit" min="0" max="1440" placeholder="0" class="modern-input short" />
+                    <span class="unit">min</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Notifications & Badge</h2>
+        </div>
+        <div class="card-body">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Enable Notifications</div>
+                    <div class="setting-desc">Get alerts for limits and milestones</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="notificationsEnabled" checked />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Quota Warnings</div>
+                    <div class="setting-desc">Warn when approaching daily limits</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="quotaWarnings" checked />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Show Badge Counter</div>
+                    <div class="setting-desc">Display status on extension icon</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="badgeEnabled" checked />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header">
+        <h2 class="appearance-heading">Appearance</h2>
+    </div>
+    <div class="card-body">
+        <div class="setting-group">
+            <div class="theme-toggle-row">
+                <label class="setting-label-block" for="themeToggle">Theme</label>
+                <label class="switch theme-switch">
+                    <input type="checkbox" id="themeToggle" />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="setting-group">
+            <label class="setting-label-block">Accent Color</label>
+            <div class="color-picker-grid" id="accentColorPicker">
+                <button type="button" class="color-swatch" data-color="blue" style="background: #00b7ff;" title="Blue"></button>
+                <button type="button" class="color-swatch" data-color="green" style="background: #22c55e;" title="Green"></button>
+                <button type="button" class="color-swatch" data-color="purple" style="background: #a855f7;" title="Purple"></button>
+                <button type="button" class="color-swatch" data-color="orange" style="background: #f97316;" title="Orange"></button>
+                <button type="button" class="color-swatch" data-color="red" style="background: #ef4444;" title="Red"></button>
+                <div id="customAccentColors" class="custom-colors-wrapper"></div>
+                <div class="custom-color-container" id="customAccentContainer">
+                    <input type="color" id="customAccentColor" class="custom-color-input" title="Add Custom Accent Color" />
+                    <span class="custom-color-plus">+</span>
+                </div>
+            </div>
+        </div>
+        <div class="setting-group">
+            <label class="setting-label-block">Speed Popup Color</label>
+            <div class="color-picker-grid" id="overlayColorPicker">
+                <button type="button" class="color-swatch" data-color="blue" style="background: #00b7ff;" title="Blue"></button>
+                <button type="button" class="color-swatch" data-color="green" style="background: #22c55e;" title="Green"></button>
+                <button type="button" class="color-swatch" data-color="purple" style="background: #a855f7;" title="Purple"></button>
+                <button type="button" class="color-swatch" data-color="orange" style="background: #f97316;" title="Orange"></button>
+                <button type="button" class="color-swatch" data-color="red" style="background: #ef4444;" title="Red"></button>
+                <div id="customOverlayColors" class="custom-colors-wrapper"></div>
+                <div class="custom-color-container" id="customOverlayContainer">
+                    <input type="color" id="customOverlayColor" class="custom-color-input" title="Add Custom Popup Color" />
+                    <span class="custom-color-plus">+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

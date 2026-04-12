@@ -1,0 +1,128 @@
+/* Currently Playing Video Panel */
+
+.currently-playing-panel {
+    margin-top: var(--spacing);
+    padding-top: var(--spacing);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.currently-playing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+.currently-playing-header .setting-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.currently-playing-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.currently-playing-item {
+    border: 1px solid var(--border-subtle);
+    background: var(--background);
+    border-radius: var(--radius-small);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.currently-playing-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.currently-playing-title-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.currently-playing-title-btn:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.currently-playing-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.currently-playing-meta-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.currently-playing-meta-row > div {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.currently-playing-dismiss {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    font-size: 14px;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.currently-playing-dismiss:hover {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.currently-playing-seek {
+    width: 100%;
+    accent-color: var(--accent-color);
+}
+
+.currently-playing-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.currently-playing-control-small {
+    min-width: 32px;
+    width: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
