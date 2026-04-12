@@ -5,6 +5,10 @@ import { AnalyticsUI } from '../ui/analytics/analytics-ui.js';
 import { SiteSpeedList } from '../ui/video/site-speed-list.js';
 import { CurrentlyPlayingUI } from '../ui/video/currently-playing.js';
 import { showToast } from '../utils/dom.js';
+import { applyOptionsAppearanceMethods } from './options-controller/appearance.js';
+import { applyOptionsNavigationMethods } from './options-controller/navigation.js';
+import { applyOptionsSyncMethods } from './options-controller/sync.js';
+import { applyOptionsSaveMethods } from './options-controller/save.js';
 
 export class OptionsController {
     constructor() {
@@ -47,17 +51,6 @@ export class OptionsController {
         this.showBanner('Settings loaded', 'success');
     }
 
-    setupHelpLinks() {
-        const privacyLink = document.getElementById('privacyPolicyLink');
-        if (privacyLink) {
-            privacyLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const privacyTab = document.querySelector('[data-tab=privacy]');
-                if (privacyTab) privacyTab.click();
-            });
-        }
-    }
-
     async loadAllData() {
         const [settings, usage, blockList, rules] = await Promise.all([
             this.storageManager.getSettings(),
@@ -69,364 +62,51 @@ export class OptionsController {
         this.settings = settings;
         this.usage = usage;
         this.blockList = blockList;
-        this.restrictedDomains = (rules && rules.restricted) ? rules.restricted.map(r => r.domain) : [];
+        this.restrictedDomains = (rules && rules.restricted) ? rules.restricted.map((rule) => rule.domain) : [];
     }
 
     refreshUI() {
         this.settingsManager.populateAll(this.settings);
         this.applyImmediateChanges('theme', this.settings.theme || 'light');
         this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
-        
-        // Update version text from manifest
+
         const versionEl = document.querySelector('.version-text');
         if (versionEl) {
             versionEl.textContent = `v${chrome.runtime.getManifest().version}`;
         }
-        
-        this.blockingUI.loadSiteRules(); // Let it fetch and render its own rules
+
+        this.blockingUI.loadSiteRules();
         this.analyticsUI.update();
         this.updateSaveButton();
     }
 
     updateSetting(key, value) {
-        // Always apply theme/accent changes immediately since DOM might be out of sync
         if (key === 'theme' || key === 'accentColor') {
             this.applyImmediateChanges(key, value);
         }
 
-        // Deep compare or simple check
         if (this.settings[key] === value) return;
+
         this.settings[key] = value;
         this.isDirty = true;
         this.updateSaveButton();
 
-        // Apply other immediate changes
         if (key !== 'theme' && key !== 'accentColor') {
             this.applyImmediateChanges(key, value);
         }
 
-        // Debounce save (1s) to ensure content scripts get updates quickly
         if (this.saveTimeout) clearTimeout(this.saveTimeout);
         this.saveTimeout = setTimeout(() => {
             if (this.isDirty) this.saveSettings(true);
         }, 1000);
     }
 
-    applyImmediateChanges(key, value) {
-        if (key === 'theme') {
-            console.log('[TimeDash] Applying theme:', value);
-            document.documentElement.setAttribute('data-theme', value);
-        }
-        if (key === 'accentColor') {
-            console.log('[TimeDash] Applying accent:', value);
-            this.applyAccentColor(value);
-        }
-    }
-
-    applyAccentColor(value) {
-        const root = document.documentElement;
-        const isCustomHex = typeof value === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
-
-        if (!isCustomHex) {
-            root.setAttribute('data-accent', value || 'blue');
-            root.style.removeProperty('--primary-color');
-            root.style.removeProperty('--primary-dark');
-            root.style.removeProperty('--primary-light');
-            root.style.removeProperty('--primary-fade');
-            root.style.removeProperty('--accent-color');
-            root.style.removeProperty('--accent-fade');
-            return;
-        }
-
-        const normalized = this.normalizeHex(value);
-        const rgb = this.hexToRgb(normalized);
-        if (!rgb) {
-            root.setAttribute('data-accent', 'blue');
-            return;
-        }
-
-        root.removeAttribute('data-accent');
-        root.style.setProperty('--primary-color', normalized);
-        root.style.setProperty('--primary-dark', this.mixHex(normalized, '#000000', 0.18));
-        root.style.setProperty('--primary-light', this.mixHex(normalized, '#ffffff', 0.22));
-        root.style.setProperty('--primary-fade', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`);
-        root.style.setProperty('--accent-color', normalized);
-        root.style.setProperty('--accent-fade', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`);
-    }
-
-    normalizeHex(hex) {
-        const value = hex.toLowerCase();
-        if (value.length === 4) {
-            return `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`;
-        }
-        return value;
-    }
-
-    hexToRgb(hex) {
-        const normalized = this.normalizeHex(hex).replace('#', '');
-        if (normalized.length !== 6) return null;
-
-        const int = parseInt(normalized, 16);
-        if (Number.isNaN(int)) return null;
-
-        return {
-            r: (int >> 16) & 255,
-            g: (int >> 8) & 255,
-            b: int & 255
-        };
-    }
-
-    rgbToHex(r, g, b) {
-        const toHex = (n) => n.toString(16).padStart(2, '0');
-        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-    }
-
-    mixHex(hexA, hexB, ratio) {
-        const a = this.hexToRgb(hexA);
-        const b = this.hexToRgb(hexB);
-        if (!a || !b) return hexA;
-
-        const clamp = (v) => Math.max(0, Math.min(255, Math.round(v)));
-        const r = clamp(a.r + (b.r - a.r) * ratio);
-        const g = clamp(a.g + (b.g - a.g) * ratio);
-        const bl = clamp(a.b + (b.b - a.b) * ratio);
-        return this.rgbToHex(r, g, bl);
-    }
-
-    setupExternalSettingsSync() {
-        chrome.storage.local.onChanged.addListener((changes, areaName) => {
-            if (areaName !== 'local' || !changes.settings || !changes.settings.newValue) return;
-
-            const previousTheme = this.settings.theme;
-            const previousAccent = this.settings.accentColor;
-            const incoming = changes.settings.newValue;
-            this.settings = { ...this.settings, ...incoming };
-
-            if (incoming.theme !== undefined && incoming.theme !== previousTheme) {
-                this.applyImmediateChanges('theme', incoming.theme);
-            }
-            if (incoming.accentColor !== undefined && incoming.accentColor !== previousAccent) {
-                this.applyImmediateChanges('accentColor', incoming.accentColor);
-            }
-
-            this.syncCurrentPlaybackSpeedUI();
-        });
-
-        document.addEventListener('visibilitychange', async () => {
-            if (document.hidden) return;
-
-            try {
-                const latestSettings = await this.storageManager.getSettings();
-                this.settings = { ...this.settings, ...latestSettings };
-
-                this.applyImmediateChanges('theme', this.settings.theme || 'light');
-                this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
-                this.syncCurrentPlaybackSpeedUI();
-            } catch (error) {
-                console.error('Failed to refresh settings on visibility change:', error);
-            }
-        });
-    }
-
-    syncCurrentPlaybackSpeedUI() {
-        const speed = parseFloat(this.settings.currentPlaybackSpeed);
-        if (!Number.isFinite(speed)) return;
-
-        const speedNum = document.getElementById('currentPlaybackSpeed');
-        const speedSlider = document.getElementById('currentSpeedSlider');
-
-        if (speedNum) speedNum.value = speed;
-        if (speedSlider) speedSlider.value = speed;
-    }
-
-    setupNavigation() {
-        const navItems = document.querySelectorAll('.nav-item');
-
-        navItems.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                const target = e.currentTarget;
-                const tab = target.dataset.tab;
-
-                navItems.forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
-                target.classList.add('active');
-                const pane = document.getElementById(tab);
-                if (pane) {
-                    pane.classList.add('active');
-                    // Add fade-in animation re-trigger
-                    pane.classList.remove('fade-in');
-                    void pane.offsetWidth; // trigger reflow
-                    pane.classList.add('fade-in');
-                }
-
-                this.updateHeader(tab);
-
-                // Update URL so refreshing returns to this tab
-                const url = new URL(window.location);
-                url.searchParams.set('tab', tab);
-                url.hash = '';
-                history.replaceState(null, '', url);
-
-                if (tab === 'analytics' && this.analyticsUI) {
-                    this.analyticsUI.update();
-                }
-
-                if (this.currentlyPlayingUI) {
-                    this.currentlyPlayingUI.setActive(tab === 'video');
-                }
-            });
-        });
-
-        // Determine initial tab: hash takes priority, then ?tab= query param
-        const hash = window.location.hash.substring(1);
-        const urlParams = new URLSearchParams(window.location.search);
-        const initialTab = hash || urlParams.get('tab');
-
-        if (initialTab) {
-            const btn = document.querySelector(`.nav-item[data-tab="${initialTab}"]`);
-            if (btn) {
-                btn.click();
-            } else {
-                const first = document.querySelector('.nav-item');
-                if (first) {
-                    first.click();
-                    this.updateHeader(first.dataset.tab);
-                }
-            }
-        } else {
-            // Default to first tab
-            const first = document.querySelector('.nav-item');
-            if (first) {
-                first.click();
-                this.updateHeader(first.dataset.tab);
-            }
-        }
-
-        // Quick Access Hub links
-        document.querySelectorAll('.quick-link[data-tab]').forEach((link) => {
-            link.addEventListener('click', (e) => {
-                const tab = e.currentTarget.dataset.tab;
-                const navBtn = document.querySelector(`.nav-item[data-tab="${tab}"]`);
-                if (navBtn) navBtn.click();
-            });
-        });
-
-        // Logo click -> General tab
-        const logoBtn = document.getElementById('sidebarLogoBtn');
-        if (logoBtn) {
-            logoBtn.addEventListener('click', () => {
-                const generalBtn = document.querySelector(`.nav-item[data-tab="general"]`);
-                if (generalBtn) generalBtn.click();
-            });
-        }
-
-        window.addEventListener('hashchange', () => {
-            const h = window.location.hash.substring(1);
-            if (h) {
-                const btn = document.querySelector(`.nav-item[data-tab="${h}"]`);
-                if (btn) btn.click();
-            }
-        });
-    }
-
-    updateHeader(tab) {
-        const titleEl = document.getElementById('pageTitle');
-        const subtitleEl = document.getElementById('pageSubtitle');
-        if (!titleEl || !subtitleEl) return;
-
-        const titles = {
-            'analytics': 'Analytics',
-            'general': 'General Settings',
-            'video': 'Video Control',
-            'blocking': 'Site Blocking',
-            'privacy': 'Privacy & Data',
-            'help': 'Help '
-        };
-        const subtitles = {
-            'general': 'Appearance and notifications',
-            'analytics': 'Usage overview',
-            'video': 'Customize speed controls',
-            'blocking': 'Manage blocked and restricted sites',
-            'privacy': 'Control your data and privacy settings',
-            'help': 'FAQ and support',
-            'undefined': 'Settings'
-        };
-
-        titleEl.textContent = titles[tab] || 'Settings';
-        subtitleEl.textContent = subtitles[tab] || '';
-    }
-
-    setupAutoSave() {
-        // Backup interval (keep it just in case)
-        setInterval(() => {
-            if (this.isDirty) this.saveSettings(true);
-        }, 5000);
-
-        window.addEventListener('beforeunload', () => {
-            if (this.isDirty) this.saveSettings(true);
-        });
-
-        // Save immediately when switching tabs (e.g. to test usage)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && this.isDirty) {
-                this.saveSettings(true);
-            }
-        });
-    }
-
-    async saveSettings(silent = false) {
-        try {
-            this.updateSaveStatus('Saving changes...', true);
-            await this.storageManager.saveSettings(this.settings);
-            this.isDirty = false;
-            
-            // Show "Saved" for a second then disappear
-            this.updateSaveStatus('Saved', true);
-            setTimeout(() => {
-                this.updateSaveStatus('', false);
-            }, 1000);
-
-            if (!silent) this.showSuccess('Settings saved');
-            chrome.runtime.sendMessage({ type: 'SETTINGS_UPDATED', settings: this.settings });
-        } catch (e) {
-            console.error(e);
-            this.updateSaveStatus('Error saving', true);
-            this.showError('Failed to save settings');
-        }
-    }
-
-    updateSaveStatus(message, visible = true) {
-        const status = document.getElementById('saveStatus');
-        if (status) {
-            const msg = status.querySelector('.save-message');
-            if (message && msg) msg.textContent = message;
-            status.style.opacity = visible ? '1' : '0';
-            status.style.pointerEvents = visible ? 'auto' : 'none';
-        }
-    }
-
-    updateSaveButton() {
-        // Obsolete but kept to avoid errors from other calls
-        this.updateSaveStatus('', false);
-    }
-
-    showSuccess(msg) { showToast(msg, 'success'); }
-    showError(msg) { showToast(msg, 'error'); }
-    showWarning(msg) { showToast(msg, 'warning'); }
-
-    updateRestrictedDomains(domains) {
-        this.restrictedDomains = domains;
-    }
-
-    showBanner(message, type = 'info') {
-        const el = document.getElementById('banner');
-        if (!el) return;
-        el.className = `banner ${type}`;
-        el.textContent = message;
-        el.style.display = 'block';
-        if (type !== 'error') {
-            setTimeout(() => { if (el) el.style.display = 'none'; }, 2500);
-        }
+    showToast(message, type) {
+        showToast(message, type);
     }
 }
+
+applyOptionsAppearanceMethods(OptionsController);
+applyOptionsNavigationMethods(OptionsController);
+applyOptionsSyncMethods(OptionsController);
+applyOptionsSaveMethods(OptionsController);

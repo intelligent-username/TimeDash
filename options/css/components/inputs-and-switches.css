@@ -1,0 +1,149 @@
+/* Inputs */
+.modern-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.modern-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-fade);
+}
+
+.modern-input.short {
+    width: 80px;
+    display: inline-block;
+    text-align: center;
+}
+
+input.modern-input.short[type="number"] {
+    --spinner-space: 18px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    padding-left: calc(12px + (var(--spinner-space) / 2));
+    padding-right: calc(12px + (var(--spinner-space) / 2));
+    text-align: center;
+}
+
+input.modern-input.short[type="number"]:hover,
+input.modern-input.short[type="number"]:focus {
+    appearance: auto;
+    -moz-appearance: number-input;
+}
+
+input.modern-input.short[type="number"]::-webkit-outer-spin-button,
+input.modern-input.short[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+input.modern-input.short[type="number"]:hover::-webkit-outer-spin-button,
+input.modern-input.short[type="number"]:hover::-webkit-inner-spin-button,
+input.modern-input.short[type="number"]:focus::-webkit-outer-spin-button,
+input.modern-input.short[type="number"]:focus::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button;
+    opacity: 1;
+}
+
+.modern-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+/* Switch (Toggle) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: color-mix(in srgb, var(--border) 78%, #8b949e 22%);
+    transition: .4s;
+    border: 1px solid color-mix(in srgb, var(--border) 86%, #7c8794 14%);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+    background: linear-gradient(90deg,
+            color-mix(in srgb, var(--success-color) 78%, #15803d 22%) 0%,
+            color-mix(in srgb, var(--success-color) 62%, var(--accent-color) 38%) 100%);
+    border-color: color-mix(in srgb, var(--success-color) 70%, var(--accent-color) 30%);
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 45%, transparent 55%);
+}
+
+input:checked:focus+.slider {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 40%, var(--success-color) 60%);
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.theme-switch .slider.round:before {
+    content: '☀';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #b45309;
+    line-height: 1;
+}
+
+.theme-switch input:checked+.slider.round:before {
+    content: '☾';
+    color: #475569;
+}

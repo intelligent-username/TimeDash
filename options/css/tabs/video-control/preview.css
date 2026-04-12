@@ -1,0 +1,60 @@
+/* Preview Panel */
+.preview-panel {
+    margin-top: var(--spacing);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: 10px var(--spacing);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-elevated);
+}
+
+.preview-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.preview-status {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.preview-canvas {
+    position: relative;
+    min-height: 140px;
+    padding: var(--spacing);
+    display: grid;
+    place-items: center;
+}
+
+.preview-empty {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.preview-video {
+    width: min(360px, 100%);
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-video::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.35) 100%);
+    pointer-events: none;
+}

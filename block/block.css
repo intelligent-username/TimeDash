@@ -59,7 +59,7 @@ html[data-theme="light"] {
 
 /* Accent Colors */
 html[data-accent="blue"] {
-    --accent-color: #2196f3;
+    --accent-color: #0168bd;
 }
 
 html[data-accent="purple"] {

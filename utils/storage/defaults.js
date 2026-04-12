@@ -1,0 +1,27 @@
+'use strict';
+
+const STORAGE_DEFAULT_SETTINGS = {
+    currentPlaybackSpeed: 1.0,
+    defaultPlaybackSpeed: 1.0,
+    maxPlaybackSpeed: 16.0,
+    speedStep: 0.25,
+    increaseSpeedKey: 'Plus',
+    decreaseSpeedKey: 'Minus',
+    resetSpeedKey: 'Period',
+    dailyTimeLimitMinutes: 0,
+    theme: 'auto',
+    accentColor: 'blue',
+    overlayColor: 'blue',
+    badgeEnabled: true,
+    keyboardShortcutsEnabled: true,
+    notificationsEnabled: true,
+    exportFormat: 'csv',
+    trackingEnabled: true,
+    showSpeedOverlay: true,
+    firstTimeSetup: true,
+    whitelist: [],
+    autoPurgeEnabled: false,
+    autoPurgeDays: 30,
+    storageLimitMB: 10,
+    firstInstallDate: null,
+};

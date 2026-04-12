@@ -1,0 +1,23 @@
+/* Charts & Graphs */
+.chart-container {
+    height: 300px;
+    position: relative;
+    margin-top: var(--spacing);
+}
+
+.heatmap-container {
+    overflow-x: auto;
+    padding-bottom: var(--spacing);
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.highlight-success {
+    color: var(--success-color);
+    font-weight: 600;
+}

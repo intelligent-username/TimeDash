@@ -1,0 +1,40 @@
+/* Video Control Tab */
+.video-grid {
+    display: grid;
+    gap: var(--spacing);
+    margin-bottom: var(--spacing);
+}
+
+.video-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing);
+    padding: var(--spacing);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.video-row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.video-row-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.video-row-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+.video-row-control {
+    flex-shrink: 0;
+}

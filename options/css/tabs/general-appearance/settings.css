@@ -1,0 +1,88 @@
+/* Setting helpers */
+.setting-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting-group:last-child {
+    margin-bottom: 0;
+}
+
+.setting-label-block {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.theme-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.theme-toggle-row .setting-label-block {
+    margin-bottom: 0;
+}
+
+.appearance-heading {
+    font-size: 1.2rem;
+}
+
+.setting-help {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.setting-control .unit {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.setting-item-right {
+    margin-left: auto;
+}
+
+/* Action Row */
+.action-row {
+    display: flex;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+}
+
+/* Section Description */
+.section-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing);
+}
+
+/* Modern Input Group */
+.modern-input-group {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.modern-input-group .modern-input {
+    flex: 1;
+}
+
+.modern-input-group .btn {
+    flex-shrink: 0;
+}
+
+.limit-input {
+    width: 80px !important;
+    flex: 0 0 80px !important;
+}

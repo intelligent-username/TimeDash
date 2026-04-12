@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * Block page controller - simplified
- */
 class BlockPageController {
     constructor() {
         this.storageManager = null;
@@ -50,7 +47,7 @@ class BlockPageController {
             const stillBlocked = await this.checkIfStillBlocked();
             if (!stillBlocked && this.blockedUrl) {
                 // Access is now allowed - redirect back to the original site
-                window.location.href = this.blockedUrl;
+                this.redirectToOriginalUrl();
                 return;
             }
 
@@ -69,147 +66,10 @@ class BlockPageController {
             document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
         }
     }
-
-    /**
-     * Check if the site should still be blocked
-     * @returns {Promise<boolean>} True if still blocked
-     */
-    async checkIfStillBlocked() {
-        try {
-            const response = await chrome.runtime.sendMessage({
-                type: 'CHECK_ACCESS',
-                url: this.blockedUrl || `https://${this.blockedDomain}`,
-                domain: this.blockedDomain
-            });
-            return response && response.shouldBlock === true;
-        } catch (error) {
-            console.error('Error checking access:', error);
-            return true; // Assume still blocked on error
-        }
-    }
-
-    parseUrlParameters() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.blockedUrl = urlParams.get('url') || '';
-        this.blockReason = urlParams.get('reason') || 'blocked';
-
-        if (this.blockedUrl) {
-            try {
-                const url = new URL(
-                    this.blockedUrl.startsWith('http') ? this.blockedUrl : `https://${this.blockedUrl}`
-                );
-                this.blockedDomain = url.hostname.replace(/^www\./, '');
-            } catch (error) {
-                this.blockedDomain = this.blockedUrl.replace(/^www\./, '');
-            }
-        } else {
-            const domain = urlParams.get('domain') || 'Unknown Site';
-            this.blockedDomain = domain.replace(/^www\./, '');
-        }
-    }
-
-    async loadBlockData() {
-        try {
-            const usage = await this.storageManager.getAllUsage();
-            const domainData = usage[this.blockedDomain] || {};
-
-            const now = new Date();
-            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-
-            this.blockStats.count = domainData.blockedToday || 1;
-            this.blockStats.timeSpent = domainData.cumulative || 0;
-            this.blockStats.todayTime = domainData[today] || 0;
-        } catch (error) {
-            console.error('Failed to load block data:', error);
-        }
-    }
-
-    setupEventListeners() {
-        const settingsBtn = document.getElementById('settingsBtn');
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', () => {
-                chrome.runtime.openOptionsPage();
-            });
-        }
-    }
-
-    updateUI() {
-        // Domain display
-        const blockedUrlEl = document.getElementById('blockedUrl');
-        if (blockedUrlEl) {
-            blockedUrlEl.textContent = this.blockedDomain;
-        }
-
-        // Update heading, reason, and stats based on block type
-        const headingEl = document.getElementById('blockHeading');
-        const reasonEl = document.getElementById('blockReason');
-        const blockIcon = document.querySelector('.block-icon');
-
-        if (this.blockReason === 'restricted') {
-            // Restricted site - time limit reached
-            if (headingEl) headingEl.textContent = 'Daily Limit Reached';
-            if (reasonEl) reasonEl.textContent = `You've used all your allotted time for ${this.blockedDomain} today. Access will reset at midnight.`;
-            document.title = `${this.blockedDomain} - Limit Reached`;
-
-            // Show time used today instead of block count
-            this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
-            this.updateStatLabel('blockCount', 'Time used today');
-
-            // Change icon color to orange for restricted
-            if (blockIcon) blockIcon.style.color = '#f59e0b';
-        } else {
-            // Fully blocked site
-            if (headingEl) headingEl.textContent = 'This site is blocked';
-            if (reasonEl) reasonEl.textContent = 'This site is on your block list to help you stay focused.';
-            document.title = `${this.blockedDomain} is blocked`;
-
-            this.updateStat('blockCount', this.blockStats.count);
-            this.updateStatLabel('blockCount', 'Times blocked today');
-        }
-
-        // Always show cumulative time spent
-        this.updateStat('timeSpent', this.formatTime(this.blockStats.timeSpent));
-
-        // Motivational content
-        this.updateMotivationalContent();
-    }
-
-    updateStat(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-    }
-
-    updateStatLabel(id, label) {
-        const el = document.getElementById(id);
-        if (el && el.nextElementSibling) {
-            el.nextElementSibling.textContent = label;
-        }
-    }
-
-    updateMotivationalContent() {
-        const quote = this.motivationalQuotes[Math.floor(Math.random() * this.motivationalQuotes.length)];
-        const tip = this.productivityTips[Math.floor(Math.random() * this.productivityTips.length)];
-
-        const quoteEl = document.querySelector('.motivation-quote blockquote');
-        const citeEl = document.querySelector('.motivation-quote cite');
-        const tipEl = document.querySelector('.productivity-tip p');
-
-        if (quoteEl) quoteEl.textContent = `"${quote.quote}"`;
-        if (citeEl) citeEl.textContent = `— ${quote.author}`;
-        if (tipEl) tipEl.textContent = tip;
-    }
-
-    formatTime(seconds) {
-        if (!seconds) return '0m';
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-
-        if (hours > 0) {
-            return `${hours}h ${minutes}m`;
-        }
-        return `${minutes}m`;
-    }
 }
+
+applyBlockAccessMethods(BlockPageController);
+applyBlockUiMethods(BlockPageController);
 
 document.addEventListener('DOMContentLoaded', () => {
     new BlockPageController();

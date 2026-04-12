@@ -1,0 +1,38 @@
+/* Keybinds */
+.shortcuts-grid {
+    display: grid;
+    gap: var(--spacing);
+}
+
+.shortcut-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shortcut-item label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.keybind-input {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    font-size: 0.9rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    background: var(--background);
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.keybind-input:focus,
+.keybind-input.recording {
+    border-color: var(--primary-color);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 3px var(--primary-fade);
+    outline: none;
+}

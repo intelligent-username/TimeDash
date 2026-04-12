@@ -3,6 +3,7 @@ import { getFaviconUrl } from '../utils/dom.js';
 export class BlockingUI {
     constructor(controller) {
         this.controller = controller;
+        this.limitUpdateTimers = new Map();
     }
 
     setup() {
@@ -165,13 +166,49 @@ export class BlockingUI {
             deleteBtn.textContent = 'Remove';
             deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
 
-            limitInput.addEventListener('change', () => {
-                const newLimit = parseInt(limitInput.value);
-                if (!isNaN(newLimit) && newLimit > 0 && newLimit <= 1440) {
-                    this.addSiteRule(domain, 'RESTRICTED', newLimit);
-                } else {
+            const saveLimit = async () => {
+                const newLimit = parseInt(limitInput.value, 10);
+                if (!Number.isNaN(newLimit) && newLimit > 0 && newLimit <= 1440 && newLimit !== timeLimitMinutes) {
+                    await this.addSiteRule(domain, 'RESTRICTED', newLimit);
+                    timeLimitMinutes = newLimit;
+                } else if (Number.isNaN(newLimit) || newLimit <= 0 || newLimit > 1440) {
                     limitInput.value = timeLimitMinutes;
                 }
+            };
+
+            limitInput.addEventListener('input', () => {
+                const existingTimer = this.limitUpdateTimers.get(domain);
+                if (existingTimer) clearTimeout(existingTimer);
+
+                const timer = setTimeout(() => {
+                    this.limitUpdateTimers.delete(domain);
+                    saveLimit();
+                }, 500);
+
+                this.limitUpdateTimers.set(domain, timer);
+            });
+
+            limitInput.addEventListener('change', async () => {
+                const existingTimer = this.limitUpdateTimers.get(domain);
+                if (existingTimer) {
+                    clearTimeout(existingTimer);
+                    this.limitUpdateTimers.delete(domain);
+                }
+                await saveLimit();
+            });
+
+            limitInput.addEventListener('keydown', async (event) => {
+                if (event.key !== 'Enter') return;
+                event.preventDefault();
+
+                const existingTimer = this.limitUpdateTimers.get(domain);
+                if (existingTimer) {
+                    clearTimeout(existingTimer);
+                    this.limitUpdateTimers.delete(domain);
+                }
+
+                await saveLimit();
+                limitInput.blur();
             });
 
             li.appendChild(infoDiv);

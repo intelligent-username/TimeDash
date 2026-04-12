@@ -1,0 +1,73 @@
+/* Settings Items */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-title {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.setting-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Lists (Blocking, Whitelist) */
+.rule-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing) 0 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+}
+
+.rule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--card-bg);
+}
+
+.rule-item:last-child {
+    border-bottom: none;
+}
+
+.rule-domain {
+    font-weight: 500;
+}
+
+.rule-delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.rule-delete-btn:hover {
+    background: var(--danger-fade);
+    color: var(--danger-color);
+}
+
+/* Range Inputs */
+.range-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+}
