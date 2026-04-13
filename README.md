@@ -1,16 +1,15 @@
 # TimeDash
 
-<img src="icons/Logo.svg" width="128" height="128" alt="TimeDash Logo">
+![TimeDash Logo](icons/Logo.svg)
 
 Download the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb?utm_source=item-share-cb) or load it unpacked from this repository to start managing your time online with personalized rules, real-time stats, and motivational cues.
 
 ## Features
 
-- Custom blocked and restricted rules let the background rule manager decide when a tab should show a warning, a hard block, or a restricted view.
-- The overlay injects motivational copy and timing cues into each site while the content script monitors usage seconds.
-- The popup surfaces live stats, a curated site list, and quick toggles so you can pause, resume, or adjust thresholds without leaving the page.
-- The options page centralizes site controls, analytics, and site-management helpers for tailoring rules per domain.
-- The alarm manager keeps timers accurate even when the browser is idle so reminders and reports stay in sync.
+- Custom blocked and restricted rules let the background rule manager indicated by warnings and blocks.
+- Global and site-specific daily limits.
+- Popup surfaces live stats, a curated site list, and quick toggles for speed, tracking, and site blocking.
+- Alarm manager for keeping timers accurate even when the browser is idle.
 
 ## Getting started
 

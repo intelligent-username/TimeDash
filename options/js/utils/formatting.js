@@ -4,19 +4,7 @@
  * @returns {string} Formatted string (e.g., "2h 30m" or "45m")
  */
 export function formatTime(ms) {
-    if (!ms) return '0m';
-
-    // Check if input is seconds (historically might be) or ms
-    // Usage is usually stored in ms.
-
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-
-    if (hours > 0) {
-        return `${hours}h ${minutes % 60}m`;
-    }
-    return `${minutes}m`;
+    return TimeUtils.formatMilliseconds(ms);
 }
 
 /**

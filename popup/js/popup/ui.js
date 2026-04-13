@@ -23,7 +23,7 @@ export const uiMethods = {
         const siteFavicon = document.getElementById('siteFavicon');
         const blockBtn = document.getElementById('blockBtn');
 
-        if (!this.currentTab || !this.currentTab.url || !this.shouldTrackUrl(this.currentTab.url)) {
+        if (!this.currentTab || !this.currentTab.url || !PopupHelpers.shouldTrackUrl(this.currentTab.url)) {
             siteName.textContent = 'Non-trackable page';
             siteTime.textContent = 'Time tracking disabled for this page';
             siteFavicon.style.display = 'none';
@@ -31,7 +31,7 @@ export const uiMethods = {
             return;
         }
 
-        const domain = this.extractDomain(this.currentTab.url);
+        const domain = PopupHelpers.extractDomain(this.currentTab.url);
         const domainData = (this.usageData && this.usageData.domains)
             ? this.usageData.domains.find((d) => d.domain === domain)
             : null;

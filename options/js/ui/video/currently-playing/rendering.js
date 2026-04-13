@@ -11,6 +11,8 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
             });
         });
 
+        items.sort((a, b) => Number(b.video.interactedAt || 0) - Number(a.video.interactedAt || 0));
+
         const visibleItems = items.filter((item) => !this.dismissedKeys.has(this.getVideoKey(item)));
         if (visibleItems.length === 0) {
             list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
@@ -33,18 +35,18 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
 
         return `
             <div class="currently-playing-item">
-                <div class="currently-playing-meta currently-playing-meta-row">
-                    <div>
+                <div class="currently-playing-meta">
+                    <div class="currently-playing-title-row">
                         <button type="button" class="currently-playing-title currently-playing-title-btn" data-action="focus-tab" data-tab-id="${item.tabId}" title="Open tab">${cleanedTitle}</button>
-                        <div class="currently-playing-subtitle">${sourceLabel} • ${isLive ? 'Live' : `${this.formatTime(currentTime)} / ${this.formatTime(duration)}`}</div>
+                        <button type="button" class="currently-playing-dismiss" data-action="dismiss-item" data-video-key="${this.escapeHtml(videoKey)}" title="Hide video">×</button>
                     </div>
-                    <button type="button" class="currently-playing-dismiss" data-action="dismiss-item" data-video-key="${this.escapeHtml(videoKey)}" title="Hide video">×</button>
+                    <div class="currently-playing-subtitle">${sourceLabel} • ${isLive ? 'Live' : `${this.formatTime(currentTime)} / ${this.formatTime(duration)}`}</div>
                 </div>
                 <input type="range" class="currently-playing-seek" min="0" max="${Math.max(duration, 1)}" step="0.1" value="${Math.min(currentTime, Math.max(duration, 1))}" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}" ${isLive ? 'disabled' : ''} />
                 <div class="currently-playing-controls">
                     <button type="button" class="btn btn-outline btn-sm" data-action="skip-back" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">Prev</button>
                     <button type="button" class="btn btn-outline btn-sm currently-playing-control-small" title="Rewind" data-action="step-back" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">⟲</button>
-                    <button type="button" class="btn btn-primary btn-sm" data-action="toggle-play" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">${paused ? 'Play' : 'Pause'}</button>
+                    <button type="button" class="btn btn-primary btn-sm currently-playing-toggle-btn" data-action="toggle-play" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">${paused ? 'Play' : 'Pause'}</button>
                     <button type="button" class="btn btn-outline btn-sm currently-playing-control-small" title="Skip Ahead" data-action="step-forward" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">⟳</button>
                     <button type="button" class="btn btn-outline btn-sm" data-action="skip-forward" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">Skip</button>
                 </div>
@@ -86,11 +88,7 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     };
 
     CurrentlyPlayingUI.prototype.formatTime = function formatTime(seconds) {
-        if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
-        const total = Math.floor(seconds);
-        const mins = Math.floor(total / 60);
-        const secs = total % 60;
-        return `${mins}:${String(secs).padStart(2, '0')}`;
+        return TimeUtils.formatClock(seconds);
     };
 
     CurrentlyPlayingUI.prototype.escapeHtml = function escapeHtml(value) {

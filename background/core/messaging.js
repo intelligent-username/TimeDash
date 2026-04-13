@@ -25,7 +25,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'REFRESH_VIDEO_DETECTION': sendResponse(await this.videoService.refreshVideoDetection()); break;
                 case 'FOCUS_VIDEO_TAB': sendResponse(await this.videoService.focusVideoTab(message)); break;
                 case 'TOGGLE_BLOCK': await this.toggleSiteBlock(message.domain); sendResponse({ success: true }); break;
-                case 'EXPORT_DATA': sendResponse({ data: await this.storage.exportDataAsCSV() }); break;
+                case 'EXPORT_DATA_JSON': sendResponse({ data: await this.storage.getExportPayload(this.ruleManager) }); break;
                 case 'GET_SITE_RULES': sendResponse({ blocked: this.ruleManager.getBlockedDomains(), restricted: this.ruleManager.getRestrictedDomains() }); break;
                 case 'ADD_SITE_RULE': {
                     const { domain, ruleType, timeLimitMinutes } = message;
@@ -41,6 +41,25 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     sendResponse({ success: true });
                     break;
                 case 'CHECK_ACCESS': {
+                    const settings = await this.storage.getSettings();
+                    const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
+                    if (dailyLimitMinutes > 0) {
+                        const allUsage = await this.storage.getAllUsage();
+                        let totalTodaySeconds = 0;
+                        for (const domainUsage of Object.values(allUsage)) {
+                            totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
+                        }
+
+                        if (totalTodaySeconds >= dailyLimitMinutes * 60) {
+                            sendResponse({
+                                shouldBlock: true,
+                                reason: 'restricted',
+                                domain: message.domain || DomainUtils.extractDomain(message.url || ''),
+                            });
+                            break;
+                        }
+                    }
+
                     const usage = await this.storage.getDomainUsage(message.domain);
                     const todayTime = TimeUtils.calculateTodayTime(usage);
                     sendResponse(this.ruleManager.evaluateAccess(message.url, { todayTimeSeconds: todayTime }));

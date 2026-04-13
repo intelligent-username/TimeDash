@@ -1,4 +1,12 @@
 export const miscUtils = {
+    formatTime(seconds) {
+        return TimeUtils.formatTime(Math.max(0, Math.floor(seconds || 0)));
+    },
+
+    formatDetailedTime(seconds) {
+        return TimeUtils.formatTimeForDisplay(Math.max(0, Math.floor(seconds || 0)));
+    },
+
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -54,6 +62,14 @@ export const miscUtils = {
         const div = document.createElement('div');
         div.textContent = html;
         return div.innerHTML;
+    },
+
+    extractDomain(url) {
+        return DomainUtils.extractDomain(url);
+    },
+
+    shouldTrackUrl(url) {
+        return DomainUtils.shouldTrackUrl(url);
     },
 
     isInViewport(element) {

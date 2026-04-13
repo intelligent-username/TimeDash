@@ -117,6 +117,31 @@ class TabTracker {
     }
 
     async checkAndHandleBlocking(tab, domain) {
+        const settings = await this.instance.storage.getSettings();
+        const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
+
+        if (dailyLimitMinutes > 0) {
+            const allUsage = await this.instance.storage.getAllUsage();
+            let totalTodaySeconds = 0;
+            for (const domainUsage of Object.values(allUsage)) {
+                totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
+            }
+
+            if (totalTodaySeconds >= dailyLimitMinutes * 60) {
+                try {
+                    await this.instance.storage.incrementBlockCount(domain);
+                } catch (error) {
+                    console.error('Failed to increment block count:', error);
+                }
+
+                const blockPageUrl =
+                    chrome.runtime.getURL('block/block.html') +
+                    `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=restricted`;
+                await chrome.tabs.update(tab.id, { url: blockPageUrl });
+                return;
+            }
+        }
+
         const usage = await this.instance.storage.getDomainUsage(domain);
         const todayTimeSeconds = TimeUtils.calculateTodayTime(usage);
         const accessResult = this.instance.ruleManager.evaluateAccess(tab.url, { todayTimeSeconds });

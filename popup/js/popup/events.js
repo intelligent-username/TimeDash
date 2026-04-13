@@ -15,7 +15,7 @@ export const eventMethods = {
                 if (this.currentTab.url.includes('block.html')) {
                     tab = 'blocking';
                 } else {
-                    const domain = this.extractDomain(this.currentTab.url);
+                    const domain = PopupHelpers.extractDomain(this.currentTab.url);
                     const isBlocked = await this.isBlocked(domain);
                     if (isBlocked) tab = 'blocking';
                     else if (this.currentTabHasVideo) tab = 'video';

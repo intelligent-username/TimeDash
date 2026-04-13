@@ -29,26 +29,6 @@ function applyStorageMiscMethods(StorageManager) {
         }
     };
 
-    StorageManager.prototype.exportDataAsCSV = async function exportDataAsCSV() {
-        try {
-            const usage = await this.getAllUsage();
-            let csv = 'Domain,Date,Time Spent (seconds),Time Spent (formatted)\n';
-
-            for (const [domain, data] of Object.entries(usage)) {
-                for (const [date, timeSpent] of Object.entries(data)) {
-                    if (!['cumulative', 'lastVisit', 'blockedToday', 'lastBlockDate'].includes(date)) {
-                        csv += `${domain},${date},${timeSpent},${this.formatTime(timeSpent)}\n`;
-                    }
-                }
-            }
-
-            return csv;
-        } catch (error) {
-            console.error('Failed to export data:', error);
-            return '';
-        }
-    };
-
     StorageManager.prototype.clearAllData = async function clearAllData() {
         try {
             await chrome.storage.local.clear();
@@ -69,13 +49,24 @@ function applyStorageMiscMethods(StorageManager) {
         return 0;
     };
 
-    StorageManager.prototype.formatTime = function formatTime(seconds) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
+    StorageManager.prototype.getExportPayload = async function getExportPayload(ruleManager) {
+        const usage = await this.getAllUsage();
+        const settings = await this.getSettings();
+        const blockList = await this.getBlockList();
 
-        if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
-        if (minutes > 0) return `${minutes}m ${secs}s`;
-        return `${secs}s`;
+        return {
+            usage,
+            settings,
+            blockList,
+            siteRules: ruleManager
+                ? {
+                    blocked: ruleManager.getBlockedDomains(),
+                    restricted: ruleManager.getRestrictedDomains(),
+                }
+                : { blocked: [], restricted: [] },
+            exportDate: new Date().toISOString(),
+            version: chrome.runtime.getManifest().version,
+        };
     };
+
 }

@@ -54,6 +54,3 @@ function applyAlarmSchedulingMethods(AlarmManager) {
     };
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { applyAlarmSchedulingMethods };
-}

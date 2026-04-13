@@ -54,6 +54,37 @@ class TimeUtils {
     }
 
     /**
+     * Format seconds as M:SS clock
+     * @param {number} seconds - Time in seconds
+     * @returns {string} Clock-like string
+     */
+    static formatClock(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+        const total = Math.floor(seconds);
+        const mins = Math.floor(total / 60);
+        const secs = total % 60;
+        return `${mins}:${String(secs).padStart(2, '0')}`;
+    }
+
+    /**
+     * Format milliseconds into compact duration
+     * @param {number} ms - Time in milliseconds
+     * @returns {string} Formatted duration
+     */
+    static formatMilliseconds(ms) {
+        if (!ms) return '0m';
+
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+
+        if (hours > 0) {
+            return `${hours}h ${minutes % 60}m`;
+        }
+        return `${minutes}m`;
+    }
+
+    /**
      * Get current date in YYYY-MM-DD format (LOCAL timezone)
      * @returns {string} Current date string in local time
      */
@@ -179,7 +210,3 @@ class TimeUtils {
     }
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TimeUtils;
-}

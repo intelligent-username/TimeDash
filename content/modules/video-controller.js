@@ -31,9 +31,11 @@ class VideoController {
 
         if (video.readyState >= 1 && this.instance.initialized) {
             setupSpeed();
-        } else {
-            video.addEventListener('loadedmetadata', setupSpeed, { once: true });
         }
+
+        video.addEventListener('loadedmetadata', setupSpeed);
+        video.addEventListener('loadeddata', setupSpeed);
+        video.addEventListener('canplay', setupSpeed);
 
         // Listen for internal rate changes
         video.addEventListener('ratechange', () => {
@@ -55,8 +57,14 @@ class VideoController {
             }
         });
 
-        video.addEventListener('play', () => this.instance.markVideoInteraction(video));
-        video.addEventListener('playing', () => this.instance.markVideoInteraction(video));
+        video.addEventListener('play', () => {
+            setupSpeed();
+            this.instance.markVideoInteraction(video);
+        });
+        video.addEventListener('playing', () => {
+            setupSpeed();
+            this.instance.markVideoInteraction(video);
+        });
         video.addEventListener('seeking', () => this.instance.markVideoInteraction(video));
 
         const cleanupObserver = new MutationObserver((mutations) => {

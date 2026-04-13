@@ -4,7 +4,7 @@ class TimeDashContent {
     constructor() {
         this.videos = new Set();
         this.currentSpeed = null;
-        this.domain = this.extractDomain(window.location.href);
+        this.domain = DomainUtils.extractDomain(window.location.href);
         this.settings = {};
         this.initialized = false;
         this.contextValid = true;
@@ -157,13 +157,6 @@ class TimeDashContent {
         });
     }
 
-    extractDomain(url) {
-        try {
-            return new URL(url).hostname.replace(/^www\./, '');
-        } catch {
-            return window.location.hostname.replace(/^www\./, '');
-        }
-    }
 }
 
 if (!globalThis.__timedashContentBooted) {

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "TimeDash",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "Boost your productivity with time tracking, site blocking, and speed control.",
     "default_locale": "en",
     "permissions": [
@@ -11,8 +11,7 @@
         "scripting",
         "webNavigation",
         "alarms",
-        "notifications",
-        "downloads"
+        "notifications"
     ],
     "host_permissions": [
         "<all_urls>"
@@ -26,6 +25,7 @@
                 "<all_urls>"
             ],
             "js": [
+                "utils/domain-utils.js",
                 "content/overlay.js",
                 "content/modules/video-detector.js",
                 "content/modules/video-controller.js",
@@ -43,18 +43,18 @@
         "default_popup": "popup/popup.html",
         "default_title": "TimeDash",
         "default_icon": {
-            "16": "icons/icon16.png",
-            "32": "icons/icon32.png",
-            "48": "icons/icon48.png",
-            "128": "icons/icon128.png"
+            "16": "icons/Logo.png",
+            "32": "icons/Logo.png",
+            "48": "icons/Logo.png",
+            "128": "icons/Logo.png"
         }
     },
     "options_page": "options/options.html",
     "icons": {
-        "16": "icons/icon16.png",
-        "32": "icons/icon32.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
+        "16": "icons/Logo.png",
+        "32": "icons/Logo.png",
+        "48": "icons/Logo.png",
+        "128": "icons/Logo.png"
     },
     "commands": {
         "toggle-tracking": {

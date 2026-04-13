@@ -1,3 +1,5 @@
+import { showToast } from '../../utils/dom.js';
+
 export function applyOptionsSaveMethods(OptionsController) {
     OptionsController.prototype.setupAutoSave = function setupAutoSave() {
         setInterval(() => {
@@ -53,15 +55,15 @@ export function applyOptionsSaveMethods(OptionsController) {
     };
 
     OptionsController.prototype.showSuccess = function showSuccess(msg) {
-        this.showToast(msg, 'success');
+        showToast(msg, 'success');
     };
 
     OptionsController.prototype.showError = function showError(msg) {
-        this.showToast(msg, 'error');
+        showToast(msg, 'error');
     };
 
     OptionsController.prototype.showWarning = function showWarning(msg) {
-        this.showToast(msg, 'warning');
+        showToast(msg, 'warning');
     };
 
     OptionsController.prototype.updateRestrictedDomains = function updateRestrictedDomains(domains) {
@@ -69,17 +71,6 @@ export function applyOptionsSaveMethods(OptionsController) {
     };
 
     OptionsController.prototype.showBanner = function showBanner(message, type = 'info') {
-        const el = document.getElementById('banner');
-        if (!el) return;
-
-        el.className = `banner ${type}`;
-        el.textContent = message;
-        el.style.display = 'block';
-
-        if (type !== 'error') {
-            setTimeout(() => {
-                if (el) el.style.display = 'none';
-            }, 2500);
-        }
+        showToast(message, type);
     };
 }

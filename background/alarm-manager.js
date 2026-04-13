@@ -46,6 +46,3 @@ applyAlarmNotificationMethods(AlarmManager);
 applyAlarmMaintenanceMethods(AlarmManager);
 
 // Export for use in background script
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AlarmManager;
-}

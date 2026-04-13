@@ -68,6 +68,3 @@ function applyAlarmMaintenanceMethods(AlarmManager) {
     };
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { applyAlarmMaintenanceMethods };
-}

@@ -38,12 +38,12 @@ export const actionMethods = {
     },
 
     async toggleCurrentSiteBlock() {
-        if (!this.currentTab || !this.shouldTrackUrl(this.currentTab.url)) {
+        if (!this.currentTab || !PopupHelpers.shouldTrackUrl(this.currentTab.url)) {
             PopupHelpers.showToast('Cannot block this type of page', 'error');
             return;
         }
 
-        const domain = this.extractDomain(this.currentTab.url);
+        const domain = PopupHelpers.extractDomain(this.currentTab.url);
         await this.toggleSiteBlock(domain);
     },
 
@@ -72,17 +72,18 @@ export const actionMethods = {
 
     async exportData() {
         try {
-            const response = await chrome.runtime.sendMessage({ type: 'EXPORT_DATA' });
-            if (response.data) {
-                const blob = new Blob([response.data], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `TDE_${new Date().toISOString().split('T')[0]}.csv`;
-                a.click();
-                URL.revokeObjectURL(url);
-                PopupHelpers.showToast('Data exported successfully', 'success');
-            }
+            const response = await chrome.runtime.sendMessage({ type: 'EXPORT_DATA_JSON' });
+            const exportPayload = response?.data;
+            if (!exportPayload) throw new Error('Missing export payload');
+
+            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `TDE_${new Date().toISOString().split('T')[0]}.json`;
+            anchor.click();
+            URL.revokeObjectURL(url);
+            PopupHelpers.showToast('Data exported successfully', 'success');
         } catch (error) {
             console.error('Error exporting data:', error);
             PopupHelpers.showToast('Failed to export data', 'error');
@@ -157,9 +158,6 @@ export const actionMethods = {
         (first || content).focus();
 
         document.getElementById('defaultSpeed').value = this.settings.currentPlaybackSpeed || 1.0;
-        document.getElementById('maxSpeed').value = this.settings.maxPlaybackSpeed || 16.0;
-        document.getElementById('dailyLimit').value = this.settings.dailyTimeLimitMinutes || 0;
-        document.getElementById('enableNotifications').checked = this.settings.notificationsEnabled !== false;
     },
 
     closeSetupModal() {
@@ -181,9 +179,6 @@ export const actionMethods = {
             const newSettings = {
                 ...this.settings,
                 currentPlaybackSpeed: parseFloat(document.getElementById('defaultSpeed').value),
-                maxPlaybackSpeed: parseFloat(document.getElementById('maxSpeed').value),
-                dailyTimeLimitMinutes: parseInt(document.getElementById('dailyLimit').value),
-                notificationsEnabled: document.getElementById('enableNotifications').checked,
                 firstTimeSetup: false
             };
 
@@ -195,20 +190,6 @@ export const actionMethods = {
             console.error('Error completing setup:', error);
             PopupHelpers.showBanner(I18n.t('setupFailed'), 'error');
         }
-    },
-
-    extractDomain(url) {
-        try {
-            return new URL(url).hostname.replace(/^www\./, '');
-        } catch {
-            return url;
-        }
-    },
-
-    shouldTrackUrl(url) {
-        if (!url) return false;
-        const excludedSchemes = ['chrome:', 'chrome-extension:', 'moz-extension:', 'edge:', 'about:', 'file:', 'data:'];
-        return !excludedSchemes.some((scheme) => url.startsWith(scheme));
     },
 
     showError(message) {

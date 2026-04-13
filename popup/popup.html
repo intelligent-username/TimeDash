@@ -144,33 +144,6 @@
                         <option value="2.0">2.0x</option>
                     </select>
                 </div>
-                <div class="setup-step">
-                    <h3>Maximum Video Speed</h3>
-                    <select id="maxSpeed">
-                        <option value="2.0">2.0x</option>
-                        <option value="4.0">4.0x</option>
-                        <option value="8.0">8.0x</option>
-                        <option value="16.0" selected>16.0x</option>
-                    </select>
-                </div>
-                <div class="setup-step">
-                    <h3>Daily Time Limit (Optional)</h3>
-                    <select id="dailyLimit">
-                        <option value="0" selected>No limit</option>
-                        <option value="30">30 minutes</option>
-                        <option value="60">1 hour</option>
-                        <option value="120">2 hours</option>
-                        <option value="180">3 hours</option>
-                        <option value="240">4 hours</option>
-                    </select>
-                </div>
-                <div class="setup-step">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="enableNotifications" checked />
-                        <span class="checkmark"></span>
-                        Enable notifications for limits and milestones
-                    </label>
-                </div>
             </div>
             <div class="setup-footer">
                 <button id="completeSetup" class="primary-btn">
@@ -180,6 +153,8 @@
         </div>
     </div>
 
+    <script src="../utils/time-utils.js"></script>
+    <script src="../utils/domain-utils.js"></script>
     <script src="../utils/i18n.js"></script>
     <script type="module" src="popup.js"></script>
 </body>

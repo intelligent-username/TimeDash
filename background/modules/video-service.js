@@ -7,6 +7,16 @@
 class VideoService {
     constructor(instance) {
         this.instance = instance;
+        this.contentScriptFiles = [
+            'utils/domain-utils.js',
+            'content/overlay.js',
+            'content/modules/video-detector.js',
+            'content/modules/video-controller.js',
+            'content/modules/playback-state.js',
+            'content/modules/message-handler.js',
+            'content/modules/keyboard-handler.js',
+            'content/content.js'
+        ];
     }
 
     async sendMessageWithTimeout(tabId, payload, options = undefined, timeoutMs = 2000) {
@@ -23,6 +33,7 @@ class VideoService {
                 .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
                 .map(async (tab) => {
                     try {
+                        await this.ensureContentScriptReady(tab.id);
                         const frameIds = await this.getTabFrameIds(tab.id);
                         const frameResponses = await Promise.all(
                             frameIds.map(async (frameId) => {
@@ -104,7 +115,7 @@ class VideoService {
             tabs
                 .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
                 .map(async (tab) => {
-                    await this.ensureVideoScriptsInjected(tab.id);
+                    await this.ensureContentScriptReady(tab.id);
                     const frameIds = await this.getTabFrameIds(tab.id);
                     await Promise.all(frameIds.map(async (frameId) => {
                         try {
@@ -125,23 +136,20 @@ class VideoService {
         return { success: true, refreshedFrames };
     }
 
-    async ensureVideoScriptsInjected(tabId) {
+    async ensureContentScriptReady(tabId) {
         try {
-            if (!chrome.scripting || !chrome.scripting.executeScript) return;
-            await chrome.scripting.executeScript({
-                target: { tabId, allFrames: true },
-                files: [
-                    'content/overlay.js',
-                    'content/modules/video-detector.js',
-                    'content/modules/video-controller.js',
-                    'content/modules/playback-state.js',
-                    'content/modules/message-handler.js',
-                    'content/modules/keyboard-handler.js',
-                    'content/content.js'
-                ]
-            });
+            await this.sendMessageWithTimeout(tabId, { type: 'GET_CURRENT_SPEED' }, undefined, 800);
+            return;
         } catch {
-            // Silently fail on restricted pages
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId, allFrames: true },
+                    files: this.contentScriptFiles
+                });
+                await new Promise((resolve) => setTimeout(resolve, 80));
+            } catch {
+                // Ignore injection failures on unsupported pages/frames.
+            }
         }
     }
 

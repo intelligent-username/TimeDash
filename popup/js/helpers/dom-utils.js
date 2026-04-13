@@ -1,10 +1,10 @@
 export const domUtils = {
     getFaviconUrl(domain) {
-        return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+        return DomainUtils.getFaviconUrl(domain).replace('&sz=16', '&sz=32');
     },
 
     capitalize(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+        return DomainUtils.getDisplayName(str || '');
     },
 
     createElement(tag, attributes = {}, content = '') {

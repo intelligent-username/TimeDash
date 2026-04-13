@@ -35,6 +35,7 @@ class PlaybackState {
             const isPlayingNow = !video.paused || video.seeking;
             if (!hasKnownTimeline && !isPlayingNow) continue;
 
+            const interactedAt = this.instance.videoInteractionTs.get(video) || 0;
             videos.push({
                 id: videoId,
                 currentTime,
@@ -42,7 +43,8 @@ class PlaybackState {
                 paused: Boolean(video.paused),
                 playbackRate: Number(video.playbackRate || 1),
                 isLive,
-                sourceLabel
+                sourceLabel,
+                interactedAt
             });
         }
 

@@ -88,6 +88,3 @@ function applyAlarmHandlerMethods(AlarmManager) {
     };
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { applyAlarmHandlerMethods };
-}

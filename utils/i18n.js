@@ -78,6 +78,3 @@ class I18n {
 }
 
 // Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { I18n };
-}

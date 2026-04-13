@@ -119,13 +119,9 @@ export class DataManager {
 
     async exportData() {
         try {
-            const data = {
-                usage: this.controller.usage,
-                blockList: this.controller.blockList,
-                settings: this.controller.settings,
-                exportDate: new Date().toISOString(),
-                version: chrome.runtime.getManifest().version,
-            };
+            const response = await chrome.runtime.sendMessage({ type: 'EXPORT_DATA_JSON' });
+            const data = response?.data;
+            if (!data) throw new Error('Missing export payload');
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);

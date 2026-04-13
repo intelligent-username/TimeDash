@@ -38,6 +38,7 @@
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .currently-playing-title {
@@ -75,6 +76,24 @@
 .currently-playing-meta-row {
     display: flex;
     align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.currently-playing-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.currently-playing-title-row .currently-playing-title-btn {
+    flex: 1;
+    min-width: 0;
+}
+
+.currently-playing-subtitle-row {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 8px;
 }
@@ -125,4 +144,11 @@
     align-items: center;
     justify-content: center;
     font-size: 0.95rem;
+}
+
+.currently-playing-toggle-btn {
+    min-width: 64px;
+    width: 64px;
+    text-align: center;
+    justify-content: center;
 }
