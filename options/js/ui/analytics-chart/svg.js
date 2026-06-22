@@ -57,28 +57,33 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
         container.innerHTML = `
             <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
                 <defs>
-                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:var(--accent-color);stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:var(--accent-hover);stop-opacity:1" />
-                    </linearGradient>
                     <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:var(--accent-color);stop-opacity:0.3" />
-                        <stop offset="100%" style="stop-color:var(--accent-color);stop-opacity:0.05" />
+                        <stop offset="0%" style="stop-color:var(--accent-color);stop-opacity:0.22" />
+                        <stop offset="100%" style="stop-color:var(--accent-color);stop-opacity:0.02" />
                     </linearGradient>
                 </defs>
                 <path d="${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z" fill="url(#areaGradient)" />
-                <path d="${pathD}" fill="none" stroke="url(#lineGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                ${avgPathD ? `<path d="${avgPathD}" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />` : ''}
+                <path d="${pathD}" fill="none" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                ${avgPathD ? `<path d="${avgPathD}" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-dasharray="4,4" opacity="0.5" />` : ''}
                 ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4.5" fill="${point.isEarliest ? 'var(--secondary-color)' : 'var(--accent-color)'}" stroke="white" stroke-width="2" class="chart-point" />`).join('')}
             </svg>
             <div class="chart-points-overlay">
-                ${points.map((point) => `
+                ${points.map((point) => {
+                    // Parse as local date to avoid UTC midnight shifting the date
+                    const [y, m, d] = point.day.date.split('-').map(Number);
+                    const localDate = new Date(y, m - 1, d);
+                    const displayDate = localDate.toLocaleDateString(undefined, {
+                        weekday: 'short', month: 'short', day: 'numeric'
+                    });
+                    return `
                     <div class="chart-point-hitarea" style="left: ${point.x}px; top: ${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
-                        <div class="chart-tooltip">${point.day.date}<br><strong>${formatTime(point.day.time)}</strong></div>
+                        <div class="chart-tooltip">${displayDate}<br><strong>${formatTime(point.day.time)}</strong></div>
                     </div>
-                `).join('')}
+                `;
+                }).join('')}
             </div>
         `;
+
     };
 
     AnalyticsChart.prototype.buildRollingAveragePath = function buildRollingAveragePath(dailyTotals, pointSpacing, maxTime, padding, height, generateCubicPath) {

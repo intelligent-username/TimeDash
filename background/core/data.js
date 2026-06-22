@@ -53,5 +53,6 @@ function applyBackgroundDataMethods(TimeDashBackground) {
         else blockList.push(domain);
 
         await this.storage.setBlockList(blockList);
+        this.broadcastUpdate();
     };
 }

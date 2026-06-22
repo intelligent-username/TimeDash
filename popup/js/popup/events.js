@@ -1,5 +1,11 @@
 export const eventMethods = {
     setupEventListeners() {
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.type === 'USAGE_DATA_UPDATED') {
+                this.loadData().then(() => this.updateUI()).catch(console.error);
+            }
+        });
+
         chrome.storage.local.onChanged.addListener((changes) => {
             if (changes.settings && changes.settings.newValue) {
                 this.settings = { ...(this.settings || {}), ...changes.settings.newValue };

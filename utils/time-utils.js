@@ -10,23 +10,19 @@ class TimeUtils {
      * @returns {string} Formatted time string
      */
     static formatTime(seconds) {
-        if (seconds < 60) {
-            return `${seconds}s`;
-        } else if (seconds < 3600) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
-        } else {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = seconds % 60;
+        if (!seconds || seconds < 0) return '0s';
+        const totalSeconds = Math.floor(seconds);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
 
-            let result = `${hours}h`;
-            if (minutes > 0) result += ` ${minutes}m`;
-            if (remainingSeconds > 0) result += ` ${remainingSeconds}s`;
-
-            return result;
+        if (hours > 0) {
+            return `${hours}h ${minutes}m`;
         }
+        if (minutes > 0) {
+            return `${minutes}m ${secs}s`;
+        }
+        return `${secs}s`;
     }
 
     /**
@@ -35,22 +31,7 @@ class TimeUtils {
      * @returns {string} Formatted time string for UI
      */
     static formatTimeForDisplay(seconds) {
-        if (seconds < 60) {
-            return `${seconds} seconds`;
-        } else if (seconds < 3600) {
-            const minutes = Math.floor(seconds / 60);
-            return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-        } else {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-
-            let result = `${hours} hour${hours !== 1 ? 's' : ''}`;
-            if (minutes > 0) {
-                result += ` ${minutes} minute${minutes !== 1 ? 's' : ''}`;
-            }
-
-            return result;
-        }
+        return this.formatTime(seconds);
     }
 
     /**
@@ -72,16 +53,19 @@ class TimeUtils {
      * @returns {string} Formatted duration
      */
     static formatMilliseconds(ms) {
-        if (!ms) return '0m';
-
-        const seconds = Math.floor(ms / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
+        if (!ms || ms < 0) return '0s';
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
 
         if (hours > 0) {
-            return `${hours}h ${minutes % 60}m`;
+            return `${hours}h ${minutes}m`;
         }
-        return `${minutes}m`;
+        if (minutes > 0) {
+            return `${minutes}m ${seconds}s`;
+        }
+        return `${seconds}s`;
     }
 
     /**

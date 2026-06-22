@@ -30,6 +30,8 @@ class TimeDashBackground {
         this.storage = new StorageManager();
         this.ruleManager = new RuleManager();
         this.activeTabInfo = new Map();
+        this.domainActiveCount = new Map();
+        this.domainStartTime = new Map();
         this.TRACKING_INTERVAL = 1000;
         this.BATCH_UPDATE_INTERVAL = 5000;
         this.pendingUpdates = new Map();
@@ -46,6 +48,7 @@ class TimeDashBackground {
         this.tabTracker.setupEventListeners();
         this.setupMessageHandling();
         this.startTrackingLoop();
+        this.alarmManager.handleCleanup();
     }
 }
 

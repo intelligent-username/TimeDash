@@ -41,11 +41,11 @@ class TimeDashContent {
 
     async init() {
         try {
+            this.messageHandler.setup();
             await this.loadSettings();
             this.initialized = true;
 
             this.detector.setup();
-            this.messageHandler.setup();
             this.messageHandler.setupStorageListener();
             this.keyboardHandler.setup();
             this.startVisibilityCheck();

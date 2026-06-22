@@ -21,7 +21,8 @@ function applyBlockUiMethods(BlockPageController) {
         if (!settingsBtn) return;
 
         settingsBtn.addEventListener('click', () => {
-            chrome.runtime.openOptionsPage();
+            const optionsUrl = chrome.runtime.getURL('options/options.html#blocking');
+            chrome.tabs.create({ url: optionsUrl });
         });
     };
 

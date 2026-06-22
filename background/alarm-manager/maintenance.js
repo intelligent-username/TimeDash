@@ -2,10 +2,20 @@
 
 function applyAlarmMaintenanceMethods(AlarmManager) {
     AlarmManager.prototype.cleanupOldUsageData = async function cleanupOldUsageData() {
+        const settings = await chrome.storage.local.get('settings');
+        const userSettings = settings.settings || {};
+
+        const autoPurgeEnabled = userSettings.autoPurgeEnabled === true;
+        const autoPurgeDays = parseInt(userSettings.autoPurgeDays, 10) || 30;
+
+        // Use user-configured days when auto-purge is enabled,
+        // otherwise fall back to a 90-day hard floor as a built-in safeguard
+        const retentionDays = autoPurgeEnabled ? autoPurgeDays : 90;
+
         const usage = await chrome.storage.local.get('usage');
         const usageData = usage.usage || {};
         const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - 90);
+        cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
         const cutoffStr = this.getLocalDateString(cutoffDate);
 
         let cleaned = false;

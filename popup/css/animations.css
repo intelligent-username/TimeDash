@@ -1,0 +1,248 @@
+/* ============================================================
+   TimeDash Popup – Micro-interactions
+   Purely additive – zero structural changes.
+   ============================================================ */
+
+/* ── Keyframes ─────────────────────────────────────────────── */
+
+@keyframes td-fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes td-popIn {
+    0%   { opacity: 0; transform: scale(0.88); }
+    70%  { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes td-numberCount {
+    from { opacity: 0; transform: translateY(-6px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes td-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes td-barGrow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+/* ── Popup container entrance ───────────────────────────────── */
+.popup-container {
+    animation: td-fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.popup-header {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Logo subtle hover tilt */
+.logo {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.popup-header:hover .logo {
+    transform: rotate(-5deg) scale(1.1);
+}
+
+/* Icon button hover */
+.icon-btn {
+    transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-btn:hover {
+    transform: scale(1.15) rotate(15deg);
+}
+
+/* ── Current site section ────────────────────────────────────── */
+.current-site {
+    animation: td-fadeUp 0.35s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Favicon hover */
+.site-favicon {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: var(--radius-small);
+}
+
+.site-favicon:hover {
+    transform: scale(1.2);
+}
+
+/* Action buttons – spring */
+.action-btn {
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Speed btn icon spin on click */
+.speed-btn:active svg {
+    animation: td-spin 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Inline speed +/- buttons */
+.inline-speed-btn {
+    transition:
+        color 0.15s ease,
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.inline-speed-btn:hover {
+    transform: scale(1.3) !important;
+}
+
+.inline-speed-btn:active {
+    transform: scale(0.9) !important;
+}
+
+/* ── Quick stats ─────────────────────────────────────────────── */
+.quick-stats {
+    animation: td-fadeUp 0.35s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stat-card {
+    transition:
+        transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.25s ease,
+        background-color 0.2s ease;
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: var(--surface-elevated, var(--surface));
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.stat-value {
+    animation: td-numberCount 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.3s ease;
+}
+
+.stat-card:hover .stat-value {
+    color: var(--accent-color, var(--primary-color));
+}
+
+/* ── Top sites section ───────────────────────────────────────── */
+.top-sites {
+    animation: td-fadeUp 0.35s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Refresh button spin on hover */
+.refresh-btn {
+    transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.refresh-btn:hover {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+}
+
+/* Site items – staggered entrance + hover slide */
+.site-item {
+    animation: td-fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.2s ease;
+}
+
+.site-item:nth-child(1) { animation-delay: 0.04s; }
+.site-item:nth-child(2) { animation-delay: 0.08s; }
+.site-item:nth-child(3) { animation-delay: 0.12s; }
+.site-item:nth-child(4) { animation-delay: 0.16s; }
+.site-item:nth-child(5) { animation-delay: 0.20s; }
+
+.site-item:hover {
+    transform: translateX(4px);
+    /* very subtle border shift — 5% accent, 95% original */
+    border-color: color-mix(in srgb, var(--primary-color) 8%, var(--border) 92%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.site-item-favicon {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-item:hover .site-item-favicon {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.site-item-btn {
+    transition: color 0.15s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-item-btn:hover {
+    transform: scale(1.2);
+}
+
+/* Progress bar (if any) */
+.site-progress-bar {
+    transform-origin: left;
+    animation: td-barGrow 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Footer buttons ──────────────────────────────────────────── */
+.popup-footer {
+    animation: td-fadeUp 0.35s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.toggle-btn,
+.dashboard-btn {
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.2s ease;
+}
+
+.toggle-btn:hover,
+.dashboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toggle-btn:active,
+.dashboard-btn:active {
+    transform: scale(0.96);
+}
+
+/* ── Banner ──────────────────────────────────────────────────── */
+.banner {
+    animation: td-popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .popup-container,
+    .current-site,
+    .quick-stats,
+    .top-sites,
+    .popup-footer,
+    .site-item,
+    .stat-value {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}

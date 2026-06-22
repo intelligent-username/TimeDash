@@ -24,24 +24,29 @@
 }
 
 .period-btn {
-    padding: 6px 12px;
+    padding: 6px 14px;
     background: transparent;
     border: none;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .period-btn:hover {
     color: var(--text-primary);
     background: var(--border-subtle);
+    transform: translateY(-1px);
 }
 
 .period-btn.active {
     background: var(--primary-color);
     color: white;
+    transform: none;
 }
 
 .chart-navigation {
@@ -61,20 +66,38 @@
     border-radius: var(--radius-small);
     cursor: pointer;
     color: var(--text-secondary);
-    transition: all var(--transition-fast);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-color var(--transition-fast);
 }
 
 .nav-btn:hover {
-    background: var(--border);
+    background: var(--surface);
     color: var(--text-primary);
+    border-color: color-mix(in srgb, var(--accent-color) 20%, var(--border) 80%);
+    transform: scale(1.08);
+}
+
+.nav-btn:active {
+    transform: scale(0.94);
+}
+
+.nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .chart-period-label {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-primary);
-    min-width: 100px;
+    min-width: 110px;
     text-align: center;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s ease;
 }
 
 .chart-container {
@@ -142,6 +165,7 @@
     height: 100%;
     display: block;
     overflow: visible;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.06));
 }
 
 .chart-line-path {
@@ -162,31 +186,41 @@
     stroke: white;
     stroke-width: 2;
     r: 5;
-    transition: r 0.2s ease, fill 0.2s ease;
+    transition: r 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.2s ease;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
 }
 
 .chart-point:hover {
-    r: 7;
+    r: 8;
 }
 
 .chart-tooltip {
     position: absolute;
-    bottom: 100%;
+    bottom: calc(100% + 10px);
     left: 50%;
-    transform: translateX(-50%);
-    background: var(--text-primary);
-    color: var(--sidebar-bg);
-    padding: 6px 10px;
-    border-radius: var(--radius-small);
+    transform: translateX(-50%) translateY(4px);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: var(--radius);
     font-size: 0.8rem;
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.15s ease;
-    margin-bottom: 8px;
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     text-align: center;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,0.15));
     z-index: 20;
+    line-height: 1.5;
+}
+
+.chart-tooltip strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--accent-color, var(--primary-color));
 }
 
 .chart-tooltip::after {
@@ -194,14 +228,28 @@
     position: absolute;
     top: 100%;
     left: 50%;
-    margin-left: -4px;
-    border-width: 4px;
+    margin-left: -5px;
+    border-width: 5px;
     border-style: solid;
-    border-color: var(--text-primary) transparent transparent transparent;
+    border-color: var(--card-bg) transparent transparent transparent;
+}
+
+/* Fake border for tooltip arrow */
+.chart-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--border) transparent transparent transparent;
+    z-index: -1;
 }
 
 .chart-point-hitarea:hover .chart-tooltip {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .chart-points-overlay {
@@ -215,13 +263,13 @@
 
 .chart-point-hitarea {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    margin-left: -10px;
-    margin-top: -10px;
+    width: 28px;
+    height: 28px;
+    margin-left: -14px;
+    margin-top: -14px;
     border-radius: 50%;
     pointer-events: auto;
-    cursor: auto;
+    cursor: crosshair;
     z-index: 10;
 }
 

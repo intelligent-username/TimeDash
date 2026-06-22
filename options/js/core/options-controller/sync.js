@@ -35,16 +35,40 @@ export function applyOptionsSyncMethods(OptionsController) {
             if (document.hidden) return;
 
             try {
-                const latestSettings = await this.storageManager.getSettings();
+                await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+                
+                const [latestSettings, latestUsage] = await Promise.all([
+                    this.storageManager.getSettings(),
+                    this.storageManager.getAllUsage()
+                ]);
+                
                 this.settings = { ...this.settings, ...latestSettings };
+                this.usage = latestUsage;
 
                 this.applyImmediateChanges('theme', this.settings.theme || 'light');
                 this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
                 this.syncCurrentPlaybackSpeedUI();
+                
+                if (this.analyticsUI) this.analyticsUI.update();
             } catch (error) {
-                console.error('Failed to refresh settings on visibility change:', error);
+                console.error('Failed to refresh data on visibility change:', error);
             }
         });
+
+        // Periodically refresh the data to keep it as perfectly accurate as the popup
+        setInterval(async () => {
+            if (document.hidden) return;
+            const activeTab = document.querySelector('.sidebar-nav-item.active');
+            if (activeTab && activeTab.dataset.tab === 'analytics') {
+                try {
+                    await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+                    this.usage = await this.storageManager.getAllUsage();
+                    if (this.analyticsUI) this.analyticsUI.update();
+                } catch (error) {
+                    console.error('Failed to auto-refresh analytics data:', error);
+                }
+            }
+        }, 30000);
     };
 
     OptionsController.prototype.syncCurrentPlaybackSpeedUI = function syncCurrentPlaybackSpeedUI() {

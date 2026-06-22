@@ -30,7 +30,8 @@ export class BlockingUI {
 
         if (addRestrictedBtn && restrictedDomainInput) {
             addRestrictedBtn.addEventListener('click', () => {
-                const limit = parseInt(restrictedLimitInput?.value) || 30;
+                const parsed = parseInt(restrictedLimitInput?.value, 10);
+                const limit = !Number.isNaN(parsed) ? parsed : 30;
                 this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
                 restrictedDomainInput.value = '';
                 if (restrictedLimitInput) restrictedLimitInput.value = '';
@@ -38,7 +39,8 @@ export class BlockingUI {
 
             restrictedDomainInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    const limit = parseInt(restrictedLimitInput?.value) || 30;
+                    const parsed = parseInt(restrictedLimitInput?.value, 10);
+                    const limit = !Number.isNaN(parsed) ? parsed : 30;
                     this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
                     restrictedDomainInput.value = '';
                     if (restrictedLimitInput) restrictedLimitInput.value = '';
@@ -148,8 +150,9 @@ export class BlockingUI {
             limitInput.type = 'number';
             limitInput.className = 'rule-limit-input-edit';
             limitInput.value = timeLimitMinutes;
-            limitInput.min = 1;
+            limitInput.min = 0;
             limitInput.max = 1440;
+            limitInput.step = 1;
             limitInput.title = 'Edit daily limit (minutes)';
 
             const suffixSpan = document.createElement('span');
@@ -168,27 +171,18 @@ export class BlockingUI {
 
             const saveLimit = async () => {
                 const newLimit = parseInt(limitInput.value, 10);
-                if (!Number.isNaN(newLimit) && newLimit > 0 && newLimit <= 1440 && newLimit !== timeLimitMinutes) {
+                if (!Number.isNaN(newLimit) && newLimit >= 0 && newLimit <= 1440 && newLimit !== timeLimitMinutes) {
                     await this.addSiteRule(domain, 'RESTRICTED', newLimit);
                     timeLimitMinutes = newLimit;
-                } else if (Number.isNaN(newLimit) || newLimit <= 0 || newLimit > 1440) {
+                } else if (Number.isNaN(newLimit) || newLimit < 0 || newLimit > 1440) {
                     limitInput.value = timeLimitMinutes;
                 }
             };
 
-            limitInput.addEventListener('input', () => {
-                const existingTimer = this.limitUpdateTimers.get(domain);
-                if (existingTimer) clearTimeout(existingTimer);
-
-                const timer = setTimeout(() => {
-                    this.limitUpdateTimers.delete(domain);
-                    saveLimit();
-                }, 500);
-
-                this.limitUpdateTimers.set(domain, timer);
-            });
-
-            limitInput.addEventListener('change', async () => {
+            // Only save on blur (user leaves the field) so focus is never
+            // destroyed mid-edit by a re-render. This lets arrow keys, held
+            // down or tapped repeatedly, change the value freely.
+            limitInput.addEventListener('blur', async () => {
                 const existingTimer = this.limitUpdateTimers.get(domain);
                 if (existingTimer) {
                     clearTimeout(existingTimer);
@@ -197,18 +191,29 @@ export class BlockingUI {
                 await saveLimit();
             });
 
+            // Arrow keys: increment/decrement locally without saving yet.
+            // preventDefault stops the browser from firing a 'change' event
+            // on its own schedule which would have triggered a re-render.
             limitInput.addEventListener('keydown', async (event) => {
-                if (event.key !== 'Enter') return;
-                event.preventDefault();
-
-                const existingTimer = this.limitUpdateTimers.get(domain);
-                if (existingTimer) {
-                    clearTimeout(existingTimer);
-                    this.limitUpdateTimers.delete(domain);
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    const cur = parseInt(limitInput.value, 10);
+                    const next = (Number.isNaN(cur) ? 0 : cur) + 1;
+                    if (next <= 1440) limitInput.value = next;
+                    return;
                 }
-
-                await saveLimit();
-                limitInput.blur();
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    const cur = parseInt(limitInput.value, 10);
+                    const next = (Number.isNaN(cur) ? 0 : cur) - 1;
+                    if (next >= 0) limitInput.value = next;
+                    return;
+                }
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    await saveLimit();
+                    limitInput.blur();
+                }
             });
 
             li.appendChild(infoDiv);

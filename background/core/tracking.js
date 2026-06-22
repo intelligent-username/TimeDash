@@ -6,6 +6,10 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
     };
 
     TimeDashBackground.prototype.processPendingUpdates = async function processPendingUpdates() {
+        if (this.tabTracker && typeof this.tabTracker.flushActiveTime === 'function') {
+            this.tabTracker.flushActiveTime();
+        }
+
         if (this.pendingUpdates.size === 0) return;
 
         const updates = new Map(this.pendingUpdates);
@@ -15,6 +19,16 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
             const rule = this.ruleManager.getRule(domain);
             const type = rule && rule.type === 'RESTRICTED' ? 'RESTRICTED' : 'GENERAL';
             await this.storage.updateUsage(domain, timeSpent, type);
+        }
+
+        this.broadcastUpdate();
+    };
+
+    TimeDashBackground.prototype.broadcastUpdate = function broadcastUpdate() {
+        try {
+            chrome.runtime.sendMessage({ type: 'USAGE_DATA_UPDATED' }).catch(() => {});
+        } catch {
+            // noop - no listeners
         }
     };
 

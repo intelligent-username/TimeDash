@@ -90,9 +90,16 @@ class TabTracker {
 
         if (settings.whitelist && settings.whitelist.includes(domain)) return;
 
+        // Increment domain active count
+        const count = (this.instance.domainActiveCount.get(domain) || 0) + 1;
+        this.instance.domainActiveCount.set(domain, count);
+        // Record start time when first tab of domain becomes active
+        if (count === 1) {
+            this.instance.domainStartTime.set(domain, Date.now());
+        }
+        // Keep per‑tab info for visibility tracking
         this.instance.activeTabInfo.set(tabId, {
             domain,
-            startTime: Date.now(),
             isActive: true,
         });
 
@@ -101,10 +108,21 @@ class TabTracker {
 
     stopTrackingTab(tabId) {
         const tabInfo = this.instance.activeTabInfo.get(tabId);
-        if (tabInfo && tabInfo.isActive) {
-            const timeSpent = Math.floor((Date.now() - tabInfo.startTime) / 1000);
-            if (timeSpent > 0) {
-                this.instance.addToPendingUpdates(tabInfo.domain, timeSpent);
+        if (tabInfo) {
+            // Decrement domain count
+            const domain = tabInfo.domain;
+            const newCount = (this.instance.domainActiveCount.get(domain) || 1) - 1;
+            if (newCount <= 0) {
+                // Domain no longer active, compute elapsed
+                const start = this.instance.domainStartTime.get(domain) || Date.now();
+                const elapsed = Math.floor((Date.now() - start) / 1000);
+                if (elapsed > 0) {
+                    this.instance.addToPendingUpdates(domain, elapsed);
+                }
+                this.instance.domainActiveCount.delete(domain);
+                this.instance.domainStartTime.delete(domain);
+            } else {
+                this.instance.domainActiveCount.set(domain, newCount);
             }
         }
         this.instance.activeTabInfo.delete(tabId);
@@ -113,6 +131,18 @@ class TabTracker {
     stopTrackingAllTabs() {
         for (const [tabId] of this.instance.activeTabInfo) {
             this.stopTrackingTab(tabId);
+        }
+    }
+
+    flushActiveTime() {
+        for (const [tabId, tabInfo] of this.instance.activeTabInfo) {
+            if (tabInfo && tabInfo.isActive) {
+                const timeSpent = Math.floor((Date.now() - tabInfo.startTime) / 1000);
+                if (timeSpent > 0) {
+                    this.instance.addToPendingUpdates(tabInfo.domain, timeSpent);
+                    tabInfo.startTime = Date.now();
+                }
+            }
         }
     }
 

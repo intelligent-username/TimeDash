@@ -46,7 +46,15 @@ export const lifecycleMethods = {
 
     startAutoUpdate() {
         this.stopAutoUpdate();
-        this.autoUpdateInterval = setInterval(() => this.updateUI(), 30000);
+        this.autoUpdateInterval = setInterval(async () => {
+            try {
+                const usageResponse = await chrome.runtime.sendMessage({ type: 'GET_USAGE_DATA' });
+                this.usageData = usageResponse;
+                this.updateUI();
+            } catch (error) {
+                console.error('Auto-update failed:', error);
+            }
+        }, 10000);
     },
 
     stopAutoUpdate() {

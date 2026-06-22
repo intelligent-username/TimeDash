@@ -18,7 +18,14 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'GET_TAB_INFO': sendResponse(await this.getTabInfo(sender.tab ? sender.tab.id : undefined)); break;
                 case 'GET_SETTINGS': sendResponse(await this.storage.getSettings()); break;
                 case 'UPDATE_SETTINGS': sendResponse({ success: await this.storage.setSettings(message.settings) }); break;
-                case 'GET_USAGE_DATA': sendResponse(await this.getUsageData()); break;
+                case 'FLUSH_PENDING_UPDATES':
+                    if (typeof this.processPendingUpdates === 'function') await this.processPendingUpdates();
+                    sendResponse({ success: true });
+                    break;
+                case 'GET_USAGE_DATA': 
+                    if (typeof this.processPendingUpdates === 'function') await this.processPendingUpdates();
+                    sendResponse(await this.getUsageData()); 
+                    break;
                 case 'UPDATE_VIDEO_SPEED': await this.storage.setCurrentSpeed(message.speed); sendResponse({ success: true }); break;
                 case 'GET_CURRENTLY_PLAYING_VIDEOS': sendResponse(await this.videoService.getCurrentlyPlayingVideos()); break;
                 case 'CONTROL_VIDEO_PLAYBACK': sendResponse(await this.videoService.controlVideoPlayback(message)); break;

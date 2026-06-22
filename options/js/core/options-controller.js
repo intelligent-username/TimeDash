@@ -52,6 +52,8 @@ export class OptionsController {
     }
 
     async loadAllData() {
+        await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+
         const [settings, usage, blockList, rules] = await Promise.all([
             this.storageManager.getSettings(),
             this.storageManager.getAllUsage(),

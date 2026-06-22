@@ -102,16 +102,9 @@ export const uiMethods = {
 
     calculateWeeklyAverage() {
         if (!this.usageData?.domains) return 0;
-
-        const todayTotal = this.usageData.totalToday || 0;
-        const totalOverall = this.usageData.totalOverall || 0;
-
-        if (totalOverall > 0 && todayTotal > 0) {
-            const estimatedDays = Math.min(7, Math.max(1, Math.round(totalOverall / todayTotal)));
-            return Math.round(totalOverall / estimatedDays);
-        }
-
-        return todayTotal;
+        // Each domain.averageTime is already the 7-day rolling average in seconds,
+        // computed by the background. Sum them for a total daily average.
+        return this.usageData.domains.reduce((sum, d) => sum + (d.averageTime || 0), 0);
     },
 
     applyThemeAndAccent() {
