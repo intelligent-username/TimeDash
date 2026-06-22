@@ -12,7 +12,7 @@ class KeyboardHandler {
     setup() {
         document.addEventListener('keydown', (event) => {
             if (this.instance.isOrphaned) return;
-            if (this.isInputFocused()) return;
+            if (this.isInputActive()) return;
 
             if (!this.instance.settings.keyboardShortcutsEnabled) return;
 
@@ -55,7 +55,7 @@ class KeyboardHandler {
         return [code, ...(map[code] || [])];
     }
 
-    isInputFocused() {
+    isInputActive() {
         const activeElement = document.activeElement;
         const inputTypes = ['input', 'textarea', 'select'];
         return (

@@ -43,7 +43,7 @@ function applyBlockUiMethods(BlockPageController) {
             if (blockIcon) blockIcon.style.color = '#f59e0b';
         } else {
             if (headingEl) headingEl.textContent = 'This site is blocked';
-            if (reasonEl) reasonEl.textContent = 'This site is on your block list to help you stay focused.';
+            if (reasonEl) reasonEl.textContent = 'This site is on your block list to reduce distractions.';
             document.title = `${this.blockedDomain} is blocked`;
             this.updateStat('blockCount', this.blockStats.count);
             this.updateStatLabel('blockCount', 'Times blocked today');

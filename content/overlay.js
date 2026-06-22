@@ -90,7 +90,6 @@ class TimeDashOverlayUI {
         }, 2000);
     }
 
-
     updateSettings(settings) {
         this.settings = settings;
 

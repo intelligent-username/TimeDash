@@ -25,7 +25,7 @@ class TabTracker {
         });
 
         chrome.windows.onFocusChanged.addListener((windowId) => {
-            this.handleWindowFocusChanged(windowId);
+            this.handleWindowActivationChanged(windowId);
         });
     }
 
@@ -68,7 +68,7 @@ class TabTracker {
         this.stopTrackingTab(tabId);
     }
 
-    async handleWindowFocusChanged(windowId) {
+    async handleWindowActivationChanged(windowId) {
         if (windowId === chrome.windows.WINDOW_ID_NONE) {
             this.stopTrackingAllTabs();
         } else {
@@ -78,7 +78,7 @@ class TabTracker {
                     await this.handleTabActivated(tabs[0].id);
                 }
             } catch (error) {
-                console.error('Error handling window focus change:', error);
+                console.error('Error handling window activation change:', error);
             }
         }
     }
@@ -135,13 +135,12 @@ class TabTracker {
     }
 
     flushActiveTime() {
-        for (const [tabId, tabInfo] of this.instance.activeTabInfo) {
-            if (tabInfo && tabInfo.isActive) {
-                const timeSpent = Math.floor((Date.now() - tabInfo.startTime) / 1000);
-                if (timeSpent > 0) {
-                    this.instance.addToPendingUpdates(tabInfo.domain, timeSpent);
-                    tabInfo.startTime = Date.now();
-                }
+        const now = Date.now();
+        for (const [domain, startedAt] of this.instance.domainStartTime) {
+            const timeSpent = Math.floor((now - startedAt) / 1000);
+            if (timeSpent > 0) {
+                this.instance.addToPendingUpdates(domain, timeSpent);
+                this.instance.domainStartTime.set(domain, now);
             }
         }
     }

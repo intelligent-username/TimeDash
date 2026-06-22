@@ -13,7 +13,7 @@ class BlockPageController {
 
         this.motivationalQuotes = [
             { quote: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
-            { quote: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
+            { quote: 'Be productive instead of just being busy.', author: 'Tim Ferriss' },
             { quote: 'You are never too old to set another goal or to dream a new dream.', author: 'C.S. Lewis' },
             { quote: 'The future depends on what you do today.', author: 'Mahatma Gandhi' },
             { quote: "Don't watch the clock; do what it does. Keep going.", author: 'Sam Levenson' },
@@ -24,7 +24,7 @@ class BlockPageController {
 
         this.productivityTips = [
             'Try the Pomodoro Technique: Work for 25 minutes, then take a 5-minute break.',
-            'Create a distraction-free workspace to improve your focus.',
+            'Create a distraction-free workspace to improve concentration.',
             'Use the 2-minute rule: If it takes less than 2 minutes, do it now.',
             'Block time in your calendar for important tasks.',
             'Take regular breaks to maintain high productivity levels.',
