@@ -31,6 +31,11 @@ class PlaybackState {
 
             if (video.ended) continue;
 
+            const videoSrc = (video.currentSrc || video.src || '').toLowerCase();
+            if (/\.(gif|gifv|webm)(\?|#|$)/.test(videoSrc)) continue;
+
+            if (duration === 0 && currentTime === 0) continue;
+
             const hasKnownTimeline = isLive || duration > 0 || currentTime > 0;
             const isPlayingNow = !video.paused || video.seeking;
             if (!hasKnownTimeline && !isPlayingNow) continue;

@@ -37,7 +37,7 @@ function applyAlarmNotificationMethods(AlarmManager) {
 
         await chrome.notifications.create({
             type: 'basic',
-            iconUrl: 'icons/Logo.png',
+            iconUrl: 'imgs/Logo.png',
             title,
             message,
         });
@@ -69,7 +69,7 @@ function applyAlarmNotificationMethods(AlarmManager) {
                 const message = `Yesterday: ${Math.floor(totalYesterdayUsage / 60)} minutes total. Top site: ${topDomain} (${Math.floor(topDomainTime / 60)} min)`;
                 await chrome.notifications.create({
                     type: 'basic',
-                    iconUrl: 'icons/Logo.png',
+                    iconUrl: 'imgs/Logo.png',
                     title: 'TimeDash Daily Summary',
                     message,
                 });

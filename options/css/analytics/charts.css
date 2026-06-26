@@ -126,7 +126,7 @@
     border-left: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     background-image: linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
     background-size: 100% 20%;
 }
@@ -198,7 +198,7 @@
         transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     text-align: center;
     box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,0.15));
-    z-index: 20;
+    z-index: 100;
     line-height: 1.5;
 }
 

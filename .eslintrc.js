@@ -19,5 +19,5 @@ module.exports = {
         'jsdoc/require-param': 'warn',
         'jsdoc/require-returns': 'warn',
     },
-    ignorePatterns: ['icons/**', '_dev/**', '_locales/**'],
+    ignorePatterns: ['imgs/**', '_dev/**', '_locales/**'],
 };

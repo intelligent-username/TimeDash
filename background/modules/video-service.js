@@ -61,12 +61,26 @@ class VideoService {
                             return null;
                         }
 
+                        const seen = new Map();
+                        const deduped = [];
+                        for (const v of videos) {
+                            const key = `${(v.sourceLabel || '')}|${v.duration ?? 0}`;
+                            const existing = seen.get(key);
+                            if (!existing) {
+                                seen.set(key, v);
+                                deduped.push(v);
+                            } else if ((v.interactedAt || 0) > (existing.interactedAt || 0)) {
+                                seen.set(key, v);
+                                deduped[deduped.indexOf(existing)] = v;
+                            }
+                        }
+
                         return {
                             tabId: tab.id,
                             title: tab.title || 'Untitled tab',
                             url: tab.url,
                             favIconUrl: tab.favIconUrl || '',
-                            videos
+                            videos: deduped
                         };
                     } catch {
                         return null;

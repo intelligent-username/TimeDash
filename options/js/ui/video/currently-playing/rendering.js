@@ -7,13 +7,23 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
         sessions.forEach((session) => {
             (session.videos || []).forEach((video, index) => {
                 if (!video || !video.id || !session || !session.tabId) return;
+                if (this._isIrrelevant(session, video)) return;
                 items.push({ tabId: session.tabId, tabTitle: session.title, url: session.url, video, index });
             });
         });
 
-        items.sort((a, b) => Number(b.video.interactedAt || 0) - Number(a.video.interactedAt || 0));
+        const dupKeys = new Set();
+        const deduped = [];
+        for (const item of items) {
+            const dk = `${item.tabId}|${item.video.sourceLabel || ''}|${item.video.duration ?? 0}|${this.cleanTitle(item.tabTitle)}`;
+            if (dupKeys.has(dk)) continue;
+            dupKeys.add(dk);
+            deduped.push(item);
+        }
 
-        const visibleItems = items.filter((item) => !this.dismissedKeys.has(this.getVideoKey(item)));
+        deduped.sort((a, b) => Number(b.video.interactedAt || 0) - Number(a.video.interactedAt || 0));
+
+        const visibleItems = deduped.filter((item) => !this.dismissedKeys.has(this.getVideoKey(item)));
         if (visibleItems.length === 0) {
             list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
             return;
@@ -51,6 +61,18 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
                 </div>
             </div>
         `;
+    };
+
+    CurrentlyPlayingUI.prototype._isIrrelevant = function _isIrrelevant(session, video) {
+        const url = (session.url || '').toLowerCase();
+        if (/google\.com\/search|bing\.com\/search|search\.yahoo\.com|duckduckgo\.com\//.test(url)) return true;
+
+        const duration = Number(video.duration || 0);
+        const currentTime = Number(video.currentTime || 0);
+        const paused = Boolean(video.paused);
+        if (duration === 0 && currentTime === 0 && paused) return true;
+
+        return false;
     };
 
     CurrentlyPlayingUI.prototype.getVideoKey = function getVideoKey(item) {
