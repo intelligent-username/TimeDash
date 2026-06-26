@@ -2,8 +2,9 @@ import { formatTime, formatDateString } from '../utils/formatting.js';
 
 export class AnalyticsHeatmap {
     constructor(dataContext) {
-        this.dataContext = dataContext; // usage, earliestDate, restrictedDomains getter
-        this._selectedDate = null;      // tracks the clicked cell date
+        this.dataContext = dataContext;
+        this._selectedDate = null;
+        this.yearOffset = 0;
     }
 
     /**
@@ -16,37 +17,47 @@ export class AnalyticsHeatmap {
         return new Date(y, m - 1, d);
     }
 
-    /**
-     * Format a date for the tooltip / heading using the user's locale.
-     * @param {Date} date
-     * @returns {string}  e.g. "Mon, Jun 22nd, 2026"
-     */
-    _formatDisplayDate(date) {
-        const day = date.getDate();
-        const suffix = ['th', 'st', 'nd', 'rd'][
-            day % 10 <= 3 && Math.floor(day / 10) !== 1 ? day % 10 : 0
-        ];
-        return date.toLocaleDateString(undefined, {
-            weekday: 'short',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-        }).replace(/(\d+)/, `$1${suffix}`);
+    _formatDisplayDate(date, showYear = false) {
+        const opts = { day: 'numeric', month: 'short' };
+        if (showYear) opts.year = 'numeric';
+        return date.toLocaleDateString(undefined, opts);
     }
 
     render() {
+        if (!this._navBound) {
+            this._setupYearNav();
+            this._navBound = true;
+        }
+
         const grid = document.getElementById('heatmapGrid');
         const monthsRow = document.getElementById('heatmapMonths');
         const filter = document.getElementById('heatmapFilter')?.value || 'all';
 
         if (!grid) return;
 
-        // Use local-date-aware "today"
         const today = new Date();
         const todayStr = formatDateString(today);
-        const startDate = new Date(today);
-        startDate.setDate(today.getDate() - 364);
-        startDate.setDate(startDate.getDate() - startDate.getDay());
+        const MS_PER_DAY = 86400000;
+        const earliestDate = this.dataContext.getEarliestDate();
+        const earliestYear = earliestDate
+            ? parseInt(earliestDate.split('-')[0], 10)
+            : today.getFullYear();
+
+        const targetYear = today.getFullYear() + this.yearOffset;
+        let startDate, totalDays;
+
+        if (this.yearOffset === 0) {
+            startDate = new Date(today);
+            startDate.setDate(today.getDate() - 364);
+            startDate.setDate(startDate.getDate() - startDate.getDay());
+            totalDays = Math.round((today.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
+        } else {
+            startDate = new Date(targetYear, 0, 1);
+            startDate.setDate(startDate.getDate() - startDate.getDay());
+            const endDate = new Date(targetYear, 11, 31);
+            endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+            totalDays = Math.round((endDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
+        }
 
         const domainsToInclude = filter === 'restricted'
             ? this.dataContext.getRestrictedDomains()
@@ -54,11 +65,7 @@ export class AnalyticsHeatmap {
 
         const usage = this.dataContext.getUsage();
 
-        const MS_PER_DAY = 86400000;
         const startMs = startDate.getTime();
-        const todayMs = today.getTime();
-        const totalDays = Math.round((todayMs - startMs) / MS_PER_DAY) + 1;
-
         const dailyData = {};
         let maxTime = 0;
 
@@ -79,7 +86,6 @@ export class AnalyticsHeatmap {
         const monthPositions = [];
         let lastMonth = -1;
         let cellIndex = 0;
-        const earliestDate = this.dataContext.getEarliestDate();
 
         for (let i = 0; i < totalDays; i++) {
             const d = new Date(startMs + i * MS_PER_DAY);
@@ -90,10 +96,13 @@ export class AnalyticsHeatmap {
             const isSelected = dateStr === this._selectedDate;
             const isToday = dateStr === todayStr;
 
-            // Parse as LOCAL date to avoid timezone-off-by-one in tooltip
             const localDate = this._parseLocalDate(dateStr);
-            const displayDate = this._formatDisplayDate(localDate);
-            const tooltip = `${displayDate} • ${formatTime(time)}${isEarliest ? ' 🟨 First Day' : ''}`;
+            const showYear = this.yearOffset !== 0;
+            const compactDate = this._formatDisplayDate(localDate, showYear);
+            const isBeforeFirstDay = earliestDate && dateStr < earliestDate;
+            const tooltip = isBeforeFirstDay
+                ? compactDate
+                : `${compactDate}: ${formatTime(time, true)}${isEarliest ? ' 🟨' : ''}`;
 
             if (d.getMonth() !== lastMonth) {
                 monthPositions.push({
@@ -121,14 +130,16 @@ export class AnalyticsHeatmap {
         grid.innerHTML = cells.join('');
 
         if (monthsRow) {
+            monthsRow.style.display = 'grid';
+            monthsRow.style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
+            
             monthsRow.innerHTML = monthPositions.map((m, i) => {
-                const nextPos = monthPositions[i + 1]?.index || weeks;
-                const width = ((nextPos - m.index) / weeks) * 100;
-                return `<span style="width: ${width}%">${m.month}</span>`;
+                const endCol = monthPositions[i + 1]?.index || weeks;
+                const cols = endCol - m.index;
+                return `<span style="grid-column: ${m.index + 1} / span ${cols}; text-align: center;">${m.month}</span>`;
             }).join('');
         }
 
-        // Attach click listeners for "Top Sites on [date]" update
         grid.querySelectorAll('.heatmap-cell[data-date]').forEach((cell) => {
             cell.addEventListener('click', () => this._onCellClick(cell.dataset.date, dailyData));
             cell.addEventListener('keydown', (e) => {
@@ -138,13 +149,14 @@ export class AnalyticsHeatmap {
                 }
             });
         });
+
+        this._updateYearNav(earliestYear);
     }
 
     _onCellClick(dateStr, dailyData) {
         const heading = document.getElementById('topSitesHeading');
         if (!heading) return;
 
-        // Parse as local date and build a nice label
         const localDate = this._parseLocalDate(dateStr);
         const todayStr = formatDateString(new Date());
         const isToday = dateStr === todayStr;
@@ -153,13 +165,11 @@ export class AnalyticsHeatmap {
             heading.textContent = 'Top Sites Today';
             this._selectedDate = null;
         } else {
-            const displayDate = this._formatDisplayDate(localDate);
-            heading.textContent = `Top Sites on ${displayDate}`;
+            const showYear = this.yearOffset !== 0;
+            heading.textContent = `Top Sites on ${this._formatDisplayDate(localDate, showYear)}`;
             this._selectedDate = dateStr;
         }
 
-        // Update the top-sites list for the selected day using the analytics UI
-        // The analytics controller exposes renderTopSites via this.dataContext
         const usage = this.dataContext.getUsage();
         const sitesWithTime = [];
 
@@ -171,12 +181,12 @@ export class AnalyticsHeatmap {
 
         sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
 
-        // Re-render the top sites list directly
         const container = document.getElementById('analyticsTopSites');
         if (!container) return;
 
         if (sitesWithTime.length === 0) {
-            container.innerHTML = `<div class="analytics-empty-state">No activity recorded${isToday ? ' today' : ` on ${this._formatDisplayDate(localDate)}`}.</div>`;
+            const showYear = this.yearOffset !== 0;
+            container.innerHTML = `<div class="analytics-empty-state">No activity recorded${isToday ? ' today' : ` on ${this._formatDisplayDate(localDate, showYear)}`}.</div>`;
             return;
         }
 
@@ -190,7 +200,7 @@ export class AnalyticsHeatmap {
                     <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
                     <div class="analytics-site-info">
                         <div class="analytics-site-name">${escaped}</div>
-                        <div class="analytics-site-time">${formatTime(site.todayTime)}</div>
+                        <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
                     </div>
                     <div class="analytics-site-bar">
                         <div class="analytics-site-bar-fill" style="width: ${barWidth}%"></div>
@@ -199,7 +209,6 @@ export class AnalyticsHeatmap {
             `;
         }).join('');
 
-        // Re-mark selected cell visually
         const grid = document.getElementById('heatmapGrid');
         if (grid) {
             grid.querySelectorAll('.heatmap-cell--selected').forEach((el) => el.classList.remove('heatmap-cell--selected'));
@@ -208,6 +217,42 @@ export class AnalyticsHeatmap {
                 if (selectedCell) selectedCell.classList.add('heatmap-cell--selected');
             }
         }
+    }
+
+    _updateYearNav(earliestYear) {
+        const label = document.getElementById('heatmapYearLabel');
+        const prevBtn = document.getElementById('heatmapYearPrev');
+        const nextBtn = document.getElementById('heatmapYearNext');
+        if (!label) return;
+
+        const currentYear = new Date().getFullYear();
+        const displayYear = currentYear + this.yearOffset;
+        label.textContent = displayYear;
+
+        if (prevBtn) prevBtn.style.display = displayYear <= earliestYear ? 'none' : '';
+        if (nextBtn) nextBtn.style.display = this.yearOffset >= 0 ? 'none' : '';
+    }
+
+    _setupYearNav() {
+        const prevBtn = document.getElementById('heatmapYearPrev');
+        const nextBtn = document.getElementById('heatmapYearNext');
+        if (!prevBtn || !nextBtn) return;
+
+        prevBtn.addEventListener('click', () => {
+            this.yearOffset--;
+            this._selectedDate = null;
+            this.render();
+            const heading = document.getElementById('topSitesHeading');
+            if (heading) heading.textContent = 'Top Sites Today';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            this.yearOffset++;
+            this._selectedDate = null;
+            this.render();
+            const heading = document.getElementById('topSitesHeading');
+            if (heading) heading.textContent = 'Top Sites Today';
+        });
     }
 
     getLevel(time, maxTime) {

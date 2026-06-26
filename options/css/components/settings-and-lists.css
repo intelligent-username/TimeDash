@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 12px var(--spacing-sm);
     border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -46,8 +46,8 @@
     border-bottom: none;
 }
 
-.rule-domain {
-    font-weight: 500;
+.rule-item:hover {
+    background-color: var(--background);
 }
 
 .rule-delete-btn {
@@ -58,6 +58,7 @@
     font-size: 0.85rem;
     padding: 4px 8px;
     border-radius: 4px;
+    flex-shrink: 0;
 }
 
 .rule-delete-btn:hover {
@@ -65,9 +66,4 @@
     color: var(--danger-color);
 }
 
-/* Range Inputs */
-.range-input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing);
-}
+

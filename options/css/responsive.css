@@ -53,9 +53,27 @@
         grid-template-columns: 1fr;
     }
 
+    .stat-label {
+        font-size: 0.7rem;
+        white-space: normal;
+    }
+
     .chart-controls {
         justify-content: space-between;
         width: 100%;
+    }
+
+    .heatmap-days {
+        width: 20px;
+        min-width: 20px;
+        font-size: 0.55rem;
+        gap: 2px;
+    }
+
+    .heatmap-months {
+        margin-left: 20px;
+        font-size: 0.6rem;
+        width: calc(100% - 20px);
     }
 
     .top-bar {
@@ -68,10 +86,4 @@
         padding-bottom: var(--spacing-sm);
     }
 
-    .header-actions {
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 4px;
-    }
 }

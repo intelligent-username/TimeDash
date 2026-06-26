@@ -15,27 +15,7 @@
     /* Don't shrink too much */
 }
 
-/* Rule List Items in the Manager */
-/* .rule-list is defined in components.css */
-
-.rule-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border-subtle);
-    background: transparent;
-    /* Inherit from container usually, or make explicit */
-}
-
-.rule-item:last-child {
-    border-bottom: none;
-}
-
-.rule-item:hover {
-    background-color: var(--background);
-    /* Use background color for hover effect inside card which is white */
-}
+/* Rule Items consolidated in components/settings-and-lists.css */
 
 .rule-item-info {
     display: flex;
@@ -85,8 +65,4 @@
     outline: none;
 }
 
-/* Overriding conflict if any */
-.rule-delete-btn {
-    /* Defined in components.css */
-    flex-shrink: 0;
-}
+/* .rule-delete-btn consolidated into components/settings-and-lists.css */

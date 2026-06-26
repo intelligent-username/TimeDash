@@ -195,14 +195,12 @@
 .setting-item {
     transition:
         background-color var(--transition-fast),
-        border-radius var(--transition-fast),
-        padding var(--transition-fast);
+        border-radius var(--transition-fast);
     border-radius: var(--radius-small);
 }
 
 .setting-item:hover {
-    background-color: color-mix(in srgb, var(--accent-color) 5%, var(--background) 95%);
-    padding-left: 6px;
+    background-color: color-mix(in srgb, var(--accent-color) 2%, var(--background) 98%);
 }
 
 /* ── Switch toggle ───────────────────────────────────────────── */
@@ -232,10 +230,14 @@
     color: var(--text-secondary);
 }
 
-/* ── Refresh btn on analytics ────────────────────────────────── */
-.refresh-btn-options:hover svg,
-button[title="Refresh"]:hover svg {
-    animation: spinOnce 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+/* ── Cycling daily average fade ──────────────────────────────── */
+@keyframes avgFadeSlide {
+    0%   { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.stat-value-cycle {
+    animation: avgFadeSlide 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ── Reduced-motion override ─────────────────────────────────── */
@@ -248,7 +250,8 @@ button[title="Refresh"]:hover svg {
     .setting-item,
     .page-title,
     .page-subtitle,
-    .tab-pane.active {
+    .tab-pane.active,
+    .stat-value-cycle {
         animation: none !important;
         transition-duration: 0.01ms !important;
     }

@@ -171,12 +171,6 @@ body {
     padding-bottom: 1.5rem;
 }
 
-.header-actions {
-    display: flex;
-    gap: var(--spacing-sm);
-    align-items: center;
-}
-
 /* Scrollable Content Area */
 .content-scrollable {
     flex: 1;
@@ -227,10 +221,4 @@ body {
     margin-bottom: var(--spacing);
 }
 
-/* Helper to center simple content */
-.center-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
+

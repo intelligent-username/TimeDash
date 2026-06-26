@@ -1,7 +1,6 @@
 /* Specifics Coordinator - Modular CSS */
 
 @import url('tabs/general-appearance.css');
-@import url('tabs/video-control.css');
 @import url('tabs/privacy.css');
 @import url('tabs/currently-playing.css');
 @import url('tabs/help.css');

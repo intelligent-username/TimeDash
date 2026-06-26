@@ -39,6 +39,18 @@
     gap: 8px;
     overflow: hidden;
     flex-shrink: 0;
+    transition: background-color var(--transition-fast);
+}
+
+.currently-playing-item:hover {
+    background-color: color-mix(in srgb, var(--secondary-color) 6%, var(--background) 94%);
+}
+
+.currently-playing-meta {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .currently-playing-title {
@@ -73,13 +85,6 @@
     text-overflow: ellipsis;
 }
 
-.currently-playing-meta-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-}
-
 .currently-playing-title-row {
     display: flex;
     align-items: center;
@@ -89,19 +94,6 @@
 .currently-playing-title-row .currently-playing-title-btn {
     flex: 1;
     min-width: 0;
-}
-
-.currently-playing-subtitle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.currently-playing-meta-row > div {
-    min-width: 0;
-    flex: 1;
-    overflow: hidden;
 }
 
 .currently-playing-dismiss {

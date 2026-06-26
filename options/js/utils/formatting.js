@@ -3,8 +3,8 @@
  * @param {number} ms - Time in milliseconds
  * @returns {string} Formatted string (e.g., "2h 30m" or "45m")
  */
-export function formatTime(ms) {
-    return TimeUtils.formatMilliseconds(ms);
+export function formatTime(ms, compact = false) {
+    return TimeUtils.formatMilliseconds(ms, compact);
 }
 
 /**

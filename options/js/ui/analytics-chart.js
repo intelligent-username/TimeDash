@@ -5,9 +5,10 @@ import { applyAnalyticsChartRangeMethods } from './analytics-chart/range.js';
 
 export class AnalyticsChart {
     constructor(dataContext) {
-        this.dataContext = dataContext; // { usage, earliestDate } getter
+        this.dataContext = dataContext;
         this.period = 'week';
         this.offset = 0;
+        this._ro = null;
     }
 
     setPeriod(period) {
@@ -33,6 +34,11 @@ export class AnalyticsChart {
         const prevBtn = document.getElementById('chartPrev');
 
         if (!chartContent) return;
+
+        if (!this._ro) {
+            this._ro = new ResizeObserver(() => { this.render(); });
+            this._ro.observe(chartContent);
+        }
 
         const { dates, label, xLabels, isYearly, year, isAllTime, years } = this.getDateRange();
         if (periodLabel) periodLabel.textContent = label;

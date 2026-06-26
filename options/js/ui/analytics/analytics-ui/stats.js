@@ -7,6 +7,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const today = formatDateString(new Date());
 
         let totalOverall = 0;
+        let todayTotal = 0;
         const sitesWithTime = [];
         let earliestDate = null;
 
@@ -15,6 +16,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             const todayTime = (domainData[today] || 0) * 1000;
             const cumulative = (domainData.cumulative || 0) * 1000;
             totalOverall += cumulative;
+            todayTotal += todayTime;
 
             if (todayTime > 0) sitesWithTime.push({ domain, todayTime, cumulative });
 
@@ -28,8 +30,12 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         this.earliestDate = earliestDate;
         this.controller.earliestDate = earliestDate;
 
+        this.updateStat('analyticsTodayTotal', formatTime(todayTotal));
         this.updateStat('analyticsTotalTime', formatTime(totalOverall));
-        this.updateStat('analyticsSitesCount', domains.length);
+        this.updateSitesCount(domains.length);
+        this.calculateAndStoreDailyAverages(usage);
+        this.calculateAndUpdateNetChange(usage);
+        this.restartDailyAverageCycle();
         this.updatePeriodStats();
 
         sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
@@ -43,13 +49,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const usage = this.controller.usage || {};
         const { periodTotal, periodDays, periodLabel } = this.calculatePeriodTotal(usage);
 
-        const todayEl = document.getElementById('analyticsTodayTotal');
-        const avgEl = document.getElementById('analyticsWeekAverage');
         const totalEl = document.getElementById('analyticsTotalTime');
-
-        this.setStatCardValue(todayEl, formatTime(periodTotal), `Time ${periodLabel}`);
-        const avgTime = periodDays > 0 ? Math.round(periodTotal / periodDays) : 0;
-        this.setStatCardValue(avgEl, formatTime(avgTime), 'Daily Average');
         this.setStatCardValue(totalEl, formatTime(periodTotal), `Total ${periodLabel}`);
     };
 
@@ -58,6 +58,164 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         valueEl.textContent = value;
         const labelEl = valueEl.closest('.stat-card')?.querySelector('.stat-label');
         if (labelEl) labelEl.textContent = label;
+    };
+
+    AnalyticsUI.prototype.updateStat = function updateStat(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    AnalyticsUI.prototype.updateSitesCount = function updateSitesCount(count) {
+        const el = document.getElementById('heatmapSitesCount');
+        if (el) el.textContent = `${count} Sites Tracked`;
+    };
+
+    AnalyticsUI.prototype.calculateAverageForDays = function calculateAverageForDays(usage, days, offset = 0) {
+        const now = new Date();
+        let total = 0;
+        let validDays = 0;
+
+        for (let i = offset; i < offset + days; i++) {
+            const date = new Date(now);
+            date.setDate(now.getDate() - i);
+            const dateStr = formatDateString(date);
+            if (this.earliestDate && dateStr >= this.earliestDate) {
+                validDays++;
+                for (const domain of Object.keys(usage)) {
+                    total += (usage[domain][dateStr] || 0) * 1000;
+                }
+            }
+        }
+
+        return { total, count: validDays };
+    };
+
+    AnalyticsUI.prototype.calculateAndStoreDailyAverages = function calculateAndStoreDailyAverages(usage) {
+        const periods = [7, 14, 30, 100];
+        const dailyAverages = [];
+
+        for (const days of periods) {
+            const { total, count } = this.calculateAverageForDays(usage, days);
+            if (count > 0) {
+                dailyAverages.push({ days, average: Math.round(total / count) });
+            }
+        }
+
+        if (dailyAverages.length === 0) {
+            const totalOverall = this.calculateTotalOverall(usage);
+            const daysSinceStart = this.earliestDate
+                ? Math.ceil(Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000) || 1
+                : 1;
+            const allTimeAvg = daysSinceStart > 0 ? Math.round(totalOverall / daysSinceStart) : 0;
+            dailyAverages.push({ days: 'All', average: allTimeAvg });
+        }
+
+        this._dailyAverages = dailyAverages;
+        this._currentAvgIndex = 0;
+        this._updateDailyAverageDisplay();
+    };
+
+    AnalyticsUI.prototype.calculateTotalOverall = function calculateTotalOverall(usage) {
+        let total = 0;
+        for (const domain of Object.keys(usage)) {
+            total += (usage[domain].cumulative || 0) * 1000;
+        }
+        return total;
+    };
+
+    AnalyticsUI.prototype._updateDailyAverageDisplay = function _updateDailyAverageDisplay() {
+        const avgEl = document.getElementById('analyticsWeekAverage');
+        if (!avgEl || !this._dailyAverages || this._dailyAverages.length === 0) return;
+        const entry = this._dailyAverages[this._currentAvgIndex];
+        const label = `${entry.days}d Daily Average`;
+        this.setStatCardValue(avgEl, formatTime(entry.average), label);
+        avgEl.classList.remove('stat-value-cycle');
+        void avgEl.offsetWidth;
+        avgEl.classList.add('stat-value-cycle');
+    };
+
+    AnalyticsUI.prototype.restartDailyAverageCycle = function restartDailyAverageCycle() {
+        if (this._avgInterval) {
+            clearInterval(this._avgInterval);
+            this._avgInterval = null;
+        }
+
+        if (this._avgIsHovering) return;
+
+        const tick = () => {
+            if (this._dailyAverages && this._dailyAverages.length > 0) {
+                this._currentAvgIndex = (this._currentAvgIndex + 1) % this._dailyAverages.length;
+                this._updateDailyAverageDisplay();
+            }
+        };
+
+        this._avgInterval = setInterval(tick, 4000);
+
+        this._attachAvgHoverListeners();
+    };
+
+    AnalyticsUI.prototype._attachAvgHoverListeners = function _attachAvgHoverListeners() {
+        if (this._avgHoverAttached) return;
+        this._avgHoverAttached = true;
+
+        const card = document.getElementById('analyticsWeekAverage')?.closest('.stat-card');
+        if (!card) return;
+
+        card.addEventListener('mouseenter', () => {
+            this._avgIsHovering = true;
+            if (this._avgPauseTimeout) {
+                clearTimeout(this._avgPauseTimeout);
+                this._avgPauseTimeout = null;
+            }
+            if (this._avgInterval) {
+                clearInterval(this._avgInterval);
+                this._avgInterval = null;
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            this._avgIsHovering = false;
+            this._avgPauseTimeout = setTimeout(() => {
+                if (!this._avgIsHovering) {
+                    this.restartDailyAverageCycle();
+                }
+            }, 1000);
+        });
+    };
+
+    AnalyticsUI.prototype.calculateAndUpdateNetChange = function calculateAndUpdateNetChange(usage) {
+        const thisWeek = this.calculateAverageForDays(usage, 7, 0);
+        const lastWeek = this.calculateAverageForDays(usage, 7, 7);
+
+        const thisAvg = thisWeek.count > 0 ? Math.round(thisWeek.total / thisWeek.count) : 0;
+        const lastAvg = lastWeek.count > 0 ? Math.round(lastWeek.total / lastWeek.count) : 0;
+
+        let change, label;
+        if (lastWeek.count > 0) {
+            change = thisAvg - lastAvg;
+            label = 'from last week to this week';
+        } else {
+            const totalOverall = this.calculateTotalOverall(usage);
+            const daysSinceStart = this.earliestDate
+                ? Math.ceil(Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000) || 1
+                : 1;
+            const overallAvg = daysSinceStart > 0 ? Math.round(totalOverall / daysSinceStart) : 0;
+            change = thisAvg - overallAvg;
+            label = 'since you started using the extension';
+        }
+
+        const el = document.getElementById('analyticsNetChange');
+        if (!el) return;
+        const prefix = change > 0 ? '+' : change < 0 ? '\u2212' : '\u00b1';
+        el.textContent = `${prefix}${formatTime(Math.abs(change))}`;
+        const labelEl = el.closest('.stat-card')?.querySelector('.stat-label');
+        if (labelEl) labelEl.textContent = label;
+
+        const iconWrapper = el.closest('.stat-card')?.querySelector('.stat-icon-wrapper');
+        if (iconWrapper) {
+            iconWrapper.style.color = change >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+            iconWrapper.style.background = change >= 0 ? 'var(--success-fade)' : 'var(--danger-fade)';
+        }
     };
 
     AnalyticsUI.prototype.calculatePeriodTotal = function calculatePeriodTotal(usage) {
@@ -120,10 +278,5 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         }
 
         return { periodTotal, periodDays, periodLabel };
-    };
-
-    AnalyticsUI.prototype.updateStat = function updateStat(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
     };
 }

@@ -163,48 +163,6 @@
     border-left: 4px solid var(--secondary-color);
 }
 
-/* Loading States */
-.loading-skeleton {
-    background: linear-gradient(90deg,
-            var(--border-subtle) 0%,
-            var(--border) 50%,
-            var(--border-subtle) 100%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: var(--radius-small);
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: 200% 0;
-    }
-
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-/* Empty States */
-.empty-state {
-    padding: var(--spacing-xl);
-    text-align: center;
-    color: var(--text-muted);
-    background: var(--background);
-    border-radius: var(--radius);
-    border: 1px dashed var(--border);
-}
-
-.empty-state-icon {
-    font-size: 3rem;
-    margin-bottom: var(--spacing);
-    opacity: 0.5;
-}
-
-.empty-state-text {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-}
-
 /* Keyboard States */
 *:focus-visible {
     outline: 2px solid var(--primary-color);

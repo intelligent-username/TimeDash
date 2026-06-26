@@ -30,6 +30,7 @@
 
 .highlight-success {
     color: var(--success-color);
+    font-weight: 600;
 }
 
 /* Privacy Accordion */

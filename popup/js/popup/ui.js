@@ -66,23 +66,67 @@ export const uiMethods = {
         const sitesList = document.getElementById('sitesList');
 
         if (!this.usageData || !this.usageData.domains || this.usageData.domains.length === 0) {
-            sitesList.innerHTML = '<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>No sites tracked yet.<br>Start browsing to see your usage!</p></div>';
+            sitesList.innerHTML = '<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>No sites tracked yet.<br>Start browsing to see your usage!</p></div>';
             return;
         }
 
         const topSites = this.usageData.domains.filter((site) => site.todayTime > 0).slice(0, 5);
 
         if (topSites.length === 0) {
-            sitesList.innerHTML = '<div class="empty-state"><p>No activity today yet.<br>Your tracked sites will appear here.</p></div>';
+            sitesList.innerHTML = '<div class="popup-empty-state"><p>No activity today yet.<br>Your tracked sites will appear here.</p></div>';
             return;
         }
 
-        sitesList.innerHTML = '';
-        topSites.forEach((siteData) => {
-            const siteItem = PopupHelpers.createSiteItem(siteData);
-            PopupHelpers.animateIn(siteItem);
-            sitesList.appendChild(siteItem);
+        const existingItems = sitesList.querySelectorAll(':scope > .site-item');
+        const oldDomains = [];
+        const existingMap = new Map();
+        existingItems.forEach((el) => {
+            const domain = el.querySelector('.site-item-btn')?.dataset.domain;
+            if (domain) {
+                oldDomains.push(domain);
+                existingMap.set(domain, el);
+            }
         });
+
+        const newDomains = topSites.map(s => s.domain);
+        const sameOrder = newDomains.length === oldDomains.length &&
+            newDomains.every((d, i) => d === oldDomains[i]);
+
+        if (sameOrder) {
+            topSites.forEach((site) => {
+                const el = existingMap.get(site.domain);
+                if (el) {
+                    const timeEl = el.querySelector('.site-item-time');
+                    if (timeEl) timeEl.textContent = PopupHelpers.formatDetailedTime(site.todayTime);
+                }
+            });
+            return;
+        }
+
+        const newSet = new Set(newDomains);
+        existingItems.forEach((el) => {
+            const domain = el.querySelector('.site-item-btn')?.dataset.domain;
+            if (domain && !newSet.has(domain)) el.remove();
+        });
+
+        const fragment = document.createDocumentFragment();
+        newDomains.forEach((domain) => {
+            const siteData = topSites.find(s => s.domain === domain);
+            if (!siteData) return;
+            const existing = existingMap.get(domain);
+            if (existing) {
+                const timeEl = existing.querySelector('.site-item-time');
+                if (timeEl) timeEl.textContent = PopupHelpers.formatDetailedTime(siteData.todayTime);
+                fragment.appendChild(existing);
+            } else {
+                const siteItem = PopupHelpers.createSiteItem(siteData);
+                PopupHelpers.animateIn(siteItem);
+                fragment.appendChild(siteItem);
+            }
+        });
+
+        sitesList.innerHTML = '';
+        sitesList.appendChild(fragment);
     },
 
     updateFooter() {

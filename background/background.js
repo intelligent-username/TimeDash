@@ -29,12 +29,11 @@ class TimeDashBackground {
     constructor() {
         this.storage = new StorageManager();
         this.ruleManager = new RuleManager();
-        this.activeTabInfo = new Map();
-        this.domainActiveCount = new Map();
-        this.domainStartTime = new Map();
+        this.currentTrack = null;
         this.TRACKING_INTERVAL = 1000;
         this.BATCH_UPDATE_INTERVAL = 5000;
         this.pendingUpdates = new Map();
+        this.restorePendingUpdates();
         this.alarmManager = new AlarmManager();
 
         this.tabTracker = new TabTracker(this);

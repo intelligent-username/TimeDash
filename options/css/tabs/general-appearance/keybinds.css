@@ -1,21 +1,3 @@
-/* Keybinds */
-.shortcuts-grid {
-    display: grid;
-    gap: var(--spacing);
-}
-
-.shortcut-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.shortcut-item label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
 .keybind-input {
     padding: 10px 12px;
     border: 1px solid var(--border);

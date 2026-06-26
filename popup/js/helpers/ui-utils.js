@@ -35,19 +35,6 @@ export const uiUtils = {
         }, duration);
     },
 
-    updateWithFade(element, content) {
-        element.style.opacity = '0.5';
-        setTimeout(() => {
-            if (typeof content === 'string') {
-                element.textContent = content;
-            } else if (content instanceof Node) {
-                element.innerHTML = '';
-                element.appendChild(content);
-            }
-            element.style.opacity = '1';
-        }, 150);
-    },
-
     animateIn(element) {
         element.style.opacity = '0';
         element.style.transform = 'translateY(10px)';
@@ -66,7 +53,7 @@ export const uiUtils = {
             document.body.prepend(banner);
         }
 
-        banner.className = `banner ${type}`;
+        banner.className = `popup-banner ${type}`;
         banner.setAttribute('role', type === 'error' ? 'alert' : 'status');
         banner.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
         banner.textContent = message;

@@ -47,10 +47,5 @@ function applyAlarmSchedulingMethods(AlarmManager) {
             periodInMinutes: 24 * 60,
         });
     };
-
-    AlarmManager.prototype.clearAllAlarms = async function clearAllAlarms() {
-        await chrome.alarms.clearAll();
-        console.log('All alarms cleared');
-    };
 }
 

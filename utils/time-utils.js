@@ -52,18 +52,20 @@ class TimeUtils {
      * @param {number} ms - Time in milliseconds
      * @returns {string} Formatted duration
      */
-    static formatMilliseconds(ms) {
-        if (!ms || ms < 0) return '0s';
+    static formatMilliseconds(ms, compact = false) {
+        if (!ms || ms < 0) return compact ? '0s' : '0s';
         const totalSeconds = Math.floor(ms / 1000);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
 
+        const s = compact ? '' : ' ';
+
         if (hours > 0) {
-            return `${hours}h ${minutes}m`;
+            return `${hours}h${s}${minutes}m`;
         }
         if (minutes > 0) {
-            return `${minutes}m ${seconds}s`;
+            return `${minutes}m${s}${seconds}s`;
         }
         return `${seconds}s`;
     }
@@ -142,16 +144,27 @@ class TimeUtils {
     static calculateAverageTime(domainData, days = 7) {
         const dateRange = this.getDateRange(days);
         let totalTime = 0;
-        let activeDays = 0;
+        let daysToDivideBy = days;
+
+        const allDates = Object.keys(domainData).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+        if (allDates.length > 0) {
+            const firstDate = new Date(allDates[0]);
+            firstDate.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diffDays = Math.floor((today - firstDate) / (1000 * 60 * 60 * 24)) + 1;
+            daysToDivideBy = Math.min(days, diffDays);
+        } else {
+            return 0;
+        }
 
         dateRange.forEach((date) => {
             if (domainData[date]) {
                 totalTime += domainData[date];
-                activeDays++;
             }
         });
 
-        return activeDays > 0 ? Math.round(totalTime / activeDays) : 0;
+        return daysToDivideBy > 0 ? Math.round(totalTime / daysToDivideBy) : 0;
     }
 
     /**
@@ -169,28 +182,4 @@ class TimeUtils {
      * Check if time is within working hours (9 AM - 5 PM)
      * @returns {boolean} True if within working hours
      */
-    static isWorkingHours() {
-        const now = new Date();
-        const hour = now.getHours();
-        return hour >= 9 && hour < 17;
-    }
-
-    /**
-     * Parse time string to seconds
-     * @param {string} timeStr - Time string like "1h 30m 45s"
-     * @returns {number} Time in seconds
-     */
-    static parseTimeString(timeStr) {
-        const regex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;
-        const match = timeStr.match(regex);
-
-        if (!match) return 0;
-
-        const hours = parseInt(match[1]) || 0;
-        const minutes = parseInt(match[2]) || 0;
-        const seconds = parseInt(match[3]) || 0;
-
-        return hours * 3600 + minutes * 60 + seconds;
-    }
 }
-

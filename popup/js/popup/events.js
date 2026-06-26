@@ -4,6 +4,11 @@ export const eventMethods = {
             if (message.type === 'USAGE_DATA_UPDATED') {
                 this.loadData().then(() => this.updateUI()).catch(console.error);
             }
+            if (message.type === 'SETTINGS_UPDATED' && message.settings) {
+                this.settings = { ...(this.settings || {}), ...message.settings };
+                this.applyThemeAndAccent();
+                this.updateCurrentSpeed();
+            }
         });
 
         chrome.storage.local.onChanged.addListener((changes) => {

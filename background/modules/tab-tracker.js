@@ -36,8 +36,10 @@ class TabTracker {
             const tab = await chrome.tabs.get(tabId);
             if (tab.url && DomainUtils.shouldTrackUrl(tab.url)) {
                 const domain = DomainUtils.extractDomain(tab.url);
-                await this.startTrackingTab(tabId, domain);
-                await this.checkAndHandleBlocking(tab, domain);
+                const wasBlocked = await this.checkAndHandleBlocking(tab, domain);
+                if (!wasBlocked) {
+                    await this.startTrackingTab(tabId, domain);
+                }
             }
         } catch (error) {
             console.error('Error handling tab activation:', error);
@@ -56,7 +58,12 @@ class TabTracker {
 
             if (tab.active) {
                 this.stopTrackingAllTabs();
-                await this.startTrackingTab(tabId, domain);
+                const wasBlocked = await this.checkAndHandleBlocking(tab, domain);
+                if (!wasBlocked) {
+                    await this.startTrackingTab(tabId, domain);
+                }
+            } else {
+                // Background tab — check blocking but don't start tracking
                 await this.checkAndHandleBlocking(tab, domain);
             }
         } catch (error) {
@@ -137,6 +144,8 @@ class TabTracker {
     flushActiveTime() {
         const now = Date.now();
         for (const [domain, startedAt] of this.instance.domainStartTime) {
+            const count = this.instance.domainActiveCount.get(domain) || 0;
+            if (count === 0) continue;
             const timeSpent = Math.floor((now - startedAt) / 1000);
             if (timeSpent > 0) {
                 this.instance.addToPendingUpdates(domain, timeSpent);
@@ -163,11 +172,12 @@ class TabTracker {
                     console.error('Failed to increment block count:', error);
                 }
 
+                await this.stopTrackingTab(tab.id);
                 const blockPageUrl =
                     chrome.runtime.getURL('block/block.html') +
                     `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=restricted`;
                 await chrome.tabs.update(tab.id, { url: blockPageUrl });
-                return;
+                return true;
             }
         }
 
@@ -182,11 +192,15 @@ class TabTracker {
                 console.error('Failed to increment block count:', error);
             }
 
+            await this.stopTrackingTab(tab.id);
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
                 `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}`;
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
+            return true;
         }
+
+        return false;
     }
 
     async updateBadge(domain) {

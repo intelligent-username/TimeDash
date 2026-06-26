@@ -5,13 +5,13 @@
     padding: var(--spacing-large);
 }
 
-.empty-state {
+.popup-empty-state {
     text-align: center;
     color: var(--text-secondary);
     padding: var(--spacing-large);
 }
 
-.empty-state svg {
+.popup-empty-state svg {
     width: 48px;
     height: 48px;
     margin-bottom: 12px;
@@ -19,7 +19,7 @@
 }
 
 /* Banner */
-.banner {
+.popup-banner {
     display: none;
     padding: 8px 12px;
     margin: 8px;
@@ -28,22 +28,22 @@
     font-weight: 500;
 }
 
-.banner.info {
+.popup-banner.info {
     background: #e3f2fd;
     color: #0d47a1;
 }
 
-.banner.success {
+.popup-banner.success {
     background: #e8f5e9;
     color: #1b5e20;
 }
 
-.banner.warning {
+.popup-banner.warning {
     background: #fff8e1;
     color: #e65100;
 }
 
-.banner.error {
+.popup-banner.error {
     background: #ffebee;
     color: #b71c1c;
 }

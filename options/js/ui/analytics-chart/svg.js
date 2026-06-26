@@ -1,33 +1,14 @@
 import { formatTime, formatDateString } from '../../utils/formatting.js';
 
+const LINE_COLOR = '#3b82f6';
+const EARLIEST_COLOR = '#f59e0b';
+
 export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
     AnalyticsChart.prototype.renderSvgChart = function renderSvgChart(container, dailyTotals, maxTime, isYearly) {
         const width = container.clientWidth || 600;
         const height = container.clientHeight || 180;
         const padding = 10;
         const pointSpacing = (width - padding * 2) / Math.max(dailyTotals.length - 1, 1);
-
-        const generateCubicPath = (points) => {
-            if (points.length === 0) return '';
-            if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
-
-            let path = `M ${points[0].x} ${points[0].y}`;
-            for (let i = 0; i < points.length - 1; i++) {
-                const p0 = points[i - 1] || points[i];
-                const p1 = points[i];
-                const p2 = points[i + 1];
-                const p3 = points[i + 2] || points[i + 1];
-
-                const cp1x = p1.x + (p2.x - p0.x) / 6;
-                const cp1y = p1.y + (p2.y - p0.y) / 6;
-                const cp2x = p2.x - (p3.x - p1.x) / 6;
-                const cp2y = p2.y - (p3.y - p1.y) / 6;
-
-                path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
-            }
-
-            return path;
-        };
 
         const points = [];
         const validPoints = [];
@@ -51,54 +32,65 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
             return;
         }
 
+        const pointCount = validPoints.length;
+        const pointR = Math.max(2, Math.min(7, 80 / pointCount));
+
         const pathD = generateCubicPath(validPoints);
-        const avgPathD = this.buildRollingAveragePath(dailyTotals, pointSpacing, maxTime, padding, height, generateCubicPath);
+        const areaD = pathD
+            ? `${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z`
+            : '';
+        const avgPathD = this.buildRollingAverageSvg(dailyTotals, pointSpacing, maxTime, padding, height);
 
-        container.innerHTML = `
-            <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:var(--accent-color);stop-opacity:0.22" />
-                        <stop offset="100%" style="stop-color:var(--accent-color);stop-opacity:0.02" />
-                    </linearGradient>
-                </defs>
-                <path d="${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z" fill="url(#areaGradient)" />
-                <path d="${pathD}" fill="none" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                ${avgPathD ? `<path d="${avgPathD}" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-dasharray="4,4" opacity="0.5" />` : ''}
-                ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4.5" fill="${point.isEarliest ? 'var(--secondary-color)' : 'var(--accent-color)'}" stroke="white" stroke-width="2" class="chart-point" />`).join('')}
-            </svg>
-            <div class="chart-points-overlay">
-                ${points.map((point) => {
-                    // Parse as local date to avoid UTC midnight shifting the date
-                    const [y, m, d] = point.day.date.split('-').map(Number);
-                    const localDate = new Date(y, m - 1, d);
-                    const displayDate = localDate.toLocaleDateString(undefined, {
-                        weekday: 'short', month: 'short', day: 'numeric'
-                    });
-                    return `
-                    <div class="chart-point-hitarea" style="left: ${point.x}px; top: ${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
-                        <div class="chart-tooltip">${displayDate}<br><strong>${formatTime(point.day.time)}</strong></div>
-                    </div>
-                `;
-                }).join('')}
-            </div>
-        `;
+        const pointSvg = points.map(p => {
+            const fill = p.isEarliest ? EARLIEST_COLOR : LINE_COLOR;
+            return `<circle cx="${p.x}" cy="${p.y}" r="${pointR}" fill="${fill}" stroke="white" stroke-width="2" class="chart-point" />`;
+        }).join('');
 
+        const hitareas = points.map(point => {
+            let displayDate;
+            if (isYearly) {
+                displayDate = point.day.date;
+            } else {
+                const [y, m, d] = point.day.date.split('-').map(Number);
+                const localDate = new Date(y, m - 1, d);
+                displayDate = localDate.toLocaleDateString(undefined, {
+                    weekday: 'short', month: 'short', day: 'numeric'
+                });
+            }
+            return `<div class="chart-point-hitarea" style="left:${point.x}px;top:${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
+                <div class="chart-tooltip">${displayDate}<br><strong>${formatTime(point.day.time)}</strong></div>
+            </div>`;
+        }).join('');
+
+        container.innerHTML = [
+            '<div class="chart-html-wrap">',
+            `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">`,
+            '<defs>',
+            `<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">`,
+            `<stop offset="0%" stop-color="${LINE_COLOR}" stop-opacity="0.22" />`,
+            `<stop offset="100%" stop-color="${LINE_COLOR}" stop-opacity="0.02" />`,
+            '</linearGradient>',
+            '</defs>',
+            areaD ? `<path d="${areaD}" fill="url(#areaGrad)" />` : '',
+            avgPathD,
+            pathD ? `<path d="${pathD}" fill="none" stroke="${LINE_COLOR}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />` : '',
+            pointSvg,
+            '</svg>',
+            `<div class="chart-points-overlay">${hitareas}</div>`,
+            '</div>'
+        ].join('');
     };
 
-    AnalyticsChart.prototype.buildRollingAveragePath = function buildRollingAveragePath(dailyTotals, pointSpacing, maxTime, padding, height, generateCubicPath) {
+    AnalyticsChart.prototype.buildRollingAverageSvg = function buildRollingAverageSvg(dailyTotals, pointSpacing, maxTime, padding, height) {
         const rollingToggle = document.getElementById('rollingAverageToggle');
         if (!rollingToggle || !rollingToggle.checked) return '';
 
-        const settings = this.dataContext.getSettings();
         const usage = this.dataContext.getUsage();
-        const installDate = settings?.firstInstallDate || Date.now();
-        const daysSinceInstall = Math.max(1, (Date.now() - installDate) / (1000 * 60 * 60 * 24));
-        const k = Math.max(2, Math.ceil(daysSinceInstall * 0.2));
-
+        const k = 7;
         const rollingQueue = [];
         let rollingSum = 0;
         const avgPoints = [];
+        const earliestDate = this.dataContext.getEarliestDate();
 
         const firstDay = dailyTotals[0];
         if (firstDay && firstDay.date.includes('-')) {
@@ -109,6 +101,8 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
                 const prevDate = new Date(startDate);
                 prevDate.setDate(startDate.getDate() - i);
                 const prevStr = formatDateString(prevDate);
+
+                if (earliestDate && prevStr < earliestDate) continue;
 
                 let prevTotal = 0;
                 for (const domain of Object.keys(usage)) {
@@ -138,6 +132,32 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
             avgPoints.push({ x, y });
         });
 
-        return generateCubicPath(avgPoints);
+        const pathD = generateCubicPath(avgPoints);
+        if (!pathD) return '';
+
+        return `<path d="${pathD}" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-dasharray="4,4" opacity="0.5" />`;
     };
+}
+
+function generateCubicPath(points) {
+    if (points.length === 0) return '';
+    if (points.length === 1) return '';
+
+    let path = `M ${points[0].x} ${points[0].y}`;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i - 1] || points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2] || points[i + 1];
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+
+    return path;
 }
