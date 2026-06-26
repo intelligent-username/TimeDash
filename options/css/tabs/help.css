@@ -30,3 +30,122 @@
     border-bottom: none;
     padding-bottom: 0;
 }
+
+button.inline-link.quick-link {
+    display: inline;
+    flex-direction: unset;
+    align-items: unset;
+    justify-content: unset;
+    gap: unset;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    text-align: unset;
+    font: inherit;
+    color: var(--accent-color, var(--primary-color));
+    text-decoration: underline;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    box-shadow: none;
+    transform: none;
+}
+
+button.inline-link.quick-link:hover {
+    opacity: 0.8;
+    background: none;
+    border-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+button.inline-link.quick-link:focus-visible {
+    outline: 2px solid var(--accent-color, var(--primary-color));
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+button.inline-link.quick-link svg {
+    display: none;
+}
+
+.help-collapse[open] .collapse-marker {
+    transform: rotate(90deg);
+}
+
+.help-collapse {
+    overflow: hidden;
+    margin-bottom: var(--spacing);
+}
+
+.help-collapse[open] {
+    padding-bottom: 0;
+}
+
+.help-collapse summary.card-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.help-collapse summary.card-header::-webkit-details-marker {
+    display: none;
+}
+
+.help-collapse summary.card-header::marker {
+    display: none;
+    content: '';
+}
+
+.collapse-marker {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+    line-height: 1;
+}
+
+.help-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.help-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+}
+
+.help-section p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+}
+
+.help-section p:last-child {
+    margin-bottom: 0;
+}
+
+.help-section code {
+    font-size: 0.85em;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: var(--border-subtle);
+    color: var(--accent-color);
+}
+
+.help-section kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.85em;
+    font-family: inherit;
+    background: var(--border-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+}

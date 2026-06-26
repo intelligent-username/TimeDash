@@ -1,26 +1,49 @@
 /* Privacy Tab Styles */
 
-/* Privacy Status Cards */
+/* ── Non-card-body layout ── */
+.content-card > .card-header ~ * {
+    padding-left: var(--spacing);
+    padding-right: var(--spacing);
+}
+
+.content-card > .card-header + * {
+    padding-top: var(--spacing);
+}
+
+.content-card > :last-child {
+    padding-bottom: var(--spacing);
+}
+
+/* ── Glassmorphism Status Card ── */
 .privacy-status {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
     padding: var(--spacing);
-    background: var(--background);
-    border-radius: var(--radius-small);
-    margin-bottom: var(--spacing-lg);
+    margin: 0;
+    background: color-mix(in srgb, var(--card-bg) 65%, transparent 35%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid color-mix(in srgb, var(--border) 45%, transparent 55%);
+    border-radius: var(--radius);
 }
 
 .status-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 10px 4px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-subtle) 35%, transparent 65%);
+}
+
+.status-item:last-child {
+    border-bottom: none;
 }
 
 .status-label {
     font-size: 0.9rem;
     color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .status-value {
@@ -31,38 +54,50 @@
 .highlight-success {
     color: var(--success-color);
     font-weight: 600;
+    animation: privacyPulse 3s ease-in-out infinite;
 }
 
-/* Privacy Accordion */
-.privacy-accordion {
-    cursor: pointer;
+@keyframes privacyPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
 }
 
-.privacy-accordion summary {
-    padding: var(--spacing);
-    background: var(--background);
-    border-radius: var(--radius-small);
-    font-weight: 500;
-    color: var(--text-primary);
-    cursor: pointer;
-    user-select: none;
-    transition: background-color var(--transition-fast);
+/* ── Setting Item Overrides ── */
+.setting-item {
+    padding: 12px var(--spacing);
+    margin: 0;
+    transition: background-color 0.15s ease;
 }
 
-.privacy-accordion summary:hover {
-    background: var(--border-subtle);
+.setting-item:hover {
+    background: color-mix(in srgb, var(--border-subtle) 28%, transparent 72%);
 }
 
-.privacy-accordion p {
-    padding: var(--spacing-sm) var(--spacing);
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 8px 0;
+/* ── Switch Glow ── */
+.setting-item:has(.switch input:checked) .switch .slider {
+    box-shadow: 0 0 10px color-mix(in srgb, var(--success-color) 25%, transparent 75%);
 }
 
-/* Storage Meter */
+/* ── Collapse Animation ── */
+.collapse-section {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 var(--spacing) 0 calc(var(--spacing) * 2);
+    transition: max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+    margin: 0 var(--spacing);
+}
+
+.collapse-section.visible {
+    max-height: 80px;
+    opacity: 1;
+    margin-bottom: var(--spacing-sm);
+    margin-top: 0;
+}
+
+/* ── Storage Meter ── */
 .storage-meter-container {
-    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing) 0;
 }
 
 .storage-header {
@@ -74,17 +109,37 @@
 }
 
 .storage-bar-bg {
-    height: 8px;
-    background: var(--border);
-    border-radius: 4px;
+    height: 10px;
+    background: color-mix(in srgb, var(--border) 55%, transparent 45%);
+    border-radius: 5px;
     overflow: hidden;
 }
 
 .storage-bar-fill {
     height: 100%;
-    background: var(--primary-color);
-    border-radius: 4px;
-    transition: width 0.3s ease;
+    border-radius: 5px;
+    background: linear-gradient(90deg,
+        var(--success-color),
+        var(--primary-color) 40%,
+        var(--primary-light) 70%,
+        var(--primary-color) 100%);
+    background-size: 200% 100%;
+    animation: storageShimmer 3.5s ease-in-out infinite;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.storage-bar-fill.exceeded {
+    background: linear-gradient(90deg,
+        var(--danger-color),
+        #f97316 50%,
+        var(--danger-color) 100%);
+    background-size: 200% 100%;
+    animation: storageShimmer 2s ease-in-out infinite;
+}
+
+@keyframes storageShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .storage-quota {
@@ -116,9 +171,9 @@
     white-space: nowrap;
 }
 
-.storage-limit-setting .modern-input.short {
-    width: 60px;
-    padding: 4px 6px;
+.storage-limit-setting .modern-input.wide-number {
+    width: 90px;
+    padding: 4px 8px;
     font-size: 0.85rem;
 }
 
@@ -127,16 +182,39 @@
     color: var(--text-muted);
 }
 
-/* Storage Limit Warning */
+/* ── Wide Number Input ── */
+.modern-input.wide-number {
+    width: 110px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    display: inline-block;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.modern-input.wide-number:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-fade);
+}
+
+.modern-input.wide-number::-webkit-outer-spin-button,
+.modern-input.wide-number::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ── Storage Limit Warning ── */
 .storage-limit-warning {
     display: flex;
     align-items: flex-start;
     gap: 12px;
     padding: 14px 16px;
+    margin: var(--spacing) var(--spacing) 0;
     background: var(--danger-fade);
     border: 1px solid rgba(239, 68, 68, 0.25);
     border-radius: var(--radius-small);
-    margin-bottom: var(--spacing);
     color: var(--danger-color);
     animation: fadeIn var(--transition) ease-out;
 }
@@ -163,18 +241,75 @@
     font-size: 0.82rem;
 }
 
-.storage-bar-fill.exceeded {
-    background: var(--danger-color);
-}
-
-/* Data Search */
+/* ── Data Search ── */
 .data-search-group {
-    margin-top: var(--spacing);
+    padding: 0 var(--spacing);
 }
 
-/* Data Actions Row */
+/* ── Data Actions Row ── */
 .data-actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
+}
+
+/* ── Privacy Accordion ── */
+.privacy-accordion {
+    cursor: pointer;
+    padding: 0 var(--spacing) var(--spacing);
+}
+
+.privacy-accordion summary {
+    padding: var(--spacing);
+    background: color-mix(in srgb, var(--card-bg) 70%, transparent 30%);
+    border-radius: var(--radius-small);
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+    list-style: none;
+}
+
+.privacy-accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.privacy-accordion summary::after {
+    content: '\25B8';
+    float: right;
+    font-size: 0.8rem;
+    transition: transform 0.25s ease;
+    color: var(--text-muted);
+}
+
+.privacy-accordion[open] summary::after {
+    transform: rotate(90deg);
+}
+
+.privacy-accordion summary:hover {
+    background: color-mix(in srgb, var(--border-subtle) 50%, transparent 50%);
+}
+
+.privacy-accordion p {
+    padding: var(--spacing-sm) var(--spacing);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+.privacy-accordion h3 {
+    padding: var(--spacing-sm) var(--spacing);
+    margin: var(--spacing) 0 0;
+}
+
+.privacy-accordion ul,
+.privacy-accordion ol {
+    margin: 8px 0;
+}
+
+.privacy-accordion li {
+    padding: 4px 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }

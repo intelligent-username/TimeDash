@@ -1,73 +1,171 @@
 <div class="content-card">
     <div class="card-header">
-        <h2>Features Overview</h2>
+        <h2>Quick Navigation</h2>
     </div>
-    <div class="card-body compact-help">
-        <div class="feature-list">
-            <div class="feature-item">
-                <h3>Time Tracking</h3>
-                <p>Keeps a running total of how long you spend on each site while you browse. Check the popup for today's numbers, or open Analytics for longer range trends and the heatmap.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Video Speed Control</h3>
-                <p>Lets you change playback speed on pages that use HTML5 video players, including YouTube and Vimeo. You can also set shortcuts so you do not have to hunt for controls every time.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Site Blocking</h3>
-                <p>Block sites completely, or set a daily limit. If you use restricted access rules, you can allow short sessions without removing the block.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Analytics Dashboard</h3>
-                <p>Charts show your time by day, week, month, and year. The activity heatmap is a quick way to spot patterns without digging through pages of numbers.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Customization</h3>
-                <p>Pick light, dark, or auto theme, choose an accent color, and set shortcuts that match how you actually use the browser.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Privacy First</h3>
-                <p>Your data stays on your device. No accounts, no cloud sync, no tracking. <a href="#" id="privacyPolicyLink">Read the full policy</a></p>
-            </div>
-            <div class="feature-item">
-                <h3>Data Export & Import</h3>
-                <p>Export your data as JSON for backup. Import it later to restore settings or move to another browser profile.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Keyboard Shortcuts</h3>
-                <p>Set speed control shortcuts in Video Control settings. Defaults: <kbd>+</kbd> increase, <kbd>-</kbd> decrease, <kbd>.</kbd> reset.</p>
-            </div>
+    <div class="card-body">
+        <div class="quick-links-grid">
+            <button class="quick-link" data-tab="general">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                </svg>
+                <span>General Settings</span>
+                <small>Tracking, theme, accent color</small>
+            </button>
+            <button class="quick-link" data-tab="analytics">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
+                </svg>
+                <span>Analytics</span>
+                <small>Charts, heatmap, top sites</small>
+            </button>
+            <button class="quick-link" data-tab="video">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
+                </svg>
+                <span>Video Control</span>
+                <small>Speed controls & shortcuts</small>
+            </button>
+            <button class="quick-link" data-tab="blocking">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M16.18,7.76L7.76,16.18L6.34,14.76L14.76,6.34L16.18,7.76Z" />
+                </svg>
+                <span>Site Blocking</span>
+                <small>Block & restrict sites</small>
+            </button>
+            <button class="quick-link" data-tab="privacy">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.1 14.8,9.5V11C15.4,11 16,11.6 16,12.3V15.8C16,16.4 15.4,17 14.7,17H9.2C8.6,17 8,16.4 8,15.7V12.2C8,11.6 8.6,11 9.2,11V9.5C9.2,8.1 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,9.5V11H13.5V9.5C13.5,8.7 12.8,8.2 12,8.2Z" />
+                </svg>
+                <span>Privacy & Data</span>
+                <small>Export, import, manage data</small>
+            </button>
         </div>
     </div>
 </div>
+
+<details class="content-card help-collapse" open>
+    <summary class="card-header">
+        <h2>How Do I...</h2>
+        <span class="collapse-marker">▸</span>
+    </summary>
+    <div class="card-body compact-help">
+        <div class="feature-list">
+
+            <div class="feature-item">
+                <h3>...track my time?</h3>
+                <p>Time tracking runs automatically once enabled in <button class="quick-link inline-link" data-tab="general">General Settings</button>. Open the popup to see today's totals or visit <button class="quick-link inline-link" data-tab="analytics">Analytics</button> for charts and your activity heatmap.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...block a site completely?</h3>
+                <p>Go to <button class="quick-link inline-link" data-tab="blocking">Site Blocking</button>, type the domain, and add it as a <strong>Blocked</strong> rule. The extension will redirect you to a block page whenever you visit that domain.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...set a daily time limit for a site?</h3>
+                <p>Add the domain as a <strong>Restricted</strong> rule in <button class="quick-link inline-link" data-tab="blocking">Site Blocking</button>. Set a time limit in minutes. Once exceeded for the day, the site will be blocked until the next day.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...change video playback speed?</h3>
+                <p>You can change the playback speed using one of the following ways:
+                    <ul>
+                        <li>Use the keyboard shortcuts you've set up in the video controls tab. (Default: <code>+</code> / <code>-</code>, and <code>.</code>)</li>
+                        <li>Click on the extension icon to bring up the popup and use the <code>+</code> / <code>-</code>, and <code>.</code> buttons there. </li>
+                        <li>Change the speed from the video controls tab directly.</li>
+                    </ul></p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...customize keyboard shortcuts?</h3>
+                <p>Configure shortcuts in <button class="quick-link inline-link" data-tab="video">Video Control</button>. The defaults are <kbd>+</kbd> to increase speed, <kbd>-</kbd> to decrease, and <kbd>.</kbd> to reset. You can also set <kbd>Alt+T</kbd> to toggle tracking and <kbd>Alt+B</kbd> to block the current site from the extension's shortcut settings in <code>chrome://extensions/shortcuts</code>.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...change the theme or accent color?</h3>
+                <p>Under <button class="quick-link inline-link" data-tab="general">General Settings</button>, find the <strong>Appearance</strong> section. Pick light, dark, or auto theme and choose an accent color that fits your setup.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...export or back up my data?</h3>
+                <p>Go to <button class="quick-link inline-link" data-tab="privacy">Privacy & Data</button> and use the <strong>Export Data</strong> button to save your usage and settings as a JSON file. Import that file later to restore your data on another profile or after a reinstall.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...whitelist a domain from tracking?</h3>
+                <p>Add the domain to the whitelist in <button class="quick-link inline-link" data-tab="privacy">Privacy & Data</button>. Time spent on whitelisted sites will not be recorded.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...pause tracking temporarily?</h3>
+                <p>Toggle <strong>Pause Tracking</strong> in <button class="quick-link inline-link" data-tab="privacy">Privacy & Data</button>. No data will be collected while paused.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>...delete data for a specific site?</h3>
+                <p>Use the <strong>Search domain to delete data</strong> field in <button class="quick-link inline-link" data-tab="privacy">Privacy & Data</button> to find and remove records for individual domains.</p>
+            </div>
+
+        </div>
+    </div>
+</details>
+
+<details class="content-card help-collapse">
+    <summary class="card-header">
+        <h2>Minutiae</h2>
+        <span class="collapse-marker">▸</span>
+    </summary>
+    <div class="card-body compact-help">
+        <div class="feature-list">
+
+            <div class="feature-item">
+                <h3>Popup quick actions</h3>
+                <p>Open the popup to see today's time and top sites. <kbd>Alt+T</kbd> toggles tracking on/off from any page. <kbd>Alt+B</kbd> blocks the current site immediately.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>Click any heatmap day</h3>
+                <p>Click a day cell to see a breakdown of which sites you visited and for how long. Click again or press "Top Sites Today" to reset.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>Custom accent color</h3>
+                <p>In General Settings, click the <strong>+</strong> in the color picker to add any hex color.</p>
+            </div>
+
+            <div class="feature-item">
+                <h3>Watch your storage</h3>
+                <p>The Privacy tab has a storage meter and auto-purge settings to keep old data from piling up.</p>
+            </div>
+
+        </div>
+    </div>
+</details>
 
 <div class="content-card">
     <div class="card-header">
         <h2>Getting Help</h2>
     </div>
     <div class="card-body">
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            <div>
-                <h3 style="margin-bottom: 8px; margin-top: 0;">Report Issues or Suggest Features</h3>
-                <p>Send your bug reports and feature requests: <a href="https://github.com/intelligent-username/TimeDash/issues" target="_blank" rel="noopener">github.com/intelligent-username/TimeDash/issues</a>.</p>
-                <p>In the case of a bug, please include the site URL, the exact steps to reproduce, what you expected, what happened, and your browser version. Screenshots are useful when the UI looks wrong.</p>
-                <p>For video problems, say if the player is embedded and if it lives inside an iframe. If there is a console error, paste it.</p>
-                <p>For feature requests, send a short summary of what you want and why.</p>
-                <p>For help using GitHub, see <a href="https://docs.github.com/en/get-started/quickstart/hello-world" target="_blank" rel="noopener">Getting started with GitHub</a>.</p>
+        <div class="help-links">
+            <div class="help-section">
+                <h3>Report Issues &amp; Suggest Features</h3>
+                <p>Bug reports and feature requests go to the <a href="https://github.com/intelligent-username/TimeDash/issues" target="_blank" rel="noopener">GitHub Issues page</a>.</p>
+                <p>When reporting a bug, include: the site URL, steps to reproduce, expected vs actual behavior, and your browser version. Screenshots help when the UI looks wrong. For video problems, mention whether the player is embedded in an iframe and paste any console errors you see.</p>
+                <p>For feature requests, a short description of what you want and why is enough to get things started.</p>
             </div>
-            <div>
-                <h3 style="margin-bottom: 8px; margin-top: 0;">View Source Code</h3>
-                <p>Source code is at <a href="https://github.com/intelligent-username/TimeDash" target="_blank" rel="noopener">github.com/intelligent-username/TimeDash</a>.</p>
-                <p>If you want to audit what TimeDash can access, start with <code>manifest.json</code>, then look at the background code and content scripts.</p>
+            <div class="help-section">
+                <h3>Source Code</h3>
+                <p>The full source is at <a href="https://github.com/intelligent-username/TimeDash" target="_blank" rel="noopener">github.com/intelligent-username/TimeDash</a>. If you want to audit what the extension can access, start with <code>manifest.json</code>, then read the background scripts and content scripts.</p>
             </div>
-            <div>
-                <h3 style="margin-bottom: 8px; margin-top: 0;">Privacy Questions</h3>
-                <p>Start with the <a href="#" id="privacyPolicyLink2">full Privacy Policy</a>. If something does not match what you are seeing in the browser, open an issue and include details. A Network tab screenshot helps if you think a request is being made.</p>
+            <div class="help-section">
+                <h3>Privacy Questions</h3>
+                <p>Read the <a href="#" id="privacyPolicyLink">full Privacy Policy</a> on the Privacy &amp; Data tab. If something doesn't match what you see in the browser, open an issue with details.</p>
             </div>
-            <div>
-                </ul>
+            <div class="help-section">
+                <h3>About TimeDash</h3>
+                <p>Version 1.1.6. Built as a vanilla JS Chrome extension with no frameworks and no external dependencies. All data stays on your device.</p>
             </div>
         </div>
     </div>
-
 </div>
-

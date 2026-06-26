@@ -2,20 +2,18 @@
     <div class="card-header">
         <h2>Whitelisted Domains</h2>
     </div>
-    <div class="card-body">
-        <p class="section-description">These sites will never be tracked.</p>
-        <div class="rule-manager">
-            <div class="rule-input-group modern-input-group">
-                <input
-                    type="text"
-                    id="whitelistInput"
-                    placeholder="e.g. test.com"
-                    class="modern-input"
-                />
-                <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
-            </div>
-            <ul class="rule-list modern-list" id="whitelistList"></ul>
+    <p class="section-description" style="padding: 0 var(--spacing); padding-top: var(--spacing)">These sites will never be tracked.</p>
+    <div class="rule-manager" style="padding: 0 var(--spacing) var(--spacing)">
+        <div class="rule-input-group modern-input-group">
+            <input
+                type="text"
+                id="whitelistInput"
+                placeholder="e.g. test.com"
+                class="modern-input"
+            />
+            <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
         </div>
+        <ul class="rule-list modern-list" id="whitelistList"></ul>
     </div>
 </div>
 
@@ -23,42 +21,40 @@
     <div class="card-header">
         <h2>Data Privacy Health</h2>
     </div>
-    <div class="card-body">
-        <div class="privacy-status">
-            <div class="status-item">
-                <span class="status-label">Data Storage</span>
-                <span class="status-value highlight-success">Local Only</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Telemetry</span>
-                <span class="status-value highlight-success">Disabled</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Account Required</span>
-                <span class="status-value highlight-success">No</span>
-            </div>
+    <div class="privacy-status">
+        <div class="status-item">
+            <span class="status-label">Data Storage</span>
+            <span class="status-value highlight-success">Local Only</span>
         </div>
+        <div class="status-item">
+            <span class="status-label">Telemetry</span>
+            <span class="status-value highlight-success">Disabled</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Account Required</span>
+            <span class="status-value highlight-success">No</span>
+        </div>
+    </div>
 
-        <div class="setting-item">
-            <div class="setting-info">
-                <div class="setting-title">Pause Tracking</div>
-                <div class="setting-desc">Temporarily stop all data collection</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="trackingPaused" />
-                <span class="slider round"></span>
-            </label>
+    <div class="setting-item">
+        <div class="setting-info">
+            <div class="setting-title">Pause Tracking</div>
+            <div class="setting-desc">Temporarily stop all data collection</div>
         </div>
-        <div class="setting-item">
-            <div class="setting-info">
-                <div class="setting-title">Incognito Tracking</div>
-                <div class="setting-desc">Enable tracking in incognito windows</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="incognitoTracking" />
-                <span class="slider round"></span>
-            </label>
+        <label class="switch">
+            <input type="checkbox" id="trackingPaused" />
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div class="setting-item">
+        <div class="setting-info">
+            <div class="setting-title">Incognito Tracking</div>
+            <div class="setting-desc">Enable tracking in incognito windows</div>
         </div>
+        <label class="switch">
+            <input type="checkbox" id="incognitoTracking" />
+            <span class="slider round"></span>
+        </label>
     </div>
 </div>
 
@@ -66,116 +62,114 @@
     <div class="card-header">
         <h2>Data Management</h2>
     </div>
-    <div class="card-body">
-        <div class="setting-item">
-            <div class="setting-info">
-                <div class="setting-title">Auto-purge Old Data</div>
-                <div class="setting-desc">
-                    Automatically delete data older than a specified period
-                </div>
+    <div class="setting-item">
+        <div class="setting-info">
+            <div class="setting-title">Auto-purge Old Data</div>
+            <div class="setting-desc">
+                Automatically delete data older than a specified period
             </div>
-            <label class="switch">
-                <input type="checkbox" id="autoPurgeEnabled" />
-                <span class="slider round"></span>
-            </label>
         </div>
-        <div id="autoPurgeSettings" style="display: none; padding-left: 16px; margin-bottom: 24px">
-            <label
-                >Keep data for
-                <input
-                    type="number"
-                    id="autoPurgeDays"
-                    min="1"
-                    max="3650"
-                    placeholder="30"
-                    class="modern-input short"
-                />
-                days</label
+        <label class="switch">
+            <input type="checkbox" id="autoPurgeEnabled" />
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div id="autoPurgeSettings" class="collapse-section">
+        <label
+            >Keep data for
+            <input
+                type="number"
+                id="autoPurgeDays"
+                min="1"
+                max="3650"
+                placeholder="30"
+                class="modern-input wide-number"
+            />
+            days</label
+        >
+    </div>
+
+    <div class="storage-limit-warning" id="storageLimitWarning" style="display: none">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
+        </svg>
+        <div class="storage-limit-warning-text">
+            <strong>Storage limit reached</strong>
+            <span id="storageLimitWarningDetail"
+                >You have exceeded your custom storage limit. Consider purging old data or
+                increasing your limit.</span
             >
         </div>
+    </div>
 
-        <div class="storage-limit-warning" id="storageLimitWarning" style="display: none">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
+    <div class="storage-meter-container">
+        <div class="storage-header">
+            <span>Storage Usage</span>
+            <span id="storageUsageValue">Checking...</span>
+        </div>
+        <div class="storage-bar-bg">
+            <div class="storage-bar-fill" id="storageUsageFill"></div>
+        </div>
+        <div class="storage-footer">
+            <div id="storageQuotaValue" class="storage-quota"></div>
+            <div class="storage-limit-setting">
+                <label for="storageLimitMB">Limit:</label>
+                <input
+                    type="number"
+                    id="storageLimitMB"
+                    min="1"
+                    max="100"
+                    step="1"
+                    placeholder="10"
+                    class="modern-input wide-number"
+                />
+                <span class="unit">MB</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg); padding: 0 var(--spacing)">Delete Specific Data</h3>
+    <div class="data-search-group" style="padding: 0 var(--spacing)">
+        <input
+            type="text"
+            id="deleteDataSearch"
+            placeholder="Search domain to delete data..."
+            class="modern-input"
+        />
+        <div
+            id="deleteDataResults"
+            class="rule-list modern-list"
+            style="display: none; max-height: 200px; overflow-y: auto"
+        ></div>
+    </div>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; padding: 0 var(--spacing)">Data Actions</h3>
+    <div class="action-row data-actions" style="padding: 0 var(--spacing) var(--spacing)">
+        <button id="importData" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z"
+                />
             </svg>
-            <div class="storage-limit-warning-text">
-                <strong>Storage limit reached</strong>
-                <span id="storageLimitWarningDetail"
-                    >You have exceeded your custom storage limit. Consider purging old data or
-                    increasing your limit.</span
-                >
-            </div>
-        </div>
-
-        <div class="storage-meter-container">
-            <div class="storage-header">
-                <span>Storage Usage</span>
-                <span id="storageUsageValue">Checking...</span>
-            </div>
-            <div class="storage-bar-bg">
-                <div class="storage-bar-fill" id="storageUsageFill"></div>
-            </div>
-            <div class="storage-footer">
-                <div id="storageQuotaValue" class="storage-quota"></div>
-                <div class="storage-limit-setting">
-                    <label for="storageLimitMB">Limit:</label>
-                    <input
-                        type="number"
-                        id="storageLimitMB"
-                        min="1"
-                        max="100"
-                        step="1"
-                        placeholder="10"
-                        class="modern-input short"
-                    />
-                    <span class="unit">MB</span>
-                </div>
-            </div>
-        </div>
-
-        <h3 style="margin-top: 24px">Delete Specific Data</h3>
-        <div class="data-search-group">
-            <input
-                type="text"
-                id="deleteDataSearch"
-                placeholder="Search domain to delete data..."
-                class="modern-input"
-            />
-            <div
-                id="deleteDataResults"
-                class="rule-list modern-list"
-                style="display: none; max-height: 200px; overflow-y: auto"
-            ></div>
-        </div>
-
-        <h3 style="margin-top: 20px; margin-bottom: 12px">Data Actions</h3>
-        <div class="action-row data-actions">
-            <button id="importData" class="btn btn-outline">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z"
-                    />
-                </svg>
-                Import Data
-            </button>
-            <input type="file" id="importFile" accept=".json" style="display: none" />
-            <button id="exportBtn" class="btn btn-outline">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,13V17H11V13H9L12,10L15,13H11Z"
-                    />
-                </svg>
-                Export Data
-            </button>
-            <button id="resetBtn" class="btn btn-danger">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                    />
-                </svg>
-                Delete All Data
-            </button>
-        </div>
+            Import Data
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display: none" />
+        <button id="exportBtn" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,13V17H11V13H9L12,10L15,13H11Z"
+                />
+            </svg>
+            Export Data
+        </button>
+        <button id="resetBtn" class="btn btn-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                />
+            </svg>
+            Delete All Data
+        </button>
     </div>
 </div>
 
@@ -186,121 +180,142 @@
             Last updated: April 2026
         </div>
     </div>
-    <div class="card-body">
-        <details class="privacy-accordion" open>
-            <summary>Read Full Policy</summary>
+    <details class="privacy-accordion" open>
+        <summary>Read Full Policy</summary>
 
-            <h3>Overview</h3>
-            <p>
-                TimeDash runs locally in your browser. It does not include analytics, telemetry,
-                ads, or any other form of remote tracking. There is no login and no server that
-                receives your browsing history.
-            </p>
+        <h3>Overview</h3>
+        <p>
+            TimeDash runs entirely in your browser. It does not include analytics, telemetry,
+            ads, or any other form of remote tracking. There is no login, no account, and no
+            server that receives your browsing history. All data processing happens locally
+            on your device using your browser's built-in storage APIs.
+        </p>
 
-            <h3>Data Storage</h3>
-            <p>
-                TimeDash stores the following data in your browser profile using Chrome's
-                <code style="color: var(--accent-color)">chrome.storage.local</code> API.
-                This storage is scoped to the extension and your profile. It can include:
-            </p>
-            <ul>
-                <li>Time tracking records and usage history</li>
-                <li>Playback speed preferences</li>
-                <li>Site blocking and restriction rules</li>
-                <li>Theme and UI customization settings</li>
-            </ul>
-            <p>
-                TimeDash reads this data to show your stats and apply your rules. It does not send
-                it to remote services.
-            </p>
+        <h3>Data Storage</h3>
+        <p>
+            TimeDash stores data in your browser profile using Chrome's
+            <code style="color: var(--accent-color)">chrome.storage.local</code> API.
+            This storage is scoped to the extension and your browser profile. No data is
+            written outside of this API. The stored data includes:
+        </p>
+        <ul>
+            <li>Time tracking records and per-domain usage history</li>
+            <li>Playback speed preferences per domain</li>
+            <li>Site blocking and restriction rules</li>
+            <li>Theme, accent color, and other UI customization settings</li>
+        </ul>
+        <p>
+            TimeDash reads this data solely to display your usage statistics and enforce your
+            configured rules. No portion of this data is transmitted to any remote service.
+        </p>
 
-            <h3>Network Activity</h3>
-            <p>
-                TimeDash does not make API calls to a server. If you see favicon requests in
-                DevTools, those are created by the browser's image handling. In Chrome, they may be
-                routed through Google's favicon service. That traffic is not generated by TimeDash
-                code.
-            </p>
+        <h3>Network Activity</h3>
+        <p>
+            TimeDash does not make any network requests of its own. If you see requests in
+            DevTools, they originate from the browser's built-in favicon resolution or from
+            extension-scoped resources. The extension itself contains no networking code
+            that sends data to an external server.
+        </p>
 
-            <h3>Permissions & Justification</h3>
-            <ol>
-                <span class="privacy-muted-text"
-                    >These are all of the permissions that the extension uses and why:</span
-                >
-                <li>
-                    <code style="color: var(--accent-color)">storage</code> is for settings and
-                    usage records. Nothing else is stored
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">tabs</code> for reading the active tab
-                    URL to attribute time to the right site and apply block or restriction rules.
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">scripting</code> for injecting video
-                    speed controls into HTML5 video players.
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">webNavigation</code> for noticing URL
-                    changes in frames so tracking and blocking rules stay accurate after redirects
-                    and iframe loads.
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">host_permissions</code> lets the
-                    content scripts run on the sites you visit. Without it, tracking and video
-                    controls would only work on a limited set of domains.
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">alarms</code> for running scheduled
-                    maintenance like daily resets and optional auto purge. Currently not very
-                    active, but is here just in case.
-                </li>
-                <li>
-                    <code style="color: var(--accent-color)">notifications</code> for optional
-                    alerts only.
-                </li>
-            </ol>
+        <h3>Permissions &amp; Justification</h3>
+        <ol style="padding-left: var(--spacing-lg)">
+            <span class="privacy-muted-text"
+                >These are all of the permissions the extension uses and why:</span
+            >
+            <li>
+                <code style="color: var(--accent-color)">storage</code> — settings and
+                usage records. Nothing else is stored.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">tabs</code> — reads the active tab
+                URL to attribute time to the correct site and to apply block or restriction
+                rules.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">scripting</code> — injects video
+                speed controls into HTML5 video players when you visit a supported page.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">webNavigation</code> — tracks URL
+                changes across frames so tracking and blocking rules stay accurate after
+                redirects and iframe loads.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">host_permissions</code> — allows
+                content scripts to run on the sites you visit. Without this, tracking and
+                video controls would only work on a limited set of pre-approved domains.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">alarms</code> — runs scheduled
+                maintenance such as daily usage resets and optional auto-purge sweeps.
+            </li>
+            <li>
+                <code style="color: var(--accent-color)">notifications</code> — sends
+                optional alerts (e.g., daily time limit reached). Never used for marketing
+                or promotional purposes.
+            </li>
+        </ol>
 
-            <h3>Data Deletion</h3>
-            <p>
-                You control your data. You can delete it at any time from within the extension, and
-                uninstalling the extension removes the stored data from this browser profile.
-            </p>
-            <ul>
-                <li>
-                    Use the "Delete All Data" button in the Privacy & Data tab to clear all records.
-                </li>
-                <li>
-                    Use "Auto-purge old data" to automatically remove records older than a specified
-                    number of days.
-                </li>
-                <li>Search and delete data for specific domains.</li>
-            </ul>
+        <h3>Data Deletion</h3>
+        <p>
+            You retain full control over your data at all times. You can delete individual
+            domain records or wipe everything from the Data Management section above.
+            Uninstalling the extension automatically removes all stored data from your
+            browser profile. No residual data remains on any remote system because no
+            remote system has ever received it.
+        </p>
+        <ul>
+            <li>
+                Use <strong>Delete All Data</strong> in the Data Management section above
+                to clear every stored record immediately.
+            </li>
+            <li>
+                Enable <strong>Auto-purge Old Data</strong> to automatically remove records
+                older than a configurable number of days.
+            </li>
+            <li>Use the search field under <strong>Delete Specific Data</strong> to target
+                records for a single domain.</li>
+        </ul>
 
-            <h3>No Account Required</h3>
-            <p>TimeDash does not have accounts. There is no login, registration, or cloud sync. All data is stored on your device. You are responsible for it.</p>
+        <h3>No Account Required</h3>
+        <p>
+            TimeDash does not have accounts, logins, registration forms, or cloud sync.
+            All data is stored exclusively on your device. You are solely responsible
+            for it, and no one else can access it through the extension.
+        </p>
 
-            <h3>Open Source</h3>
-            <p>
-                The extension is open source at
-                <a
-                    href="https://github.com/intelligent-username/TimeDash"
-                    target="_blank"
-                    rel="noopener"
-                    >github.com/intelligent-username/TimeDash</a
-                >. Feel free to fork, improve, and request features.
-            </p>
+        <h3>Third-Party Code</h3>
+        <p>
+            TimeDash uses a small number of open-source third-party libraries for
+            development tooling (linters, formatters). These are not present in the
+            distributed extension and cannot access your data. The extension runtime
+            contains no third-party analytics, telemetry, or tracking libraries.
+        </p>
 
-            <h3>Contact & Questions</h3>
-            <p>
-                If you have a privacy question, or you think something is wrong, open an issue at
-                <a
-                    href="https://github.com/intelligent-username/TimeDash/issues"
-                    target="_blank"
-                    rel="noopener"
-                    >github.com/intelligent-username/TimeDash/issues</a
-                >
-                and include what you are seeing, plus screenshots if they help.
-            </p>
-        </details>
-    </div>
+        <h3>License</h3>
+        <p>
+            TimeDash is released under the <strong>MIT License</strong>. You are free to
+            use, modify, and distribute the extension in accordance with the terms of the
+            license. The full license text is available in the
+            <a
+                href="https://github.com/intelligent-username/TimeDash/blob/main/LICENSE"
+                target="_blank"
+                rel="noopener"
+            >repository</a>.
+        </p>
+
+        <h3>Contact &amp; Questions</h3>
+        <p>
+            If you have a privacy concern or believe something is incorrect, open an issue
+            at
+            <a
+                href="https://github.com/intelligent-username/TimeDash/issues"
+                target="_blank"
+                rel="noopener"
+            >github.com/intelligent-username/TimeDash/issues</a
+            >
+            and include a description of what you are seeing along with any relevant
+            screenshots. Issues are typically addressed within a few days.
+        </p>
+    </details>
 </div>

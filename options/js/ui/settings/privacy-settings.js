@@ -19,26 +19,19 @@ export const privacySettingsMethods = {
         }
 
         const pausedCheckbox = document.getElementById('trackingPaused');
-        const mainCheckbox = document.getElementById('trackingEnabled');
         if (pausedCheckbox) {
             pausedCheckbox.addEventListener('change', () => {
-                const enabled = !pausedCheckbox.checked;
-                this.controller.updateSetting('trackingEnabled', enabled);
-                if (mainCheckbox) mainCheckbox.checked = enabled;
+                this.controller.updateSetting('trackingEnabled', !pausedCheckbox.checked);
+                const mainCheckbox = document.getElementById('trackingEnabled');
+                if (mainCheckbox) mainCheckbox.checked = !pausedCheckbox.checked;
             });
-
-            if (mainCheckbox) {
-                mainCheckbox.addEventListener('change', () => {
-                    pausedCheckbox.checked = !mainCheckbox.checked;
-                });
-            }
         }
 
         const autoPurgeCheck = document.getElementById('autoPurgeEnabled');
         const autoPurgeParams = document.getElementById('autoPurgeSettings');
         if (autoPurgeCheck && autoPurgeParams) {
             autoPurgeCheck.addEventListener('change', () => {
-                autoPurgeParams.style.display = autoPurgeCheck.checked ? 'block' : 'none';
+                autoPurgeParams.classList.toggle('visible', autoPurgeCheck.checked);
             });
         }
 

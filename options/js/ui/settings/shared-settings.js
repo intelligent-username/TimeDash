@@ -117,7 +117,7 @@ export const sharedSettingsMethods = {
         }
 
         const autoPurgeParams = document.getElementById('autoPurgeSettings');
-        if (autoPurgeParams) autoPurgeParams.style.display = settings.autoPurgeEnabled ? 'block' : 'none';
+        if (autoPurgeParams) autoPurgeParams.classList.toggle('visible', Boolean(settings.autoPurgeEnabled));
 
         this.renderWhitelist(settings.whitelist || []);
         this.renderCustomColors('accentColorPicker', settings.customAccentColors || [], 'accentColor');

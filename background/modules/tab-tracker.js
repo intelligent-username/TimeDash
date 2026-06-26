@@ -97,60 +97,41 @@ class TabTracker {
 
         if (settings.whitelist && settings.whitelist.includes(domain)) return;
 
-        // Increment domain active count
-        const count = (this.instance.domainActiveCount.get(domain) || 0) + 1;
-        this.instance.domainActiveCount.set(domain, count);
-        // Record start time when first tab of domain becomes active
-        if (count === 1) {
-            this.instance.domainStartTime.set(domain, Date.now());
-        }
-        // Keep per‑tab info for visibility tracking
-        this.instance.activeTabInfo.set(tabId, {
-            domain,
-            isActive: true,
-        });
+        // Stop any previous tracking before starting new one
+        this.stopTracking();
+
+        this.instance.currentTrack = { tabId, domain, startTime: Date.now() };
 
         await this.updateBadge(domain);
     }
 
-    stopTrackingTab(tabId) {
-        const tabInfo = this.instance.activeTabInfo.get(tabId);
-        if (tabInfo) {
-            // Decrement domain count
-            const domain = tabInfo.domain;
-            const newCount = (this.instance.domainActiveCount.get(domain) || 1) - 1;
-            if (newCount <= 0) {
-                // Domain no longer active, compute elapsed
-                const start = this.instance.domainStartTime.get(domain) || Date.now();
-                const elapsed = Math.floor((Date.now() - start) / 1000);
-                if (elapsed > 0) {
-                    this.instance.addToPendingUpdates(domain, elapsed);
-                }
-                this.instance.domainActiveCount.delete(domain);
-                this.instance.domainStartTime.delete(domain);
-            } else {
-                this.instance.domainActiveCount.set(domain, newCount);
-            }
+    stopTracking() {
+        if (!this.instance.currentTrack) return;
+        const { domain, startTime } = this.instance.currentTrack;
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        if (elapsed > 0) {
+            this.instance.addToPendingUpdates(domain, elapsed);
         }
-        this.instance.activeTabInfo.delete(tabId);
+        this.instance.currentTrack = null;
+    }
+
+    stopTrackingTab(tabId) {
+        if (this.instance.currentTrack && this.instance.currentTrack.tabId === tabId) {
+            this.stopTracking();
+        }
     }
 
     stopTrackingAllTabs() {
-        for (const [tabId] of this.instance.activeTabInfo) {
-            this.stopTrackingTab(tabId);
-        }
+        this.stopTracking();
     }
 
     flushActiveTime() {
-        const now = Date.now();
-        for (const [domain, startedAt] of this.instance.domainStartTime) {
-            const count = this.instance.domainActiveCount.get(domain) || 0;
-            if (count === 0) continue;
-            const timeSpent = Math.floor((now - startedAt) / 1000);
-            if (timeSpent > 0) {
-                this.instance.addToPendingUpdates(domain, timeSpent);
-                this.instance.domainStartTime.set(domain, now);
-            }
+        if (!this.instance.currentTrack) return;
+        const { domain, startTime } = this.instance.currentTrack;
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        if (elapsed > 0) {
+            this.instance.addToPendingUpdates(domain, elapsed);
+            this.instance.currentTrack.startTime = Date.now();
         }
     }
 
@@ -172,7 +153,6 @@ class TabTracker {
                     console.error('Failed to increment block count:', error);
                 }
 
-                await this.stopTrackingTab(tab.id);
                 const blockPageUrl =
                     chrome.runtime.getURL('block/block.html') +
                     `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=restricted`;
@@ -192,7 +172,6 @@ class TabTracker {
                 console.error('Failed to increment block count:', error);
             }
 
-            await this.stopTrackingTab(tab.id);
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
                 `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}`;

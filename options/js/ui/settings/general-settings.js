@@ -8,6 +8,14 @@ export const generalSettingsMethods = {
             badgeEnabled: 'badgeEnabled'
         });
 
+        const trackingCb = document.getElementById('trackingEnabled');
+        if (trackingCb) {
+            trackingCb.addEventListener('change', () => {
+                const paused = document.getElementById('trackingPaused');
+                if (paused) paused.checked = !trackingCb.checked;
+            });
+        }
+
         this.setupThemeToggle();
         this.setupColorPicker('accentColorPicker', 'accentColor');
         this.setupColorPicker('overlayColorPicker', 'overlayColor');

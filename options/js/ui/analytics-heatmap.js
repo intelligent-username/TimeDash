@@ -126,12 +126,12 @@ export class AnalyticsHeatmap {
         }
 
         const weeks = Math.ceil(cells.length / 7);
-        grid.style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
+        grid.style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
         grid.innerHTML = cells.join('');
 
         if (monthsRow) {
             monthsRow.style.display = 'grid';
-            monthsRow.style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
+            monthsRow.style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
             
             monthsRow.innerHTML = monthPositions.map((m, i) => {
                 const endCol = monthPositions[i + 1]?.index || weeks;

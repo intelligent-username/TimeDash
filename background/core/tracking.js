@@ -68,21 +68,23 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
     };
 
     TimeDashBackground.prototype.updateActiveTracking = async function updateActiveTracking() {
-        for (const [tabId, tabInfo] of this.activeTabInfo) {
-            if (!tabInfo.isActive) continue;
+        const track = this.currentTrack;
+        if (!track) return;
 
-            try {
-                const tab = await chrome.tabs.get(tabId);
-                if (!tab.active) {
-                    this.tabTracker.stopTrackingTab(tabId);
-                    continue;
-                }
-
-                const response = await chrome.tabs.sendMessage(tabId, { type: 'CHECK_VISIBILITY' });
-                if (!response || !response.visible) this.tabTracker.stopTrackingTab(tabId);
-            } catch {
-                this.tabTracker.stopTrackingTab(tabId);
+        try {
+            const tab = await chrome.tabs.get(track.tabId);
+            if (!tab.active) {
+                this.tabTracker.stopTrackingTab(track.tabId);
+                return;
             }
+
+            const response = await chrome.tabs.sendMessage(track.tabId, { type: 'CHECK_VISIBILITY' });
+            if (!response || !response.visible) {
+                this.tabTracker.stopTrackingTab(track.tabId);
+                return;
+            }
+        } catch {
+            this.tabTracker.stopTrackingTab(track.tabId);
         }
     };
 }

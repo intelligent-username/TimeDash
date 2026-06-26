@@ -2,15 +2,14 @@
 
 function applyBackgroundDataMethods(TimeDashBackground) {
     TimeDashBackground.prototype.getTabInfo = async function getTabInfo(tabId) {
-        const tabInfo = this.activeTabInfo.get(tabId);
-        if (!tabInfo) return null;
+        if (!this.currentTrack || this.currentTrack.tabId !== tabId) return null;
 
-        const usage = await this.storage.getDomainUsage(tabInfo.domain);
+        const usage = await this.storage.getDomainUsage(this.currentTrack.domain);
         return {
-            domain: tabInfo.domain,
+            domain: this.currentTrack.domain,
             todayTime: TimeUtils.calculateTodayTime(usage),
             totalTime: TimeUtils.calculateTotalTime(usage),
-            isTracking: tabInfo.isActive,
+            isTracking: true,
         };
     };
 
@@ -26,7 +25,6 @@ function applyBackgroundDataMethods(TimeDashBackground) {
                 totalTime: TimeUtils.calculateTotalTime(data),
                 averageTime: TimeUtils.calculateAverageTime(data),
                 isBlocked: blockList.includes(domain),
-                productivity: DomainUtils.getProductivityScore(domain),
             }))
             .sort((a, b) => b.todayTime - a.todayTime);
 
