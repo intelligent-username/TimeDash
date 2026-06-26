@@ -31,7 +31,7 @@ class TimeDashBackground {
         this.ruleManager = new RuleManager();
         this.currentTrack = null;
         this.TRACKING_INTERVAL = 1000;
-        this.BATCH_UPDATE_INTERVAL = 5000;
+        this.BATCH_UPDATE_INTERVAL = 10000;
         this.pendingUpdates = new Map();
         this.restorePendingUpdates();
         this.alarmManager = new AlarmManager();

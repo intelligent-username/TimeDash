@@ -1,10 +1,9 @@
 # TimeDash
 
-![TimeDash Logo](icons/Logo.svg)
+[![Chrome WebStore Banner](icons/ws_banner.png)](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb)
 
-[![Available in the Chrome Web Store](https://storage.googleapis.com/chrome-gcs-uploader.appspot.com/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4k0B.png)](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb?utm_source=item-share-cb)
 
-TimeDash is a completely local, privacy-first Chrome extension designed to boost your productivity with strict time tracking, site blocking, and advanced video playback controls.
+Boost your productivity with strict time tracking, site blocking, analytics, advanced video playback controls.
 
 ## Features
 

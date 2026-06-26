@@ -26,7 +26,6 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.renderItem = function renderItem(item) {
         const duration = Number(item.video.duration || 0);
         const currentTime = Number(item.video.currentTime || 0);
-        const isLive = Boolean(item.video.isLive);
         const paused = Boolean(item.video.paused);
         const cleanedTitle = this.escapeHtml(this.cleanTitle(item.tabTitle));
         const sourceLabel = this.escapeHtml(this.normalizeSourceLabel(item.video.sourceLabel, item.url));
@@ -40,9 +39,9 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
                         <button type="button" class="currently-playing-title currently-playing-title-btn" data-action="focus-tab" data-tab-id="${item.tabId}" title="Open tab">${cleanedTitle}</button>
                         <button type="button" class="currently-playing-dismiss" data-action="dismiss-item" data-video-key="${this.escapeHtml(videoKey)}" title="Hide video">×</button>
                     </div>
-                    <div class="currently-playing-subtitle">${sourceLabel} • ${isLive ? 'Live' : `${this.formatTime(currentTime)} / ${this.formatTime(duration)}`}</div>
+                    <div class="currently-playing-subtitle">${sourceLabel} • ${this.formatTime(currentTime)} / ${this.formatTime(duration)}</div>
                 </div>
-                <input type="range" class="currently-playing-seek" min="0" max="${Math.max(duration, 1)}" step="0.1" value="${Math.min(currentTime, Math.max(duration, 1))}" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}" ${isLive ? 'disabled' : ''} />
+                <input type="range" class="currently-playing-seek" min="0" max="${Math.max(duration, 1)}" step="0.1" value="${Math.min(currentTime, Math.max(duration, 1))}" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}" />
                 <div class="currently-playing-controls">
                     <button type="button" class="btn btn-outline btn-sm" data-action="skip-back" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">Prev</button>
                     <button type="button" class="btn btn-outline btn-sm currently-playing-control-small" title="Rewind" data-action="step-back" data-tab-id="${item.tabId}" data-video-id="${item.video.id}" data-frame-id="${frameId}">⟲</button>
