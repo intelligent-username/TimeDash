@@ -1,8 +1,14 @@
+/**
+ *
+ * @param AnalyticsUI
+ */
 export function applyAnalyticsUISetupMethods(AnalyticsUI) {
     AnalyticsUI.prototype.setup = function setup() {
         document.querySelectorAll('.period-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.period-btn').forEach((button) => button.classList.remove('active'));
+                document
+                    .querySelectorAll('.period-btn')
+                    .forEach((button) => button.classList.remove('active'));
                 e.target.classList.add('active');
                 this.currentPeriod = e.target.dataset.period;
                 this.chart.setPeriod(this.currentPeriod);
@@ -52,7 +58,9 @@ export function applyAnalyticsUISetupMethods(AnalyticsUI) {
         periodSelector.appendChild(allBtn);
 
         allBtn.addEventListener('click', (e) => {
-            document.querySelectorAll('.period-btn').forEach((button) => button.classList.remove('active'));
+            document
+                .querySelectorAll('.period-btn')
+                .forEach((button) => button.classList.remove('active'));
             e.target.classList.add('active');
             this.currentPeriod = 'all';
             this.chart.setPeriod('all');

@@ -94,7 +94,7 @@ class VideoDetector {
         const originalAttachShadow = Element.prototype.attachShadow;
         const self = this;
 
-        Element.prototype.attachShadow = function(init) {
+        Element.prototype.attachShadow = function (init) {
             const shadowRoot = originalAttachShadow.call(this, init);
             if (init && init.mode === 'open') {
                 self.findAndSetupVideos(shadowRoot);

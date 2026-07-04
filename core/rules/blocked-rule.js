@@ -1,9 +1,8 @@
-'use strict';
+/* global SiteRule */
 
 /**
- * @fileoverview Blocked rule - completely denies access to a site
+ * @file Blocked rule - completely denies access to a site
  */
-
 
 /**
  * Rule that completely blocks access to a site
@@ -20,10 +19,10 @@ class BlockedRule extends SiteRule {
 
     /**
      * Evaluate access - always blocks when enabled
-     * @param {Object} usageStats - Not used for blocked rules
+     * @param {object} _usageStats - Not used for blocked rules
      * @returns {{ shouldBlock: boolean, reason: string }}
      */
-    evaluate(usageStats) {
+    evaluate(_usageStats) {
         if (!this.isEnabled) {
             return { shouldBlock: false, reason: null };
         }
@@ -35,7 +34,7 @@ class BlockedRule extends SiteRule {
 
     /**
      * Create BlockedRule from serialized data
-     * @param {Object} data - Serialized rule data
+     * @param {object} data - Serialized rule data
      * @returns {BlockedRule}
      */
     static fromJSON(data) {

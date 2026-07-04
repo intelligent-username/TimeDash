@@ -1,8 +1,10 @@
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon-wrapper" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed;">
+        <div class="stat-icon-wrapper" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
+                <path
+                    d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
+                />
             </svg>
         </div>
         <div class="stat-info">
@@ -11,7 +13,7 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon-wrapper" style="background: rgba(13, 148, 136, 0.15); color: #0d9488;">
+        <div class="stat-icon-wrapper" style="background: rgba(13, 148, 136, 0.15); color: #0d9488">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M5,20H21V22H3V3H5V20M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z" />
             </svg>
@@ -22,9 +24,11 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon-wrapper" style="background: rgba(37, 99, 235, 0.15); color: #2563eb;">
+        <div class="stat-icon-wrapper" style="background: rgba(37, 99, 235, 0.15); color: #2563eb">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,18.54L19.37,12.8L21,14.07L12,21.07L3,14.07L4.62,12.81L12,18.54M12,16L3,9L12,2L21,9L12,16M12,4.53L6.26,9L12,13.47L17.74,9L12,4.53Z" />
+                <path
+                    d="M12,18.54L19.37,12.8L21,14.07L12,21.07L3,14.07L4.62,12.81L12,18.54M12,16L3,9L12,2L21,9L12,16M12,4.53L6.26,9L12,13.47L17.74,9L12,4.53Z"
+                />
             </svg>
         </div>
         <div class="stat-info">
@@ -33,7 +37,7 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon-wrapper" style="background: rgba(217, 119, 6, 0.15); color: #d97706;">
+        <div class="stat-icon-wrapper" style="background: rgba(217, 119, 6, 0.15); color: #d97706">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9,3L5,7H8V14H10V7H13M16,17V10H14V17H11L15,21L19,17H16Z" />
             </svg>
@@ -49,10 +53,26 @@
     <div class="card-header">
         <h2>Usage Trends</h2>
         <div class="chart-controls">
-            <div class="chart-options" style="display: flex; align-items: center; gap: 12px; margin-right: 16px;">
-                <label class="modern-checkbox"
-                    style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
-                    <input type="checkbox" id="rollingAverageToggle" style="width: 14px; height: 14px;" />
+            <div
+                class="chart-options"
+                style="display: flex; align-items: center; gap: 12px; margin-right: 16px"
+            >
+                <label
+                    class="modern-checkbox"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        color: var(--text-secondary);
+                    "
+                >
+                    <input
+                        type="checkbox"
+                        id="rollingAverageToggle"
+                        style="width: 14px; height: 14px"
+                    />
                     Rolling Average
                 </label>
             </div>
@@ -73,8 +93,12 @@
                         <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
                     </svg>
                 </button>
-                <button class="nav-btn" id="chartToday" title="Return to today"
-                    style="border-radius: 50%; padding: 4px; margin-left: 8px;">
+                <button
+                    class="nav-btn"
+                    id="chartToday"
+                    title="Return to today"
+                    style="border-radius: 50%; padding: 4px; margin-left: 8px"
+                >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <circle cx="12" cy="12" r="10" />
                     </svg>
@@ -89,7 +113,7 @@
                 <div class="chart-content" id="chartContent"></div>
             </div>
             <div class="chart-x-axis" id="chartXAxis"></div>
-            <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none;">
+            <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none">
                 <div class="earliest-line"></div>
                 <span class="earliest-label">Tracking started</span>
             </div>
@@ -99,20 +123,20 @@
 
 <div class="content-card">
     <div class="card-header">
-        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-            <h2 style="line-height: 1;">Activity Heatmap</h2>
+        <div style="display: flex; align-items: center; gap: var(--spacing-sm)">
+            <h2 style="line-height: 1">Activity Heatmap</h2>
             <span class="heatmap-sites-count" id="heatmapSitesCount">0 Sites Tracked</span>
         </div>
         <div class="heatmap-year-nav" id="heatmapYearNav">
             <button class="heatmap-year-btn" id="heatmapYearPrev" title="Previous year">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+                    <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
                 </svg>
             </button>
             <span class="heatmap-year-label" id="heatmapYearLabel">2026</span>
             <button class="heatmap-year-btn" id="heatmapYearNext" title="Next year">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
                 </svg>
             </button>
         </div>
@@ -143,17 +167,40 @@
 </div>
 
 <div class="content-card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div
+        class="card-header"
+        style="display: flex; justify-content: space-between; align-items: center"
+    >
         <h2 id="topSitesHeading">Top Sites Today</h2>
-        <div class="setting-group" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-            <label for="trackingFrequency"
-                style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; display: flex; align-items: center; gap: 4px;">
+        <div class="setting-group" style="margin: 0; display: flex; align-items: center; gap: 8px">
+            <label
+                for="trackingFrequency"
+                style="
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                "
+            >
                 Tracking Interval (s)
-                <span class="info-tooltip"
-                    title="How often the extension updates your time logs. Lower values are more accurate but use more resources.">?</span>
+                <span
+                    class="info-tooltip"
+                    title="How often the extension updates your time logs. Lower values are more accurate but use more resources."
+                    >?</span
+                >
             </label>
-            <input type="number" id="trackingFrequency" min="0.1" max="60" step="0.01" placeholder="1.00"
-                class="modern-input short" style="padding: 4px 8px; width: 64px; min-height: unset; height: auto;" />
+            <input
+                type="number"
+                id="trackingFrequency"
+                min="0.1"
+                max="60"
+                step="0.01"
+                placeholder="1.00"
+                class="modern-input short"
+                style="padding: 4px 8px; width: 64px; min-height: unset; height: auto"
+            />
         </div>
     </div>
     <div class="card-body">

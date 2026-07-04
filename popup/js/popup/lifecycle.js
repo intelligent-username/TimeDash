@@ -74,5 +74,5 @@ export const lifecycleMethods = {
             document.removeEventListener('keydown', this.boundKeyHandler);
             this.boundKeyHandler = null;
         }
-    }
+    },
 };

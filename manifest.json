@@ -13,17 +13,13 @@
         "alarms",
         "notifications"
     ],
-    "host_permissions": [
-        "<all_urls>"
-    ],
+    "host_permissions": ["<all_urls>"],
     "background": {
         "service_worker": "background/background.js"
     },
     "content_scripts": [
         {
-            "matches": [
-                "<all_urls>"
-            ],
+            "matches": ["<all_urls>"],
             "js": [
                 "utils/domain-utils.js",
                 "content/overlay.js",
@@ -72,12 +68,8 @@
     },
     "web_accessible_resources": [
         {
-            "resources": [
-                "content/overlay.js"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
+            "resources": ["content/overlay.js"],
+            "matches": ["<all_urls>"]
         }
     ],
     "content_security_policy": {

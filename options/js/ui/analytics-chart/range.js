@@ -1,5 +1,9 @@
 import { formatDateString } from '../../utils/formatting.js';
 
+/**
+ *
+ * @param AnalyticsChart
+ */
 export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
     AnalyticsChart.prototype.getDateRange = function getDateRange() {
         const now = new Date();
@@ -14,8 +18,26 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
 
         if (this.period === 'year') {
             const year = now.getFullYear() + this.offset;
-            const label = this.offset === 0 ? 'This Year' : this.offset === -1 ? 'Last Year' : year.toString();
-            const xLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const label =
+                this.offset === 0
+                    ? 'This Year'
+                    : this.offset === -1
+                      ? 'Last Year'
+                      : year.toString();
+            const xLabels = [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec',
+            ];
             return { dates: [], label, xLabels, isYearly: true, year };
         }
 
@@ -28,7 +50,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
 
     AnalyticsChart.prototype.getWeekRange = function getWeekRange(now) {
         const endDate = new Date(now);
-        endDate.setDate(now.getDate() + (this.offset * 7));
+        endDate.setDate(now.getDate() + this.offset * 7);
 
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6);
@@ -44,16 +66,21 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
             xLabels.push(dayNames[date.getDay()]);
         }
 
-        const label = this.offset === 0
-            ? 'Past 7 Days'
-            : `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        const label =
+            this.offset === 0
+                ? 'Past 7 Days'
+                : `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
         return { dates, label, xLabels, isYearly: false, year: null };
     };
 
     AnalyticsChart.prototype.getMonthRange = function getMonthRange(now) {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth() + this.offset, 1);
-        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + this.offset + 1, 0).getDate();
+        const daysInMonth = new Date(
+            now.getFullYear(),
+            now.getMonth() + this.offset + 1,
+            0
+        ).getDate();
         const dates = [];
 
         for (let i = 0; i < daysInMonth; i++) {
@@ -62,7 +89,39 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
             dates.push(formatDateString(date));
         }
 
-        let xLabels = ['1', '', '', '', '5', '', '', '', '', '10', '', '', '', '', '15', '', '', '', '', '20', '', '', '', '', '25', '', '', '', '', '30', ''];
+        let xLabels = [
+            '1',
+            '',
+            '',
+            '',
+            '5',
+            '',
+            '',
+            '',
+            '',
+            '10',
+            '',
+            '',
+            '',
+            '',
+            '15',
+            '',
+            '',
+            '',
+            '',
+            '20',
+            '',
+            '',
+            '',
+            '',
+            '25',
+            '',
+            '',
+            '',
+            '',
+            '30',
+            '',
+        ];
         xLabels = xLabels.slice(0, daysInMonth);
 
         let label = 'This Month';
@@ -101,21 +160,26 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         if (count <= numLabels) {
             return dates.map((dateStr) => {
                 const [y, m, day] = dateStr.split('-').map(Number);
-                return new Date(y, m - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return new Date(y, m - 1, day).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                });
             });
         }
 
         const xLabels = [];
         for (let i = 0; i < numLabels; i++) {
-            const idx = Math.round(i * (count - 1) / (numLabels - 1));
+            const idx = Math.round((i * (count - 1)) / (numLabels - 1));
             if (idx >= dates.length) continue;
 
             const [y, m, day] = dates[idx].split('-').map(Number);
-            xLabels.push(new Date(y, m - 1, day).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: '2-digit',
-            }));
+            xLabels.push(
+                new Date(y, m - 1, day).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: '2-digit',
+                })
+            );
         }
 
         return xLabels;
@@ -134,7 +198,9 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         }
 
         if (this.period === 'month') {
-            const monthDiff = (now.getFullYear() - earliest.getFullYear()) * 12 + (now.getMonth() - earliest.getMonth());
+            const monthDiff =
+                (now.getFullYear() - earliest.getFullYear()) * 12 +
+                (now.getMonth() - earliest.getMonth());
             return -monthDiff;
         }
 

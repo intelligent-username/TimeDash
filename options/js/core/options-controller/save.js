@@ -1,5 +1,9 @@
 import { showToast } from '../../utils/dom.js';
 
+/**
+ *
+ * @param OptionsController
+ */
 export function applyOptionsSaveMethods(OptionsController) {
     OptionsController.prototype.setupAutoSave = function setupAutoSave() {
         setInterval(() => {
@@ -37,7 +41,10 @@ export function applyOptionsSaveMethods(OptionsController) {
         }
     };
 
-    OptionsController.prototype.updateSaveStatus = function updateSaveStatus(message, visible = true) {
+    OptionsController.prototype.updateSaveStatus = function updateSaveStatus(
+        message,
+        visible = true
+    ) {
         const status = document.getElementById('saveStatus');
         if (!status) return;
 
@@ -66,7 +73,9 @@ export function applyOptionsSaveMethods(OptionsController) {
         showToast(msg, 'warning');
     };
 
-    OptionsController.prototype.updateRestrictedDomains = function updateRestrictedDomains(domains) {
+    OptionsController.prototype.updateRestrictedDomains = function updateRestrictedDomains(
+        domains
+    ) {
         this.restrictedDomains = domains;
     };
 

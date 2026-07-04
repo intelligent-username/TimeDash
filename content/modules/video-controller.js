@@ -108,11 +108,18 @@ class VideoController {
         detector.findAndSetupVideos(document);
         detector.scanOpenShadowRoots(document);
 
-        const connectedVideos = [...this.instance.videos].filter((video) => video && video.isConnected);
+        const connectedVideos = [...this.instance.videos].filter(
+            (video) => video && video.isConnected
+        );
         if (connectedVideos.length === 0) return;
 
-        const recentVideo = connectedVideos.find((video) => this.instance.hasRecentVideoInteraction(video));
-        const activeVideo = recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+        const recentVideo = connectedVideos.find((video) =>
+            this.instance.hasRecentVideoInteraction(video)
+        );
+        const activeVideo =
+            recentVideo ||
+            connectedVideos.find((video) => !video.paused && !video.ended) ||
+            connectedVideos[0];
         this.instance.ui.showIndicator(activeVideo, this.instance.currentSpeed);
     }
 
@@ -173,13 +180,17 @@ class VideoController {
                     break;
                 case 'skip-forward':
                     video.currentTime = Math.min(
-                        Number.isFinite(video.duration) ? video.duration : video.currentTime + skipSeconds,
+                        Number.isFinite(video.duration)
+                            ? video.duration
+                            : video.currentTime + skipSeconds,
                         video.currentTime + skipSeconds
                     );
                     break;
                 case 'step-forward':
                     video.currentTime = Math.min(
-                        Number.isFinite(video.duration) ? video.duration : video.currentTime + stepSeconds,
+                        Number.isFinite(video.duration)
+                            ? video.duration
+                            : video.currentTime + stepSeconds,
                         video.currentTime + stepSeconds
                     );
                     break;
@@ -219,13 +230,25 @@ class VideoController {
         }
 
         if (!videoId && connectedVideos.length > 0) {
-            const recentVideo = connectedVideos.find((video) => this.instance.hasRecentVideoInteraction(video));
-            return recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+            const recentVideo = connectedVideos.find((video) =>
+                this.instance.hasRecentVideoInteraction(video)
+            );
+            return (
+                recentVideo ||
+                connectedVideos.find((video) => !video.paused && !video.ended) ||
+                connectedVideos[0]
+            );
         }
 
         if (connectedVideos.length > 0) {
-            const recentVideo = connectedVideos.find((video) => this.instance.hasRecentVideoInteraction(video));
-            return recentVideo || connectedVideos.find((video) => !video.paused && !video.ended) || connectedVideos[0];
+            const recentVideo = connectedVideos.find((video) =>
+                this.instance.hasRecentVideoInteraction(video)
+            );
+            return (
+                recentVideo ||
+                connectedVideos.find((video) => !video.paused && !video.ended) ||
+                connectedVideos[0]
+            );
         }
 
         return null;

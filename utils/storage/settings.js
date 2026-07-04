@@ -8,13 +8,19 @@ function applyStorageSettingsMethods(StorageManager) {
             if (!result.settings) {
                 await this.setSettings(this.DEFAULT_SETTINGS);
             } else {
-                if (result.settings.defaultPlaybackSpeed !== undefined && result.settings.currentPlaybackSpeed === undefined) {
+                if (
+                    result.settings.defaultPlaybackSpeed !== undefined &&
+                    result.settings.currentPlaybackSpeed === undefined
+                ) {
                     result.settings.currentPlaybackSpeed = result.settings.defaultPlaybackSpeed;
                     delete result.settings.defaultPlaybackSpeed;
                     await this.setSettings(result.settings);
                 }
 
-                if (result.settings.firstInstallDate === undefined || result.settings.firstInstallDate === null) {
+                if (
+                    result.settings.firstInstallDate === undefined ||
+                    result.settings.firstInstallDate === null
+                ) {
                     result.settings.firstInstallDate = Date.now();
                     await this.setSettings(result.settings);
                 }

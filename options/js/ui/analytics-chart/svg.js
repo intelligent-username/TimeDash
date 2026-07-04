@@ -3,8 +3,17 @@ import { formatTime, formatDateString } from '../../utils/formatting.js';
 const LINE_COLOR = '#3b82f6';
 const EARLIEST_COLOR = '#f59e0b';
 
+/**
+ *
+ * @param AnalyticsChart
+ */
 export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
-    AnalyticsChart.prototype.renderSvgChart = function renderSvgChart(container, dailyTotals, maxTime, isYearly) {
+    AnalyticsChart.prototype.renderSvgChart = function renderSvgChart(
+        container,
+        dailyTotals,
+        maxTime,
+        isYearly
+    ) {
         const width = container.clientWidth || 600;
         const height = container.clientHeight || 180;
         const padding = 10;
@@ -18,9 +27,9 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
         dailyTotals.forEach((day, i) => {
             if (day.time === null) return;
 
-            const x = padding + (i * pointSpacing);
+            const x = padding + i * pointSpacing;
             const yRatio = maxTime > 0 ? day.time / maxTime : 0;
-            const y = height - padding - (yRatio * (height - padding * 2));
+            const y = height - padding - yRatio * (height - padding * 2);
 
             lastX = x;
             points.push({ x, y, day, isEarliest: !isYearly && day.date === earliestDate });
@@ -39,28 +48,40 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
         const areaD = pathD
             ? `${pathD} L ${lastX} ${height - padding} L ${padding} ${height - padding} Z`
             : '';
-        const avgPathD = this.buildRollingAverageSvg(dailyTotals, pointSpacing, maxTime, padding, height);
+        const avgPathD = this.buildRollingAverageSvg(
+            dailyTotals,
+            pointSpacing,
+            maxTime,
+            padding,
+            height
+        );
 
-        const pointSvg = points.map(p => {
-            const fill = p.isEarliest ? EARLIEST_COLOR : LINE_COLOR;
-            return `<circle cx="${p.x}" cy="${p.y}" r="${pointR}" fill="${fill}" stroke="white" stroke-width="2" class="chart-point" />`;
-        }).join('');
+        const pointSvg = points
+            .map((p) => {
+                const fill = p.isEarliest ? EARLIEST_COLOR : LINE_COLOR;
+                return `<circle cx="${p.x}" cy="${p.y}" r="${pointR}" fill="${fill}" stroke="white" stroke-width="2" class="chart-point" />`;
+            })
+            .join('');
 
-        const hitareas = points.map(point => {
-            let displayDate;
-            if (isYearly) {
-                displayDate = point.day.date;
-            } else {
-                const [y, m, d] = point.day.date.split('-').map(Number);
-                const localDate = new Date(y, m - 1, d);
-                displayDate = localDate.toLocaleDateString(undefined, {
-                    weekday: 'short', month: 'short', day: 'numeric'
-                });
-            }
-            return `<div class="chart-point-hitarea" style="left:${point.x}px;top:${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
+        const hitareas = points
+            .map((point) => {
+                let displayDate;
+                if (isYearly) {
+                    displayDate = point.day.date;
+                } else {
+                    const [y, m, d] = point.day.date.split('-').map(Number);
+                    const localDate = new Date(y, m - 1, d);
+                    displayDate = localDate.toLocaleDateString(undefined, {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                    });
+                }
+                return `<div class="chart-point-hitarea" style="left:${point.x}px;top:${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
                 <div class="chart-tooltip">${displayDate}<br><strong>${formatTime(point.day.time)}</strong></div>
             </div>`;
-        }).join('');
+            })
+            .join('');
 
         container.innerHTML = [
             '<div class="chart-html-wrap">',
@@ -73,15 +94,23 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
             '</defs>',
             areaD ? `<path d="${areaD}" fill="url(#areaGrad)" />` : '',
             avgPathD,
-            pathD ? `<path d="${pathD}" fill="none" stroke="${LINE_COLOR}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />` : '',
+            pathD
+                ? `<path d="${pathD}" fill="none" stroke="${LINE_COLOR}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`
+                : '',
             pointSvg,
             '</svg>',
             `<div class="chart-points-overlay">${hitareas}</div>`,
-            '</div>'
+            '</div>',
         ].join('');
     };
 
-    AnalyticsChart.prototype.buildRollingAverageSvg = function buildRollingAverageSvg(dailyTotals, pointSpacing, maxTime, padding, height) {
+    AnalyticsChart.prototype.buildRollingAverageSvg = function buildRollingAverageSvg(
+        dailyTotals,
+        pointSpacing,
+        maxTime,
+        padding,
+        height
+    ) {
         const rollingToggle = document.getElementById('rollingAverageToggle');
         if (!rollingToggle || !rollingToggle.checked) return '';
 
@@ -125,9 +154,9 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
             }
 
             const avg = rollingSum / rollingQueue.length;
-            const x = padding + (i * pointSpacing);
+            const x = padding + i * pointSpacing;
             const yRatio = maxTime > 0 ? avg / maxTime : 0;
-            const y = height - padding - (yRatio * (height - padding * 2));
+            const y = height - padding - yRatio * (height - padding * 2);
 
             avgPoints.push({ x, y });
         });

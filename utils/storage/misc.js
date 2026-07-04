@@ -17,7 +17,11 @@ function applyStorageMiscMethods(StorageManager) {
             const current = Number(settings.currentPlaybackSpeed);
             const next = Number(speed);
 
-            if (Number.isFinite(current) && Number.isFinite(next) && Math.abs(current - next) < 0.0001) {
+            if (
+                Number.isFinite(current) &&
+                Number.isFinite(next) &&
+                Math.abs(current - next) < 0.0001
+            ) {
                 return true;
             }
 
@@ -60,13 +64,12 @@ function applyStorageMiscMethods(StorageManager) {
             blockList,
             siteRules: ruleManager
                 ? {
-                    blocked: ruleManager.getBlockedDomains(),
-                    restricted: ruleManager.getRestrictedDomains(),
-                }
+                      blocked: ruleManager.getBlockedDomains(),
+                      restricted: ruleManager.getRestrictedDomains(),
+                  }
                 : { blocked: [], restricted: [] },
             exportDate: new Date().toISOString(),
             version: chrome.runtime.getManifest().version,
         };
     };
-
 }

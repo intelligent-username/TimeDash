@@ -50,6 +50,7 @@ class TimeUtils {
     /**
      * Format milliseconds into compact duration
      * @param {number} ms - Time in milliseconds
+     * @param compact
      * @returns {string} Formatted duration
      */
     static formatMilliseconds(ms, compact = false) {
@@ -118,7 +119,7 @@ class TimeUtils {
 
     /**
      * Calculate total time for a domain across all days
-     * @param {Object} domainData - Domain usage data
+     * @param {object} domainData - Domain usage data
      * @returns {number} Total time in seconds
      */
     static calculateTotalTime(domainData) {
@@ -127,7 +128,7 @@ class TimeUtils {
 
     /**
      * Calculate time for today for a domain
-     * @param {Object} domainData - Domain usage data
+     * @param {object} domainData - Domain usage data
      * @returns {number} Today's time in seconds
      */
     static calculateTodayTime(domainData) {
@@ -137,7 +138,7 @@ class TimeUtils {
 
     /**
      * Calculate average daily time for a domain
-     * @param {Object} domainData - Domain usage data
+     * @param {object} domainData - Domain usage data
      * @param {number} days - Number of days to average over
      * @returns {number} Average daily time in seconds
      */
@@ -146,7 +147,9 @@ class TimeUtils {
         let totalTime = 0;
         let daysToDivideBy = days;
 
-        const allDates = Object.keys(domainData).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+        const allDates = Object.keys(domainData)
+            .filter((k) => /^\d{4}-\d{2}-\d{2}$/.test(k))
+            .sort();
         if (allDates.length > 0) {
             const firstDate = new Date(allDates[0]);
             firstDate.setHours(0, 0, 0, 0);

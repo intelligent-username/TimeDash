@@ -1,7 +1,17 @@
 import { formatDateString } from '../../utils/formatting.js';
 
+/**
+ *
+ * @param AnalyticsChart
+ */
 export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
-    AnalyticsChart.prototype.calculateTotals = function calculateTotals(dates, isYearly, year, isAllTime = false, years = []) {
+    AnalyticsChart.prototype.calculateTotals = function calculateTotals(
+        dates,
+        isYearly,
+        year,
+        isAllTime = false,
+        years = []
+    ) {
         const dailyTotals = [];
         const usage = this.dataContext.getUsage();
 

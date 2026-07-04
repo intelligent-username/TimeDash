@@ -10,7 +10,13 @@ import { applyOptionsNavigationMethods } from './options-controller/navigation.j
 import { applyOptionsSyncMethods } from './options-controller/sync.js';
 import { applyOptionsSaveMethods } from './options-controller/save.js';
 
+/**
+ *
+ */
 export class OptionsController {
+    /**
+     *
+     */
     constructor() {
         this.storageManager = new StorageManager();
         this.settingsManager = new SettingsManager(this);
@@ -30,6 +36,9 @@ export class OptionsController {
         this.ready = this.init();
     }
 
+    /**
+     *
+     */
     async init() {
         if (typeof I18n !== 'undefined') I18n.init(document);
 
@@ -51,6 +60,9 @@ export class OptionsController {
         this.showBanner('Settings loaded', 'success');
     }
 
+    /**
+     *
+     */
     async loadAllData() {
         await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
 
@@ -58,15 +70,19 @@ export class OptionsController {
             this.storageManager.getSettings(),
             this.storageManager.getAllUsage(),
             this.storageManager.getBlockList(),
-            chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' }).catch(() => ({}))
+            chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' }).catch(() => ({})),
         ]);
 
         this.settings = settings;
         this.usage = usage;
         this.blockList = blockList;
-        this.restrictedDomains = (rules && rules.restricted) ? rules.restricted.map((rule) => rule.domain) : [];
+        this.restrictedDomains =
+            rules && rules.restricted ? rules.restricted.map((rule) => rule.domain) : [];
     }
 
+    /**
+     *
+     */
     refreshUI() {
         this.settingsManager.populateAll(this.settings);
         this.applyImmediateChanges('theme', this.settings.theme || 'light');
@@ -82,6 +98,11 @@ export class OptionsController {
         this.updateSaveButton();
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     updateSetting(key, value) {
         if (key === 'theme' || key === 'accentColor') {
             this.applyImmediateChanges(key, value);
@@ -103,6 +124,11 @@ export class OptionsController {
         }, 1000);
     }
 
+    /**
+     *
+     * @param message
+     * @param type
+     */
     showToast(message, type) {
         showToast(message, type);
     }

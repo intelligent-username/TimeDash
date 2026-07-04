@@ -6,7 +6,7 @@ const PARTIAL_MOUNTS = [
     { mountId: 'blockingTabContent', partialPath: 'partials/tabs/blocking-tab.html' },
     { mountId: 'privacyTabContent', partialPath: 'partials/tabs/privacy-tab.html' },
     { mountId: 'helpTabContent', partialPath: 'partials/tabs/help-tab.html' },
-    { mountId: 'optionsOverlayMount', partialPath: 'partials/layout/overlays.html' }
+    { mountId: 'optionsOverlayMount', partialPath: 'partials/layout/overlays.html' },
 ];
 
 const partialCache = new Map();
@@ -28,6 +28,9 @@ async function fetchPartial(partialPath) {
     return html;
 }
 
+/**
+ *
+ */
 export async function loadOptionsLayout() {
     const loadOperations = PARTIAL_MOUNTS.map(async ({ mountId, partialPath }) => {
         const mountElement = document.getElementById(mountId);

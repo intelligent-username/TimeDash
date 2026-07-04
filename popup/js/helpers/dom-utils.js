@@ -12,7 +12,8 @@ export const domUtils = {
 
         Object.entries(attributes).forEach(([key, value]) => {
             if (key === 'className') element.className = value;
-            else if (key === 'style' && typeof value === 'object') Object.assign(element.style, value);
+            else if (key === 'style' && typeof value === 'object')
+                Object.assign(element.style, value);
             else element.setAttribute(key, value);
         });
 
@@ -31,12 +32,20 @@ export const domUtils = {
             className: 'site-item-favicon',
             src: this.getFaviconUrl(domain),
             alt: domain,
-            onerror: "this.style.display='none'"
+            onerror: "this.style.display='none'",
         });
 
         const details = this.createElement('div', { className: 'site-item-details' });
-        const name = this.createElement('div', { className: 'site-item-name' }, this.capitalize(domain));
-        const time = this.createElement('div', { className: 'site-item-time' }, this.formatDetailedTime(todayTime));
+        const name = this.createElement(
+            'div',
+            { className: 'site-item-name' },
+            this.capitalize(domain)
+        );
+        const time = this.createElement(
+            'div',
+            { className: 'site-item-time' },
+            this.formatDetailedTime(todayTime)
+        );
 
         details.appendChild(name);
         details.appendChild(time);
@@ -47,7 +56,7 @@ export const domUtils = {
         const blockBtn = this.createElement('button', {
             className: `site-item-btn ${isBlocked ? 'blocked' : ''}`,
             title: isBlocked ? 'Unblock site' : 'Block site',
-            'data-domain': domain
+            'data-domain': domain,
         });
 
         blockBtn.innerHTML = isBlocked
@@ -71,16 +80,17 @@ export const domUtils = {
                 borderTop: '2px solid #2196F3',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
-                display: 'inline-block'
-            }
+                display: 'inline-block',
+            },
         });
 
         if (!document.getElementById('spinner-styles')) {
             const styles = this.createElement('style', { id: 'spinner-styles' });
-            styles.textContent = '@keyframes spin {0% { transform: rotate(0deg); }100% { transform: rotate(360deg); }}';
+            styles.textContent =
+                '@keyframes spin {0% { transform: rotate(0deg); }100% { transform: rotate(360deg); }}';
             document.head.appendChild(styles);
         }
 
         return spinner;
-    }
+    },
 };

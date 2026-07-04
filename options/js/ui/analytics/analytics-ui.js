@@ -4,7 +4,14 @@ import { applyAnalyticsUISetupMethods } from './analytics-ui/setup.js';
 import { applyAnalyticsUIStatsMethods } from './analytics-ui/stats.js';
 import { applyAnalyticsUITopSitesMethods } from './analytics-ui/top-sites.js';
 
+/**
+ *
+ */
 export class AnalyticsUI {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
         this.earliestDate = null;
@@ -14,7 +21,7 @@ export class AnalyticsUI {
             getUsage: () => this.controller.usage,
             getEarliestDate: () => this.earliestDate,
             getRestrictedDomains: () => this.controller.restrictedDomains || [],
-            getSettings: () => this.controller.settings
+            getSettings: () => this.controller.settings,
         };
 
         this.chart = new AnalyticsChart(dataContext);

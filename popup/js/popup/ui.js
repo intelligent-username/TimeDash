@@ -23,7 +23,11 @@ export const uiMethods = {
         const siteFavicon = document.getElementById('siteFavicon');
         const blockBtn = document.getElementById('blockBtn');
 
-        if (!this.currentTab || !this.currentTab.url || !PopupHelpers.shouldTrackUrl(this.currentTab.url)) {
+        if (
+            !this.currentTab ||
+            !this.currentTab.url ||
+            !PopupHelpers.shouldTrackUrl(this.currentTab.url)
+        ) {
             siteName.textContent = 'Non-trackable page';
             siteTime.textContent = 'Time tracking disabled for this page';
             siteFavicon.style.display = 'none';
@@ -32,9 +36,10 @@ export const uiMethods = {
         }
 
         const domain = PopupHelpers.extractDomain(this.currentTab.url);
-        const domainData = (this.usageData && this.usageData.domains)
-            ? this.usageData.domains.find((d) => d.domain === domain)
-            : null;
+        const domainData =
+            this.usageData && this.usageData.domains
+                ? this.usageData.domains.find((d) => d.domain === domain)
+                : null;
 
         siteName.textContent = PopupHelpers.capitalize(domain);
         siteTime.textContent = domainData
@@ -66,14 +71,16 @@ export const uiMethods = {
         const sitesList = document.getElementById('sitesList');
 
         if (!this.usageData || !this.usageData.domains || this.usageData.domains.length === 0) {
-            sitesList.innerHTML = '<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>No sites tracked yet.<br>Start browsing to see your usage!</p></div>';
+            sitesList.innerHTML =
+                '<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>No sites tracked yet.<br>Start browsing to see your usage!</p></div>';
             return;
         }
 
         const topSites = this.usageData.domains.filter((site) => site.todayTime > 0).slice(0, 5);
 
         if (topSites.length === 0) {
-            sitesList.innerHTML = '<div class="popup-empty-state"><p>No activity today yet.<br>Your tracked sites will appear here.</p></div>';
+            sitesList.innerHTML =
+                '<div class="popup-empty-state"><p>No activity today yet.<br>Your tracked sites will appear here.</p></div>';
             return;
         }
 
@@ -88,8 +95,9 @@ export const uiMethods = {
             }
         });
 
-        const newDomains = topSites.map(s => s.domain);
-        const sameOrder = newDomains.length === oldDomains.length &&
+        const newDomains = topSites.map((s) => s.domain);
+        const sameOrder =
+            newDomains.length === oldDomains.length &&
             newDomains.every((d, i) => d === oldDomains[i]);
 
         if (sameOrder) {
@@ -97,7 +105,8 @@ export const uiMethods = {
                 const el = existingMap.get(site.domain);
                 if (el) {
                     const timeEl = el.querySelector('.site-item-time');
-                    if (timeEl) timeEl.textContent = PopupHelpers.formatDetailedTime(site.todayTime);
+                    if (timeEl)
+                        timeEl.textContent = PopupHelpers.formatDetailedTime(site.todayTime);
                 }
             });
             return;
@@ -111,12 +120,13 @@ export const uiMethods = {
 
         const fragment = document.createDocumentFragment();
         newDomains.forEach((domain) => {
-            const siteData = topSites.find(s => s.domain === domain);
+            const siteData = topSites.find((s) => s.domain === domain);
             if (!siteData) return;
             const existing = existingMap.get(domain);
             if (existing) {
                 const timeEl = existing.querySelector('.site-item-time');
-                if (timeEl) timeEl.textContent = PopupHelpers.formatDetailedTime(siteData.todayTime);
+                if (timeEl)
+                    timeEl.textContent = PopupHelpers.formatDetailedTime(siteData.todayTime);
                 fragment.appendChild(existing);
             } else {
                 const siteItem = PopupHelpers.createSiteItem(siteData);
@@ -135,7 +145,8 @@ export const uiMethods = {
         const toggleBtn = document.getElementById('toggleTracking');
 
         const isTracking = (this.settings && this.settings.trackingEnabled) !== false;
-        const totalSites = (this.usageData && this.usageData.domains) ? this.usageData.domains.length : 0;
+        const totalSites =
+            this.usageData && this.usageData.domains ? this.usageData.domains.length : 0;
 
         trackingStatus.textContent = isTracking ? '● Tracking Active' : '● Tracking Paused';
         trackingStatus.className = `tracking-status ${isTracking ? 'active' : 'paused'}`;
@@ -156,7 +167,8 @@ export const uiMethods = {
         root.setAttribute('data-theme', this.settings.theme || 'auto');
 
         const accent = this.settings.accentColor || 'blue';
-        const isCustomHex = typeof accent === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(accent);
+        const isCustomHex =
+            typeof accent === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(accent);
 
         if (!isCustomHex) {
             root.setAttribute('data-accent', accent);
@@ -197,7 +209,7 @@ export const uiMethods = {
         return {
             r: (int >> 16) & 255,
             g: (int >> 8) & 255,
-            b: int & 255
+            b: int & 255,
         };
     },
 
@@ -216,5 +228,5 @@ export const uiMethods = {
         const g = clamp(a.g + (b.g - a.g) * ratio);
         const bl = clamp(a.b + (b.b - a.b) * ratio);
         return this.rgbToHex(r, g, bl);
-    }
+    },
 };

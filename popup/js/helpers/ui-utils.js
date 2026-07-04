@@ -3,35 +3,48 @@ export const uiUtils = {
         const existingToast = document.querySelector('.toast');
         if (existingToast) existingToast.remove();
 
-        const colors = { success: '#4CAF50', error: '#F44336', warning: '#FF9800', info: '#2196F3' };
-        const toast = this.createElement('div', {
-            className: 'toast',
-            style: {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                background: colors[type] || colors.info,
-                color: 'white',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                zIndex: '10000',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                transform: 'translateX(100%)',
-                transition: 'transform 0.3s ease, opacity 0.3s ease',
-                maxWidth: '300px',
-                wordWrap: 'break-word'
-            }
-        }, message);
+        const colors = {
+            success: '#4CAF50',
+            error: '#F44336',
+            warning: '#FF9800',
+            info: '#2196F3',
+        };
+        const toast = this.createElement(
+            'div',
+            {
+                className: 'toast',
+                style: {
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    background: colors[type] || colors.info,
+                    color: 'white',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    zIndex: '10000',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    transform: 'translateX(100%)',
+                    transition: 'transform 0.3s ease, opacity 0.3s ease',
+                    maxWidth: '300px',
+                    wordWrap: 'break-word',
+                },
+            },
+            message
+        );
 
         document.body.appendChild(toast);
-        requestAnimationFrame(() => { toast.style.transform = 'translateX(0)'; });
+        requestAnimationFrame(() => {
+            toast.style.transform = 'translateX(0)';
+        });
 
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(100%)';
-            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300);
         }, duration);
     },
 
@@ -87,5 +100,5 @@ export const uiUtils = {
         }
 
         container.appendChild(wrapper);
-    }
+    },
 };

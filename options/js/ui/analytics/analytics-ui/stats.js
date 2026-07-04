@@ -1,5 +1,9 @@
 import { formatTime, formatDateString } from '../../../utils/formatting.js';
 
+/**
+ *
+ * @param AnalyticsUI
+ */
 export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
     AnalyticsUI.prototype.update = function update() {
         const usage = this.controller.usage || {};
@@ -70,7 +74,11 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         if (el) el.textContent = `${count} Sites Tracked`;
     };
 
-    AnalyticsUI.prototype.calculateAverageForDays = function calculateAverageForDays(usage, days, offset = 0) {
+    AnalyticsUI.prototype.calculateAverageForDays = function calculateAverageForDays(
+        usage,
+        days,
+        offset = 0
+    ) {
         const now = new Date();
         let total = 0;
         let validDays = 0;
@@ -90,7 +98,9 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         return { total, count: validDays };
     };
 
-    AnalyticsUI.prototype.calculateAndStoreDailyAverages = function calculateAndStoreDailyAverages(usage) {
+    AnalyticsUI.prototype.calculateAndStoreDailyAverages = function calculateAndStoreDailyAverages(
+        usage
+    ) {
         const periods = [7, 14, 30, 100];
         const dailyAverages = [];
 
@@ -104,7 +114,9 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         if (dailyAverages.length === 0) {
             const totalOverall = this.calculateTotalOverall(usage);
             const daysSinceStart = this.earliestDate
-                ? Math.ceil(Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000) || 1
+                ? Math.ceil(
+                      Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000
+                  ) || 1
                 : 1;
             const allTimeAvg = daysSinceStart > 0 ? Math.round(totalOverall / daysSinceStart) : 0;
             dailyAverages.push({ days: 'All', average: allTimeAvg });
@@ -183,7 +195,9 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         });
     };
 
-    AnalyticsUI.prototype.calculateAndUpdateNetChange = function calculateAndUpdateNetChange(usage) {
+    AnalyticsUI.prototype.calculateAndUpdateNetChange = function calculateAndUpdateNetChange(
+        usage
+    ) {
         const thisWeek = this.calculateAverageForDays(usage, 7, 0);
         const lastWeek = this.calculateAverageForDays(usage, 7, 7);
 
@@ -197,7 +211,9 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         } else {
             const totalOverall = this.calculateTotalOverall(usage);
             const daysSinceStart = this.earliestDate
-                ? Math.ceil(Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000) || 1
+                ? Math.ceil(
+                      Math.max(0, Date.now() - new Date(this.earliestDate).getTime()) / 86400000
+                  ) || 1
                 : 1;
             const overallAvg = daysSinceStart > 0 ? Math.round(totalOverall / daysSinceStart) : 0;
             change = thisAvg - overallAvg;
@@ -214,7 +230,8 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const iconWrapper = el.closest('.stat-card')?.querySelector('.stat-icon-wrapper');
         if (iconWrapper) {
             iconWrapper.style.color = change >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-            iconWrapper.style.background = change >= 0 ? 'var(--success-fade)' : 'var(--danger-fade)';
+            iconWrapper.style.background =
+                change >= 0 ? 'var(--success-fade)' : 'var(--danger-fade)';
         }
     };
 
@@ -233,28 +250,36 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         if (this.currentPeriod === 'all') {
             periodLabel = 'All Time';
             for (const domain of domains) periodTotal += (usage[domain].cumulative || 0) * 1000;
-            periodDays = this.earliestDate ? Math.ceil(Math.max(0, now - new Date(this.earliestDate)) / 86400000) || 1 : 1;
+            periodDays = this.earliestDate
+                ? Math.ceil(Math.max(0, now - new Date(this.earliestDate)) / 86400000) || 1
+                : 1;
             return { periodTotal, periodDays, periodLabel };
         }
 
         if (this.currentPeriod === 'week') {
             const endDate = new Date(now);
-            endDate.setDate(now.getDate() + (this.chart.offset * 7));
+            endDate.setDate(now.getDate() + this.chart.offset * 7);
             const startDate = new Date(endDate);
             startDate.setDate(endDate.getDate() - 6);
             periodLabel = this.chart.offset === 0 ? 'Past 7 Days' : 'Selected Week';
             for (let i = 0; i < 7; i++) {
-                const date = new Date(startDate); date.setDate(startDate.getDate() + i);
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
                 const dateStr = formatDateString(date);
                 if (isValidDay(dateStr)) periodDays++;
                 for (const domain of domains) periodTotal += (usage[domain][dateStr] || 0) * 1000;
             }
         } else if (this.currentPeriod === 'month') {
             const startOfMonth = new Date(now.getFullYear(), now.getMonth() + this.chart.offset, 1);
-            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + this.chart.offset + 1, 0).getDate();
+            const daysInMonth = new Date(
+                now.getFullYear(),
+                now.getMonth() + this.chart.offset + 1,
+                0
+            ).getDate();
             periodLabel = this.chart.offset === 0 ? 'This Month' : 'Selected Month';
             for (let i = 1; i <= daysInMonth; i++) {
-                const date = new Date(startOfMonth); date.setDate(i);
+                const date = new Date(startOfMonth);
+                date.setDate(i);
                 const dateStr = formatDateString(date);
                 if (isValidDay(dateStr)) periodDays++;
                 for (const domain of domains) periodTotal += (usage[domain][dateStr] || 0) * 1000;
@@ -267,7 +292,8 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dateStr = formatDateString(new Date(year, month, day));
                     if (isValidDay(dateStr)) periodDays++;
-                    for (const domain of domains) periodTotal += (usage[domain][dateStr] || 0) * 1000;
+                    for (const domain of domains)
+                        periodTotal += (usage[domain][dateStr] || 0) * 1000;
                 }
             }
         } else {

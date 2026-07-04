@@ -1,3 +1,7 @@
+/**
+ *
+ * @param CurrentlyPlayingUI
+ */
 export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.render = function render(sessions) {
         const list = document.getElementById('currentlyPlayingList');
@@ -8,7 +12,13 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
             (session.videos || []).forEach((video, index) => {
                 if (!video || !video.id || !session || !session.tabId) return;
                 if (this._isIrrelevant(session, video)) return;
-                items.push({ tabId: session.tabId, tabTitle: session.title, url: session.url, video, index });
+                items.push({
+                    tabId: session.tabId,
+                    tabTitle: session.title,
+                    url: session.url,
+                    video,
+                    index,
+                });
             });
         });
 
@@ -21,16 +31,21 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
             deduped.push(item);
         }
 
-        deduped.sort((a, b) => Number(b.video.interactedAt || 0) - Number(a.video.interactedAt || 0));
+        deduped.sort(
+            (a, b) => Number(b.video.interactedAt || 0) - Number(a.video.interactedAt || 0)
+        );
 
-        const visibleItems = deduped.filter((item) => !this.dismissedKeys.has(this.getVideoKey(item)));
+        const visibleItems = deduped.filter(
+            (item) => !this.dismissedKeys.has(this.getVideoKey(item))
+        );
         if (visibleItems.length === 0) {
             list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
             return;
         }
 
         list.innerHTML = visibleItems.map((item) => this.renderItem(item)).join('');
-        if (!list.innerHTML) list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
+        if (!list.innerHTML)
+            list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
     };
 
     CurrentlyPlayingUI.prototype.renderItem = function renderItem(item) {
@@ -38,7 +53,9 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
         const currentTime = Number(item.video.currentTime || 0);
         const paused = Boolean(item.video.paused);
         const cleanedTitle = this.escapeHtml(this.cleanTitle(item.tabTitle));
-        const sourceLabel = this.escapeHtml(this.normalizeSourceLabel(item.video.sourceLabel, item.url));
+        const sourceLabel = this.escapeHtml(
+            this.normalizeSourceLabel(item.video.sourceLabel, item.url)
+        );
         const videoKey = this.getVideoKey(item);
         const frameId = Number.isInteger(item.video.frameId) ? item.video.frameId : '';
 
@@ -65,7 +82,8 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
 
     CurrentlyPlayingUI.prototype._isIrrelevant = function _isIrrelevant(session, video) {
         const url = (session.url || '').toLowerCase();
-        if (/google\.com\/search|bing\.com\/search|search\.yahoo\.com|duckduckgo\.com\//.test(url)) return true;
+        if (/google\.com\/search|bing\.com\/search|search\.yahoo\.com|duckduckgo\.com\//.test(url))
+            return true;
 
         const duration = Number(video.duration || 0);
         const currentTime = Number(video.currentTime || 0);
@@ -82,7 +100,16 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.getHostLabel = function getHostLabel(url) {
         try {
             const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase();
-            const hostMap = { 'youtube.com': 'YouTube', 'youtu.be': 'YouTube', 'facebook.com': 'Facebook', 'm.facebook.com': 'Facebook', 'vimeo.com': 'Vimeo', 'twitch.tv': 'Twitch', 'x.com': 'X', 'twitter.com': 'X' };
+            const hostMap = {
+                'youtube.com': 'YouTube',
+                'youtu.be': 'YouTube',
+                'facebook.com': 'Facebook',
+                'm.facebook.com': 'Facebook',
+                'vimeo.com': 'Vimeo',
+                'twitch.tv': 'Twitch',
+                'x.com': 'X',
+                'twitter.com': 'X',
+            };
             if (hostMap[host]) return hostMap[host];
             const base = host.split('.').slice(-2, -1)[0] || host;
             return base.replace(/[-_]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
@@ -91,13 +118,19 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
         }
     };
 
-    CurrentlyPlayingUI.prototype.normalizeSourceLabel = function normalizeSourceLabel(sourceLabel, url) {
+    CurrentlyPlayingUI.prototype.normalizeSourceLabel = function normalizeSourceLabel(
+        sourceLabel,
+        url
+    ) {
         const source = String(sourceLabel || '').trim();
         if (!source) return this.getHostLabel(url);
         const looksLikeHost = /^[\w.-]+\.[a-z]{2,}$/i.test(source);
         if (looksLikeHost) {
-            try { return this.getHostLabel(`https://${source}`); }
-            catch { return this.getHostLabel(url); }
+            try {
+                return this.getHostLabel(`https://${source}`);
+            } catch {
+                return this.getHostLabel(url);
+            }
         }
         return source;
     };
@@ -105,7 +138,11 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.cleanTitle = function cleanTitle(title) {
         const raw = String(title || '').trim();
         if (!raw) return 'Untitled video';
-        return raw.replace(/\s*[\-|•|·]\s*YouTube\s*$/i, '').replace(/\s*[\-|•|·]\s*Vimeo\s*$/i, '').replace(/\s*[\-|•|·]\s*Facebook\s*$/i, '').trim();
+        return raw
+            .replace(/\s*[-|•|·]\s*YouTube\s*$/i, '')
+            .replace(/\s*[-|•|·]\s*Vimeo\s*$/i, '')
+            .replace(/\s*[-|•|·]\s*Facebook\s*$/i, '')
+            .trim();
     };
 
     CurrentlyPlayingUI.prototype.formatTime = function formatTime(seconds) {
@@ -113,6 +150,11 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     };
 
     CurrentlyPlayingUI.prototype.escapeHtml = function escapeHtml(value) {
-        return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     };
 }

@@ -36,7 +36,9 @@
     opacity: 0.8;
 }
 
-.quick-link:hover svg { opacity: 1; }
+.quick-link:hover svg {
+    opacity: 1;
+}
 
 .quick-link span {
     font-weight: 600;
@@ -50,9 +52,13 @@
 }
 
 @media (max-width: 900px) {
-    .quick-links-grid { grid-template-columns: repeat(3, 1fr); }
+    .quick-links-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 600px) {
-    .quick-links-grid { grid-template-columns: repeat(2, 1fr); }
+    .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

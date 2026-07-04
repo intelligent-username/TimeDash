@@ -1,11 +1,21 @@
 import { getFaviconUrl } from '../utils/dom.js';
 
+/**
+ *
+ */
 export class BlockingUI {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
         this.limitUpdateTimers = new Map();
     }
 
+    /**
+     *
+     */
     setup() {
         const addBlockedBtn = document.getElementById('addBlockedBtn');
         const blockedDomainInput = document.getElementById('blockedDomainInput');
@@ -49,6 +59,12 @@ export class BlockingUI {
         }
     }
 
+    /**
+     *
+     * @param domain
+     * @param ruleType
+     * @param timeLimitMinutes
+     */
     async addSiteRule(domain, ruleType, timeLimitMinutes = 30) {
         if (!domain) {
             this.controller.showWarning('Please enter a domain');
@@ -56,7 +72,10 @@ export class BlockingUI {
         }
 
         const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z0-9][a-zA-Z0-9-]*)+$/;
-        const cleanDomain = domain.toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+        const cleanDomain = domain
+            .toLowerCase()
+            .replace(/^(https?:\/\/)?(www\.)?/, '')
+            .split('/')[0];
 
         if (!domainPattern.test(cleanDomain)) {
             this.controller.showWarning('Please enter a valid domain (e.g., facebook.com)');
@@ -78,6 +97,10 @@ export class BlockingUI {
         }
     }
 
+    /**
+     *
+     * @param domain
+     */
     async removeSiteRule(domain) {
         try {
             await chrome.runtime.sendMessage({
@@ -92,17 +115,26 @@ export class BlockingUI {
         }
     }
 
+    /**
+     *
+     */
     async loadSiteRules() {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' });
             this.renderBlockedList(response.blocked || []);
             this.renderRestrictedList(response.restricted || []);
-            this.controller.updateRestrictedDomains(response.restricted ? response.restricted.map(r => r.domain) : []);
+            this.controller.updateRestrictedDomains(
+                response.restricted ? response.restricted.map((r) => r.domain) : []
+            );
         } catch (error) {
             console.error('Error loading site rules:', error);
         }
     }
 
+    /**
+     *
+     * @param domains
+     */
     renderBlockedList(domains) {
         const list = document.getElementById('blockedList');
         if (!list) return;
@@ -125,6 +157,10 @@ export class BlockingUI {
         });
     }
 
+    /**
+     *
+     * @param sites
+     */
     renderRestrictedList(sites) {
         const list = document.getElementById('restrictedList');
         if (!list) return;
@@ -140,7 +176,9 @@ export class BlockingUI {
             const favicon = document.createElement('img');
             favicon.className = 'rule-favicon';
             favicon.src = getFaviconUrl(domain);
-            favicon.onerror = () => { favicon.style.display = 'none'; };
+            favicon.onerror = () => {
+                favicon.style.display = 'none';
+            };
 
             const domainSpan = document.createElement('span');
             domainSpan.className = 'rule-domain';
@@ -171,7 +209,12 @@ export class BlockingUI {
 
             const saveLimit = async () => {
                 const newLimit = parseInt(limitInput.value, 10);
-                if (!Number.isNaN(newLimit) && newLimit >= 0 && newLimit <= 1440 && newLimit !== timeLimitMinutes) {
+                if (
+                    !Number.isNaN(newLimit) &&
+                    newLimit >= 0 &&
+                    newLimit <= 1440 &&
+                    newLimit !== timeLimitMinutes
+                ) {
                     await this.addSiteRule(domain, 'RESTRICTED', newLimit);
                     timeLimitMinutes = newLimit;
                 } else if (Number.isNaN(newLimit) || newLimit < 0 || newLimit > 1440) {

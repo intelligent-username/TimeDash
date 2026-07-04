@@ -1,9 +1,8 @@
-'use strict';
+/* global SiteRule */
 
 /**
- * @fileoverview Restricted rule - allows access until a time limit is exceeded
+ * @file Restricted rule - allows access until a time limit is exceeded
  */
-
 
 /**
  * Rule that restricts access based on daily time usage
@@ -24,7 +23,7 @@ class RestrictedRule extends SiteRule {
 
     /**
      * Evaluate access based on usage time
-     * @param {Object} usageStats - Must contain { todayTimeSeconds }
+     * @param {object} usageStats - Must contain { todayTimeSeconds }
      * @returns {{ shouldBlock: boolean, reason: string, remainingMinutes?: number }}
      */
     evaluate(usageStats) {
@@ -52,7 +51,7 @@ class RestrictedRule extends SiteRule {
 
     /**
      * Serialize rule to plain object for storage
-     * @returns {Object} Serialized rule
+     * @returns {object} Serialized rule
      */
     toJSON() {
         return {
@@ -63,7 +62,7 @@ class RestrictedRule extends SiteRule {
 
     /**
      * Create RestrictedRule from serialized data
-     * @param {Object} data - Serialized rule data
+     * @param {object} data - Serialized rule data
      * @returns {RestrictedRule}
      */
     static fromJSON(data) {

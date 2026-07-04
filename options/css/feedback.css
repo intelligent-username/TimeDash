@@ -210,7 +210,6 @@ select:disabled {
 }
 
 @keyframes pulse {
-
     0%,
     100% {
         opacity: 1;
@@ -223,7 +222,6 @@ select:disabled {
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {

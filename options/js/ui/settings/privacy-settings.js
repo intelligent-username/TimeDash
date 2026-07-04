@@ -4,14 +4,17 @@ export const privacySettingsMethods = {
             incognitoTracking: 'incognitoTracking',
             autoPurgeEnabled: 'autoPurgeEnabled',
             autoPurgeDays: 'autoPurgeDays',
-            storageLimitMB: 'storageLimitMB'
+            storageLimitMB: 'storageLimitMB',
         });
 
         const limitInput = document.getElementById('storageLimitMB');
         if (limitInput) {
             limitInput.addEventListener('input', () => {
                 setTimeout(() => {
-                    if (this.controller.dataManager && this.controller.dataManager.updateStorageUsage) {
+                    if (
+                        this.controller.dataManager &&
+                        this.controller.dataManager.updateStorageUsage
+                    ) {
                         this.controller.dataManager.updateStorageUsage();
                     }
                 }, 100);
@@ -56,7 +59,9 @@ export const privacySettingsMethods = {
             list.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('rule-delete-btn')) return;
                 const domain = e.target.dataset.domain;
-                const newWhitelist = (this.controller.settings.whitelist || []).filter(d => d !== domain);
+                const newWhitelist = (this.controller.settings.whitelist || []).filter(
+                    (d) => d !== domain
+                );
                 this.controller.updateSetting('whitelist', newWhitelist);
                 this.renderWhitelist(newWhitelist);
             });
@@ -67,11 +72,15 @@ export const privacySettingsMethods = {
         const list = document.getElementById('whitelistList');
         if (!list) return;
 
-        list.innerHTML = whitelist.map(domain => `
+        list.innerHTML = whitelist
+            .map(
+                (domain) => `
             <li class="rule-item">
                 <span class="rule-domain">${domain}</span>
                 <button class="rule-delete-btn" data-domain="${domain}">Remove</button>
             </li>
-        `).join('');
-    }
+        `
+            )
+            .join('');
+    },
 };

@@ -8,7 +8,8 @@ export const sharedSettingsMethods = {
             const element = document.getElementById(elementId);
             if (!element) return;
 
-            const eventType = (element.type === 'checkbox' || element.tagName === 'SELECT') ? 'change' : 'input';
+            const eventType =
+                element.type === 'checkbox' || element.tagName === 'SELECT' ? 'change' : 'input';
             element.addEventListener(eventType, () => {
                 let val;
                 if (element.type === 'checkbox') val = element.checked;
@@ -20,17 +21,22 @@ export const sharedSettingsMethods = {
     },
 
     renderCustomColors(pickerId, colors, settingKey) {
-        const wrapperId = pickerId === 'accentColorPicker' ? 'customAccentColors' : 'customOverlayColors';
+        const wrapperId =
+            pickerId === 'accentColorPicker' ? 'customAccentColors' : 'customOverlayColors';
         const wrapper = document.getElementById(wrapperId);
         if (!wrapper) return;
 
         const activeColor = this.controller.settings[settingKey];
-        wrapper.innerHTML = colors.map(color => `
+        wrapper.innerHTML = colors
+            .map(
+                (color) => `
             <div class="custom-swatch">
                 <button type="button" class="color-swatch ${color === activeColor ? 'active' : ''}" data-color="${color}" style="background: ${color};" title="${color}"></button>
                 <div class="swatch-delete" title="Delete Color">×</div>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
 
         const container = document.getElementById(pickerId);
         const addBtn = container ? container.querySelector('.custom-color-container') : null;
@@ -42,7 +48,7 @@ export const sharedSettingsMethods = {
         if (!picker) return;
 
         let foundMatch = false;
-        picker.querySelectorAll('.color-swatch').forEach(swatch => {
+        picker.querySelectorAll('.color-swatch').forEach((swatch) => {
             const isActive = swatch.dataset.color === value;
             swatch.classList.toggle('active', isActive);
             if (isActive) foundMatch = true;
@@ -78,7 +84,7 @@ export const sharedSettingsMethods = {
             trackingFrequency: 'trackingFrequency',
             autoPurgeEnabled: 'autoPurgeEnabled',
             autoPurgeDays: 'autoPurgeDays',
-            storageLimitMB: 'storageLimitMB'
+            storageLimitMB: 'storageLimitMB',
         };
 
         Object.entries(mapping).forEach(([key, id]) => {
@@ -91,12 +97,17 @@ export const sharedSettingsMethods = {
 
         const speedSlider = document.getElementById('currentSpeedSlider');
         if (speedSlider) {
-            if (settings.maxPlaybackSpeed !== undefined) speedSlider.max = settings.maxPlaybackSpeed;
-            if (settings.currentPlaybackSpeed !== undefined) speedSlider.value = settings.currentPlaybackSpeed;
+            if (settings.maxPlaybackSpeed !== undefined)
+                speedSlider.max = settings.maxPlaybackSpeed;
+            if (settings.currentPlaybackSpeed !== undefined)
+                speedSlider.value = settings.currentPlaybackSpeed;
         }
 
         const controllerSkipPace = document.getElementById('controllerSkipPace');
-        if (controllerSkipPace && (!Number.isFinite(settings.controllerSkipPace) || settings.controllerSkipPace <= 0)) {
+        if (
+            controllerSkipPace &&
+            (!Number.isFinite(settings.controllerSkipPace) || settings.controllerSkipPace <= 0)
+        ) {
             controllerSkipPace.value = 10;
         }
 
@@ -117,14 +128,23 @@ export const sharedSettingsMethods = {
         }
 
         const autoPurgeParams = document.getElementById('autoPurgeSettings');
-        if (autoPurgeParams) autoPurgeParams.classList.toggle('visible', Boolean(settings.autoPurgeEnabled));
+        if (autoPurgeParams)
+            autoPurgeParams.classList.toggle('visible', Boolean(settings.autoPurgeEnabled));
 
         this.renderWhitelist(settings.whitelist || []);
-        this.renderCustomColors('accentColorPicker', settings.customAccentColors || [], 'accentColor');
-        this.renderCustomColors('overlayColorPicker', settings.customOverlayColors || [], 'overlayColor');
+        this.renderCustomColors(
+            'accentColorPicker',
+            settings.customAccentColors || [],
+            'accentColor'
+        );
+        this.renderCustomColors(
+            'overlayColorPicker',
+            settings.customOverlayColors || [],
+            'overlayColor'
+        );
         this.populateColorPicker('accentColorPicker', settings.accentColor || 'blue');
         this.populateColorPicker('overlayColorPicker', settings.overlayColor || 'blue');
 
         // Theme and accent application are centralized in OptionsController.applyImmediateChanges
-    }
+    },
 };

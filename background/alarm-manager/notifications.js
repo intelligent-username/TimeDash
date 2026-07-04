@@ -1,7 +1,11 @@
 'use strict';
 
 function applyAlarmNotificationMethods(AlarmManager) {
-    AlarmManager.prototype.checkAndSendQuotaWarnings = async function checkAndSendQuotaWarnings(totalUsage, dailyLimit, percentage) {
+    AlarmManager.prototype.checkAndSendQuotaWarnings = async function checkAndSendQuotaWarnings(
+        totalUsage,
+        dailyLimit,
+        percentage
+    ) {
         const warnings = await chrome.storage.local.get('quotaWarningsSent');
         const sentWarnings = warnings.quotaWarningsSent || {};
         const today = this.getLocalDateString();
@@ -28,7 +32,11 @@ function applyAlarmNotificationMethods(AlarmManager) {
         await chrome.storage.local.set({ quotaWarningsSent: sentWarnings });
     };
 
-    AlarmManager.prototype.sendQuotaWarning = async function sendQuotaWarning(percentage, totalUsage, dailyLimit) {
+    AlarmManager.prototype.sendQuotaWarning = async function sendQuotaWarning(
+        percentage,
+        totalUsage,
+        dailyLimit
+    ) {
         const title = percentage >= 100 ? 'Daily Limit Exceeded!' : 'Daily Limit Warning';
         const message =
             percentage >= 100
@@ -43,40 +51,40 @@ function applyAlarmNotificationMethods(AlarmManager) {
         });
     };
 
-    AlarmManager.prototype.sendDailySummaryNotification = async function sendDailySummaryNotification() {
-        try {
-            const usage = await chrome.storage.local.get('usage');
-            const usageData = usage.usage || {};
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = this.getLocalDateString(yesterday);
+    AlarmManager.prototype.sendDailySummaryNotification =
+        async function sendDailySummaryNotification() {
+            try {
+                const usage = await chrome.storage.local.get('usage');
+                const usageData = usage.usage || {};
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = this.getLocalDateString(yesterday);
 
-            let totalYesterdayUsage = 0;
-            let topDomain = '';
-            let topDomainTime = 0;
+                let totalYesterdayUsage = 0;
+                let topDomain = '';
+                let topDomainTime = 0;
 
-            for (const [domain, domainData] of Object.entries(usageData)) {
-                const dayUsage = domainData[yesterdayStr] || 0;
-                totalYesterdayUsage += dayUsage;
+                for (const [domain, domainData] of Object.entries(usageData)) {
+                    const dayUsage = domainData[yesterdayStr] || 0;
+                    totalYesterdayUsage += dayUsage;
 
-                if (dayUsage > topDomainTime) {
-                    topDomainTime = dayUsage;
-                    topDomain = domain;
+                    if (dayUsage > topDomainTime) {
+                        topDomainTime = dayUsage;
+                        topDomain = domain;
+                    }
                 }
-            }
 
-            if (totalYesterdayUsage > 0) {
-                const message = `Yesterday: ${Math.floor(totalYesterdayUsage / 60)} minutes total. Top site: ${topDomain} (${Math.floor(topDomainTime / 60)} min)`;
-                await chrome.notifications.create({
-                    type: 'basic',
-                    iconUrl: 'imgs/Logo.png',
-                    title: 'TimeDash Daily Summary',
-                    message,
-                });
+                if (totalYesterdayUsage > 0) {
+                    const message = `Yesterday: ${Math.floor(totalYesterdayUsage / 60)} minutes total. Top site: ${topDomain} (${Math.floor(topDomainTime / 60)} min)`;
+                    await chrome.notifications.create({
+                        type: 'basic',
+                        iconUrl: 'imgs/Logo.png',
+                        title: 'TimeDash Daily Summary',
+                        message,
+                    });
+                }
+            } catch (error) {
+                console.error('Error sending daily summary:', error);
             }
-        } catch (error) {
-            console.error('Error sending daily summary:', error);
-        }
-    };
+        };
 }
-

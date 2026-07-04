@@ -1,8 +1,18 @@
+/**
+ *
+ */
 export class DataManager {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
     }
 
+    /**
+     *
+     */
     setup() {
         // Header actions
         const exportBtn = document.getElementById('exportBtn'); // In header
@@ -23,7 +33,8 @@ export class DataManager {
         }
 
         const resetSettingsBtn = document.getElementById('resetSettings');
-        if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', () => this.resetSettings());
+        if (resetSettingsBtn)
+            resetSettingsBtn.addEventListener('click', () => this.resetSettings());
 
         // Privacy Tab Actions
         const exportPrivacyBtn = document.getElementById('exportDataPrivacy');
@@ -33,6 +44,9 @@ export class DataManager {
         this.updateStorageUsage();
     }
 
+    /**
+     *
+     */
     setupDataSearch() {
         const searchInput = document.getElementById('deleteDataSearch');
         const resultsDiv = document.getElementById('deleteDataResults');
@@ -46,19 +60,24 @@ export class DataManager {
                 }
 
                 const usage = this.controller.usage || {};
-                const matches = Object.keys(usage).filter(d => d.includes(query));
+                const matches = Object.keys(usage).filter((d) => d.includes(query));
 
                 if (matches.length > 0) {
                     resultsDiv.style.display = 'block';
-                    resultsDiv.innerHTML = matches.map(d => `
+                    resultsDiv.innerHTML = matches
+                        .map(
+                            (d) => `
                         <div class="rule-item" style="padding: 8px; border-bottom: 1px solid var(--border-color);">
                             <span class="rule-domain">${d}</span>
                             <button class="rule-delete-btn" data-delete-domain="${d}">Delete</button>
                         </div>
-                    `).join('');
+                    `
+                        )
+                        .join('');
                 } else {
                     resultsDiv.style.display = 'block';
-                    resultsDiv.innerHTML = '<div style="padding: 8px; color: var(--text-secondary);">No matches found</div>';
+                    resultsDiv.innerHTML =
+                        '<div style="padding: 8px; color: var(--text-secondary);">No matches found</div>';
                 }
             });
 
@@ -80,6 +99,9 @@ export class DataManager {
         }
     }
 
+    /**
+     *
+     */
     async updateStorageUsage() {
         if (!this.controller.storageManager.getStorageUsage) return;
         const bytes = await this.controller.storageManager.getStorageUsage();
@@ -117,6 +139,9 @@ export class DataManager {
         }
     }
 
+    /**
+     *
+     */
     async exportData() {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'EXPORT_DATA_JSON' });
@@ -138,6 +163,10 @@ export class DataManager {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     async importData(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -165,6 +194,9 @@ export class DataManager {
         }
     }
 
+    /**
+     *
+     */
     async resetSettings() {
         if (!confirm('Reset ALL settings and data? This cannot be undone.')) return;
 
@@ -175,7 +207,7 @@ export class DataManager {
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.controller.showSuccess('Settings reset to defaults');
-        } catch (error) {
+        } catch {
             this.controller.showError('Failed to reset settings');
         }
     }

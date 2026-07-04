@@ -2,7 +2,14 @@ import { applyCurrentlyPlayingMessagingMethods } from './currently-playing/messa
 import { applyCurrentlyPlayingLifecycleMethods } from './currently-playing/lifecycle.js';
 import { applyCurrentlyPlayingRenderingMethods } from './currently-playing/rendering.js';
 
+/**
+ *
+ */
 export class CurrentlyPlayingUI {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
         this.pollInterval = null;

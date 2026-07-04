@@ -57,7 +57,11 @@ function applyAlarmHandlerMethods(AlarmManager) {
             }
 
             const usagePercentage = (totalTodayUsage / dailyLimitSeconds) * 100;
-            await this.checkAndSendQuotaWarnings(totalTodayUsage, dailyLimitSeconds, usagePercentage);
+            await this.checkAndSendQuotaWarnings(
+                totalTodayUsage,
+                dailyLimitSeconds,
+                usagePercentage
+            );
         } catch (error) {
             console.error('Error during quota check:', error);
         }
@@ -87,4 +91,3 @@ function applyAlarmHandlerMethods(AlarmManager) {
         }
     };
 }
-

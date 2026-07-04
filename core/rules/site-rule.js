@@ -1,7 +1,5 @@
-'use strict';
-
 /**
- * @fileoverview Base class for site access rules
+ * @file Base class for site access rules
  * Provides polymorphic interface for evaluating site access policies
  */
 
@@ -53,16 +51,16 @@ class SiteRule {
     /**
      * Evaluate whether access should be blocked
      * Must be implemented by subclasses
-     * @param {Object} usageStats - Usage statistics for the domain
+     * @param {object} _usageStats - Usage statistics for the domain
      * @returns {{ shouldBlock: boolean, reason: string }}
      */
-    evaluate(usageStats) {
+    evaluate(_usageStats) {
         throw new Error('evaluate() must be implemented by subclass');
     }
 
     /**
      * Serialize rule to plain object for storage
-     * @returns {Object} Serialized rule
+     * @returns {object} Serialized rule
      */
     toJSON() {
         return {

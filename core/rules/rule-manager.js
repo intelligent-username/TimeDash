@@ -1,11 +1,9 @@
-'use strict';
+/* global SiteRule, BlockedRule, RestrictedRule */
 
 /**
- * @fileoverview RuleManager - manages all site access rules
+ * @file RuleManager - manages all site access rules
  * Central point for evaluating and persisting site policies
  */
-
-// SiteRule, BlockedRule, RestrictedRule are loaded via importScripts in background.js
 
 /**
  * Manages collection of site access rules
@@ -70,7 +68,7 @@ class RuleManager {
 
     /**
      * Deserialize rule data to appropriate class instance
-     * @param {Object} data - Serialized rule data
+     * @param {object} data - Serialized rule data
      * @returns {SiteRule|null}
      */
     deserializeRule(data) {
@@ -143,7 +141,7 @@ class RuleManager {
     /**
      * Evaluate whether access to a URL should be blocked
      * @param {string} url - URL to evaluate
-     * @param {Object} usageStats - Usage statistics {todayTimeSeconds}
+     * @param {object} usageStats - Usage statistics {todayTimeSeconds}
      * @returns {{ shouldBlock: boolean, reason: string|null, domain: string }}
      */
     evaluateAccess(url, usageStats = {}) {

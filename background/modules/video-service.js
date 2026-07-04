@@ -15,14 +15,14 @@ class VideoService {
             'content/modules/playback-state.js',
             'content/modules/message-handler.js',
             'content/modules/keyboard-handler.js',
-            'content/content.js'
+            'content/content.js',
         ];
     }
 
     async sendMessageWithTimeout(tabId, payload, options = undefined, timeoutMs = 2000) {
         return await Promise.race([
             chrome.tabs.sendMessage(tabId, payload, options),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs)),
         ]);
     }
 
@@ -45,7 +45,11 @@ class VideoService {
                                         1500
                                     );
 
-                                    if (!response || !Array.isArray(response.videos) || response.videos.length === 0) {
+                                    if (
+                                        !response ||
+                                        !Array.isArray(response.videos) ||
+                                        response.videos.length === 0
+                                    ) {
                                         return [];
                                     }
 
@@ -64,7 +68,7 @@ class VideoService {
                         const seen = new Map();
                         const deduped = [];
                         for (const v of videos) {
-                            const key = `${(v.sourceLabel || '')}|${v.duration ?? 0}`;
+                            const key = `${v.sourceLabel || ''}|${v.duration ?? 0}`;
                             const existing = seen.get(key);
                             if (!existing) {
                                 seen.set(key, v);
@@ -80,7 +84,7 @@ class VideoService {
                             title: tab.title || 'Untitled tab',
                             url: tab.url,
                             favIconUrl: tab.favIconUrl || '',
-                            videos: deduped
+                            videos: deduped,
                         };
                     } catch {
                         return null;
@@ -90,7 +94,7 @@ class VideoService {
 
         return {
             sessions: sessionResults.filter(Boolean),
-            updatedAt: Date.now()
+            updatedAt: Date.now(),
         };
     }
 
@@ -104,15 +108,25 @@ class VideoService {
                 type: 'CONTROL_VIDEO_PLAYBACK',
                 action: message.action,
                 videoId: message.videoId,
-                value: message.value
+                value: message.value,
             };
 
             let response = null;
 
             if (Number.isInteger(message.frameId)) {
-                response = await this.sendMessageWithTimeout(message.tabId, sendPayload, { frameId: message.frameId }, 2000);
+                response = await this.sendMessageWithTimeout(
+                    message.tabId,
+                    sendPayload,
+                    { frameId: message.frameId },
+                    2000
+                );
             } else {
-                response = await this.sendMessageWithTimeout(message.tabId, sendPayload, undefined, 2000);
+                response = await this.sendMessageWithTimeout(
+                    message.tabId,
+                    sendPayload,
+                    undefined,
+                    2000
+                );
             }
 
             return response || { success: false, error: 'No response from content script' };
@@ -131,19 +145,21 @@ class VideoService {
                 .map(async (tab) => {
                     await this.ensureContentScriptReady(tab.id);
                     const frameIds = await this.getTabFrameIds(tab.id);
-                    await Promise.all(frameIds.map(async (frameId) => {
-                        try {
-                            await this.sendMessageWithTimeout(
-                                tab.id,
-                                { type: 'FORCE_VIDEO_RESCAN' },
-                                { frameId },
-                                1200
-                            );
-                            refreshedFrames++;
-                        } catch {
-                            // Tab probably closed or doesn't have content script
-                        }
-                    }));
+                    await Promise.all(
+                        frameIds.map(async (frameId) => {
+                            try {
+                                await this.sendMessageWithTimeout(
+                                    tab.id,
+                                    { type: 'FORCE_VIDEO_RESCAN' },
+                                    { frameId },
+                                    1200
+                                );
+                                refreshedFrames++;
+                            } catch {
+                                // Tab probably closed or doesn't have content script
+                            }
+                        })
+                    );
                 })
         );
 
@@ -158,7 +174,7 @@ class VideoService {
             try {
                 await chrome.scripting.executeScript({
                     target: { tabId, allFrames: true },
-                    files: this.contentScriptFiles
+                    files: this.contentScriptFiles,
                 });
                 await new Promise((resolve) => setTimeout(resolve, 80));
             } catch {

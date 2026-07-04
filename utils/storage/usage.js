@@ -21,7 +21,11 @@ function applyStorageUsageMethods(StorageManager) {
         }
     };
 
-    StorageManager.prototype.updateUsage = async function updateUsage(domain, timeSpent, usageType = 'GENERAL') {
+    StorageManager.prototype.updateUsage = async function updateUsage(
+        domain,
+        timeSpent,
+        usageType = 'GENERAL'
+    ) {
         try {
             const usage = await this.getAllUsage();
             const now = new Date();
@@ -41,11 +45,13 @@ function applyStorageUsageMethods(StorageManager) {
             if (usageType === 'RESTRICTED') {
                 const restrictedKey = `${today}_restricted`;
                 usage[domain][restrictedKey] = (usage[domain][restrictedKey] || 0) + timeSpent;
-                usage[domain].cumulative_restricted = (usage[domain].cumulative_restricted || 0) + timeSpent;
+                usage[domain].cumulative_restricted =
+                    (usage[domain].cumulative_restricted || 0) + timeSpent;
             } else {
                 const generalKey = `${today}_general`;
                 usage[domain][generalKey] = (usage[domain][generalKey] || 0) + timeSpent;
-                usage[domain].cumulative_general = (usage[domain].cumulative_general || 0) + timeSpent;
+                usage[domain].cumulative_general =
+                    (usage[domain].cumulative_general || 0) + timeSpent;
             }
 
             await chrome.storage.local.set({ usage });

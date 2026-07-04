@@ -1,5 +1,9 @@
 import { showToast } from '../../../utils/dom.js';
 
+/**
+ *
+ * @param CurrentlyPlayingUI
+ */
 export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.setup = function setup() {
         const refreshBtn = document.getElementById('currentlyPlayingRefresh');
@@ -27,7 +31,10 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 if (button.dataset.action === 'focus-tab') {
                     const tabId = Number(button.dataset.tabId);
                     if (!tabId) return;
-                    const focusRes = await chrome.runtime.sendMessage({ type: 'FOCUS_VIDEO_TAB', tabId });
+                    const focusRes = await chrome.runtime.sendMessage({
+                        type: 'FOCUS_VIDEO_TAB',
+                        tabId,
+                    });
                     if (!focusRes || !focusRes.success) showToast('Could not focus tab', 'error');
                     return;
                 }
@@ -97,13 +104,18 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
 
     CurrentlyPlayingUI.prototype.forceRefresh = async function forceRefresh() {
         const list = document.getElementById('currentlyPlayingList');
-        if (list) list.innerHTML = '<div class="analytics-empty-state">Refreshing active videos...</div>';
+        if (list)
+            list.innerHTML = '<div class="analytics-empty-state">Refreshing active videos...</div>';
 
         this.dismissedKeys.clear();
 
         try {
-            const refreshResponse = await this.sendMessageWithTimeout({ type: 'REFRESH_VIDEO_DETECTION' }, 12000);
-            if (!refreshResponse || refreshResponse.success === false) showToast('Video refresh failed', 'error');
+            const refreshResponse = await this.sendMessageWithTimeout(
+                { type: 'REFRESH_VIDEO_DETECTION' },
+                12000
+            );
+            if (!refreshResponse || refreshResponse.success === false)
+                showToast('Video refresh failed', 'error');
             if (refreshResponse && Array.isArray(refreshResponse.sessions)) {
                 this.render(refreshResponse.sessions);
                 return;
@@ -122,16 +134,21 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
         if (!list) return;
 
         try {
-            const response = await this.sendMessageWithTimeout({ type: 'GET_CURRENTLY_PLAYING_VIDEOS' }, 8000);
+            const response = await this.sendMessageWithTimeout(
+                { type: 'GET_CURRENTLY_PLAYING_VIDEOS' },
+                8000
+            );
             if (!response || response.error) {
-                list.innerHTML = '<div class="analytics-empty-state">Failed to load active videos.</div>';
+                list.innerHTML =
+                    '<div class="analytics-empty-state">Failed to load active videos.</div>';
                 return;
             }
 
             const sessions = Array.isArray(response.sessions) ? response.sessions : [];
             this.render(sessions);
         } catch {
-            list.innerHTML = '<div class="analytics-empty-state">Unable to load active videos.</div>';
+            list.innerHTML =
+                '<div class="analytics-empty-state">Unable to load active videos.</div>';
         }
     };
 }

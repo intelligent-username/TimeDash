@@ -77,4 +77,3 @@ function applyAlarmMaintenanceMethods(AlarmManager) {
         await chrome.storage.local.set({ backups: existingBackups });
     };
 }
-

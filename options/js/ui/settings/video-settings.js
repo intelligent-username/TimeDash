@@ -5,7 +5,7 @@ export const videoSettingsMethods = {
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
             speedStep: 'speedStep',
-            controllerSkipPace: 'controllerSkipPace'
+            controllerSkipPace: 'controllerSkipPace',
         });
 
         const currentSpeedNum = document.getElementById('currentPlaybackSpeed');
@@ -14,14 +14,21 @@ export const videoSettingsMethods = {
         if (currentSpeedNum && currentSpeedSlider) {
             currentSpeedSlider.addEventListener('input', () => {
                 currentSpeedNum.value = currentSpeedSlider.value;
-                this.controller.updateSetting('currentPlaybackSpeed', parseFloat(currentSpeedSlider.value));
+                this.controller.updateSetting(
+                    'currentPlaybackSpeed',
+                    parseFloat(currentSpeedSlider.value)
+                );
             });
 
             const syncCurrentSpeed = () => {
                 const rawValue = parseFloat(currentSpeedNum.value);
                 if (isNaN(rawValue)) return;
 
-                const maxAllowed = parseFloat((this.controller.settings && this.controller.settings.maxPlaybackSpeed) || currentSpeedSlider.max || 16);
+                const maxAllowed = parseFloat(
+                    (this.controller.settings && this.controller.settings.maxPlaybackSpeed) ||
+                        currentSpeedSlider.max ||
+                        16
+                );
                 const clamped = Math.max(0.05, Math.min(maxAllowed, rawValue));
                 currentSpeedNum.value = clamped;
                 currentSpeedSlider.value = clamped;
@@ -73,7 +80,7 @@ export const videoSettingsMethods = {
         const keyInputs = [
             { id: 'increaseSpeedKey', key: 'increaseSpeedKey' },
             { id: 'decreaseSpeedKey', key: 'decreaseSpeedKey' },
-            { id: 'resetSpeedKey', key: 'resetSpeedKey' }
+            { id: 'resetSpeedKey', key: 'resetSpeedKey' },
         ];
 
         const normalizationMap = {
@@ -89,7 +96,7 @@ export const videoSettingsMethods = {
             NumpadMultiply: 'Asterisk',
             NumpadDivide: 'Slash',
             Slash: 'Slash',
-            NumpadEqual: 'Equal'
+            NumpadEqual: 'Equal',
         };
 
         for (let i = 0; i <= 9; i++) {
@@ -141,5 +148,5 @@ export const videoSettingsMethods = {
                 setTimeout(() => document.addEventListener('click', cancelHandler), 0);
             });
         });
-    }
+    },
 };

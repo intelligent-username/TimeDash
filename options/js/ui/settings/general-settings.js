@@ -5,7 +5,7 @@ export const generalSettingsMethods = {
             dailyTimeLimitMinutes: 'dailyLimit',
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
-            badgeEnabled: 'badgeEnabled'
+            badgeEnabled: 'badgeEnabled',
         });
 
         const trackingCb = document.getElementById('trackingEnabled');
@@ -43,9 +43,10 @@ export const generalSettingsMethods = {
                 if (!swatch) return;
 
                 const colorToDelete = swatch.dataset.color;
-                const customSettingKey = settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
+                const customSettingKey =
+                    settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
                 const currentCustoms = this.controller.settings[customSettingKey] || [];
-                const updated = currentCustoms.filter(c => c !== colorToDelete);
+                const updated = currentCustoms.filter((c) => c !== colorToDelete);
 
                 this.controller.updateSetting(customSettingKey, updated);
                 this.renderCustomColors(pickerId, updated, settingKey);
@@ -60,7 +61,7 @@ export const generalSettingsMethods = {
             const swatch = e.target.closest('.color-swatch');
             if (!swatch) return;
 
-            picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            picker.querySelectorAll('.color-swatch').forEach((s) => s.classList.remove('active'));
             swatch.classList.add('active');
             this.controller.updateSetting(settingKey, swatch.dataset.color);
         });
@@ -69,7 +70,8 @@ export const generalSettingsMethods = {
         if (customInput) {
             customInput.addEventListener('change', () => {
                 const color = customInput.value.toLowerCase();
-                const customSettingKey = settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
+                const customSettingKey =
+                    settingKey === 'accentColor' ? 'customAccentColors' : 'customOverlayColors';
                 const currentCustoms = this.controller.settings[customSettingKey] || [];
 
                 if (currentCustoms.length >= 5) return;
@@ -84,5 +86,5 @@ export const generalSettingsMethods = {
                 this.populateColorPicker(pickerId, color);
             });
         }
-    }
+    },
 };

@@ -1,3 +1,7 @@
+/**
+ *
+ * @param OptionsController
+ */
 export function applyOptionsAppearanceMethods(OptionsController) {
     OptionsController.prototype.applyImmediateChanges = function applyImmediateChanges(key, value) {
         if (key === 'theme') {
@@ -13,7 +17,8 @@ export function applyOptionsAppearanceMethods(OptionsController) {
 
     OptionsController.prototype.applyAccentColor = function applyAccentColor(value) {
         const root = document.documentElement;
-        const isCustomHex = typeof value === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
+        const isCustomHex =
+            typeof value === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
 
         if (!isCustomHex) {
             root.setAttribute('data-accent', value || 'blue');

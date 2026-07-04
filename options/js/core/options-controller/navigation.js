@@ -1,3 +1,7 @@
+/**
+ *
+ * @param OptionsController
+ */
 export function applyOptionsNavigationMethods(OptionsController) {
     OptionsController.prototype.setupNavigation = function setupNavigation() {
         const navItems = document.querySelectorAll('.nav-item');
@@ -8,7 +12,9 @@ export function applyOptionsNavigationMethods(OptionsController) {
                 const tab = target.dataset.tab;
 
                 navItems.forEach((item) => item.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach((pane) => pane.classList.remove('active'));
+                document
+                    .querySelectorAll('.tab-pane')
+                    .forEach((pane) => pane.classList.remove('active'));
 
                 target.classList.add('active');
                 const pane = document.getElementById(tab);

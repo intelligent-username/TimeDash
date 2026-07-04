@@ -1,5 +1,6 @@
-'use strict';
-
+/* global STORAGE_DEFAULT_SETTINGS, applyStorageSettingsMethods,
+   applyStorageUsageMethods, applyStorageBlockingMethods,
+   applyStorageMiscMethods */
 class StorageManager {
     constructor() {
         this.DEFAULT_SETTINGS = { ...STORAGE_DEFAULT_SETTINGS };

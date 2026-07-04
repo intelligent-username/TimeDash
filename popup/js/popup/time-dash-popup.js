@@ -3,7 +3,13 @@ import { eventMethods } from './events.js';
 import { uiMethods } from './ui.js';
 import { actionMethods } from './actions.js';
 
+/**
+ *
+ */
 export class TimeDashPopup {
+    /**
+     *
+     */
     constructor() {
         this.currentTab = null;
         this.usageData = null;
@@ -18,10 +24,4 @@ export class TimeDashPopup {
     }
 }
 
-Object.assign(
-    TimeDashPopup.prototype,
-    lifecycleMethods,
-    eventMethods,
-    uiMethods,
-    actionMethods
-);
+Object.assign(TimeDashPopup.prototype, lifecycleMethods, eventMethods, uiMethods, actionMethods);

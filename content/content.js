@@ -1,5 +1,5 @@
-'use strict';
-
+/* global DomainUtils, VideoDetector, VideoController, PlaybackState,
+   MessageHandlerContent, KeyboardHandler */
 class TimeDashContent {
     constructor() {
         this.videos = new Set();
@@ -15,9 +15,11 @@ class TimeDashContent {
         this.isOrphaned = false;
         this.visibilityCheckInterval = null;
 
-        this.ui = window.TimeDashOverlayUI ? new window.TimeDashOverlayUI({
-            onSpeedChange: (speed) => this.controller.setSpeed(speed)
-        }) : null;
+        this.ui = window.TimeDashOverlayUI
+            ? new window.TimeDashOverlayUI({
+                  onSpeedChange: (speed) => this.controller.setSpeed(speed),
+              })
+            : null;
 
         this.detector = new VideoDetector(this);
         this.controller = new VideoController(this);
@@ -36,7 +38,7 @@ class TimeDashContent {
     hasRecentVideoInteraction(video, withinMs = 45000) {
         const ts = this.videoInteractionTs.get(video);
         if (!Number.isFinite(ts)) return false;
-        return (Date.now() - ts) <= withinMs;
+        return Date.now() - ts <= withinMs;
     }
 
     async init() {
@@ -72,7 +74,9 @@ class TimeDashContent {
             this.settings = response || {};
             this.currentSpeed = this.settings.currentPlaybackSpeed
                 ? this.settings.currentPlaybackSpeed
-                : (this.settings.defaultPlaybackSpeed ? this.settings.defaultPlaybackSpeed : 1.0);
+                : this.settings.defaultPlaybackSpeed
+                  ? this.settings.defaultPlaybackSpeed
+                  : 1.0;
 
             if (this.ui) this.ui.updateSettings(this.settings);
         } catch (error) {
@@ -104,7 +108,10 @@ class TimeDashContent {
         }
 
         try {
-            await chrome.runtime.sendMessage({ type: 'UPDATE_VIDEO_SPEED', speed: this.currentSpeed });
+            await chrome.runtime.sendMessage({
+                type: 'UPDATE_VIDEO_SPEED',
+                speed: this.currentSpeed,
+            });
         } catch (error) {
             if (error.message?.includes('Extension context invalidated')) {
                 this.handleOrphanedState();
@@ -156,7 +163,6 @@ class TimeDashContent {
             }
         });
     }
-
 }
 
 if (!globalThis.__timedashContentBooted) {

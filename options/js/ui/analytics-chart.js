@@ -1,9 +1,16 @@
-import { formatTime, formatDateString } from '../utils/formatting.js';
+import { formatTime } from '../utils/formatting.js';
 import { applyAnalyticsChartTotalsMethods } from './analytics-chart/totals.js';
 import { applyAnalyticsChartSvgMethods } from './analytics-chart/svg.js';
 import { applyAnalyticsChartRangeMethods } from './analytics-chart/range.js';
 
+/**
+ *
+ */
 export class AnalyticsChart {
+    /**
+     *
+     * @param dataContext
+     */
     constructor(dataContext) {
         this.dataContext = dataContext;
         this.period = 'week';
@@ -11,11 +18,19 @@ export class AnalyticsChart {
         this._ro = null;
     }
 
+    /**
+     *
+     * @param period
+     */
     setPeriod(period) {
         this.period = period;
         this.offset = 0;
     }
 
+    /**
+     *
+     * @param direction
+     */
     navigate(direction) {
         if (direction === 'prev') {
             const minOffset = this.getMinOffset();
@@ -25,6 +40,9 @@ export class AnalyticsChart {
         }
     }
 
+    /**
+     *
+     */
     render() {
         const chartContent = document.getElementById('chartContent');
         const chartXAxis = document.getElementById('chartXAxis');
@@ -36,7 +54,9 @@ export class AnalyticsChart {
         if (!chartContent) return;
 
         if (!this._ro) {
-            this._ro = new ResizeObserver(() => { this.render(); });
+            this._ro = new ResizeObserver(() => {
+                this.render();
+            });
             this._ro.observe(chartContent);
         }
 
@@ -60,11 +80,13 @@ export class AnalyticsChart {
         const maxTime = Math.max(...validTotals.map((day) => day.time), 0);
 
         const yLabels = [formatTime(maxTime), formatTime(maxTime / 2), '0'];
-        if (chartYAxis) chartYAxis.innerHTML = yLabels.map((labelText) => `<span>${labelText}</span>`).join('');
+        if (chartYAxis)
+            chartYAxis.innerHTML = yLabels.map((labelText) => `<span>${labelText}</span>`).join('');
 
         this.renderSvgChart(chartContent, dailyTotals, maxTime, isYearly || isAllTime);
 
-        if (chartXAxis) chartXAxis.innerHTML = xLabels.map((labelText) => `<span>${labelText}</span>`).join('');
+        if (chartXAxis)
+            chartXAxis.innerHTML = xLabels.map((labelText) => `<span>${labelText}</span>`).join('');
     }
 }
 

@@ -1,6 +1,13 @@
 import { formatTime, formatDateString } from '../utils/formatting.js';
 
+/**
+ *
+ */
 export class AnalyticsHeatmap {
+    /**
+     *
+     * @param dataContext
+     */
     constructor(dataContext) {
         this.dataContext = dataContext;
         this._selectedDate = null;
@@ -11,18 +18,27 @@ export class AnalyticsHeatmap {
      * Parse a YYYY-MM-DD string as a LOCAL date (not UTC).
      * new Date('2024-01-15') parses as UTC midnight, which is the previous
      * day in negative-UTC-offset timezones. We split manually instead.
+     * @param dateStr
      */
     _parseLocalDate(dateStr) {
         const [y, m, d] = dateStr.split('-').map(Number);
         return new Date(y, m - 1, d);
     }
 
+    /**
+     *
+     * @param date
+     * @param showYear
+     */
     _formatDisplayDate(date, showYear = false) {
         const opts = { day: 'numeric', month: 'short' };
         if (showYear) opts.year = 'numeric';
         return date.toLocaleDateString(undefined, opts);
     }
 
+    /**
+     *
+     */
     render() {
         if (!this._navBound) {
             this._setupYearNav();
@@ -59,9 +75,10 @@ export class AnalyticsHeatmap {
             totalDays = Math.round((endDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
         }
 
-        const domainsToInclude = filter === 'restricted'
-            ? this.dataContext.getRestrictedDomains()
-            : Object.keys(this.dataContext.getUsage());
+        const domainsToInclude =
+            filter === 'restricted'
+                ? this.dataContext.getRestrictedDomains()
+                : Object.keys(this.dataContext.getUsage());
 
         const usage = this.dataContext.getUsage();
 
@@ -117,7 +134,9 @@ export class AnalyticsHeatmap {
                 isEarliest ? 'earliest' : '',
                 isSelected ? 'heatmap-cell--selected' : '',
                 isToday ? 'heatmap-cell--today' : '',
-            ].filter(Boolean).join(' ');
+            ]
+                .filter(Boolean)
+                .join(' ');
 
             cells.push(
                 `<div class="${classes}" data-level="${level}" data-tooltip="${tooltip}" data-date="${dateStr}" role="button" tabindex="0" aria-label="${tooltip}"></div>`
@@ -132,12 +151,14 @@ export class AnalyticsHeatmap {
         if (monthsRow) {
             monthsRow.style.display = 'grid';
             monthsRow.style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
-            
-            monthsRow.innerHTML = monthPositions.map((m, i) => {
-                const endCol = monthPositions[i + 1]?.index || weeks;
-                const cols = endCol - m.index;
-                return `<span style="grid-column: ${m.index + 1} / span ${cols}; text-align: center;">${m.month}</span>`;
-            }).join('');
+
+            monthsRow.innerHTML = monthPositions
+                .map((m, i) => {
+                    const endCol = monthPositions[i + 1]?.index || weeks;
+                    const cols = endCol - m.index;
+                    return `<span style="grid-column: ${m.index + 1} / span ${cols}; text-align: center;">${m.month}</span>`;
+                })
+                .join('');
         }
 
         grid.querySelectorAll('.heatmap-cell[data-date]').forEach((cell) => {
@@ -153,7 +174,12 @@ export class AnalyticsHeatmap {
         this._updateYearNav(earliestYear);
     }
 
-    _onCellClick(dateStr, dailyData) {
+    /**
+     *
+     * @param dateStr
+     * @param dailyData
+     */
+    _onCellClick(dateStr, _dailyData) {
         const heading = document.getElementById('topSitesHeading');
         if (!heading) return;
 
@@ -191,11 +217,16 @@ export class AnalyticsHeatmap {
         }
 
         const maxTime = sitesWithTime[0]?.todayTime || 0;
-        container.innerHTML = sitesWithTime.slice(0, 10).map((site) => {
-            const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-            const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
-            const escaped = site.domain.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return `
+        container.innerHTML = sitesWithTime
+            .slice(0, 10)
+            .map((site) => {
+                const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
+                const escaped = site.domain
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                return `
                 <div class="analytics-site-item">
                     <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
                     <div class="analytics-site-info">
@@ -207,11 +238,14 @@ export class AnalyticsHeatmap {
                     </div>
                 </div>
             `;
-        }).join('');
+            })
+            .join('');
 
         const grid = document.getElementById('heatmapGrid');
         if (grid) {
-            grid.querySelectorAll('.heatmap-cell--selected').forEach((el) => el.classList.remove('heatmap-cell--selected'));
+            grid.querySelectorAll('.heatmap-cell--selected').forEach((el) =>
+                el.classList.remove('heatmap-cell--selected')
+            );
             if (!isToday) {
                 const selectedCell = grid.querySelector(`[data-date="${dateStr}"]`);
                 if (selectedCell) selectedCell.classList.add('heatmap-cell--selected');
@@ -219,6 +253,10 @@ export class AnalyticsHeatmap {
         }
     }
 
+    /**
+     *
+     * @param earliestYear
+     */
     _updateYearNav(earliestYear) {
         const label = document.getElementById('heatmapYearLabel');
         const prevBtn = document.getElementById('heatmapYearPrev');
@@ -233,6 +271,9 @@ export class AnalyticsHeatmap {
         if (nextBtn) nextBtn.style.display = this.yearOffset >= 0 ? 'none' : '';
     }
 
+    /**
+     *
+     */
     _setupYearNav() {
         const prevBtn = document.getElementById('heatmapYearPrev');
         const nextBtn = document.getElementById('heatmapYearNext');
@@ -255,6 +296,11 @@ export class AnalyticsHeatmap {
         });
     }
 
+    /**
+     *
+     * @param time
+     * @param maxTime
+     */
     getLevel(time, maxTime) {
         if (time === 0 || maxTime === 0) return 0;
         const ratio = time / maxTime;

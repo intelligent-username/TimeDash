@@ -6,7 +6,7 @@ export const actionMethods = {
         const max = this.settings.maxPlaybackSpeed || 16.0;
         const min = 0.05;
 
-        let newSpeed = (this.settings.currentPlaybackSpeed || 1.0) + (direction * step);
+        let newSpeed = (this.settings.currentPlaybackSpeed || 1.0) + direction * step;
         newSpeed = Math.round(newSpeed / step) * step;
         if (newSpeed > max) newSpeed = max;
         if (newSpeed < min) newSpeed = min;
@@ -50,7 +50,10 @@ export const actionMethods = {
     async toggleSiteBlock(domain) {
         try {
             await chrome.runtime.sendMessage({ type: 'TOGGLE_BLOCK', domain });
-            PopupHelpers.showToast(`${domain} ${(await this.isBlocked(domain)) ? 'unblocked' : 'blocked'}`, 'success');
+            PopupHelpers.showToast(
+                `${domain} ${(await this.isBlocked(domain)) ? 'unblocked' : 'blocked'}`,
+                'success'
+            );
             await this.refreshData();
         } catch (error) {
             console.error('Error toggling site block:', error);
@@ -59,9 +62,10 @@ export const actionMethods = {
     },
 
     async isBlocked(domain) {
-        const domainData = (this.usageData && this.usageData.domains)
-            ? this.usageData.domains.find((d) => d.domain === domain)
-            : null;
+        const domainData =
+            this.usageData && this.usageData.domains
+                ? this.usageData.domains.find((d) => d.domain === domain)
+                : null;
         return (domainData && domainData.isBlocked) || false;
     },
 
@@ -76,7 +80,9 @@ export const actionMethods = {
             const exportPayload = response?.data;
             if (!exportPayload) throw new Error('Missing export payload');
 
-            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+                type: 'application/json',
+            });
             const url = URL.createObjectURL(blob);
             const anchor = document.createElement('a');
             anchor.href = url;
@@ -112,13 +118,16 @@ export const actionMethods = {
         try {
             const newSettings = {
                 ...this.settings,
-                trackingEnabled: !this.settings.trackingEnabled
+                trackingEnabled: !this.settings.trackingEnabled,
             };
 
             await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', settings: newSettings });
             this.settings = newSettings;
             this.updateFooter();
-            PopupHelpers.showToast(`Time tracking ${newSettings.trackingEnabled ? 'enabled' : 'disabled'}`, 'success');
+            PopupHelpers.showToast(
+                `Time tracking ${newSettings.trackingEnabled ? 'enabled' : 'disabled'}`,
+                'success'
+            );
         } catch (error) {
             console.error('Error toggling tracking:', error);
             PopupHelpers.showToast('Failed to toggle tracking', 'error');
@@ -135,7 +144,9 @@ export const actionMethods = {
         modal.hidden = false;
         modal.classList.add('show');
 
-        const focusable = content.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const focusable = content.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
 
@@ -179,7 +190,7 @@ export const actionMethods = {
             const newSettings = {
                 ...this.settings,
                 currentPlaybackSpeed: parseFloat(document.getElementById('defaultSpeed').value),
-                firstTimeSetup: false
+                firstTimeSetup: false,
             };
 
             await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', settings: newSettings });
@@ -194,5 +205,5 @@ export const actionMethods = {
 
     showError(message) {
         PopupHelpers.showToast(message, 'error');
-    }
+    },
 };

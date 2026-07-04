@@ -1,7 +1,10 @@
 'use strict';
 
 function applyBackgroundTrackingMethods(TimeDashBackground) {
-    TimeDashBackground.prototype.addToPendingUpdates = function addToPendingUpdates(domain, timeSpent) {
+    TimeDashBackground.prototype.addToPendingUpdates = function addToPendingUpdates(
+        domain,
+        timeSpent
+    ) {
         this.pendingUpdates.set(domain, (this.pendingUpdates.get(domain) || 0) + timeSpent);
         this.syncPendingUpdates();
     };
@@ -78,7 +81,9 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 return;
             }
 
-            const response = await chrome.tabs.sendMessage(track.tabId, { type: 'CHECK_VISIBILITY' });
+            const response = await chrome.tabs.sendMessage(track.tabId, {
+                type: 'CHECK_VISIBILITY',
+            });
             if (!response || !response.visible) {
                 this.tabTracker.stopTrackingTab(track.tabId);
                 return;

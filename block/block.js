@@ -1,5 +1,4 @@
-'use strict';
-
+/* global StorageManager, applyBlockAccessMethods, applyBlockUiMethods */
 class BlockPageController {
     constructor() {
         this.storageManager = null;
@@ -12,13 +11,28 @@ class BlockPageController {
         };
 
         this.motivationalQuotes = [
-            { quote: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
+            {
+                quote: 'The way to get started is to quit talking and begin doing.',
+                author: 'Walt Disney',
+            },
             { quote: 'Be productive instead of just being busy.', author: 'Tim Ferriss' },
-            { quote: 'You are never too old to set another goal or to dream a new dream.', author: 'C.S. Lewis' },
+            {
+                quote: 'You are never too old to set another goal or to dream a new dream.',
+                author: 'C.S. Lewis',
+            },
             { quote: 'The future depends on what you do today.', author: 'Mahatma Gandhi' },
-            { quote: "Don't watch the clock; do what it does. Keep going.", author: 'Sam Levenson' },
-            { quote: 'Success is the sum of small efforts repeated day in and day out.', author: 'Robert Collier' },
-            { quote: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+            {
+                quote: "Don't watch the clock; do what it does. Keep going.",
+                author: 'Sam Levenson',
+            },
+            {
+                quote: 'Success is the sum of small efforts repeated day in and day out.',
+                author: 'Robert Collier',
+            },
+            {
+                quote: 'The only way to do great work is to love what you do.',
+                author: 'Steve Jobs',
+            },
             { quote: "Believe you can and you're halfway there.", author: 'Theodore Roosevelt' },
         ];
 
@@ -54,6 +68,14 @@ class BlockPageController {
             await this.loadBlockData();
             this.setupEventListeners();
             this.updateUI();
+
+            this._storageHandler = (changes, area) => {
+                if (area !== 'local') return;
+                this._recheckAccess();
+            };
+            chrome.storage.onChanged.addListener(this._storageHandler);
+
+            this._recheckTimer = setInterval(() => this._recheckAccess(), 30000);
         } catch (error) {
             console.error('Failed to initialize block page:', error);
         }
@@ -66,11 +88,22 @@ class BlockPageController {
             document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
         }
     }
+
+    async _recheckAccess() {
+        const stillBlocked = await this.checkIfStillBlocked();
+        if (!stillBlocked && this.blockedUrl) {
+            this.redirectToOriginalUrl();
+        }
+    }
 }
 
 applyBlockAccessMethods(BlockPageController);
 applyBlockUiMethods(BlockPageController);
 
 document.addEventListener('DOMContentLoaded', () => {
-    new BlockPageController();
+    const ctrl = new BlockPageController();
+    window.addEventListener('beforeunload', () => {
+        if (ctrl._recheckTimer) clearInterval(ctrl._recheckTimer);
+        if (ctrl._storageHandler) chrome.storage.onChanged.removeListener(ctrl._storageHandler);
+    });
 });

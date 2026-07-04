@@ -1,6 +1,6 @@
 /**
  * Get Google Favicon URL for a domain
- * @param {string} domain 
+ * @param {string} domain
  * @returns {string} Image URL
  */
 export function getFaviconUrl(domain) {
@@ -10,8 +10,8 @@ export function getFaviconUrl(domain) {
 
 /**
  * Show a toast notification
- * @param {string} message 
- * @param {string} type 
+ * @param {string} message
+ * @param {string} type
  */
 export function showToast(message, type = 'info') {
     // Check if toast container exists

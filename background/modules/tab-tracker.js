@@ -4,6 +4,8 @@
  * ~180 lines
  */
 
+/* global DomainUtils, TimeUtils */
+
 class TabTracker {
     constructor(instance) {
         this.instance = instance;
@@ -26,6 +28,19 @@ class TabTracker {
 
         chrome.windows.onFocusChanged.addListener((windowId) => {
             this.handleWindowActivationChanged(windowId);
+        });
+
+        chrome.webNavigation.onCommitted.addListener(async (details) => {
+            if (details.frameId !== 0) return;
+            if (!DomainUtils.shouldTrackUrl(details.url)) return;
+            try {
+                const tab = await chrome.tabs.get(details.tabId);
+                if (!tab || !tab.id) return;
+                const domain = DomainUtils.extractDomain(details.url);
+                await this.checkAndHandleBlocking(tab, domain);
+            } catch {
+                // Tab may have been closed between event and lookup
+            }
         });
     }
 
@@ -155,7 +170,8 @@ class TabTracker {
 
                 const blockPageUrl =
                     chrome.runtime.getURL('block/block.html') +
-                    `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=restricted`;
+                    `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=global_limit`;
+                await new Promise((resolve) => setTimeout(resolve, 50));
                 await chrome.tabs.update(tab.id, { url: blockPageUrl });
                 return true;
             }
@@ -163,7 +179,9 @@ class TabTracker {
 
         const usage = await this.instance.storage.getDomainUsage(domain);
         const todayTimeSeconds = TimeUtils.calculateTodayTime(usage);
-        const accessResult = this.instance.ruleManager.evaluateAccess(tab.url, { todayTimeSeconds });
+        const accessResult = this.instance.ruleManager.evaluateAccess(tab.url, {
+            todayTimeSeconds,
+        });
 
         if (accessResult.shouldBlock) {
             try {
@@ -175,6 +193,7 @@ class TabTracker {
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
                 `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}`;
+            await new Promise((resolve) => setTimeout(resolve, 50));
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
             return true;
         }

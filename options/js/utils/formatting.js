@@ -1,6 +1,7 @@
 /**
  * Format milliseconds into readable duration
  * @param {number} ms - Time in milliseconds
+ * @param compact
  * @returns {string} Formatted string (e.g., "2h 30m" or "45m")
  */
 export function formatTime(ms, compact = false) {
@@ -9,7 +10,7 @@ export function formatTime(ms, compact = false) {
 
 /**
  * Format date object to YYYY-MM-DD string
- * @param {Date} date 
+ * @param {Date} date
  * @returns {string}
  */
 export function formatDateString(date) {
@@ -18,7 +19,7 @@ export function formatDateString(date) {
 
 /**
  * Escape HTML special characters
- * @param {string} str 
+ * @param {string} str
  * @returns {string}
  */
 export function escapeHtml(str) {

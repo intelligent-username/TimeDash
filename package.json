@@ -3,9 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "lint": "eslint . --ext .js",
+        "lint": "eslint .",
         "format": "prettier --write .",
-        "lint:fix": "eslint . --ext .js --fix",
+        "lint:fix": "eslint . --fix",
         "jsdoc": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {

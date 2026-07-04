@@ -24,7 +24,10 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background-color 0.15s ease;
 }
 
 .heatmap-year-btn:hover {
@@ -124,7 +127,9 @@
     aspect-ratio: 1;
     border-radius: 2px;
     background: var(--border-subtle);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease;
     position: relative;
     cursor: pointer;
 }
@@ -148,7 +153,7 @@
     z-index: 2;
 }
 
-.heatmap-cell[data-tooltip]:not([data-tooltip=""])::after {
+.heatmap-cell[data-tooltip]:not([data-tooltip=''])::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -166,42 +171,54 @@
     z-index: 1000;
 }
 
-.heatmap-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
+.heatmap-cell[data-tooltip]:not([data-tooltip='']):hover::after {
     opacity: 1;
 }
 
-.heatmap-cell[data-tooltip]:not([data-tooltip=""]):nth-child(-n+7)::after {
+.heatmap-cell[data-tooltip]:not([data-tooltip='']):nth-child(-n + 7)::after {
     bottom: auto;
     top: 100%;
     left: 0;
     transform: translateY(4px);
 }
 
-.heatmap-cell[data-tooltip]:not([data-tooltip=""]):nth-last-child(-n+7)::after {
+.heatmap-cell[data-tooltip]:not([data-tooltip='']):nth-last-child(-n + 7)::after {
     left: auto;
     right: 0;
     transform: translateY(-4px);
 }
 
-.heatmap-cell[data-level="0"] { background: #e5e7eb; }
-
-html[data-theme="dark"] .heatmap-cell[data-level="0"],
-:root[data-theme="dark"] .heatmap-cell[data-level="0"] { background: #374151; }
-
-@media (prefers-color-scheme: dark) {
-    html[data-theme="auto"] .heatmap-cell[data-level="0"],
-    :root[data-theme="auto"] .heatmap-cell[data-level="0"] { background: #374151; }
+.heatmap-cell[data-level='0'] {
+    background: #e5e7eb;
 }
 
-.heatmap-cell[data-level="1"] { background: #bbf7d0; }
-.heatmap-cell[data-level="2"] { background: #86efac; }
-.heatmap-cell[data-level="3"] { background: #4ade80; }
-.heatmap-cell[data-level="4"] { background: #22c55e; }
+html[data-theme='dark'] .heatmap-cell[data-level='0'],
+:root[data-theme='dark'] .heatmap-cell[data-level='0'] {
+    background: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme='auto'] .heatmap-cell[data-level='0'],
+    :root[data-theme='auto'] .heatmap-cell[data-level='0'] {
+        background: #374151;
+    }
+}
+
+.heatmap-cell[data-level='1'] {
+    background: #bbf7d0;
+}
+.heatmap-cell[data-level='2'] {
+    background: #86efac;
+}
+.heatmap-cell[data-level='3'] {
+    background: #4ade80;
+}
+.heatmap-cell[data-level='4'] {
+    background: #22c55e;
+}
 
 .heatmap-cell.earliest {
     outline: 2px solid #f59e0b;
     outline-offset: -1px;
     z-index: 1;
 }
-
-

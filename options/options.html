@@ -1,73 +1,83 @@
 <!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TimeDash Settings</title>
+        <link rel="stylesheet" href="options.css" />
+        <style>
+            .dashboard-container {
+                visibility: hidden;
+            }
+            .dashboard-container.ready {
+                visibility: visible;
+            }
+        </style>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TimeDash Settings</title>
-    <link rel="stylesheet" href="options.css" />
-    <style>
-        .dashboard-container { visibility: hidden; }
-        .dashboard-container.ready { visibility: visible; }
-    </style>
-</head>
+    <body>
+        <div class="dashboard-container" role="region" aria-label="TimeDash Dashboard">
+            <div id="optionsSidebarMount"></div>
 
-<body>
-    <div class="dashboard-container" role="region" aria-label="TimeDash Dashboard">
-        <div id="optionsSidebarMount"></div>
+            <main class="main-content">
+                <div class="content-scrollable">
+                    <header class="top-bar">
+                        <div class="header-titles">
+                            <h1 id="pageTitle" class="page-title">Analytics</h1>
+                            <p id="pageSubtitle" class="page-subtitle">
+                                Overview of your productivity
+                            </p>
+                        </div>
+                    </header>
 
-        <main class="main-content">
-            <div class="content-scrollable">
-                <header class="top-bar">
-                    <div class="header-titles">
-                        <h1 id="pageTitle" class="page-title">Analytics</h1>
-                        <p id="pageSubtitle" class="page-subtitle">Overview of your productivity</p>
-                    </div>
-                </header>
+                    <div
+                        id="banner"
+                        class="banner"
+                        role="status"
+                        aria-live="polite"
+                        style="display: none"
+                    ></div>
 
-                <div id="banner" class="banner" role="status" aria-live="polite" style="display: none"></div>
+                    <div class="tab-content-wrapper">
+                        <div id="analytics" class="tab-pane active fade-in">
+                            <div id="analyticsTabContent"></div>
+                        </div>
 
-                <div class="tab-content-wrapper">
-                    <div id="analytics" class="tab-pane active fade-in">
-                        <div id="analyticsTabContent"></div>
-                    </div>
+                        <div id="general" class="tab-pane fade-in">
+                            <div id="generalTabContent"></div>
+                        </div>
 
-                    <div id="general" class="tab-pane fade-in">
-                        <div id="generalTabContent"></div>
-                    </div>
+                        <div id="video" class="tab-pane fade-in">
+                            <div id="videoTabContent"></div>
+                        </div>
 
-                    <div id="video" class="tab-pane fade-in">
-                        <div id="videoTabContent"></div>
-                    </div>
+                        <div id="blocking" class="tab-pane fade-in">
+                            <div id="blockingTabContent"></div>
+                        </div>
 
-                    <div id="blocking" class="tab-pane fade-in">
-                        <div id="blockingTabContent"></div>
-                    </div>
+                        <div id="privacy" class="tab-pane fade-in">
+                            <div id="privacyTabContent"></div>
+                        </div>
 
-                    <div id="privacy" class="tab-pane fade-in">
-                        <div id="privacyTabContent"></div>
-                    </div>
-
-                    <div id="help" class="tab-pane fade-in">
-                        <div id="helpTabContent"></div>
+                        <div id="help" class="tab-pane fade-in">
+                            <div id="helpTabContent"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
 
-        <div id="optionsOverlayMount"></div>
-    </div>
+            <div id="optionsOverlayMount"></div>
+        </div>
 
-    <script src="../utils/storage/defaults.js"></script>
-    <script src="../utils/storage/settings.js"></script>
-    <script src="../utils/storage/usage.js"></script>
-    <script src="../utils/storage/blocking.js"></script>
-    <script src="../utils/storage/misc.js"></script>
-    <script src="../utils/storage.js"></script>
-    <script src="../utils/time-utils.js"></script>
-    <script src="../utils/domain-utils.js"></script>
-    <script src="../utils/i18n.js"></script>
-    <script type="module" src="options.js"></script>
-</body>
-
+        <script src="../utils/storage/defaults.js"></script>
+        <script src="../utils/storage/settings.js"></script>
+        <script src="../utils/storage/usage.js"></script>
+        <script src="../utils/storage/blocking.js"></script>
+        <script src="../utils/storage/misc.js"></script>
+        <script src="../utils/storage.js"></script>
+        <script src="../utils/time-utils.js"></script>
+        <script src="../utils/domain-utils.js"></script>
+        <script src="../utils/i18n.js"></script>
+        <script type="module" src="options.js"></script>
+    </body>
 </html>

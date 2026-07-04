@@ -37,7 +37,9 @@ function applyBlockAccessMethods(BlockPageController) {
     BlockPageController.prototype.redirectToOriginalUrl = function redirectToOriginalUrl() {
         try {
             if (!this.blockedUrl) return;
-            const normalized = this.blockedUrl.startsWith('http') ? this.blockedUrl : `https://${this.blockedUrl}`;
+            const normalized = this.blockedUrl.startsWith('http')
+                ? this.blockedUrl
+                : `https://${this.blockedUrl}`;
             const target = new URL(normalized);
             if (!['http:', 'https:'].includes(target.protocol)) return;
             window.location.replace(target.toString());
@@ -58,7 +60,9 @@ function applyBlockAccessMethods(BlockPageController) {
         }
 
         try {
-            const url = new URL(this.blockedUrl.startsWith('http') ? this.blockedUrl : `https://${this.blockedUrl}`);
+            const url = new URL(
+                this.blockedUrl.startsWith('http') ? this.blockedUrl : `https://${this.blockedUrl}`
+            );
             this.blockedDomain = url.hostname.replace(/^www\./, '');
         } catch {
             this.blockedDomain = this.blockedUrl.replace(/^www\./, '');

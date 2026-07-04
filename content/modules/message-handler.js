@@ -45,7 +45,8 @@ class MessageHandlerContent {
                     sendResponse({ success: true, count: this.instance.videos.size });
                     break;
                 case 'CONTROL_VIDEO_PLAYBACK':
-                    this.instance.controller.controlPlayback(message.action, message.videoId, message.value)
+                    this.instance.controller
+                        .controlPlayback(message.action, message.videoId, message.value)
                         .then(sendResponse)
                         .catch((error) => sendResponse({ success: false, error: error.message }));
                     return true;
@@ -65,14 +66,18 @@ class MessageHandlerContent {
                     this.instance.settings = newSettings;
                     if (this.instance.ui) this.instance.ui.updateSettings(this.instance.settings);
 
-                    if (newSettings.currentPlaybackSpeed !== undefined &&
-                        newSettings.currentPlaybackSpeed !== oldSettings.currentPlaybackSpeed) {
+                    if (
+                        newSettings.currentPlaybackSpeed !== undefined &&
+                        newSettings.currentPlaybackSpeed !== oldSettings.currentPlaybackSpeed
+                    ) {
                         this.instance.currentSpeed = newSettings.currentPlaybackSpeed;
                         this.instance.controller.updateAllVideoSpeeds();
                         this.instance.controller.showSpeedOverlayIndicator(true);
                     }
                 }
             });
-        } catch (e) { /* Ignore setup error */ }
+        } catch {
+            /* Ignore setup error */
+        }
     }
 }

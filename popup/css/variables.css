@@ -36,8 +36,8 @@
 }
 
 /* Light Theme - explicit */
-html[data-theme="light"],
-:root[data-theme="light"] {
+html[data-theme='light'],
+:root[data-theme='light'] {
     --text-primary: #212121;
     --text-secondary: #757575;
     --text-disabled: #bdbdbd;
@@ -50,8 +50,8 @@ html[data-theme="light"],
 }
 
 /* Dark Theme */
-html[data-theme="dark"],
-:root[data-theme="dark"] {
+html[data-theme='dark'],
+:root[data-theme='dark'] {
     --text-primary: #eef1f4;
     --text-secondary: #a2acb8;
     --text-disabled: #6f7884;
@@ -65,10 +65,9 @@ html[data-theme="dark"],
 
 /* System Auto Theme */
 @media (prefers-color-scheme: dark) {
-
-    html[data-theme="auto"],
+    html[data-theme='auto'],
     html:not([data-theme]),
-    :root[data-theme="auto"],
+    :root[data-theme='auto'],
     :root:not([data-theme]) {
         --text-primary: #eef1f4;
         --text-secondary: #a2acb8;
@@ -83,8 +82,8 @@ html[data-theme="dark"],
 }
 
 /* Accent Color Schemes */
-html[data-accent="blue"],
-:root[data-accent="blue"] {
+html[data-accent='blue'],
+:root[data-accent='blue'] {
     --accent-color: #00b7ff;
     --accent-dark: #0095d1;
     --accent-light: #66d6ff;
@@ -93,8 +92,8 @@ html[data-accent="blue"],
     --primary-light: #66d6ff;
 }
 
-html[data-accent="purple"],
-:root[data-accent="purple"] {
+html[data-accent='purple'],
+:root[data-accent='purple'] {
     --accent-color: #9c27b0;
     --accent-dark: #7b1fa2;
     --accent-light: #ba68c8;
@@ -103,8 +102,8 @@ html[data-accent="purple"],
     --primary-light: #ba68c8;
 }
 
-html[data-accent="green"],
-:root[data-accent="green"] {
+html[data-accent='green'],
+:root[data-accent='green'] {
     --accent-color: #4caf50;
     --accent-dark: #388e3c;
     --accent-light: #81c784;
@@ -113,8 +112,8 @@ html[data-accent="green"],
     --primary-light: #81c784;
 }
 
-html[data-accent="orange"],
-:root[data-accent="orange"] {
+html[data-accent='orange'],
+:root[data-accent='orange'] {
     --accent-color: #ff9800;
     --accent-dark: #f57c00;
     --accent-light: #ffb74d;
@@ -123,8 +122,8 @@ html[data-accent="orange"],
     --primary-light: #ffb74d;
 }
 
-html[data-accent="red"],
-:root[data-accent="red"] {
+html[data-accent='red'],
+:root[data-accent='red'] {
     --accent-color: #f44336;
     --accent-dark: #d32f2f;
     --accent-light: #e57373;
@@ -133,8 +132,8 @@ html[data-accent="red"],
     --primary-light: #e57373;
 }
 
-html[data-accent="teal"],
-:root[data-accent="teal"] {
+html[data-accent='teal'],
+:root[data-accent='teal'] {
     --accent-color: #009688;
     --accent-dark: #00796b;
     --accent-light: #4db6ac;
@@ -143,8 +142,8 @@ html[data-accent="teal"],
     --primary-light: #4db6ac;
 }
 
-html[data-accent="pink"],
-:root[data-accent="pink"] {
+html[data-accent='pink'],
+:root[data-accent='pink'] {
     --accent-color: #e91e63;
     --accent-dark: #c2185b;
     --accent-light: #f48fb1;
@@ -153,8 +152,8 @@ html[data-accent="pink"],
     --primary-light: #f48fb1;
 }
 
-html[data-accent="cyan"],
-:root[data-accent="cyan"] {
+html[data-accent='cyan'],
+:root[data-accent='cyan'] {
     --accent-color: #00bcd4;
     --accent-dark: #0097a7;
     --accent-light: #4dd0e1;

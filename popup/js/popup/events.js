@@ -2,7 +2,9 @@ export const eventMethods = {
     setupEventListeners() {
         chrome.runtime.onMessage.addListener((message) => {
             if (message.type === 'USAGE_DATA_UPDATED') {
-                this.loadData().then(() => this.updateUI()).catch(console.error);
+                this.loadData()
+                    .then(() => this.updateUI())
+                    .catch(console.error);
             }
             if (message.type === 'SETTINGS_UPDATED' && message.settings) {
                 this.settings = { ...(this.settings || {}), ...message.settings };
@@ -43,12 +45,22 @@ export const eventMethods = {
         const incSpeedBtn = document.getElementById('increaseSpeedBtn');
         if (incSpeedBtn) incSpeedBtn.addEventListener('click', () => this.changeSpeed(1));
 
-        document.getElementById('blockBtn').addEventListener('click', () => this.toggleCurrentSiteBlock());
-        document.getElementById('speedBtn').addEventListener('click', () => this.showSpeedControl());
+        document
+            .getElementById('blockBtn')
+            .addEventListener('click', () => this.toggleCurrentSiteBlock());
+        document
+            .getElementById('speedBtn')
+            .addEventListener('click', () => this.showSpeedControl());
         document.getElementById('refreshBtn').addEventListener('click', () => this.refreshData());
-        document.getElementById('toggleTracking').addEventListener('click', () => this.toggleTracking());
-        document.getElementById('openDashboard').addEventListener('click', () => this.openDashboard());
-        document.getElementById('completeSetup').addEventListener('click', () => this.completeSetup());
+        document
+            .getElementById('toggleTracking')
+            .addEventListener('click', () => this.toggleTracking());
+        document
+            .getElementById('openDashboard')
+            .addEventListener('click', () => this.openDashboard());
+        document
+            .getElementById('completeSetup')
+            .addEventListener('click', () => this.completeSetup());
 
         document.getElementById('sitesList').addEventListener('click', (e) => {
             const button = e.target.closest('.site-item-btn');
@@ -59,11 +71,11 @@ export const eventMethods = {
             if (this.settings && this.settings.firstTimeSetup) return;
 
             const activeElement = document.activeElement;
-            const isInput = activeElement && (
-                activeElement.tagName === 'INPUT' ||
-                activeElement.tagName === 'TEXTAREA' ||
-                activeElement.isContentEditable
-            );
+            const isInput =
+                activeElement &&
+                (activeElement.tagName === 'INPUT' ||
+                    activeElement.tagName === 'TEXTAREA' ||
+                    activeElement.isContentEditable);
             if (isInput) return;
 
             const getKeyAliases = (baseKey) => {
@@ -71,14 +83,20 @@ export const eventMethods = {
                     Plus: ['Equal', 'NumpadAdd', 'Plus'],
                     Minus: ['Minus', 'NumpadSubtract'],
                     Period: ['Period', 'NumpadDecimal', 'NumpadComma'],
-                    Enter: ['Enter', 'NumpadEnter']
+                    Enter: ['Enter', 'NumpadEnter'],
                 };
                 return [baseKey, ...(map[baseKey] || [])];
             };
 
-            const increaseKeys = getKeyAliases((this.settings && this.settings.increaseSpeedKey) || 'Plus');
-            const decreaseKeys = getKeyAliases((this.settings && this.settings.decreaseSpeedKey) || 'Minus');
-            const resetKeys = getKeyAliases((this.settings && this.settings.resetSpeedKey) || 'Period');
+            const increaseKeys = getKeyAliases(
+                (this.settings && this.settings.increaseSpeedKey) || 'Plus'
+            );
+            const decreaseKeys = getKeyAliases(
+                (this.settings && this.settings.decreaseSpeedKey) || 'Minus'
+            );
+            const resetKeys = getKeyAliases(
+                (this.settings && this.settings.resetSpeedKey) || 'Period'
+            );
 
             if (!event.ctrlKey && !event.altKey && !event.metaKey) {
                 if (increaseKeys.includes(event.code)) {
@@ -93,5 +111,5 @@ export const eventMethods = {
                 }
             }
         });
-    }
+    },
 };

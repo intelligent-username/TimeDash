@@ -1,5 +1,4 @@
-'use strict';
-
+/* global TimeUtils */
 function applyBackgroundDataMethods(TimeDashBackground) {
     TimeDashBackground.prototype.getTabInfo = async function getTabInfo(tabId) {
         if (!this.currentTrack || this.currentTrack.tabId !== tabId) return null;

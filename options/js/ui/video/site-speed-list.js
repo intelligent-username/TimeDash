@@ -1,11 +1,21 @@
 import { getFaviconUrl, showToast } from '../../utils/dom.js';
 
+/**
+ *
+ */
 export class SiteSpeedList {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
         this.siteSpeeds = {};
     }
 
+    /**
+     *
+     */
     async setup() {
         try {
             const response = await chrome.runtime.sendMessage({ type: 'GET_SITE_SPEEDS' });
@@ -33,13 +43,20 @@ export class SiteSpeedList {
         }
     }
 
+    /**
+     *
+     */
     async addSiteSpeed() {
         const domainInput = document.getElementById('newSiteDomain');
         const speedInput = document.getElementById('newSiteSpeed');
 
         if (!domainInput) return;
 
-        const domain = domainInput.value.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+        const domain = domainInput.value
+            .trim()
+            .toLowerCase()
+            .replace(/^(https?:\/\/)?(www\.)?/, '')
+            .split('/')[0];
         const speed = speedInput ? parseFloat(speedInput.value) : 1.0;
 
         if (!domain) return showToast('Invalid domain', 'error');
@@ -52,11 +69,15 @@ export class SiteSpeedList {
                 domainInput.value = '';
                 showToast(`Speed set for ${domain}`, 'success');
             }
-        } catch (e) {
+        } catch {
             showToast('Failed to set speed', 'error');
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     async handleAction(e) {
         if (e.target.closest('.remove-speed')) {
             const domain = e.target.closest('.remove-speed').dataset.domain;
@@ -69,6 +90,10 @@ export class SiteSpeedList {
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     async handleChange(e) {
         if (e.target.classList.contains('site-speed-select')) {
             const domain = e.target.dataset.domain;
@@ -79,6 +104,9 @@ export class SiteSpeedList {
         }
     }
 
+    /**
+     *
+     */
     render() {
         const container = document.getElementById('siteSpeedsList');
         if (!container) return;
@@ -89,7 +117,9 @@ export class SiteSpeedList {
             return;
         }
 
-        container.innerHTML = speeds.map(([domain, speed]) => `
+        container.innerHTML = speeds
+            .map(
+                ([domain, speed]) => `
             <div class="site-item" data-domain="${domain}">
                 <div class="site-item-info">
                     <img class="site-favicon" src="${getFaviconUrl(domain)}" alt="">
@@ -97,11 +127,13 @@ export class SiteSpeedList {
                 </div>
                 <div class="site-actions">
                      <select class="site-speed-select" data-domain="${domain}">
-                         ${[0.5, 1, 1.25, 1.5, 2, 3].map(s => `<option value="${s}" ${s === speed ? 'selected' : ''}>${s}x</option>`).join('')}
+                         ${[0.5, 1, 1.25, 1.5, 2, 3].map((s) => `<option value="${s}" ${s === speed ? 'selected' : ''}>${s}x</option>`).join('')}
                      </select>
                      <button class="remove-speed" data-domain="${domain}">×</button>
                 </div>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
     }
 }

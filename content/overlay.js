@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * TimeDash Overlay UI Manager
  * Handles all UI elements injected into the page:
@@ -54,10 +52,10 @@ class TimeDashOverlayUI {
         document.head.appendChild(style);
     }
 
-
-
     /**
      * Show Corner Indicator
+     * @param video
+     * @param speed
      */
     showIndicator(video, speed) {
         // Single persistent element on body — avoids inheriting parent sizing/layout
@@ -72,8 +70,8 @@ class TimeDashOverlayUI {
 
         // Position in top-right corner of the video using fixed viewport coords
         const rect = video.getBoundingClientRect();
-        indicator.style.top = (rect.top + 10) + 'px';
-        indicator.style.right = (window.innerWidth - rect.right + 10) + 'px';
+        indicator.style.top = rect.top + 10 + 'px';
+        indicator.style.right = window.innerWidth - rect.right + 10 + 'px';
 
         // Immediately update text and ensure fully visible
         indicator.textContent = `${speed}x`;
@@ -107,7 +105,7 @@ class TimeDashOverlayUI {
                 violet: '#8b5cf6',
                 purple: '#a855f7',
                 pink: '#ec4899',
-                rose: '#f43f5e'
+                rose: '#f43f5e',
             };
             const color = colorMap[settings.overlayColor] || '#2196f3';
             document.documentElement.style.setProperty('--tsd-overlay-color', color);

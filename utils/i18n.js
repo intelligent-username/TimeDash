@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * I18n utility for internationalization support
  */
@@ -15,7 +13,9 @@ class I18n {
             if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
                 return chrome.i18n.getMessage(key, substitutions) || key;
             }
-        } catch {}
+        } catch {
+            /* chrome.i18n unavailable */
+        }
         return key;
     }
 

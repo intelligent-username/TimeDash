@@ -49,7 +49,7 @@ class PlaybackState {
                 playbackRate: Number(video.playbackRate || 1),
                 isLive,
                 sourceLabel,
-                interactedAt
+                interactedAt,
             });
         }
 
@@ -68,7 +68,12 @@ class PlaybackState {
                     for (const node of nodes) {
                         if (!node || typeof node !== 'object') continue;
                         const author = node.author;
-                        if (author && typeof author === 'object' && typeof author.name === 'string' && author.name.trim()) {
+                        if (
+                            author &&
+                            typeof author === 'object' &&
+                            typeof author.name === 'string' &&
+                            author.name.trim()
+                        ) {
                             return author.name.trim();
                         }
                     }
@@ -94,7 +99,7 @@ class PlaybackState {
             '.author',
             '.channel',
             'meta[name="author"]',
-            'meta[property="article:author"]'
+            'meta[property="article:author"]',
         ];
 
         const ldJsonAuthor = parseLdJsonAuthor();

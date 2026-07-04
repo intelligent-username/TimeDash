@@ -1,5 +1,4 @@
-'use strict';
-
+/* global BlockedRule, RestrictedRule, TimeUtils, DomainUtils */
 function applyBackgroundMessagingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.setupMessageHandling = function setupMessageHandling() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -12,32 +11,68 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
         });
     };
 
-    TimeDashBackground.prototype.handleMessage = async function handleMessage(message, sender, sendResponse) {
+    TimeDashBackground.prototype.handleMessage = async function handleMessage(
+        message,
+        sender,
+        sendResponse
+    ) {
         try {
             switch (message.type) {
-                case 'GET_TAB_INFO': sendResponse(await this.getTabInfo(sender.tab ? sender.tab.id : undefined)); break;
-                case 'GET_SETTINGS': sendResponse(await this.storage.getSettings()); break;
-                case 'UPDATE_SETTINGS': sendResponse({ success: await this.storage.setSettings(message.settings) }); break;
+                case 'GET_TAB_INFO':
+                    sendResponse(await this.getTabInfo(sender.tab ? sender.tab.id : undefined));
+                    break;
+                case 'GET_SETTINGS':
+                    sendResponse(await this.storage.getSettings());
+                    break;
+                case 'UPDATE_SETTINGS':
+                    sendResponse({ success: await this.storage.setSettings(message.settings) });
+                    break;
                 case 'FLUSH_PENDING_UPDATES':
-                    if (typeof this.processPendingUpdates === 'function') await this.processPendingUpdates();
+                    if (typeof this.processPendingUpdates === 'function')
+                        await this.processPendingUpdates();
                     sendResponse({ success: true });
                     break;
-                case 'GET_USAGE_DATA': 
-                    if (typeof this.processPendingUpdates === 'function') await this.processPendingUpdates();
-                    sendResponse(await this.getUsageData()); 
+                case 'GET_USAGE_DATA':
+                    if (typeof this.processPendingUpdates === 'function')
+                        await this.processPendingUpdates();
+                    sendResponse(await this.getUsageData());
                     break;
-                case 'UPDATE_VIDEO_SPEED': await this.storage.setCurrentSpeed(message.speed); sendResponse({ success: true }); break;
-                case 'GET_CURRENTLY_PLAYING_VIDEOS': sendResponse(await this.videoService.getCurrentlyPlayingVideos()); break;
-                case 'CONTROL_VIDEO_PLAYBACK': sendResponse(await this.videoService.controlVideoPlayback(message)); break;
-                case 'REFRESH_VIDEO_DETECTION': sendResponse(await this.videoService.refreshVideoDetection()); break;
-                case 'FOCUS_VIDEO_TAB': sendResponse(await this.videoService.focusVideoTab(message)); break;
-                case 'TOGGLE_BLOCK': await this.toggleSiteBlock(message.domain); sendResponse({ success: true }); break;
-                case 'EXPORT_DATA_JSON': sendResponse({ data: await this.storage.getExportPayload(this.ruleManager) }); break;
-                case 'GET_SITE_RULES': sendResponse({ blocked: this.ruleManager.getBlockedDomains(), restricted: this.ruleManager.getRestrictedDomains() }); break;
+                case 'UPDATE_VIDEO_SPEED':
+                    await this.storage.setCurrentSpeed(message.speed);
+                    sendResponse({ success: true });
+                    break;
+                case 'GET_CURRENTLY_PLAYING_VIDEOS':
+                    sendResponse(await this.videoService.getCurrentlyPlayingVideos());
+                    break;
+                case 'CONTROL_VIDEO_PLAYBACK':
+                    sendResponse(await this.videoService.controlVideoPlayback(message));
+                    break;
+                case 'REFRESH_VIDEO_DETECTION':
+                    sendResponse(await this.videoService.refreshVideoDetection());
+                    break;
+                case 'FOCUS_VIDEO_TAB':
+                    sendResponse(await this.videoService.focusVideoTab(message));
+                    break;
+                case 'TOGGLE_BLOCK':
+                    await this.toggleSiteBlock(message.domain);
+                    sendResponse({ success: true });
+                    break;
+                case 'EXPORT_DATA_JSON':
+                    sendResponse({ data: await this.storage.getExportPayload(this.ruleManager) });
+                    break;
+                case 'GET_SITE_RULES':
+                    sendResponse({
+                        blocked: this.ruleManager.getBlockedDomains(),
+                        restricted: this.ruleManager.getRestrictedDomains(),
+                    });
+                    break;
                 case 'ADD_SITE_RULE': {
                     const { domain, ruleType, timeLimitMinutes } = message;
                     if (ruleType === 'BLOCKED') this.ruleManager.addRule(new BlockedRule(domain));
-                    if (ruleType === 'RESTRICTED') this.ruleManager.addRule(new RestrictedRule(domain, timeLimitMinutes || 30));
+                    if (ruleType === 'RESTRICTED')
+                        this.ruleManager.addRule(
+                            new RestrictedRule(domain, timeLimitMinutes || 30)
+                        );
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });
                     break;
@@ -61,7 +96,8 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                             sendResponse({
                                 shouldBlock: true,
                                 reason: 'restricted',
-                                domain: message.domain || DomainUtils.extractDomain(message.url || ''),
+                                domain:
+                                    message.domain || DomainUtils.extractDomain(message.url || ''),
                             });
                             break;
                         }
@@ -69,10 +105,15 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
 
                     const usage = await this.storage.getDomainUsage(message.domain);
                     const todayTime = TimeUtils.calculateTodayTime(usage);
-                    sendResponse(this.ruleManager.evaluateAccess(message.url, { todayTimeSeconds: todayTime }));
+                    sendResponse(
+                        this.ruleManager.evaluateAccess(message.url, {
+                            todayTimeSeconds: todayTime,
+                        })
+                    );
                     break;
                 }
-                default: sendResponse({ error: 'Unknown message type' });
+                default:
+                    sendResponse({ error: 'Unknown message type' });
             }
         } catch (error) {
             console.error('Error handling message:', error);

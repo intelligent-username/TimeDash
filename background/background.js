@@ -1,5 +1,6 @@
-'use strict';
-
+/* global RuleManager, AlarmManager, TabTracker, VideoService,
+   applyBackgroundMessagingMethods, applyBackgroundTrackingMethods,
+   applyBackgroundDataMethods, StorageManager */
 importScripts(
     '../utils/storage/defaults.js',
     '../utils/storage/settings.js',

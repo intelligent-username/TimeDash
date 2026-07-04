@@ -41,13 +41,13 @@ class KeyboardHandler {
 
     getAliases(code) {
         const map = {
-            'Plus': ['Equal', 'NumpadAdd'],
-            'Minus': ['Minus', 'NumpadSubtract'],
-            'Enter': ['Enter', 'NumpadEnter'],
-            'Period': ['Period', 'NumpadDecimal', 'NumpadComma'],
-            'Asterisk': ['NumpadMultiply'],
-            'Slash': ['Slash', 'NumpadDivide'],
-            'Equal': ['Plus', 'NumpadAdd']
+            Plus: ['Equal', 'NumpadAdd'],
+            Minus: ['Minus', 'NumpadSubtract'],
+            Enter: ['Enter', 'NumpadEnter'],
+            Period: ['Period', 'NumpadDecimal', 'NumpadComma'],
+            Asterisk: ['NumpadMultiply'],
+            Slash: ['Slash', 'NumpadDivide'],
+            Equal: ['Plus', 'NumpadAdd'],
         };
         for (let i = 0; i <= 9; i++) {
             map['' + i] = [`Digit${i}`, `Numpad${i}`];
@@ -59,10 +59,9 @@ class KeyboardHandler {
         const activeElement = document.activeElement;
         const inputTypes = ['input', 'textarea', 'select'];
         return (
-            activeElement && (
-                inputTypes.includes(activeElement.tagName.toLowerCase()) ||
-                activeElement.isContentEditable
-            )
+            activeElement &&
+            (inputTypes.includes(activeElement.tagName.toLowerCase()) ||
+                activeElement.isContentEditable)
         );
     }
 }

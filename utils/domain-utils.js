@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Domain utility functions for parsing and normalizing URLs and domains
  */
@@ -13,9 +11,9 @@ class DomainUtils {
         try {
             const urlObj = new URL(url);
             return urlObj.hostname.replace(/^www\./, '');
-        } catch (error) {
+        } catch {
             // Fallback for invalid URLs
-            const match = url.match(/(?:https?:\/\/)?(?:www\.)?([^\/\?#]+)/);
+            const match = url.match(/(?:https?:\/\/)?(?:www\.)?([^/?#]+)/);
             return match ? match[1].replace(/^www\./, '') : url;
         }
     }
@@ -77,7 +75,7 @@ class DomainUtils {
 
             // Check if it's a valid trackable domain
             return this.isValidDomain(domain);
-        } catch (error) {
+        } catch {
             return false;
         }
     }
@@ -103,6 +101,6 @@ class DomainUtils {
     /**
      * Group domains by category for analytics
      * @param {Array<string>} domains - Array of domains
-     * @returns {Object} Grouped domains by category
-     */}
-
+     * @returns {object} Grouped domains by category
+     */
+}

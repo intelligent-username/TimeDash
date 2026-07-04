@@ -1,5 +1,5 @@
-'use strict';
-
+/* global applyAlarmSchedulingMethods, applyAlarmHandlerMethods,
+   applyAlarmNotificationMethods, applyAlarmMaintenanceMethods */
 class AlarmManager {
     constructor() {
         this.ALARM_NAMES = {

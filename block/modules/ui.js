@@ -36,14 +36,16 @@ function applyBlockUiMethods(BlockPageController) {
 
         if (this.blockReason === 'restricted') {
             if (headingEl) headingEl.textContent = 'Daily Limit Reached';
-            if (reasonEl) reasonEl.textContent = `You've used all your allotted time for ${this.blockedDomain} today. Access will reset at midnight.`;
+            if (reasonEl)
+                reasonEl.textContent = `You've used all your allotted time for ${this.blockedDomain} today. Access will reset at midnight.`;
             document.title = `${this.blockedDomain} - Limit Reached`;
             this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
             this.updateStatLabel('blockCount', 'Time used today');
             if (blockIcon) blockIcon.style.color = '#f59e0b';
         } else {
             if (headingEl) headingEl.textContent = 'This site is blocked';
-            if (reasonEl) reasonEl.textContent = 'This site is on your block list to reduce distractions.';
+            if (reasonEl)
+                reasonEl.textContent = 'This site is on your block list to reduce distractions.';
             document.title = `${this.blockedDomain} is blocked`;
             this.updateStat('blockCount', this.blockStats.count);
             this.updateStatLabel('blockCount', 'Times blocked today');
@@ -64,7 +66,8 @@ function applyBlockUiMethods(BlockPageController) {
     };
 
     BlockPageController.prototype.updateMotivationalContent = function updateMotivationalContent() {
-        const quote = this.motivationalQuotes[Math.floor(Math.random() * this.motivationalQuotes.length)];
+        const quote =
+            this.motivationalQuotes[Math.floor(Math.random() * this.motivationalQuotes.length)];
         const tip = this.productivityTips[Math.floor(Math.random() * this.productivityTips.length)];
 
         const quoteEl = document.querySelector('.motivation-quote blockquote');

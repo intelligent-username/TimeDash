@@ -1,7 +1,8 @@
 /* Block Page Theming */
 :root {
     /* Fonts */
-    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    --font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
 
     /* Dark Theme (Default) */
@@ -27,7 +28,7 @@
 }
 
 /* Light Theme Override */
-html[data-theme="light"] {
+html[data-theme='light'] {
     --bg-primary: #ffffff;
     --bg-secondary: #f4f4f5;
     --bg-tertiary: #e4e4e7;
@@ -42,7 +43,7 @@ html[data-theme="light"] {
 }
 
 @media (prefers-color-scheme: light) {
-    html[data-theme="auto"] {
+    html[data-theme='auto'] {
         --bg-primary: #ffffff;
         --bg-secondary: #f4f4f5;
         --bg-tertiary: #e4e4e7;
@@ -58,35 +59,35 @@ html[data-theme="light"] {
 }
 
 /* Accent Colors */
-html[data-accent="blue"] {
+html[data-accent='blue'] {
     --accent-color: #0168bd;
 }
 
-html[data-accent="purple"] {
+html[data-accent='purple'] {
     --accent-color: #9c27b0;
 }
 
-html[data-accent="green"] {
+html[data-accent='green'] {
     --accent-color: #4caf50;
 }
 
-html[data-accent="orange"] {
+html[data-accent='orange'] {
     --accent-color: #ff9800;
 }
 
-html[data-accent="red"] {
+html[data-accent='red'] {
     --accent-color: #f44336;
 }
 
-html[data-accent="teal"] {
+html[data-accent='teal'] {
     --accent-color: #009688;
 }
 
-html[data-accent="pink"] {
+html[data-accent='pink'] {
     --accent-color: #e91e63;
 }
 
-html[data-accent="cyan"] {
+html[data-accent='cyan'] {
     --accent-color: #00bcd4;
 }
 
@@ -105,7 +106,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 }
 
 .container {
@@ -183,7 +186,9 @@ body {
     padding: 1.25rem 1.5rem;
     text-align: center;
     min-width: 140px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .stat-card:hover {

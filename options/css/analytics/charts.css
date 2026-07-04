@@ -175,10 +175,6 @@
     r: 6;
 }
 
-
-
-
-
 .chart-tooltip {
     position: absolute;
     bottom: calc(100% + 10px);
@@ -197,7 +193,7 @@
         opacity 0.18s ease,
         transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     text-align: center;
-    box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,0.15));
+    box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.15));
     z-index: 100;
     line-height: 1.5;
 }

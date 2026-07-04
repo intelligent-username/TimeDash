@@ -6,29 +6,57 @@
 /* ── Keyframes ─────────────────────────────────────────────── */
 
 @keyframes td-fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes td-popIn {
-    0%   { opacity: 0; transform: scale(0.88); }
-    70%  { transform: scale(1.05); }
-    100% { opacity: 1; transform: scale(1); }
+    0% {
+        opacity: 0;
+        transform: scale(0.88);
+    }
+    70% {
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes td-numberCount {
-    from { opacity: 0; transform: translateY(-6px) scale(0.9); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @keyframes td-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes td-barGrow {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
 }
 
 /* ── Popup container entrance ───────────────────────────────── */
@@ -53,7 +81,9 @@
 
 /* Icon button hover */
 .icon-btn {
-    transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .icon-btn:hover {
@@ -87,7 +117,7 @@
 
 .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .action-btn:active {
@@ -130,7 +160,7 @@
 .stat-card:hover {
     transform: translateY(-3px) scale(1.03);
     background: var(--surface-elevated, var(--surface));
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .stat-value {
@@ -149,7 +179,9 @@
 
 /* Refresh button spin on hover */
 .refresh-btn {
-    transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition:
+        color 0.2s ease,
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .refresh-btn:hover {
@@ -167,17 +199,27 @@
         box-shadow 0.2s ease;
 }
 
-.site-item:nth-child(1) { animation-delay: 0.04s; }
-.site-item:nth-child(2) { animation-delay: 0.08s; }
-.site-item:nth-child(3) { animation-delay: 0.12s; }
-.site-item:nth-child(4) { animation-delay: 0.16s; }
-.site-item:nth-child(5) { animation-delay: 0.20s; }
+.site-item:nth-child(1) {
+    animation-delay: 0.04s;
+}
+.site-item:nth-child(2) {
+    animation-delay: 0.08s;
+}
+.site-item:nth-child(3) {
+    animation-delay: 0.12s;
+}
+.site-item:nth-child(4) {
+    animation-delay: 0.16s;
+}
+.site-item:nth-child(5) {
+    animation-delay: 0.2s;
+}
 
 .site-item:hover {
     transform: translateX(4px);
     /* very subtle border shift — 5% accent, 95% original */
     border-color: color-mix(in srgb, var(--primary-color) 8%, var(--border) 92%);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .site-item-favicon {
@@ -189,7 +231,9 @@
 }
 
 .site-item-btn {
-    transition: color 0.15s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition:
+        color 0.15s ease,
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .site-item-btn:hover {
@@ -214,7 +258,7 @@
 .toggle-btn:hover,
 .dashboard-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .toggle-btn:active,

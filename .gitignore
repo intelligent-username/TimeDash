@@ -1,5 +1,6 @@
 /_dev
 /.dev
+eslint.config*
 
 _locales/
 node_modules/*
@@ -7,3 +8,4 @@ node_modules/*
 notes/
 *.zip
 *.md
+

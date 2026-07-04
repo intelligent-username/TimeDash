@@ -1,5 +1,12 @@
+/**
+ *
+ * @param CurrentlyPlayingUI
+ */
 export function applyCurrentlyPlayingMessagingMethods(CurrentlyPlayingUI) {
-    CurrentlyPlayingUI.prototype.sendMessageWithTimeout = async function sendMessageWithTimeout(message, timeoutMs = 10000) {
+    CurrentlyPlayingUI.prototype.sendMessageWithTimeout = async function sendMessageWithTimeout(
+        message,
+        timeoutMs = 10000
+    ) {
         return await Promise.race([
             chrome.runtime.sendMessage(message),
             new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs)),

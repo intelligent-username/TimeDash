@@ -1,3 +1,7 @@
+/**
+ *
+ * @param OptionsController
+ */
 export function applyOptionsSyncMethods(OptionsController) {
     OptionsController.prototype.setupHelpLinks = function setupHelpLinks() {
         const privacyLinks = document.querySelectorAll('[id^="privacyPolicyLink"]');
@@ -36,19 +40,19 @@ export function applyOptionsSyncMethods(OptionsController) {
 
             try {
                 await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
-                
+
                 const [latestSettings, latestUsage] = await Promise.all([
                     this.storageManager.getSettings(),
-                    this.storageManager.getAllUsage()
+                    this.storageManager.getAllUsage(),
                 ]);
-                
+
                 this.settings = { ...this.settings, ...latestSettings };
                 this.usage = latestUsage;
 
                 this.applyImmediateChanges('theme', this.settings.theme || 'light');
                 this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
                 this.syncCurrentPlaybackSpeedUI();
-                
+
                 if (this.analyticsUI) this.analyticsUI.update();
             } catch (error) {
                 console.error('Failed to refresh data on visibility change:', error);
@@ -61,7 +65,9 @@ export function applyOptionsSyncMethods(OptionsController) {
             const activeTab = document.querySelector('.sidebar-nav-item.active');
             if (activeTab && activeTab.dataset.tab === 'analytics') {
                 try {
-                    await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+                    await chrome.runtime
+                        .sendMessage({ type: 'FLUSH_PENDING_UPDATES' })
+                        .catch(() => {});
                     this.usage = await this.storageManager.getAllUsage();
                     if (this.analyticsUI) this.analyticsUI.update();
                 } catch (error) {
