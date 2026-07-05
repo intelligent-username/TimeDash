@@ -23,7 +23,7 @@ class VideoController {
                 video.playbackRate = this.instance.currentSpeed;
                 this.instance._settingSpeed = false;
                 this.instance.markVideoInteraction(video);
-                if (this.instance.ui && this.instance.settings.showSpeedOverlay) {
+                if (this.instance.ui && this.instance.settings.showSpeedOverlay && !this.instance._suppressIndicator) {
                     this.instance.ui.showIndicator(video, this.instance.currentSpeed);
                 }
             }
@@ -43,7 +43,7 @@ class VideoController {
 
             this.instance.markVideoInteraction(video);
             if (this.instance.ui) {
-                this.instance.ui.showIndicator(video, this.instance.currentSpeed);
+                this.showSpeedOverlayIndicator(true);
             }
 
             const externalSpeed = video.playbackRate;
@@ -52,7 +52,7 @@ class VideoController {
                 video.playbackRate = this.instance.currentSpeed;
                 this.instance._settingSpeed = false;
                 if (this.instance.ui) {
-                    this.instance.ui.showIndicator(video, this.instance.currentSpeed);
+                    this.showSpeedOverlayIndicator(true);
                 }
             }
         });
@@ -105,21 +105,34 @@ class VideoController {
         if (!force && !this.instance.settings.showSpeedOverlay) return;
 
         const detector = this.instance.detector;
-        detector.findAndSetupVideos(document);
-        detector.scanOpenShadowRoots(document);
+
+        this.instance._suppressIndicator = true;
+        try {
+            detector.findAndSetupVideos(document);
+            detector.scanOpenShadowRoots(document);
+        } finally {
+            this.instance._suppressIndicator = false;
+        }
 
         const connectedVideos = [...this.instance.videos].filter(
             (video) => video && video.isConnected
         );
         if (connectedVideos.length === 0) return;
 
-        const recentVideo = connectedVideos.find((video) =>
-            this.instance.hasRecentVideoInteraction(video)
-        );
-        const activeVideo =
-            recentVideo ||
-            connectedVideos.find((video) => !video.paused && !video.ended) ||
-            connectedVideos[0];
+        // Pick best video: prefer actively playing, then most recent interaction
+        let activeVideo = connectedVideos[0];
+        let bestScore = -Infinity;
+
+        for (const video of connectedVideos) {
+            const ts = this.instance.videoInteractionTs.get(video) || 0;
+            const isPlaying = !video.paused && !video.ended;
+            const score = (isPlaying ? 1e15 : 0) + ts;
+            if (score > bestScore) {
+                bestScore = score;
+                activeVideo = video;
+            }
+        }
+
         this.instance.ui.showIndicator(activeVideo, this.instance.currentSpeed);
     }
 
