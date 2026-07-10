@@ -228,3 +228,11 @@ body {
     gap: var(--spacing-sm);
     margin-bottom: var(--spacing);
 }
+
+.card-subheader {
+    margin: 2px 0 0 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.4;
+}

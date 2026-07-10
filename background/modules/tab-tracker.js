@@ -78,7 +78,7 @@ class TabTracker {
                     await this.startTrackingTab(tabId, domain);
                 }
             } else {
-                // Background tab — check blocking but don't start tracking
+                // Background tab. Checks for blocking rules but doesn't start tracking.
                 await this.checkAndHandleBlocking(tab, domain);
             }
         } catch (error) {

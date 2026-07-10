@@ -66,7 +66,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 await chrome.storage.session.remove('pendingUpdates');
             }
         } catch {
-            // session storage not available — non-critical, just lose up to 5s
+            // session storage not available; non-critical, just lose up to 5s
         }
     };
 

@@ -33,38 +33,35 @@
                 Sites allowed for <i>specific</i> amounts of time per day.
             </p>
             <div class="rule-manager" id="restrictedManager">
-                <div class="rule-input-group modern-input-group restricted-input-row">
-                    <div class="restricted-domain-col">
-                        <label for="restrictedDomainInput" class="sr-only">Domain</label>
-                        <input
-                            type="text"
-                            id="restrictedDomainInput"
-                            placeholder="e.g., youtube.com…"
-                            class="modern-input"
-                            autocomplete="off"
-                            name="restricted-domain"
-                            spellcheck="false"
-                        />
-                    </div>
-                    <div class="circ-picker-wrap">
-                        <div id="restrictedPickerMount" aria-label="Time limit picker"></div>
-                        <div class="circ-picker-max-row">
-                            <label for="restrictedMaxInput" class="circ-max-label">Max:</label>
+                <div class="restricted-form-container">
+                    <div class="restricted-form-row">
+                        <div class="restricted-form-group" style="height: 100%; display: flex; flex-direction: column;">
+                            <label for="restrictedDomainInput" class="restricted-form-label">Website Domain</label>
                             <input
-                                type="number"
-                                id="restrictedMaxInput"
-                                value="120"
-                                min="1"
-                                max="1440"
-                                class="modern-input limit-input"
-                                title="Maximum minutes for the picker ring"
+                                type="text"
+                                id="restrictedDomainInput"
+                                placeholder="e.g., youtube.com…"
+                                class="modern-input restricted-form-input"
                                 autocomplete="off"
-                                name="restricted-max"
+                                name="restricted-domain"
+                                spellcheck="false"
                             />
-                            <span class="limit-suffix">min</span>
+                            <div class="restricted-form-actions" style="margin-top: 8px;">
+                                <button id="addRestrictedBtn" class="btn btn-primary" style="width: 100%; max-width: 300px;">Add Restriction</button>
+                            </div>
+                        </div>
+                        
+                        <div class="restricted-form-group">
+                            <label class="restricted-form-label">Time Allowed Per Day</label>
+                            <div class="circ-picker-wrap">
+                                <div id="restrictedPickerMount" aria-label="Time limit picker"></div>
+                            </div>
                         </div>
                     </div>
-                    <button id="addRestrictedBtn" class="btn btn-primary" style="align-self: flex-start">Add</button>
+                </div>
+                
+                <div class="restricted-list-header" style="margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                    <h3 style="font-size: 1rem; margin: 0; color: var(--text-primary);">Restricted Websites</h3>
                 </div>
                 <ul class="rule-list modern-list" id="restrictedList"></ul>
             </div>

@@ -9,6 +9,7 @@ const STORAGE_DEFAULT_SETTINGS = {
     decreaseSpeedKey: 'Minus',
     resetSpeedKey: 'Period',
     dailyTimeLimitMinutes: 0,
+    restrictedSliderMax: 120,
     theme: 'auto',
     accentColor: 'blue',
     overlayColor: 'blue',

@@ -58,7 +58,7 @@ class TimeDashOverlayUI {
      * @param speed
      */
     showIndicator(video, speed) {
-        // Single persistent element on body — avoids inheriting parent sizing/layout
+        // Single persistent element on body. Avoids inheriting parent sizing/layout
         let indicator = document.getElementById('timedash-speed-indicator');
 
         if (!indicator) {

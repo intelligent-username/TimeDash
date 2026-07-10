@@ -217,41 +217,37 @@
             external server.
         </p>
 
-        <h3>Permissions &amp; Justification</h3>
+        <h3>Permissions</h3>
         <ol style="padding-left: var(--spacing-lg)">
             <span class="privacy-muted-text"
-                >These are all of the permissions the extension uses and why:</span
+                >These are the permissions that TimeDash needs in your browser:</span
             >
             <li>
-                <code style="color: var(--accent-color)">storage</code> — settings and usage
-                records. Nothing else is stored.
+                <code style="color: var(--accent-color)">storage</code>: for settings and usage records only.
             </li>
             <li>
-                <code style="color: var(--accent-color)">tabs</code> — reads the active tab URL to
-                attribute time to the correct site and to apply block or restriction rules.
+                <code style="color: var(--accent-color)">tabs</code>: for reading the active tab URL.
+                Attributes time to the correct site and to apply block or restriction rules.
             </li>
             <li>
-                <code style="color: var(--accent-color)">scripting</code> — injects video speed
-                controls into HTML5 video players when you visit a supported page.
+                <code style="color: var(--accent-color)">scripting</code>: injects video speed controls into HTML5 video players.
             </li>
             <li>
-                <code style="color: var(--accent-color)">webNavigation</code> — tracks URL changes
-                across frames so tracking and blocking rules stay accurate after redirects and
-                iframe loads.
+                <code style="color: var(--accent-color)">webNavigation</code>: tracks URL changes
+                across frames.
             </li>
             <li>
-                <code style="color: var(--accent-color)">host_permissions</code> — allows content
+                <code style="color: var(--accent-color)">host_permissions</code>: allows content
                 scripts to run on the sites you visit. Without this, tracking and video controls
                 would only work on a limited set of pre-approved domains.
             </li>
             <li>
-                <code style="color: var(--accent-color)">alarms</code> — runs scheduled maintenance
-                such as daily usage resets and optional auto-purge sweeps.
+                <code style="color: var(--accent-color)">alarms</code>: for scheduled maintenance
+                (daily usage resets and optional auto-purge sweeps).
             </li>
             <li>
-                <code style="color: var(--accent-color)">notifications</code> — sends optional
-                alerts (e.g., daily time limit reached). Never used for marketing or promotional
-                purposes.
+                <code style="color: var(--accent-color)">notifications</code>: (optional) alerts (e.g., daily time limit reached).
+                Never used for marketing or promotional purposes.
             </li>
         </ol>
 
@@ -315,7 +311,7 @@
                 >github.com/intelligent-username/TimeDash/issues</a
             >
             and include a description of what you are seeing along with any relevant screenshots.
-            Issues are typically addressed within a few days.
+            Issues are typically addressed within a few business days.
         </p>
     </details>
 </div>

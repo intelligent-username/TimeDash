@@ -3,6 +3,7 @@ export const generalSettingsMethods = {
         this.bindSettings({
             trackingEnabled: 'trackingEnabled',
             dailyTimeLimitMinutes: 'dailyLimit',
+            restrictedSliderMax: 'restrictedSliderMax',
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
             badgeEnabled: 'badgeEnabled',

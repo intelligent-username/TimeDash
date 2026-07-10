@@ -362,3 +362,24 @@
     color: var(--text-muted);
     font-style: italic;
 }
+
+.mini-bar-col--clickable {
+    cursor: pointer;
+}
+
+.mini-bar-col--clickable:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.mini-bar-col--selected .mini-bar-fill {
+    background: var(--primary-color);
+    opacity: 1;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.mini-bar-col--selected .mini-bar-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}

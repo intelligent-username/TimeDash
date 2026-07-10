@@ -169,7 +169,10 @@
 <!-- Restricted Time per Day -->
 <div class="content-card">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center">
-        <h2>Restricted Time per Day</h2>
+        <div>
+            <h2>Restricted Time per Day</h2>
+            <p class="card-subheader">Time spent on non-blocked websites with a daily time limit</p>
+        </div>
         <div class="chart-period-selector restriction-chart-controls" role="group" aria-label="Restricted Chart Range">
             <button class="period-btn active" data-restrict-period="week">Week</button>
             <button class="period-btn" data-restrict-period="month">Month</button>
@@ -177,20 +180,6 @@
     </div>
     <div class="card-body">
         <div id="restrictedTimeChart" class="mini-bar-chart"></div>
-    </div>
-</div>
-
-<!-- Blocked Attempts per Day -->
-<div class="content-card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center">
-        <h2>Blocked Attempts per Day</h2>
-        <div class="chart-period-selector blocked-chart-controls" role="group" aria-label="Blocked Chart Range">
-            <button class="period-btn active" data-blocked-period="week">Week</button>
-            <button class="period-btn" data-blocked-period="month">Month</button>
-        </div>
-    </div>
-    <div class="card-body">
-        <div id="blockedAttemptsChart" class="mini-bar-chart"></div>
     </div>
 </div>
 

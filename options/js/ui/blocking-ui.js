@@ -261,7 +261,6 @@ export class BlockingUI {
         });
     }
 
-    /** Build the circular SVG time picker — no external number input */
     _buildCircularPicker() {
         const container = document.getElementById('restrictedPickerMount');
         if (!container) return;
@@ -271,7 +270,7 @@ export class BlockingUI {
         const CY = SIZE / 2;
         const R = 42;
 
-        let maxMin = 120;
+        let maxMin = this.controller?.settings?.restrictedSliderMax || 120;
 
         const minutesToAngle = (m) => (m / maxMin) * 360 - 90;
         const angleToMinutes = (deg) => {
@@ -416,7 +415,6 @@ export class BlockingUI {
             }
         });
 
-        // Center input — type to set value directly
         centerInput.addEventListener('input', () => {
             const v = parseInt(centerInput.value, 10);
             if (!isNaN(v) && v >= 0) {
@@ -429,8 +427,7 @@ export class BlockingUI {
             update(this._restrictedMinutes);
         });
 
-        // Max input — recalibrate ring scale
-        const maxInput = document.getElementById('restrictedMaxInput');
+        const maxInput = document.getElementById('restrictedSliderMax');
         if (maxInput) {
             maxInput.addEventListener('change', () => {
                 const v = parseInt(maxInput.value, 10);

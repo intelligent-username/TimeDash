@@ -147,7 +147,7 @@
     z-index: 3;
 }
 
-/* Today marker — subtle ring so user can spot current day */
+/* Today marker. Should look like ring so user can spot current day */
 .heatmap-cell--today {
     box-shadow: inset 0 0 0 1.5px var(--accent-color, var(--primary-color));
     z-index: 2;

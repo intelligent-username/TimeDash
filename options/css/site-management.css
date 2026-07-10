@@ -67,28 +67,51 @@
 
 /* .rule-delete-btn consolidated into components/settings-and-lists.css */
 
-/* ── Circular time picker ─────────────────────────────────────────────── */
-.restricted-input-row {
-    align-items: flex-start;
-    flex-wrap: wrap;
-}
-
-.restricted-domain-col {
+/* ── Restricted Form (TimeSnatch style) ─────────────────────────────────── */
+.restricted-form-container {
     display: flex;
     flex-direction: column;
-    align-self: flex-start;
+    gap: var(--spacing-lg);
+    background: var(--background);
+    border-radius: var(--radius-large);
+    padding: var(--spacing);
+    border: 1px solid var(--border-subtle);
 }
 
-.restricted-domain-col .modern-input {
-    height: 40px;
-    min-height: unset;
+.restricted-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    align-items: stretch;
+}
+
+.restricted-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.restricted-form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.restricted-form-input {
+    width: 100%;
+    max-width: 300px;
 }
 
 .circ-picker-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    background: var(--background);
+    padding: 6px 0;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-medium);
+    width: 100%;
 }
 
 .circ-picker-inner-wrap {

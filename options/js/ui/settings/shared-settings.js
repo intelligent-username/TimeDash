@@ -72,6 +72,7 @@ export const sharedSettingsMethods = {
         const mapping = {
             trackingEnabled: 'trackingEnabled',
             dailyTimeLimitMinutes: 'dailyLimit',
+            restrictedSliderMax: 'restrictedSliderMax',
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
             badgeEnabled: 'badgeEnabled',
