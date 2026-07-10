@@ -47,6 +47,8 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
         this.chart.render();
         this.heatmap.render();
+        this.renderMiniCharts();
+        this.setupMiniChartPeriodButtons();
     };
 
     AnalyticsUI.prototype.updatePeriodStats = function updatePeriodStats() {
@@ -304,5 +306,114 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         }
 
         return { periodTotal, periodDays, periodLabel };
+    };
+
+    // ── Mini bar charts (restricted time / blocked attempts) ─────────────────
+
+    AnalyticsUI.prototype._miniChartPeriods = { restricted: 'week', blocked: 'week' };
+
+    AnalyticsUI.prototype.renderMiniCharts = function renderMiniCharts() {
+        const usage = this.controller.usage || {};
+        this._renderSingleMiniChart('restrictedTimeChart', this._miniChartPeriods.restricted, usage, 'restricted');
+        this._renderSingleMiniChart('blockedAttemptsChart', this._miniChartPeriods.blocked, usage, 'blocked');
+    };
+
+    AnalyticsUI.prototype._renderSingleMiniChart = function _renderSingleMiniChart(
+        containerId, period, usage, kind
+    ) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+
+        const days = period === 'month' ? 30 : 7;
+        const now = new Date();
+        const labels = [];
+        const values = [];
+
+        // For restricted chart, only sum domains that have a restricted rule
+        const restrictedDomains = kind === 'restricted'
+            ? new Set(this.controller.restrictedDomains || [])
+            : null;
+
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(now);
+            d.setDate(now.getDate() - i);
+            const dateStr = formatDateString(d);
+            labels.push(dateStr);
+
+            let dayTotal = 0;
+            for (const domain of Object.keys(usage)) {
+                const domainData = usage[domain];
+                if (kind === 'restricted') {
+                    if (restrictedDomains && !restrictedDomains.has(domain)) continue;
+                    // Key: "2026-07-09_restricted"
+                    dayTotal += (domainData[`${dateStr}_restricted`] || 0);
+                } else {
+                    // Key: "2026-07-09_blocked"
+                    dayTotal += (domainData[`${dateStr}_blocked`] || 0);
+                }
+            }
+            values.push(dayTotal);
+        }
+
+        const max = Math.max(...values, 1);
+        const isTime = kind === 'restricted';
+
+        const formatVal = (v) => {
+            if (!isTime) return `${v} block${v !== 1 ? 's' : ''}`;
+            const h = Math.floor(v / 3600);
+            const m = Math.floor((v % 3600) / 60);
+            if (h === 0 && m === 0) return '< 1m';
+            if (h === 0) return `${m}m`;
+            if (m === 0) return `${h}h`;
+            return `${h}h\u00a0${m}m`;
+        };
+
+        const shortLabel = (dateStr) => {
+            const d = new Date(dateStr + 'T00:00:00');
+            if (days <= 7) return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+            return `${d.getMonth() + 1}/${d.getDate()}`;
+        };
+
+        const allZero = values.every((v) => v === 0);
+
+        el.innerHTML = allZero
+            ? `<div class="mini-bar-empty">No data yet for this period</div>`
+            : `<div class="mini-bar-chart-inner" role="img" aria-label="${kind === 'restricted' ? 'Restricted time per day' : 'Blocked attempts per day'}">
+                ${values.map((v, i) => {
+                    const pct = Math.round((v / max) * 100);
+                    return `<div class="mini-bar-col">
+                            <div class="mini-bar-tooltip" role="tooltip">${formatVal(v)}<br><span>${labels[i]}</span></div>
+                            <div class="mini-bar-track">
+                                <div class="mini-bar-fill${v > 0 ? ' has-data' : ''}" style="height:${pct}%" aria-hidden="true"></div>
+                            </div>
+                            <div class="mini-bar-label" aria-hidden="true">${shortLabel(labels[i])}</div>
+                        </div>`;
+                }).join('')}
+            </div>`;
+    };
+
+    AnalyticsUI.prototype.setupMiniChartPeriodButtons = function setupMiniChartPeriodButtons() {
+        if (this._miniChartButtonsSetup) return;
+        this._miniChartButtonsSetup = true;
+
+        document.querySelectorAll('[data-restrict-period]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-restrict-period]').forEach((b) => b.classList.remove('active'));
+                e.target.classList.add('active');
+                this._miniChartPeriods.restricted = e.target.dataset.restrictPeriod;
+                const usage = this.controller.usage || {};
+                this._renderSingleMiniChart('restrictedTimeChart', this._miniChartPeriods.restricted, usage, 'restricted');
+            });
+        });
+
+        document.querySelectorAll('[data-blocked-period]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-blocked-period]').forEach((b) => b.classList.remove('active'));
+                e.target.classList.add('active');
+                this._miniChartPeriods.blocked = e.target.dataset.blockedPeriod;
+                const usage = this.controller.usage || {};
+                this._renderSingleMiniChart('blockedAttemptsChart', this._miniChartPeriods.blocked, usage, 'blocked');
+            });
+        });
     };
 }

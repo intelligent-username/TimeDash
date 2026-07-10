@@ -104,3 +104,66 @@
 .site-item-btn.blocked {
     color: var(--danger-color);
 }
+
+/* Current-site highlight (#17) */
+.site-item--current {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 8%, var(--background));
+    box-shadow: 0 0 0 1.5px var(--primary-color);
+}
+
+.site-item--current .site-item-name::after {
+    content: ' ●';
+    font-size: 8px;
+    color: var(--primary-color);
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+/* Restricted site progress bar (#16) */
+.site-item-progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+.site-progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.site-progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-progress-fill.site-progress-over {
+    background: var(--danger-color);
+}
+
+.site-progress-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Make site-item a flex-column so progress bar sits below the info row */
+.site-item {
+    flex-wrap: wrap;
+}
+
+.site-item-info {
+    width: 100%;
+}
+
+.site-item-actions {
+    margin-left: auto;
+}

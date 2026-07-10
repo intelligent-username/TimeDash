@@ -76,7 +76,28 @@ export const uiMethods = {
             return;
         }
 
-        const topSites = this.usageData.domains.filter((site) => site.todayTime > 0).slice(0, 5);
+        // Current tab domain for highlight (#17)
+        const currentDomain =
+            this.currentTab && this.currentTab.url
+                ? PopupHelpers.extractDomain(this.currentTab.url)
+                : null;
+
+        // Restricted rules map: domain → timeLimitMinutes (#16)
+        const restrictedMap = new Map();
+        const rules = this.siteRules || {};
+        if (Array.isArray(rules.restricted)) {
+            rules.restricted.forEach((r) => restrictedMap.set(r.domain, r.timeLimitMinutes));
+        }
+
+        let topSites = this.usageData.domains.filter((site) => site.todayTime > 0).slice(0, 5);
+
+        // Float current domain to the top (#17)
+        if (currentDomain) {
+            const idx = topSites.findIndex((s) => s.domain === currentDomain);
+            if (idx > 0) {
+                topSites = [topSites[idx], ...topSites.slice(0, idx), ...topSites.slice(idx + 1)];
+            }
+        }
 
         if (topSites.length === 0) {
             sitesList.innerHTML =
@@ -84,58 +105,41 @@ export const uiMethods = {
             return;
         }
 
-        const existingItems = sitesList.querySelectorAll(':scope > .site-item');
-        const oldDomains = [];
-        const existingMap = new Map();
-        existingItems.forEach((el) => {
-            const domain = el.querySelector('.site-item-btn')?.dataset.domain;
-            if (domain) {
-                oldDomains.push(domain);
-                existingMap.set(domain, el);
-            }
-        });
-
-        const newDomains = topSites.map((s) => s.domain);
-        const sameOrder =
-            newDomains.length === oldDomains.length &&
-            newDomains.every((d, i) => d === oldDomains[i]);
-
-        if (sameOrder) {
-            topSites.forEach((site) => {
-                const el = existingMap.get(site.domain);
-                if (el) {
-                    const timeEl = el.querySelector('.site-item-time');
-                    if (timeEl)
-                        timeEl.textContent = PopupHelpers.formatDetailedTime(site.todayTime);
-                }
-            });
-            return;
-        }
-
-        const newSet = new Set(newDomains);
-        existingItems.forEach((el) => {
-            const domain = el.querySelector('.site-item-btn')?.dataset.domain;
-            if (domain && !newSet.has(domain)) el.remove();
-        });
-
-        const fragment = document.createDocumentFragment();
-        newDomains.forEach((domain) => {
-            const siteData = topSites.find((s) => s.domain === domain);
-            if (!siteData) return;
-            const existing = existingMap.get(domain);
-            if (existing) {
-                const timeEl = existing.querySelector('.site-item-time');
-                if (timeEl)
-                    timeEl.textContent = PopupHelpers.formatDetailedTime(siteData.todayTime);
-                fragment.appendChild(existing);
-            } else {
-                const siteItem = PopupHelpers.createSiteItem(siteData);
-                PopupHelpers.animateIn(siteItem);
-                fragment.appendChild(siteItem);
-            }
-        });
-
         sitesList.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+
+        topSites.forEach((site) => {
+            const isCurrentSite = currentDomain && site.domain === currentDomain;
+            const limitMinutes = restrictedMap.get(site.domain);
+            const hasLimit = limitMinutes !== undefined;
+
+            const siteItem = PopupHelpers.createSiteItem(site);
+
+            // Highlight current site (#17)
+            if (isCurrentSite) {
+                siteItem.classList.add('site-item--current');
+            }
+
+            // Progress bar for restricted sites (#16)
+            if (hasLimit) {
+                const limitSeconds = limitMinutes * 60;
+                const pct = Math.min(100, Math.round((site.todayTime / limitSeconds) * 100));
+                const isOver = site.todayTime >= limitSeconds;
+
+                const bar = document.createElement('div');
+                bar.className = 'site-item-progress-bar';
+                bar.innerHTML = `
+                    <div class="site-progress-track">
+                        <div class="site-progress-fill${isOver ? ' site-progress-over' : ''}" style="width:${pct}%"></div>
+                    </div>
+                    <span class="site-progress-label">${pct}% of ${limitMinutes}m</span>`;
+                siteItem.appendChild(bar);
+            }
+
+            PopupHelpers.animateIn(siteItem);
+            fragment.appendChild(siteItem);
+        });
+
         sitesList.appendChild(fragment);
     },
 

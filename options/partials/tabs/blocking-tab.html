@@ -7,11 +7,15 @@
             <p class="section-description">These sites are completely inaccessible.</p>
             <div class="rule-manager" id="blockedManager">
                 <div class="rule-input-group modern-input-group">
+                    <label for="blockedDomainInput" class="sr-only">Domain to block</label>
                     <input
                         type="text"
                         id="blockedDomainInput"
-                        placeholder="e.g., facebook.com"
+                        placeholder="e.g., facebook.com…"
                         class="modern-input"
+                        autocomplete="off"
+                        name="blocked-domain"
+                        spellcheck="false"
                     />
                     <button id="addBlockedBtn" class="btn btn-primary">Add</button>
                 </div>
@@ -26,26 +30,41 @@
         </div>
         <div class="card-body">
             <p class="section-description">
-                Sites allowed for <i>specific </i> amounts of time per day.
+                Sites allowed for <i>specific</i> amounts of time per day.
             </p>
             <div class="rule-manager" id="restrictedManager">
-                <div class="rule-input-group modern-input-group">
-                    <input
-                        type="text"
-                        id="restrictedDomainInput"
-                        placeholder="e.g., youtube.com"
-                        class="modern-input"
-                    />
-                    <input
-                        type="number"
-                        id="restrictedLimitInput"
-                        placeholder="30"
-                        min="0"
-                        max="1440"
-                        step="1"
-                        class="modern-input limit-input"
-                    />
-                    <button id="addRestrictedBtn" class="btn btn-primary">Add</button>
+                <div class="rule-input-group modern-input-group restricted-input-row">
+                    <div class="restricted-domain-col">
+                        <label for="restrictedDomainInput" class="sr-only">Domain</label>
+                        <input
+                            type="text"
+                            id="restrictedDomainInput"
+                            placeholder="e.g., youtube.com…"
+                            class="modern-input"
+                            autocomplete="off"
+                            name="restricted-domain"
+                            spellcheck="false"
+                        />
+                    </div>
+                    <div class="circ-picker-wrap">
+                        <div id="restrictedPickerMount" aria-label="Time limit picker"></div>
+                        <div class="circ-picker-max-row">
+                            <label for="restrictedMaxInput" class="circ-max-label">Max:</label>
+                            <input
+                                type="number"
+                                id="restrictedMaxInput"
+                                value="120"
+                                min="1"
+                                max="1440"
+                                class="modern-input limit-input"
+                                title="Maximum minutes for the picker ring"
+                                autocomplete="off"
+                                name="restricted-max"
+                            />
+                            <span class="limit-suffix">min</span>
+                        </div>
+                    </div>
+                    <button id="addRestrictedBtn" class="btn btn-primary" style="align-self: flex-start">Add</button>
                 </div>
                 <ul class="rule-list modern-list" id="restrictedList"></ul>
             </div>

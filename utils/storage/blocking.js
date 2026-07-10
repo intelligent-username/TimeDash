@@ -50,8 +50,14 @@ function applyStorageBlockingMethods(StorageManager) {
             }
 
             domainUsage.blockedToday = (domainUsage.blockedToday || 0) + 1;
-            usage[domain] = domainUsage;
 
+            // Per-date block count for historical charts
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const blockedKey = `${dateStr}_blocked`;
+            domainUsage[blockedKey] = (domainUsage[blockedKey] || 0) + 1;
+
+            usage[domain] = domainUsage;
             await chrome.storage.local.set({ usage });
             return true;
         } catch (error) {

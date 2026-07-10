@@ -71,7 +71,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     if (ruleType === 'BLOCKED') this.ruleManager.addRule(new BlockedRule(domain));
                     if (ruleType === 'RESTRICTED')
                         this.ruleManager.addRule(
-                            new RestrictedRule(domain, timeLimitMinutes || 30)
+                            new RestrictedRule(domain, timeLimitMinutes ?? 30)
                         );
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });

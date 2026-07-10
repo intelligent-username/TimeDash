@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "TimeDash",
-    "version": "1.1.8",
+    "version": "1.2.0",
     "description": "Boost your productivity with time tracking, site blocking, and speed control.",
     "default_locale": "en",
     "permissions": [

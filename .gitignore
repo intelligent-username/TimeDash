@@ -4,6 +4,8 @@ eslint.config*
 
 _locales/
 node_modules/*
+.inspiration/*
+.inspiration/**
 
 notes/
 *.zip

@@ -38,6 +38,13 @@ export const lifecycleMethods = {
 
             const settingsResponse = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
             this.settings = settingsResponse;
+
+            try {
+                const rulesResponse = await chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' });
+                this.siteRules = rulesResponse || { blocked: [], restricted: [] };
+            } catch {
+                this.siteRules = { blocked: [], restricted: [] };
+            }
         } catch (error) {
             console.error('Error loading data:', error);
             throw error;

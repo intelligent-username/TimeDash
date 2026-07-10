@@ -11,6 +11,7 @@ export class BlockingUI {
     constructor(controller) {
         this.controller = controller;
         this.limitUpdateTimers = new Map();
+        this._restrictedMinutes = 30;
     }
 
     /**
@@ -36,24 +37,19 @@ export class BlockingUI {
 
         const addRestrictedBtn = document.getElementById('addRestrictedBtn');
         const restrictedDomainInput = document.getElementById('restrictedDomainInput');
-        const restrictedLimitInput = document.getElementById('restrictedLimitInput');
+
+        this._buildCircularPicker();
 
         if (addRestrictedBtn && restrictedDomainInput) {
             addRestrictedBtn.addEventListener('click', () => {
-                const parsed = parseInt(restrictedLimitInput?.value, 10);
-                const limit = !Number.isNaN(parsed) ? parsed : 30;
-                this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
+                this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', this._restrictedMinutes);
                 restrictedDomainInput.value = '';
-                if (restrictedLimitInput) restrictedLimitInput.value = '';
             });
 
             restrictedDomainInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    const parsed = parseInt(restrictedLimitInput?.value, 10);
-                    const limit = !Number.isNaN(parsed) ? parsed : 30;
-                    this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', limit);
+                    this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', this._restrictedMinutes);
                     restrictedDomainInput.value = '';
-                    if (restrictedLimitInput) restrictedLimitInput.value = '';
                 }
             });
         }
@@ -263,5 +259,186 @@ export class BlockingUI {
             li.appendChild(deleteBtn);
             list.appendChild(li);
         });
+    }
+
+    /** Build the circular SVG time picker — no external number input */
+    _buildCircularPicker() {
+        const container = document.getElementById('restrictedPickerMount');
+        if (!container) return;
+
+        const SIZE = 110;
+        const CX = SIZE / 2;
+        const CY = SIZE / 2;
+        const R = 42;
+
+        let maxMin = 120;
+
+        const minutesToAngle = (m) => (m / maxMin) * 360 - 90;
+        const angleToMinutes = (deg) => {
+            const d = ((deg + 90) % 360 + 360) % 360;
+            return Math.max(0, Math.min(maxMin, Math.round((d / 360) * maxMin)));
+        };
+        const polarToXY = (angleDeg, r) => {
+            const rad = (angleDeg * Math.PI) / 180;
+            return { x: CX + r * Math.cos(rad), y: CY + r * Math.sin(rad) };
+        };
+        const describeArc = (startAngle, endAngle, r) => {
+            const e = polarToXY(endAngle, r);
+            const large = ((endAngle - startAngle) + 360) % 360 > 180 ? 1 : 0;
+            return `M ${CX} ${CY - r} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+        };
+
+        // Wrapper for position:relative (needed for overlay input)
+        const wrap = document.createElement('div');
+        wrap.className = 'circ-picker-inner-wrap';
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', `0 0 ${SIZE} ${SIZE}`);
+        svg.setAttribute('class', 'circ-picker-svg');
+        svg.setAttribute('aria-hidden', 'true');
+
+        const trackCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        trackCircle.setAttribute('cx', CX);
+        trackCircle.setAttribute('cy', CY);
+        trackCircle.setAttribute('r', R);
+        trackCircle.setAttribute('class', 'circ-track');
+        svg.appendChild(trackCircle);
+
+        const arcPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        arcPath.setAttribute('class', 'circ-arc');
+        svg.appendChild(arcPath);
+
+        const handleCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        handleCircle.setAttribute('r', 6);
+        handleCircle.setAttribute('class', 'circ-handle');
+        handleCircle.setAttribute('tabindex', '0');
+        handleCircle.setAttribute('role', 'slider');
+        handleCircle.setAttribute('aria-label', 'Time limit');
+        svg.appendChild(handleCircle);
+
+        wrap.appendChild(svg);
+
+        // Editable center input overlaid on the SVG
+        const centerInput = document.createElement('input');
+        centerInput.type = 'number';
+        centerInput.className = 'circ-center-input';
+        centerInput.min = '0';
+        centerInput.setAttribute('aria-label', 'Daily time limit in minutes');
+        centerInput.setAttribute('autocomplete', 'off');
+        centerInput.setAttribute('name', 'restricted-minutes');
+        wrap.appendChild(centerInput);
+
+        container.appendChild(wrap);
+
+        const formatLabel = (m) => {
+            if (m === 0) return '0';
+            if (m >= 60) {
+                const h = Math.floor(m / 60);
+                const rem = m % 60;
+                return rem ? `${h}h${rem}m` : `${h}h`;
+            }
+            return `${m}`;
+        };
+
+        const update = (minutes) => {
+            this._restrictedMinutes = Math.max(0, Math.min(maxMin, minutes));
+            const angle = minutesToAngle(this._restrictedMinutes);
+            const hPos = polarToXY(angle, R);
+            handleCircle.setAttribute('cx', hPos.x);
+            handleCircle.setAttribute('cy', hPos.y);
+            handleCircle.setAttribute('aria-valuenow', this._restrictedMinutes);
+            handleCircle.setAttribute('aria-valuemin', '0');
+            handleCircle.setAttribute('aria-valuemax', maxMin);
+
+            if (this._restrictedMinutes > 0) {
+                arcPath.setAttribute('d', describeArc(-90, angle, R));
+                arcPath.style.display = '';
+            } else {
+                arcPath.style.display = 'none';
+            }
+
+            // Only update input value if not focused (don't interrupt typing)
+            if (document.activeElement !== centerInput) {
+                centerInput.value = this._restrictedMinutes;
+            }
+            centerInput.max = maxMin;
+        };
+
+        update(this._restrictedMinutes);
+
+        const getAngleFromEvent = (e) => {
+            const rect = svg.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+        };
+
+        let dragging = false;
+
+        const startDrag = (e) => {
+            dragging = true;
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        };
+        const moveDrag = (e) => {
+            if (!dragging) return;
+            e.preventDefault();
+            update(angleToMinutes(getAngleFromEvent(e)));
+        };
+        const stopDrag = () => {
+            dragging = false;
+            document.body.style.userSelect = '';
+        };
+
+        handleCircle.addEventListener('mousedown', startDrag);
+        handleCircle.addEventListener('touchstart', startDrag, { passive: false });
+        svg.addEventListener('mousemove', moveDrag);
+        svg.addEventListener('touchmove', moveDrag, { passive: false });
+        window.addEventListener('mouseup', stopDrag);
+        window.addEventListener('touchend', stopDrag);
+
+        // Click track to jump
+        svg.addEventListener('click', (e) => {
+            if (e.target === handleCircle) return;
+            update(angleToMinutes(getAngleFromEvent(e)));
+        });
+
+        // Keyboard on handle
+        handleCircle.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                update(this._restrictedMinutes + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                update(this._restrictedMinutes - 1);
+            }
+        });
+
+        // Center input — type to set value directly
+        centerInput.addEventListener('input', () => {
+            const v = parseInt(centerInput.value, 10);
+            if (!isNaN(v) && v >= 0) {
+                this._restrictedMinutes = Math.min(maxMin, v);
+                update(this._restrictedMinutes);
+            }
+        });
+        centerInput.addEventListener('blur', () => {
+            // Clamp and sync on blur
+            update(this._restrictedMinutes);
+        });
+
+        // Max input — recalibrate ring scale
+        const maxInput = document.getElementById('restrictedMaxInput');
+        if (maxInput) {
+            maxInput.addEventListener('change', () => {
+                const v = parseInt(maxInput.value, 10);
+                if (!isNaN(v) && v >= 1) {
+                    maxMin = v;
+                    update(Math.min(this._restrictedMinutes, maxMin));
+                }
+            });
+        }
     }
 }
