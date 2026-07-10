@@ -99,7 +99,9 @@ body {
     font-size: 1.05rem;
     font-weight: 500;
     text-align: left;
-    transition: all var(--transition-fast);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
 }
 
 .nav-item:hover {
@@ -141,14 +143,13 @@ body {
 
 /* Top Bar */
 .top-bar {
-    height: var(--header-height);
-    padding: 0 var(--spacing-xl);
+    padding: 16px 0 24px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: transparent;
-    /* Or blur */
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 24px;
     flex-shrink: 0;
     z-index: 5;
 }
@@ -160,23 +161,24 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .page-title {
-    font-size: 2.07rem;
+    font-size: 2.5rem;
     font-weight: 700;
     margin: 0;
     color: var(--text-primary);
     line-height: 1.2;
+    letter-spacing: -0.02em;
 }
 
 .page-subtitle {
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: var(--text-secondary);
-    margin: 2px 0 0 0;
-    padding-bottom: 1.5rem;
+    margin: 4px 0 0 0;
+    padding-bottom: 0;
 }
 
 /* Scrollable Content Area */
@@ -188,8 +190,8 @@ body {
 }
 
 .tab-content-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     padding-bottom: 40px;
     /* Space for toast/footer */
 }

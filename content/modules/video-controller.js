@@ -23,7 +23,11 @@ class VideoController {
                 video.playbackRate = this.instance.currentSpeed;
                 this.instance._settingSpeed = false;
                 this.instance.markVideoInteraction(video);
-                if (this.instance.ui && this.instance.settings.showSpeedOverlay && !this.instance._suppressIndicator) {
+                if (
+                    this.instance.ui &&
+                    this.instance.settings.showSpeedOverlay &&
+                    !this.instance._suppressIndicator
+                ) {
                     this.instance.ui.showIndicator(video, this.instance.currentSpeed);
                 }
             }

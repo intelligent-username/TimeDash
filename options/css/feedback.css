@@ -140,7 +140,9 @@
     box-shadow: var(--shadow-lg);
     transform: translateX(400px);
     opacity: 0;
-    transition: all var(--transition);
+    transition:
+        transform var(--transition),
+        opacity var(--transition);
     z-index: 3000;
     min-width: 250px;
     max-width: 400px;

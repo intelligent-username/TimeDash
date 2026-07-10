@@ -182,8 +182,10 @@
     stroke: white;
     stroke-width: 2;
     cursor: grab;
-    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
-    transition: r 0.15s ease, filter 0.15s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+    transition:
+        r 0.15s ease,
+        filter 0.15s ease;
 }
 
 .circ-handle:focus {

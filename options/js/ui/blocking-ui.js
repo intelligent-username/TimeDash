@@ -42,13 +42,21 @@ export class BlockingUI {
 
         if (addRestrictedBtn && restrictedDomainInput) {
             addRestrictedBtn.addEventListener('click', () => {
-                this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', this._restrictedMinutes);
+                this.addSiteRule(
+                    restrictedDomainInput.value.trim(),
+                    'RESTRICTED',
+                    this._restrictedMinutes
+                );
                 restrictedDomainInput.value = '';
             });
 
             restrictedDomainInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    this.addSiteRule(restrictedDomainInput.value.trim(), 'RESTRICTED', this._restrictedMinutes);
+                    this.addSiteRule(
+                        restrictedDomainInput.value.trim(),
+                        'RESTRICTED',
+                        this._restrictedMinutes
+                    );
                     restrictedDomainInput.value = '';
                 }
             });
@@ -261,6 +269,9 @@ export class BlockingUI {
         });
     }
 
+    /**
+     *
+     */
     _buildCircularPicker() {
         const container = document.getElementById('restrictedPickerMount');
         if (!container) return;
@@ -274,7 +285,7 @@ export class BlockingUI {
 
         const minutesToAngle = (m) => (m / maxMin) * 360 - 90;
         const angleToMinutes = (deg) => {
-            const d = ((deg + 90) % 360 + 360) % 360;
+            const d = (((deg + 90) % 360) + 360) % 360;
             return Math.max(0, Math.min(maxMin, Math.round((d / 360) * maxMin)));
         };
         const polarToXY = (angleDeg, r) => {
@@ -283,7 +294,7 @@ export class BlockingUI {
         };
         const describeArc = (startAngle, endAngle, r) => {
             const e = polarToXY(endAngle, r);
-            const large = ((endAngle - startAngle) + 360) % 360 > 180 ? 1 : 0;
+            const large = (endAngle - startAngle + 360) % 360 > 180 ? 1 : 0;
             return `M ${CX} ${CY - r} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
         };
 

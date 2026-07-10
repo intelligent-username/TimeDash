@@ -178,6 +178,7 @@ export class AnalyticsHeatmap {
      *
      * @param dateStr
      * @param dailyData
+     * @param _dailyData
      */
     _onCellClick(dateStr, _dailyData) {
         const heading = document.getElementById('topSitesHeading');

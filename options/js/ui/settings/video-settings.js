@@ -109,7 +109,7 @@ export const videoSettingsMethods = {
             if (!el) return;
 
             el.addEventListener('click', () => {
-                el.value = 'Press any key...';
+                el.value = 'Press any key…';
                 el.classList.add('recording');
 
                 const handler = (e) => {
@@ -134,7 +134,7 @@ export const videoSettingsMethods = {
                         document.removeEventListener('click', cancelHandler);
                         el.classList.remove('recording');
 
-                        if (el.value === 'Press any key...') {
+                        if (el.value === 'Press any key…') {
                             const current = this.controller.settings[key];
                             let defaultKey = 'Plus';
                             if (key === 'decreaseSpeedKey') defaultKey = 'Minus';

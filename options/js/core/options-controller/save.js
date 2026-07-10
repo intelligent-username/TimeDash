@@ -23,7 +23,7 @@ export function applyOptionsSaveMethods(OptionsController) {
 
     OptionsController.prototype.saveSettings = async function saveSettings(silent = false) {
         try {
-            this.updateSaveStatus('Saving changes...', true);
+            this.updateSaveStatus('Saving changes…', true);
             await this.storageManager.saveSettings(this.settings);
             this.isDirty = false;
 

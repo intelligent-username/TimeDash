@@ -314,11 +314,17 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
     AnalyticsUI.prototype.renderMiniCharts = function renderMiniCharts() {
         const usage = this.controller.usage || {};
-        this._renderSingleMiniChart('restrictedTimeChart', this._miniChartPeriods.restricted, usage);
+        this._renderSingleMiniChart(
+            'restrictedTimeChart',
+            this._miniChartPeriods.restricted,
+            usage
+        );
     };
 
     AnalyticsUI.prototype._renderSingleMiniChart = function _renderSingleMiniChart(
-        containerId, period, usage
+        containerId,
+        period,
+        usage
     ) {
         const el = document.getElementById(containerId);
         if (!el) return;
@@ -340,7 +346,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             for (const domain of Object.keys(usage)) {
                 if (!restrictedDomains.has(domain)) continue;
                 // Key: "2026-07-09_restricted"
-                dayTotal += (usage[domain][`${dateStr}_restricted`] || 0);
+                dayTotal += usage[domain][`${dateStr}_restricted`] || 0;
             }
             values.push(dayTotal);
         }
@@ -370,16 +376,18 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         }
 
         el.innerHTML = `<div class="mini-bar-chart-inner" role="img" aria-label="Restricted time per day">
-            ${values.map((v, i) => {
-                const pct = Math.round((v / max) * 100);
-                return `<div class="mini-bar-col mini-bar-col--clickable" data-date="${labels[i]}" role="button" tabindex="0" aria-label="${shortLabel(labels[i])}: ${formatVal(v)}">
+            ${values
+                .map((v, i) => {
+                    const pct = Math.round((v / max) * 100);
+                    return `<div class="mini-bar-col mini-bar-col--clickable" data-date="${labels[i]}" role="button" tabindex="0" aria-label="${shortLabel(labels[i])}: ${formatVal(v)}">
                         <div class="mini-bar-tooltip" role="tooltip">${formatVal(v)}<br><span>${labels[i]}</span></div>
                         <div class="mini-bar-track">
                             <div class="mini-bar-fill${v > 0 ? ' has-data' : ''}" style="height:${pct}%" aria-hidden="true"></div>
                         </div>
                         <div class="mini-bar-label" aria-hidden="true">${shortLabel(labels[i])}</div>
                     </div>`;
-            }).join('')}
+                })
+                .join('')}
         </div>`;
 
         el.querySelectorAll('.mini-bar-col--clickable').forEach((col) => {
@@ -401,7 +409,10 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const todayStr = formatDateString(new Date());
         const isToday = dateStr === todayStr;
         const localDate = new Date(dateStr + 'T00:00:00');
-        const displayDate = localDate.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+        const displayDate = localDate.toLocaleDateString(undefined, {
+            day: 'numeric',
+            month: 'short',
+        });
 
         heading.textContent = isToday ? 'Top Sites Today' : `Restricted Sites on ${displayDate}`;
 
@@ -423,19 +434,24 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         }
 
         const maxTime = sitesWithTime[0].todayTime;
-        container.innerHTML = sitesWithTime.slice(0, 10).map((site) => {
-            const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-            const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
-            const escaped = site.domain.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const time = (() => {
-                const s = Math.floor(site.todayTime / 1000);
-                const h = Math.floor(s / 3600);
-                const m = Math.floor((s % 3600) / 60);
-                if (h === 0) return `${m}m`;
-                if (m === 0) return `${h}h`;
-                return `${h}h\u00a0${m}m`;
-            })();
-            return `<div class="analytics-site-item">
+        container.innerHTML = sitesWithTime
+            .slice(0, 10)
+            .map((site) => {
+                const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
+                const escaped = site.domain
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                const time = (() => {
+                    const s = Math.floor(site.todayTime / 1000);
+                    const h = Math.floor(s / 3600);
+                    const m = Math.floor((s % 3600) / 60);
+                    if (h === 0) return `${m}m`;
+                    if (m === 0) return `${h}h`;
+                    return `${h}h\u00a0${m}m`;
+                })();
+                return `<div class="analytics-site-item">
                 <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
                 <div class="analytics-site-info">
                     <div class="analytics-site-name">${escaped}</div>
@@ -445,12 +461,15 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
                     <div class="analytics-site-bar-fill" style="width:${barWidth}%"></div>
                 </div>
             </div>`;
-        }).join('');
+            })
+            .join('');
 
         // Highlight selected bar
         const chart = document.getElementById('restrictedTimeChart');
         if (chart) {
-            chart.querySelectorAll('.mini-bar-col--selected').forEach((el) => el.classList.remove('mini-bar-col--selected'));
+            chart
+                .querySelectorAll('.mini-bar-col--selected')
+                .forEach((el) => el.classList.remove('mini-bar-col--selected'));
             if (!isToday) {
                 const selected = chart.querySelector(`[data-date="${dateStr}"]`);
                 if (selected) selected.classList.add('mini-bar-col--selected');
@@ -464,11 +483,17 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
         document.querySelectorAll('[data-restrict-period]').forEach((btn) => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('[data-restrict-period]').forEach((b) => b.classList.remove('active'));
+                document
+                    .querySelectorAll('[data-restrict-period]')
+                    .forEach((b) => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this._miniChartPeriods.restricted = e.target.dataset.restrictPeriod;
                 const usage = this.controller.usage || {};
-                this._renderSingleMiniChart('restrictedTimeChart', this._miniChartPeriods.restricted, usage);
+                this._renderSingleMiniChart(
+                    'restrictedTimeChart',
+                    this._miniChartPeriods.restricted,
+                    usage
+                );
             });
         });
     };

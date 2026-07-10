@@ -47,67 +47,69 @@
             <!-- Current Site Info -->
             <section class="current-site" id="currentSite" aria-labelledby="currentSiteTitle">
                 <h2 id="currentSiteTitle" class="sr-only" data-i18n="currentSite">Current Site</h2>
-                <div class="site-info">
-                    <img class="site-favicon" id="siteFavicon" src="" alt="" />
-                    <div class="site-details">
-                        <h3 class="site-name" id="siteName">Loading...</h3>
-                        <p class="site-time" id="siteTime">Calculating...</p>
-                    </div>
-                    <div
-                        class="speed-inline-controls"
-                        style="margin-left: auto; display: flex; gap: 4px; align-items: center"
-                    >
-                        <button
-                            class="inline-speed-btn"
-                            id="decreaseSpeedBtn"
-                            style="
-                                background: transparent;
-                                border: none;
-                                font-size: 1.5rem;
-                                line-height: 1;
-                                cursor: pointer;
-                                color: var(--text-secondary);
-                                padding: 0 4px;
-                            "
-                            title="Decrease Speed"
+                <div class="site-card">
+                    <div class="site-info">
+                        <img class="site-favicon" id="siteFavicon" src="" alt="" />
+                        <div class="site-details">
+                            <h3 class="site-name" id="siteName">Loading…</h3>
+                            <p class="site-time" id="siteTime">Calculating…</p>
+                        </div>
+                        <div
+                            class="speed-inline-controls"
+                            style="margin-left: auto; display: flex; gap: 4px; align-items: center"
                         >
-                            -
+                            <button
+                                class="inline-speed-btn"
+                                id="decreaseSpeedBtn"
+                                style="
+                                    background: transparent;
+                                    border: none;
+                                    font-size: 1.5rem;
+                                    line-height: 1;
+                                    cursor: pointer;
+                                    color: var(--text-secondary);
+                                    padding: 0 4px;
+                                "
+                                title="Decrease Speed"
+                            >
+                                -
+                            </button>
+                            <button
+                                class="inline-speed-btn"
+                                id="increaseSpeedBtn"
+                                style="
+                                    background: transparent;
+                                    border: none;
+                                    font-size: 1.5rem;
+                                    line-height: 1;
+                                    cursor: pointer;
+                                    color: var(--text-secondary);
+                                    padding: 0 4px;
+                                "
+                                title="Increase Speed"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <div class="site-actions">
+                        <button id="blockBtn" class="action-btn block-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z"
+                                />
+                            </svg>
+                            Block Site
                         </button>
-                        <button
-                            class="inline-speed-btn"
-                            id="increaseSpeedBtn"
-                            style="
-                                background: transparent;
-                                border: none;
-                                font-size: 1.5rem;
-                                line-height: 1;
-                                cursor: pointer;
-                                color: var(--text-secondary);
-                                padding: 0 4px;
-                            "
-                            title="Increase Speed"
-                        >
-                            +
+                        <button id="speedBtn" class="action-btn speed-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M13,2.05V5.08C16.39,5.57 19,8.47 19,12C19,12.9 18.82,13.75 18.5,14.54L21.12,16.07C21.68,14.83 22,13.45 22,12C22,6.82 18.05,2.55 13,2.05M12,19C8.13,19 5,15.87 5,12C5,8.13 8.13,5 12,5V1C5.93,1 1,5.93 1,12C1,18.07 5.93,23 12,23C15.14,23 18.03,21.38 19.78,18.78L17.25,17.1C16.01,18.29 14.1,19 12,19M8,12A4,4 0 0,1 12,8V12L15.29,15.29C14.27,16.22 12.9,16.76 11.4,16.76C9.18,16.76 7.37,15.17 7.06,13.06L8,12Z"
+                                />
+                            </svg>
+                            Speed: <span id="currentSpeed">1.0x</span>
                         </button>
                     </div>
-                </div>
-                <div class="site-actions">
-                    <button id="blockBtn" class="action-btn block-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,14.4 19,16.5 17.3,18.1L5.9,6.7C7.5,5 9.6,4 12,4M12,20A8,8 0 0,1 4,12C4,9.6 5,7.5 6.7,5.9L18.1,17.3C16.5,19 14.4,20 12,20Z"
-                            />
-                        </svg>
-                        Block Site
-                    </button>
-                    <button id="speedBtn" class="action-btn speed-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M13,2.05V5.08C16.39,5.57 19,8.47 19,12C19,12.9 18.82,13.75 18.5,14.54L21.12,16.07C21.68,14.83 22,13.45 22,12C22,6.82 18.05,2.55 13,2.05M12,19C8.13,19 5,15.87 5,12C5,8.13 8.13,5 12,5V1C5.93,1 1,5.93 1,12C1,18.07 5.93,23 12,23C15.14,23 18.03,21.38 19.78,18.78L17.25,17.1C16.01,18.29 14.1,19 12,19M8,12A4,4 0 0,1 12,8V12L15.29,15.29C14.27,16.22 12.9,16.76 11.4,16.76C9.18,16.76 7.37,15.17 7.06,13.06L8,12Z"
-                            />
-                        </svg>
-                        Speed: <span id="currentSpeed">1.0x</span>
-                    </button>
                 </div>
             </section>
 
@@ -140,7 +142,7 @@
                     </button>
                 </div>
                 <div class="sites-list" id="sitesList">
-                    <div class="loading">Loading sites...</div>
+                    <div class="loading">Loading sites…</div>
                 </div>
             </section>
 

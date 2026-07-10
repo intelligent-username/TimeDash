@@ -41,13 +41,16 @@
     padding: 12px;
     border-radius: var(--radius);
     margin-bottom: var(--spacing-small);
-    background: var(--background);
+    background: var(--surface);
     border: 1px solid var(--border);
-    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px var(--shadow);
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .site-item:hover {
-    background: var(--surface);
+    background: var(--surface-elevated);
     border-color: var(--primary-color);
 }
 
