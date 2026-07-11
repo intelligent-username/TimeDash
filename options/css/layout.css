@@ -62,6 +62,12 @@ body {
     padding: 0 var(--spacing-sm);
     margin-bottom: var(--spacing-xl);
     height: 40px;
+    color: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
 }
 
 .sidebar-logo {
@@ -166,7 +172,7 @@ body {
 }
 
 .page-title {
-    font-size: 2.5rem;
+    font-size: 3.0rem;
     font-weight: 700;
     margin: 0;
     color: var(--text-primary);
@@ -237,4 +243,75 @@ body {
     color: var(--text-muted);
     font-weight: 400;
     line-height: 1.4;
+}
+
+@media (max-width: 767px) {
+    .dashboard-container {
+        grid-template-columns: 48px 1fr;
+    }
+    .sidebar {
+        padding: var(--spacing-sm) 8px;
+        align-items: center;
+        overflow: visible;
+    }
+
+    .sidebar-header {
+        padding: 0;
+        margin-bottom: var(--spacing);
+        justify-content: center;
+    }
+
+    .sidebar-logo {
+        margin-right: 0;
+    }
+
+    .sidebar-title {
+        display: none;
+    }
+
+    .nav-item {
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .nav-icon {
+        margin-right: 0;
+    }
+
+    /* Hide nav label text, keep icon */
+    .nav-item > span:not(.nav-icon) {
+        display: none;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    /* Top bar */
+    .top-bar {
+        padding: 10px 0 14px 0;
+        margin-bottom: 14px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.8rem;
+    }
+
+    /* Content */
+    .content-scrollable {
+        padding: var(--spacing-sm);
+    }
+
+    /* Grids → single column */
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

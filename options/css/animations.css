@@ -1,6 +1,5 @@
 /* ============================================================
-   TimeDash – Micro-interactions (options)
-   All purely additive – zero structural changes.
+   Micro-interactions (options)
    ============================================================ */
 
 /* ── Keyframes ─────────────────────────────────────────────── */
@@ -304,7 +303,11 @@
     .page-title,
     .page-subtitle,
     .tab-pane.active,
-    .stat-value-cycle {
+    .stat-value-cycle,
+    .banner,
+    .toast,
+    .modal-dialog,
+    .slider:before {
         animation: none !important;
         transition-duration: 0.01ms !important;
     }

@@ -1,6 +1,5 @@
 /* ============================================================
-   TimeDash Popup – Micro-interactions
-   Purely additive – zero structural changes.
+   Popup Micro-interactions
    ============================================================ */
 
 /* ── Keyframes ─────────────────────────────────────────────── */
@@ -105,7 +104,7 @@
     transform: scale(1.2);
 }
 
-/* Action buttons – spring */
+/* Action buttons spring */
 .action-btn {
     transition:
         background-color 0.2s ease,
@@ -189,7 +188,7 @@
     color: var(--primary-color);
 }
 
-/* Site items – staggered entrance + hover slide */
+/* Site items staggered entrance + hover slide */
 .site-item {
     animation: td-fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
     transition:
