@@ -37,6 +37,26 @@ function applyStorageBlockingMethods(StorageManager) {
         }
     };
 
+    StorageManager.prototype.getGroups = async function getGroups() {
+        try {
+            const result = await chrome.storage.local.get('siteGroups');
+            return result.siteGroups || [];
+        } catch (error) {
+            console.error('Failed to get groups:', error);
+            return [];
+        }
+    };
+
+    StorageManager.prototype.saveGroups = async function saveGroups(groups) {
+        try {
+            await chrome.storage.local.set({ siteGroups: groups });
+            return true;
+        } catch (error) {
+            console.error('Failed to save groups:', error);
+            return false;
+        }
+    };
+
     StorageManager.prototype.incrementBlockCount = async function incrementBlockCount(domain) {
         try {
             const result = await chrome.storage.local.get('usage');

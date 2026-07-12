@@ -224,6 +224,126 @@
     white-space: nowrap;
 }
 
+/* ── Budget Groups (rendered within restricted list) ─────────────────────── */
+.group-container {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    background: var(--card-bg);
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.group-name-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.group-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.group-domain-list {
+    padding: var(--spacing-xs) 0;
+}
+
+.group-domain-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.group-domain-row .group-controls {
+    margin-left: auto;
+}
+
+.group-domain-row:last-child {
+    border-bottom: none;
+}
+
+.group-add-domain-row {
+    display: flex;
+    gap: 6px;
+    margin-top: var(--spacing-sm);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+/* New Group inline button (in restricted list header) */
+.btn-new-group {
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    line-height: 1.4;
+    transition: all 0.15s ease;
+}
+
+.btn-new-group:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Inline new group creation form */
+.new-group-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+}
+
+.new-group-form .modern-input {
+    flex: 1;
+    min-width: 140px;
+}
+
+.new-group-form .rule-limit-input-edit {
+    width: 60px;
+    flex: none;
+}
+
+/* ── Drag-and-Drop states ────────────────────────────────────────────────── */
+.group-container.drag-over {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 25%, transparent);
+    background: color-mix(in srgb, var(--primary-color) 5%, var(--card-bg));
+}
+
+#restrictedList.drag-ungroup {
+    outline: 2px dashed var(--danger-color, #ef4444);
+    outline-offset: -4px;
+    border-radius: var(--radius-medium);
+    min-height: 40px;
+}
+
+.rule-item.dragging,
+.group-domain-row.dragging {
+    opacity: 0.4;
+}
+
 /* Screen-reader only utility */
 .sr-only {
     position: absolute;

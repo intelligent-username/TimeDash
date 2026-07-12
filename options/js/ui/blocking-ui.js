@@ -61,6 +61,12 @@ export class BlockingUI {
                 }
             });
         }
+
+        // New Group button
+        const newGroupBtn = document.getElementById('newGroupBtn');
+        if (newGroupBtn) {
+            newGroupBtn.addEventListener('click', () => this._toggleNewGroupForm());
+        }
     }
 
     /**
@@ -124,11 +130,14 @@ export class BlockingUI {
      */
     async loadSiteRules() {
         try {
-            const response = await chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' });
-            this.renderBlockedList(response.blocked || []);
-            this.renderRestrictedList(response.restricted || []);
+            const [rulesResponse, groups] = await Promise.all([
+                chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' }),
+                chrome.runtime.sendMessage({ type: 'GET_GROUPS' }).catch(() => []),
+            ]);
+            this.renderBlockedList(rulesResponse.blocked || []);
+            this.renderRestrictedList(rulesResponse.restricted || [], groups || []);
             this.controller.updateRestrictedDomains(
-                response.restricted ? response.restricted.map((r) => r.domain) : []
+                rulesResponse.restricted ? rulesResponse.restricted.map((r) => r.domain) : []
             );
         } catch (error) {
             console.error('Error loading site rules:', error);
@@ -162,111 +171,555 @@ export class BlockingUI {
     }
 
     /**
-     *
-     * @param sites
+     * Render restricted sites with group rectangles interleaved.
+     * Groups appear first, then standalone restricted items.
+     * @param {Array} sites - Restricted site rule objects
+     * @param {Array} groups - Group objects from background
      */
-    renderRestrictedList(sites) {
+    renderRestrictedList(sites, groups = []) {
         const list = document.getElementById('restrictedList');
         if (!list) return;
 
-        list.innerHTML = '';
-        sites.forEach(({ domain, timeLimitMinutes }) => {
-            const li = document.createElement('li');
-            li.className = 'rule-item restrict-item';
+        const groupedDomains = new Set();
+        groups.forEach((g) => (g.domains || []).forEach((d) => groupedDomains.add(d)));
+        const standalone = sites.filter((s) => !groupedDomains.has(s.domain));
 
-            const infoDiv = document.createElement('div');
-            infoDiv.className = 'rule-item-info';
+        // Remove old drag listeners to avoid duplicates on re-render
+        const oldList = list;
+        const newList = oldList.cloneNode(false);
+        oldList.parentNode.replaceChild(newList, oldList);
 
-            const favicon = document.createElement('img');
-            favicon.className = 'rule-favicon';
-            favicon.src = getFaviconUrl(domain);
-            favicon.onerror = () => {
-                favicon.style.display = 'none';
-            };
+        // Drop target: dropping a group domain row ungroups it
+        newList.addEventListener('dragover', (e) => {
+            if (e.dataTransfer.types.includes('text/x-group-id')) {
+                e.preventDefault();
+                newList.classList.add('drag-ungroup');
+            }
+        });
+        newList.addEventListener('dragleave', () => {
+            newList.classList.remove('drag-ungroup');
+        });
+        newList.addEventListener('drop', (e) => {
+            e.preventDefault();
+            newList.classList.remove('drag-ungroup');
+            const domain = e.dataTransfer.getData('text/plain');
+            const groupId = e.dataTransfer.getData('text/x-group-id');
+            if (domain && groupId) {
+                this.removeDomainFromGroup(groupId, domain);
+            }
+        });
+
+        const domainLimitMap = {};
+        sites.forEach((s) => { domainLimitMap[s.domain] = s.timeLimitMinutes; });
+
+        groups.forEach((group) => {
+            const el = this._renderGroupRectangle(group, domainLimitMap);
+            newList.appendChild(el);
+        });
+
+        standalone.forEach(({ domain, timeLimitMinutes }) => {
+            const el = this._createRestrictedItem(domain, timeLimitMinutes);
+            newList.appendChild(el);
+        });
+    }
+
+    /**
+     * Create a single restricted site list item
+     * @param {string} domain
+     * @param {number} timeLimitMinutes
+     * @returns {HTMLLIElement}
+     */
+    _createRestrictedItem(domain, timeLimitMinutes) {
+        const li = document.createElement('li');
+        li.className = 'rule-item restrict-item';
+        li.draggable = true;
+
+        li.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', domain);
+            e.dataTransfer.effectAllowed = 'move';
+            li.classList.add('dragging');
+        });
+        li.addEventListener('dragend', () => {
+            li.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
+        });
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'rule-item-info';
+
+        const favicon = document.createElement('img');
+        favicon.className = 'rule-favicon';
+        favicon.src = getFaviconUrl(domain);
+        favicon.onerror = () => {
+            favicon.style.display = 'none';
+        };
+
+        const domainSpan = document.createElement('span');
+        domainSpan.className = 'rule-domain';
+        domainSpan.textContent = domain;
+
+        const limitInput = document.createElement('input');
+        limitInput.type = 'number';
+        limitInput.className = 'rule-limit-input-edit';
+        limitInput.value = timeLimitMinutes;
+        limitInput.min = 0;
+        limitInput.max = 1440;
+        limitInput.step = 1;
+        limitInput.title = 'Edit daily limit (minutes)';
+
+        const suffixSpan = document.createElement('span');
+        suffixSpan.className = 'limit-suffix';
+        suffixSpan.textContent = 'min/day';
+
+        infoDiv.appendChild(favicon);
+        infoDiv.appendChild(domainSpan);
+        infoDiv.appendChild(limitInput);
+        infoDiv.appendChild(suffixSpan);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'rule-delete-btn';
+        deleteBtn.textContent = 'Remove';
+        deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
+
+        const saveLimit = async () => {
+            const newLimit = parseInt(limitInput.value, 10);
+            if (
+                !Number.isNaN(newLimit) &&
+                newLimit >= 0 &&
+                newLimit <= 1440 &&
+                newLimit !== timeLimitMinutes
+            ) {
+                await this.addSiteRule(domain, 'RESTRICTED', newLimit);
+                timeLimitMinutes = newLimit;
+            } else if (Number.isNaN(newLimit) || newLimit < 0 || newLimit > 1440) {
+                limitInput.value = timeLimitMinutes;
+            }
+        };
+
+        // Only save on blur (user leaves the field) so focus is never
+        // destroyed mid-edit by a re-render. This lets arrow keys, held
+        // down or tapped repeatedly, change the value freely.
+        limitInput.addEventListener('blur', async () => {
+            const existingTimer = this.limitUpdateTimers.get(domain);
+            if (existingTimer) {
+                clearTimeout(existingTimer);
+                this.limitUpdateTimers.delete(domain);
+            }
+            await saveLimit();
+        });
+
+        // Arrow keys: increment/decrement locally without saving yet.
+        // preventDefault stops the browser from firing a 'change' event
+        // on its own schedule which would have triggered a re-render.
+        limitInput.addEventListener('keydown', async (event) => {
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                const cur = parseInt(limitInput.value, 10);
+                const next = (Number.isNaN(cur) ? 0 : cur) + 1;
+                if (next <= 1440) limitInput.value = next;
+                return;
+            }
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                const cur = parseInt(limitInput.value, 10);
+                const next = (Number.isNaN(cur) ? 0 : cur) - 1;
+                if (next >= 0) limitInput.value = next;
+                return;
+            }
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                await saveLimit();
+                limitInput.blur();
+            }
+        });
+
+        li.appendChild(infoDiv);
+        li.appendChild(deleteBtn);
+        return li;
+    }
+
+    // ── Group Rectangle Rendering ──────────────────────────────────────────
+
+    /**
+     * Render a group rectangle within the restricted list
+     * @param {object} group - Group data from background
+     * @param {object} domainLimitMap - Map of domain -> individual timeLimitMinutes
+     * @returns {HTMLElement}
+     */
+    _renderGroupRectangle(group, domainLimitMap = {}) {
+        const container = document.createElement('li');
+        container.className = 'group-container';
+        container.dataset.groupId = group.id;
+
+        // Drop target for adding domains to this group
+        const handleDrop = (e) => {
+            e.preventDefault();
+            container.classList.remove('drag-over');
+            const domain = e.dataTransfer.getData('text/plain');
+            if (domain) {
+                this.addDomainToGroup(group.id, domain);
+            }
+        };
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            container.classList.add('drag-over');
+        });
+        container.addEventListener('dragleave', () => {
+            container.classList.remove('drag-over');
+        });
+        container.addEventListener('drop', handleDrop);
+
+        // Header: name + limit input + delete button
+        const header = document.createElement('div');
+        header.className = 'group-header';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'group-name-text';
+        nameSpan.textContent = group.name;
+
+        const controls = document.createElement('div');
+        controls.className = 'group-controls';
+
+        const limitInput = document.createElement('input');
+        limitInput.type = 'number';
+        limitInput.className = 'rule-limit-input-edit';
+        limitInput.value = group.timeLimitMinutes;
+        limitInput.min = 1;
+        limitInput.title = 'Daily limit (minutes)';
+
+        const suffixSpan = document.createElement('span');
+        suffixSpan.className = 'limit-suffix';
+        suffixSpan.textContent = 'min/day';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'rule-delete-btn';
+        deleteBtn.textContent = 'Delete Group';
+        deleteBtn.addEventListener('click', () => this.deleteGroup(group.id));
+
+        controls.appendChild(limitInput);
+        controls.appendChild(suffixSpan);
+        controls.appendChild(deleteBtn);
+
+        header.appendChild(nameSpan);
+        header.appendChild(controls);
+
+        // Domain list
+        const domainList = document.createElement('div');
+        domainList.className = 'group-domain-list';
+
+        group.domains.forEach((domain) => {
+            const row = document.createElement('div');
+            row.className = 'group-domain-row';
+            row.draggable = true;
+
+            row.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', domain);
+                e.dataTransfer.setData('text/x-group-id', group.id);
+                e.dataTransfer.effectAllowed = 'move';
+                row.classList.add('dragging');
+            });
+            row.addEventListener('dragend', () => {
+                row.classList.remove('dragging');
+                document.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
+            });
 
             const domainSpan = document.createElement('span');
             domainSpan.className = 'rule-domain';
             domainSpan.textContent = domain;
 
+            const individualLimit = domainLimitMap[domain] || 30;
             const limitInput = document.createElement('input');
             limitInput.type = 'number';
             limitInput.className = 'rule-limit-input-edit';
-            limitInput.value = timeLimitMinutes;
+            limitInput.value = individualLimit;
             limitInput.min = 0;
             limitInput.max = 1440;
             limitInput.step = 1;
-            limitInput.title = 'Edit daily limit (minutes)';
+            limitInput.title = 'Individual daily limit (minutes)';
 
             const suffixSpan = document.createElement('span');
             suffixSpan.className = 'limit-suffix';
             suffixSpan.textContent = 'min/day';
 
-            infoDiv.appendChild(favicon);
-            infoDiv.appendChild(domainSpan);
-            infoDiv.appendChild(limitInput);
-            infoDiv.appendChild(suffixSpan);
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'rule-delete-btn';
+            removeBtn.textContent = 'Remove';
+            removeBtn.style.fontSize = '0.8rem';
+            removeBtn.addEventListener('click', () =>
+                this.removeDomainFromGroup(group.id, domain)
+            );
 
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'rule-delete-btn';
-            deleteBtn.textContent = 'Remove';
-            deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
-
+            // Save individual limit change via ADD_SITE_RULE (updates existing rule)
             const saveLimit = async () => {
-                const newLimit = parseInt(limitInput.value, 10);
-                if (
-                    !Number.isNaN(newLimit) &&
-                    newLimit >= 0 &&
-                    newLimit <= 1440 &&
-                    newLimit !== timeLimitMinutes
-                ) {
-                    await this.addSiteRule(domain, 'RESTRICTED', newLimit);
-                    timeLimitMinutes = newLimit;
-                } else if (Number.isNaN(newLimit) || newLimit < 0 || newLimit > 1440) {
-                    limitInput.value = timeLimitMinutes;
+                const val = parseInt(limitInput.value, 10);
+                if (!isNaN(val) && val >= 0 && val <= 1440 && val !== individualLimit) {
+                    await this.addSiteRule(domain, 'RESTRICTED', val);
                 }
             };
-
-            // Only save on blur (user leaves the field) so focus is never
-            // destroyed mid-edit by a re-render. This lets arrow keys, held
-            // down or tapped repeatedly, change the value freely.
-            limitInput.addEventListener('blur', async () => {
-                const existingTimer = this.limitUpdateTimers.get(domain);
-                if (existingTimer) {
-                    clearTimeout(existingTimer);
-                    this.limitUpdateTimers.delete(domain);
+            limitInput.addEventListener('blur', saveLimit);
+            limitInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveLimit().then(() => limitInput.blur());
                 }
-                await saveLimit();
-            });
-
-            // Arrow keys: increment/decrement locally without saving yet.
-            // preventDefault stops the browser from firing a 'change' event
-            // on its own schedule which would have triggered a re-render.
-            limitInput.addEventListener('keydown', async (event) => {
-                if (event.key === 'ArrowUp') {
-                    event.preventDefault();
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
                     const cur = parseInt(limitInput.value, 10);
-                    const next = (Number.isNaN(cur) ? 0 : cur) + 1;
-                    if (next <= 1440) limitInput.value = next;
-                    return;
+                    if (!isNaN(cur)) limitInput.value = cur + 1;
                 }
-                if (event.key === 'ArrowDown') {
-                    event.preventDefault();
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
                     const cur = parseInt(limitInput.value, 10);
-                    const next = (Number.isNaN(cur) ? 0 : cur) - 1;
-                    if (next >= 0) limitInput.value = next;
-                    return;
-                }
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    await saveLimit();
-                    limitInput.blur();
+                    if (!isNaN(cur) && cur > 0) limitInput.value = cur - 1;
                 }
             });
 
-            li.appendChild(infoDiv);
-            li.appendChild(deleteBtn);
-            list.appendChild(li);
+            const controls = document.createElement('div');
+            controls.className = 'group-controls';
+            controls.appendChild(limitInput);
+            controls.appendChild(suffixSpan);
+            controls.appendChild(removeBtn);
+
+            row.appendChild(domainSpan);
+            row.appendChild(controls);
+            domainList.appendChild(row);
         });
+
+        // Add domain input + button
+        const addRow = document.createElement('div');
+        addRow.className = 'group-add-domain-row';
+
+        const addInput = document.createElement('input');
+        addInput.type = 'text';
+        addInput.className = 'modern-input';
+        addInput.placeholder = 'Add domain to group...';
+        addInput.style.flex = '1';
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn btn-secondary btn-small';
+        addBtn.textContent = 'Add';
+        const doAdd = () => {
+            const domain = addInput.value.trim();
+            if (domain) {
+                this.addDomainToGroup(group.id, domain);
+                addInput.value = '';
+            }
+        };
+        addBtn.addEventListener('click', doAdd);
+        addInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') doAdd();
+        });
+
+        addRow.appendChild(addInput);
+        addRow.appendChild(addBtn);
+
+        container.appendChild(header);
+        container.appendChild(domainList);
+        container.appendChild(addRow);
+
+        // Bind limit change
+        let timeout;
+        limitInput.addEventListener('blur', () => {
+            clearTimeout(timeout);
+            const val = parseInt(limitInput.value, 10);
+            if (!isNaN(val) && val > 0 && val !== group.timeLimitMinutes) {
+                this.updateGroupLimit(group.id, val);
+            }
+        });
+        limitInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                limitInput.blur();
+            }
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const cur = parseInt(limitInput.value, 10);
+                if (!isNaN(cur)) limitInput.value = cur + 1;
+            }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const cur = parseInt(limitInput.value, 10);
+                if (!isNaN(cur) && cur > 1) limitInput.value = cur - 1;
+            }
+        });
+
+        return container;
+    }
+
+    // ── New Group Inline Form ──────────────────────────────────────────────
+
+    /**
+     * Toggle the inline "New Group" creation form
+     */
+    _toggleNewGroupForm() {
+        const existing = document.getElementById('newGroupForm');
+        if (existing) {
+            existing.remove();
+            return;
+        }
+        const list = document.getElementById('restrictedList');
+        if (!list) return;
+        const form = this._createCreateGroupForm();
+        list.parentNode.insertBefore(form, list);
+        const nameInput = form.querySelector('.new-group-name-input');
+        if (nameInput) nameInput.focus();
+    }
+
+    /**
+     * Create the inline form element for creating a new group
+     * @returns {HTMLDivElement}
+     */
+    _createCreateGroupForm() {
+        const form = document.createElement('div');
+        form.id = 'newGroupForm';
+        form.className = 'new-group-form';
+
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'modern-input new-group-name-input';
+        nameInput.placeholder = 'Group name...';
+        nameInput.setAttribute('autocomplete', 'off');
+
+        const limitInput = document.createElement('input');
+        limitInput.type = 'number';
+        limitInput.className = 'rule-limit-input-edit';
+        limitInput.value = '30';
+        limitInput.min = 1;
+        limitInput.title = 'Daily limit (minutes)';
+
+        const createBtn = document.createElement('button');
+        createBtn.className = 'btn btn-primary btn-small';
+        createBtn.textContent = 'Create';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn btn-secondary btn-small';
+        cancelBtn.textContent = 'Cancel';
+
+        const doCreate = () => {
+            const name = nameInput.value.trim();
+            const limit = parseInt(limitInput.value, 10) || 30;
+            if (!name) {
+                this.controller.showWarning('Please enter a group name');
+                return;
+            }
+            this.createGroup(name, [], limit);
+            form.remove();
+        };
+
+        createBtn.addEventListener('click', doCreate);
+        cancelBtn.addEventListener('click', () => form.remove());
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') doCreate();
+        });
+
+        form.appendChild(nameInput);
+        form.appendChild(limitInput);
+        form.appendChild(createBtn);
+        form.appendChild(cancelBtn);
+
+        return form;
+    }
+
+    // ── Group Budget CRUD ──────────────────────────────────────────────────
+
+    /**
+     * Create a new budget group
+     * @param {string} name
+     * @param {string[]} domains
+     * @param {number} limit
+     */
+    async createGroup(name, domains, limit) {
+        try {
+            const response = await chrome.runtime.sendMessage({
+                type: 'CREATE_GROUP',
+                name,
+                domains,
+                timeLimitMinutes: limit,
+            });
+            if (response.success) {
+                await this.loadSiteRules();
+                this.controller.showSuccess(`Created group "${name}"`);
+            } else {
+                this.controller.showWarning(response.error || 'Failed to create group');
+            }
+        } catch (error) {
+            console.error('Error creating group:', error);
+            this.controller.showError('Failed to create group');
+        }
+    }
+
+    /**
+     * Update a group's time limit
+     * @param {string} id
+     * @param {number} limit
+     */
+    async updateGroupLimit(id, limit) {
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'UPDATE_GROUP',
+                id,
+                timeLimitMinutes: limit,
+            });
+            await this.loadSiteRules();
+        } catch (error) {
+            console.error('Error updating group limit:', error);
+        }
+    }
+
+    /**
+     * Soft-delete a group
+     * @param {string} id
+     */
+    async deleteGroup(id) {
+        try {
+            await chrome.runtime.sendMessage({ type: 'DELETE_GROUP', id });
+            await this.loadSiteRules();
+            this.controller.showSuccess('Group removed');
+        } catch (error) {
+            console.error('Error deleting group:', error);
+        }
+    }
+
+    /**
+     * Add a domain to a group
+     * @param {string} groupId
+     * @param {string} domain
+     */
+    async addDomainToGroup(groupId, domain) {
+        const cleanDomain = domain.toLowerCase().replace(/^www\./, '').trim();
+        if (!cleanDomain) return;
+        try {
+            const response = await chrome.runtime.sendMessage({
+                type: 'ADD_DOMAIN_TO_GROUP',
+                groupId,
+                domain: cleanDomain,
+            });
+            if (response.success) {
+                await this.loadSiteRules();
+            } else {
+                this.controller.showWarning(response.error || 'Failed to add domain');
+            }
+        } catch (error) {
+            console.error('Error adding domain to group:', error);
+        }
+    }
+
+    /**
+     * Remove a domain from a group
+     * @param {string} groupId
+     * @param {string} domain
+     */
+    async removeDomainFromGroup(groupId, domain) {
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'REMOVE_DOMAIN_FROM_GROUP',
+                groupId,
+                domain,
+            });
+            await this.loadSiteRules();
+        } catch (error) {
+            console.error('Error removing domain from group:', error);
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 /* global RuleManager, AlarmManager, TabTracker, VideoService,
    applyBackgroundMessagingMethods, applyBackgroundTrackingMethods,
-   applyBackgroundDataMethods, StorageManager */
+   applyBackgroundDataMethods, StorageManager, MigrationEngine */
 importScripts(
     '../utils/storage/defaults.js',
     '../utils/storage/settings.js',
@@ -8,11 +8,13 @@ importScripts(
     '../utils/storage/blocking.js',
     '../utils/storage/misc.js',
     '../utils/storage.js',
+    '../utils/storage/migration-engine.js',
     '../utils/time-utils.js',
     '../utils/domain-utils.js',
     '../core/rules/site-rule.js',
     '../core/rules/blocked-rule.js',
     '../core/rules/restricted-rule.js',
+    '../core/rules/group-rule.js',
     '../core/rules/rule-manager.js',
     'core/messaging.js',
     'core/tracking.js',
@@ -45,6 +47,10 @@ class TimeDashBackground {
     async init() {
         await this.storage.init();
         await this.ruleManager.init();
+
+        const engine = new MigrationEngine();
+        await engine.run();
+
         this.tabTracker.setupEventListeners();
         this.setupMessageHandling();
         this.startTrackingLoop();

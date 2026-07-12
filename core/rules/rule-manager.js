@@ -1,4 +1,4 @@
-/* global SiteRule, BlockedRule, RestrictedRule */
+/* global SiteRule, BlockedRule, RestrictedRule, GroupRule */
 
 /**
  * @file RuleManager - manages all site access rules
@@ -15,6 +15,8 @@ class RuleManager {
     constructor() {
         /** @type {Map<string, SiteRule>} */
         this.rules = new Map();
+        /** @type {GroupRule[]} */
+        this.groups = [];
     }
 
     /**
@@ -22,6 +24,7 @@ class RuleManager {
      */
     async init() {
         await this.loadFromStorage();
+        await this.loadGroupsFromStorage();
     }
 
     /**
@@ -139,23 +142,95 @@ class RuleManager {
     }
 
     /**
+     * Save groups to storage
+     */
+    async saveGroupsToStorage() {
+        try {
+            const serialized = this.groups.map((g) => g.toJSON());
+            await chrome.storage.local.set({ siteGroups: serialized });
+        } catch (error) {
+            console.error('Error saving groups to storage:', error);
+        }
+    }
+
+    /**
+     * Load groups from storage
+     */
+    async loadGroupsFromStorage() {
+        try {
+            const result = await chrome.storage.local.get('siteGroups');
+            const stored = result.siteGroups || [];
+            this.groups = stored.map((data) => GroupRule.fromJSON(data));
+        } catch (error) {
+            console.error('Error loading groups from storage:', error);
+            this.groups = [];
+        }
+    }
+
+    /**
+     * Find an active group that contains the given domain
+     * @param {string} domain - Domain to look up
+     * @returns {GroupRule|null}
+     */
+    getGroupForDomain(domain) {
+        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        return this.groups.find((g) => !g.deletedAt && g.isEnabled && g.contains(normalized)) || null;
+    }
+
+    /**
+     * Find an active group by name (for duplicate name check)
+     * @param {string} name - Group name
+     * @returns {GroupRule|null}
+     */
+    getGroupByName(name) {
+        return this.groups.find((g) => !g.deletedAt && g.name === name) || null;
+    }
+
+    /**
+     * Find an active group containing a domain (for membership validation)
+     * @param {string} domain - Domain to check
+     * @returns {GroupRule|null}
+     */
+    getGroupContainingDomain(domain) {
+        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        return this.groups.find((g) => !g.deletedAt && g.domains.includes(normalized)) || null;
+    }
+
+    /**
      * Evaluate whether access to a URL should be blocked
+     * Checks individual rules first, then group budgets.
      * @param {string} url - URL to evaluate
      * @param {object} usageStats - Usage statistics {todayTimeSeconds}
-     * @returns {{ shouldBlock: boolean, reason: string|null, domain: string }}
+     * @param {object} [groupUsageSecondsMap] - Map of groupId -> total seconds used today
+     * @returns {{ shouldBlock: boolean, reason: string|null, domain: string, groupName?: string }}
      */
-    evaluateAccess(url, usageStats = {}) {
+    evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}) {
         try {
             const urlObj = new URL(url);
             const domain = urlObj.hostname.toLowerCase().replace(/^www\./, '');
 
+            // 1. Individual rule check
             const rule = this.rules.get(domain);
-            if (!rule || !rule.isEnabled) {
-                return { shouldBlock: false, reason: null, domain };
+            if (rule && rule.isEnabled) {
+                const result = rule.evaluate(usageStats);
+                if (result.shouldBlock) {
+                    return { ...result, domain };
+                }
             }
 
-            const result = rule.evaluate(usageStats);
-            return { ...result, domain };
+            // 2. Group budget check
+            const group = this.getGroupForDomain(domain);
+            if (group) {
+                const groupSeconds = groupUsageSecondsMap[group.id];
+                if (groupSeconds !== undefined) {
+                    const groupResult = group.evaluate(groupSeconds);
+                    if (groupResult.shouldBlock) {
+                        return { ...groupResult, domain, groupName: group.name };
+                    }
+                }
+            }
+
+            return { shouldBlock: false, reason: null, domain };
         } catch (error) {
             console.error('Error evaluating access:', error);
             return { shouldBlock: false, reason: null, domain: '' };

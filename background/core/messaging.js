@@ -1,4 +1,4 @@
-/* global BlockedRule, RestrictedRule, TimeUtils, DomainUtils */
+/* global BlockedRule, RestrictedRule, GroupRule, TimeUtils, DomainUtils */
 function applyBackgroundMessagingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.setupMessageHandling = function setupMessageHandling() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -82,11 +82,152 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });
                     break;
+                case 'GET_GROUPS':
+                    sendResponse(
+                        this.ruleManager.groups
+                            .filter((g) => !g.deletedAt)
+                            .map((g) => g.toJSON())
+                    );
+                    break;
+
+                case 'CREATE_GROUP': {
+                    const { name, domains = [], timeLimitMinutes } = message;
+                    if (!name) {
+                        sendResponse({ success: false, error: 'Group name is required' });
+                        break;
+                    }
+                    const existing = this.ruleManager.getGroupByName(name);
+                    if (existing) {
+                        sendResponse({ success: false, error: 'Group name already exists' });
+                        break;
+                    }
+                    let conflict = null;
+                    for (const d of domains) {
+                        const clean = d.toLowerCase().replace(/^www\./, '').trim();
+                        if (clean) {
+                            const g = this.ruleManager.getGroupContainingDomain(clean);
+                            if (g) { conflict = g.name; break; }
+                        }
+                    }
+                    if (conflict) {
+                        sendResponse({ success: false, error: `Domain already belongs to group "${conflict}"` });
+                        break;
+                    }
+                    const group = new GroupRule({ name, domains, timeLimitMinutes });
+                    this.ruleManager.groups.push(group);
+                    await this.ruleManager.saveGroupsToStorage();
+                    sendResponse({ success: true, group: group.toJSON() });
+                    break;
+                }
+
+                case 'UPDATE_GROUP': {
+                    const target = this.ruleManager.groups.find(
+                        (g) => g.id === message.id && !g.deletedAt
+                    );
+                    if (!target) {
+                        sendResponse({ success: false, error: 'Group not found' });
+                        break;
+                    }
+                    if (message.name !== undefined) {
+                        const nameConflict = this.ruleManager.groups.find(
+                            (g) => g.id !== message.id && !g.deletedAt && g.name === message.name
+                        );
+                        if (nameConflict) {
+                            sendResponse({ success: false, error: 'Group name already exists' });
+                            break;
+                        }
+                        target.name = message.name;
+                    }
+                    if (message.timeLimitMinutes !== undefined)
+                        target.timeLimitMinutes = message.timeLimitMinutes;
+                    if (message.isEnabled !== undefined) target.isEnabled = message.isEnabled;
+                    target.updatedAt = Date.now();
+                    await this.ruleManager.saveGroupsToStorage();
+                    sendResponse({ success: true });
+                    break;
+                }
+
+                case 'DELETE_GROUP': {
+                    const delGroup = this.ruleManager.groups.find(
+                        (g) => g.id === message.id && !g.deletedAt
+                    );
+                    if (!delGroup) {
+                        sendResponse({ success: false, error: 'Group not found' });
+                        break;
+                    }
+                    delGroup.deletedAt = Date.now();
+                    delGroup.updatedAt = Date.now();
+                    await this.ruleManager.saveGroupsToStorage();
+                    sendResponse({ success: true });
+                    break;
+                }
+
+                case 'ADD_DOMAIN_TO_GROUP': {
+                    const addGroup = this.ruleManager.groups.find(
+                        (g) => g.id === message.groupId && !g.deletedAt
+                    );
+                    if (!addGroup) {
+                        sendResponse({ success: false, error: 'Group not found' });
+                        break;
+                    }
+                    const cleanDomain = message.domain
+                        .toLowerCase()
+                        .replace(/^www\./, '')
+                        .trim();
+                    if (!cleanDomain) {
+                        sendResponse({ success: false, error: 'Invalid domain' });
+                        break;
+                    }
+                    const conflict = this.ruleManager.getGroupContainingDomain(cleanDomain);
+                    if (conflict) {
+                        sendResponse({
+                            success: false,
+                            error: `Domain already belongs to group "${conflict.name}"`,
+                        });
+                        break;
+                    }
+                    if (addGroup.domains.includes(cleanDomain)) {
+                        sendResponse({ success: false, error: 'Domain already in this group' });
+                        break;
+                    }
+                    addGroup.domains.push(cleanDomain);
+                    addGroup.updatedAt = Date.now();
+                    await this.ruleManager.saveGroupsToStorage();
+                    sendResponse({ success: true });
+                    break;
+                }
+
+                case 'REMOVE_DOMAIN_FROM_GROUP': {
+                    const remGroup = this.ruleManager.groups.find(
+                        (g) => g.id === message.groupId && !g.deletedAt
+                    );
+                    if (!remGroup) {
+                        sendResponse({ success: false, error: 'Group not found' });
+                        break;
+                    }
+                    const clean = message.domain
+                        .toLowerCase()
+                        .replace(/^www\./, '')
+                        .trim();
+                    const idx = remGroup.domains.indexOf(clean);
+                    if (idx === -1) {
+                        sendResponse({ success: false, error: 'Domain not found in group' });
+                        break;
+                    }
+                    remGroup.domains.splice(idx, 1);
+                    remGroup.updatedAt = Date.now();
+                    await this.ruleManager.saveGroupsToStorage();
+                    sendResponse({ success: true });
+                    break;
+                }
+
                 case 'CHECK_ACCESS': {
                     const settings = await this.storage.getSettings();
                     const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
+
+                    let allUsage = null;
                     if (dailyLimitMinutes > 0) {
-                        const allUsage = await this.storage.getAllUsage();
+                        allUsage = await this.storage.getAllUsage();
                         let totalTodaySeconds = 0;
                         for (const domainUsage of Object.values(allUsage)) {
                             totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
@@ -97,9 +238,26 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                                 shouldBlock: true,
                                 reason: 'restricted',
                                 domain:
-                                    message.domain || DomainUtils.extractDomain(message.url || ''),
+                                    message.domain ||
+                                    DomainUtils.extractDomain(message.url || ''),
                             });
                             break;
+                        }
+                    }
+
+                    // Pre-calculate group usage if groups exist
+                    let groupUsageSecondsMap = {};
+                    const activeGroups = this.ruleManager.groups.filter(
+                        (g) => g.isEnabled && !g.deletedAt
+                    );
+                    if (activeGroups.length > 0) {
+                        if (!allUsage) allUsage = await this.storage.getAllUsage();
+                        for (const g of activeGroups) {
+                            let total = 0;
+                            for (const d of g.domains) {
+                                total += TimeUtils.calculateTodayTime(allUsage[d] || {});
+                            }
+                            groupUsageSecondsMap[g.id] = total;
                         }
                     }
 
@@ -108,7 +266,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     sendResponse(
                         this.ruleManager.evaluateAccess(message.url, {
                             todayTimeSeconds: todayTime,
-                        })
+                        }, groupUsageSecondsMap)
                     );
                     break;
                 }

@@ -154,8 +154,10 @@ class TabTracker {
         const settings = await this.instance.storage.getSettings();
         const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
 
+        let allUsage = null;
+
         if (dailyLimitMinutes > 0) {
-            const allUsage = await this.instance.storage.getAllUsage();
+            allUsage = await this.instance.storage.getAllUsage();
             let totalTodaySeconds = 0;
             for (const domainUsage of Object.values(allUsage)) {
                 totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
@@ -177,11 +179,29 @@ class TabTracker {
             }
         }
 
+        // Pre-calculate group usage if groups exist
+        let groupUsageSecondsMap = {};
+        const activeGroups = this.instance.ruleManager.groups.filter(
+            (g) => g.isEnabled && !g.deletedAt
+        );
+        if (activeGroups.length > 0) {
+            if (!allUsage) allUsage = await this.instance.storage.getAllUsage();
+            for (const g of activeGroups) {
+                let total = 0;
+                for (const d of g.domains) {
+                    total += TimeUtils.calculateTodayTime(allUsage[d] || {});
+                }
+                groupUsageSecondsMap[g.id] = total;
+            }
+        }
+
         const usage = await this.instance.storage.getDomainUsage(domain);
         const todayTimeSeconds = TimeUtils.calculateTodayTime(usage);
-        const accessResult = this.instance.ruleManager.evaluateAccess(tab.url, {
-            todayTimeSeconds,
-        });
+        const accessResult = this.instance.ruleManager.evaluateAccess(
+            tab.url,
+            { todayTimeSeconds },
+            groupUsageSecondsMap
+        );
 
         if (accessResult.shouldBlock) {
             try {
