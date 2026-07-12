@@ -15,6 +15,9 @@ Boost your productivity with strict time tracking, site blocking, analytics, adv
 - **Strict Time Tracking:** Accurately logs your time only on active, focused tabs. Idle, minimized, or background tabs won't skew your productivity data.
 - **Activity Heatmap & Analytics:** Visualize your browsing habits with a GitHub-style heatmap, rolling 7-day usage charts, top sites lists, and daily averages.
 - **Site Blocking & Restrictions:** Block distracting sites entirely, or set daily time limits (e.g., 30 minutes of YouTube per day) that automatically lock you out once exceeded.
+- **Budget Groups (Site Groups):** Bundle multiple sites (e.g., social media) under a shared daily time budget. Supports custom icon selection and full drag-and-drop management:
+  - Drag domains into groups or between groups.
+  - Reorder domains within a group with live position markers.
 - **Video Speed Controller:** Easily control HTML5 video playback speed across the web using customizable keyboard shortcuts or the extension popup.
 - **Data Privacy:** Everything is stored locally in your browser. No external servers, no cloud sync, completely private.
 
