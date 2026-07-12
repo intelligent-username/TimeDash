@@ -27,27 +27,49 @@
     list-style: none;
     padding: 0;
     margin: var(--spacing) 0 0 0;
-    max-height: 300px;
+    max-height: 480px;
     overflow-y: auto;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-small);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+    background: transparent;
+    padding-right: 4px;
+}
+
+.rule-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.rule-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.rule-list::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.rule-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 .rule-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 16px;
     background: var(--card-bg);
-}
-
-.rule-item:last-child {
-    border-bottom: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .rule-item:hover {
-    background-color: var(--background);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    border-color: color-mix(in srgb, var(--primary-color) 45%, var(--border));
 }
 
 .rule-delete-btn {
@@ -59,6 +81,7 @@
     padding: 4px 8px;
     border-radius: 4px;
     flex-shrink: 0;
+    transition: all var(--transition);
 }
 
 .rule-delete-btn:hover {

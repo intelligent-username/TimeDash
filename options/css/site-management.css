@@ -20,7 +20,7 @@
 .rule-item-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     flex: 1;
     overflow: hidden;
 }
@@ -32,6 +32,14 @@
     flex-shrink: 0;
 }
 
+.rule-domain-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
 .rule-domain {
     font-weight: 500;
     color: var(--text-primary);
@@ -41,11 +49,24 @@
     text-overflow: ellipsis;
 }
 
+.rule-usage-today {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .limit-suffix {
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin-left: auto;
+    margin-left: var(--spacing-sm);
     margin-right: var(--spacing);
+    white-space: nowrap;
+    width: 55px;
+    text-align: left;
+    display: inline-block;
 }
 
 /* Editable Logic */
@@ -224,20 +245,89 @@
     white-space: nowrap;
 }
 
+/* Drag handle and hover indicator */
+.drag-handle-indicator {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: grab;
+    user-select: none;
+    padding-right: 8px;
+    transition: color var(--transition);
+}
+
+.drag-handle-indicator:hover {
+    color: var(--primary-color);
+}
+
+.rule-item.dragging .drag-handle-indicator,
+.group-domain-row.dragging .drag-handle-indicator {
+    cursor: grabbing;
+}
+
+/* Icon button utility */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.icon-btn:hover {
+    background: var(--primary-fade);
+    color: var(--primary-color);
+    border-color: var(--border);
+}
+
+.icon-btn.rule-delete-btn:hover {
+    background: var(--danger-fade);
+    color: var(--danger-color);
+    border-color: color-mix(in srgb, var(--danger-color) 20%, transparent);
+}
+
+/* Group folder layout */
+.group-title-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+
+.group-title-section svg {
+    color: var(--primary-color);
+    filter: drop-shadow(0 2px 4px var(--primary-fade));
+}
+
 /* ── Budget Groups (rendered within restricted list) ─────────────────────── */
 .group-container {
     border: 1px solid var(--border);
-    border-radius: var(--radius-medium);
+    border-radius: var(--radius);
     padding: var(--spacing);
     margin-bottom: var(--spacing);
     background: var(--card-bg);
+    box-shadow: var(--shadow);
+    transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.group-container:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border));
 }
 
 .group-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-subtle);
     gap: var(--spacing-sm);
     flex-wrap: wrap;
 }
@@ -251,32 +341,42 @@
 .group-controls {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .group-domain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: var(--spacing-xs) 0;
 }
 
 .group-domain-row {
     display: flex;
     align-items: center;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 8px 12px;
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-small);
+    transition: all var(--transition);
+}
+
+.group-domain-row:hover {
+    background: var(--card-bg);
+    border-color: var(--border);
+    transform: translateX(2px);
 }
 
 .group-domain-row .group-controls {
     margin-left: auto;
 }
 
-.group-domain-row:last-child {
-    border-bottom: none;
-}
-
 .group-add-domain-row {
     display: flex;
-    gap: 6px;
-    margin-top: var(--spacing-sm);
+    gap: 8px;
+    margin-top: var(--spacing);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--border);
 }
 
 .btn-small {
@@ -289,18 +389,20 @@
     background: none;
     border: 1px dashed var(--border);
     color: var(--text-secondary);
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: var(--radius-small);
     cursor: pointer;
     font-size: 0.8rem;
+    font-weight: 500;
     white-space: nowrap;
     line-height: 1.4;
-    transition: all 0.15s ease;
+    transition: all var(--transition);
 }
 
 .btn-new-group:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
+    background: var(--primary-fade);
 }
 
 /* Inline new group creation form */
@@ -355,4 +457,49 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* ── Group Statistics Styles ────────────────────────────────────────────── */
+.group-stats-bar {
+    padding: 6px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--border-subtle);
+    padding-bottom: 12px;
+}
+
+.group-progress-track {
+    height: 6px;
+    background: var(--border-subtle);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.group-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #00b7ff) 100%);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.group-progress-fill.warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.group-progress-fill.danger {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.group-stats-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.group-stats-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
 }

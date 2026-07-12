@@ -161,10 +161,18 @@ export class BlockingUI {
                     <img class="rule-favicon" src="${getFaviconUrl(domain)}" alt="" onerror="this.style.display='none'">
                     <span class="rule-domain">${domain}</span>
                 </div>
-                <button class="rule-delete-btn" data-domain="${domain}" data-type="blocked">Remove</button>
+                <button class="rule-delete-btn icon-btn" title="Remove block">
+                    <svg class="icon-trash" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                    <span class="sr-only">Remove</span>
+                </button>
             `;
-            li.querySelector('.rule-delete-btn').addEventListener('click', (e) => {
-                this.removeSiteRule(e.target.dataset.domain);
+            li.querySelector('.rule-delete-btn').addEventListener('click', () => {
+                this.removeSiteRule(domain);
             });
             list.appendChild(li);
         });
@@ -244,6 +252,12 @@ export class BlockingUI {
             document.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
         });
 
+        // Drag handle indicator
+        const dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle-indicator';
+        dragHandle.innerHTML = '⋮⋮';
+        li.appendChild(dragHandle);
+
         const infoDiv = document.createElement('div');
         infoDiv.className = 'rule-item-info';
 
@@ -254,9 +268,21 @@ export class BlockingUI {
             favicon.style.display = 'none';
         };
 
+        const domainWrapper = document.createElement('div');
+        domainWrapper.className = 'rule-domain-wrapper';
+
         const domainSpan = document.createElement('span');
         domainSpan.className = 'rule-domain';
         domainSpan.textContent = domain;
+
+        const usageSpan = document.createElement('span');
+        usageSpan.className = 'rule-usage-today';
+        const domainUsage = this.controller.usage[domain] || {};
+        const todaySeconds = TimeUtils.calculateTodayTime(domainUsage);
+        usageSpan.textContent = todaySeconds > 0 ? `${TimeUtils.formatTime(todaySeconds)} today` : '0s today';
+
+        domainWrapper.appendChild(domainSpan);
+        domainWrapper.appendChild(usageSpan);
 
         const limitInput = document.createElement('input');
         limitInput.type = 'number';
@@ -272,13 +298,22 @@ export class BlockingUI {
         suffixSpan.textContent = 'min/day';
 
         infoDiv.appendChild(favicon);
-        infoDiv.appendChild(domainSpan);
+        infoDiv.appendChild(domainWrapper);
         infoDiv.appendChild(limitInput);
         infoDiv.appendChild(suffixSpan);
 
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'rule-delete-btn';
-        deleteBtn.textContent = 'Remove';
+        deleteBtn.className = 'rule-delete-btn icon-btn';
+        deleteBtn.title = 'Remove restriction';
+        deleteBtn.innerHTML = `
+            <svg class="icon-trash" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span class="sr-only">Remove</span>
+        `;
         deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
 
         const saveLimit = async () => {
@@ -373,9 +408,17 @@ export class BlockingUI {
         const header = document.createElement('div');
         header.className = 'group-header';
 
+        const groupTitleSection = document.createElement('div');
+        groupTitleSection.className = 'group-title-section';
+        groupTitleSection.innerHTML = `
+            <svg class="icon-folder" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+        `;
         const nameSpan = document.createElement('span');
         nameSpan.className = 'group-name-text';
         nameSpan.textContent = group.name;
+        groupTitleSection.appendChild(nameSpan);
 
         const controls = document.createElement('div');
         controls.className = 'group-controls';
@@ -392,15 +435,24 @@ export class BlockingUI {
         suffixSpan.textContent = 'min/day';
 
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'rule-delete-btn';
-        deleteBtn.textContent = 'Delete Group';
+        deleteBtn.className = 'rule-delete-btn icon-btn';
+        deleteBtn.title = 'Delete group';
+        deleteBtn.innerHTML = `
+            <svg class="icon-trash" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span class="sr-only">Delete Group</span>
+        `;
         deleteBtn.addEventListener('click', () => this.deleteGroup(group.id));
 
         controls.appendChild(limitInput);
         controls.appendChild(suffixSpan);
         controls.appendChild(deleteBtn);
 
-        header.appendChild(nameSpan);
+        header.appendChild(groupTitleSection);
         header.appendChild(controls);
 
         // Domain list
@@ -423,9 +475,33 @@ export class BlockingUI {
                 document.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
             });
 
+            // Drag handle indicator
+            const dragHandle = document.createElement('span');
+            dragHandle.className = 'drag-handle-indicator';
+            dragHandle.innerHTML = '⋮⋮';
+
+            const favicon = document.createElement('img');
+            favicon.className = 'rule-favicon';
+            favicon.src = getFaviconUrl(domain);
+            favicon.onerror = () => {
+                favicon.style.display = 'none';
+            };
+
+            const domainWrapper = document.createElement('div');
+            domainWrapper.className = 'rule-domain-wrapper';
+
             const domainSpan = document.createElement('span');
             domainSpan.className = 'rule-domain';
             domainSpan.textContent = domain;
+
+            const usageSpan = document.createElement('span');
+            usageSpan.className = 'rule-usage-today';
+            const domainUsage = this.controller.usage[domain] || {};
+            const todaySeconds = TimeUtils.calculateTodayTime(domainUsage);
+            usageSpan.textContent = todaySeconds > 0 ? `${TimeUtils.formatTime(todaySeconds)} today` : '0s today';
+
+            domainWrapper.appendChild(domainSpan);
+            domainWrapper.appendChild(usageSpan);
 
             const individualLimit = domainLimitMap[domain] || 30;
             const limitInput = document.createElement('input');
@@ -442,9 +518,15 @@ export class BlockingUI {
             suffixSpan.textContent = 'min/day';
 
             const removeBtn = document.createElement('button');
-            removeBtn.className = 'rule-delete-btn';
-            removeBtn.textContent = 'Remove';
-            removeBtn.style.fontSize = '0.8rem';
+            removeBtn.className = 'rule-delete-btn icon-btn';
+            removeBtn.title = 'Remove domain from group';
+            removeBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                <span class="sr-only">Remove</span>
+            `;
             removeBtn.addEventListener('click', () =>
                 this.removeDomainFromGroup(group.id, domain)
             );
@@ -480,7 +562,9 @@ export class BlockingUI {
             controls.appendChild(suffixSpan);
             controls.appendChild(removeBtn);
 
-            row.appendChild(domainSpan);
+            row.appendChild(dragHandle);
+            row.appendChild(favicon);
+            row.appendChild(domainWrapper);
             row.appendChild(controls);
             domainList.appendChild(row);
         });
@@ -513,7 +597,57 @@ export class BlockingUI {
         addRow.appendChild(addInput);
         addRow.appendChild(addBtn);
 
+        // Statistics bar
+        let totalGroupUsageSeconds = 0;
+        group.domains.forEach((d) => {
+            const domainUsage = this.controller.usage[d] || {};
+            totalGroupUsageSeconds += TimeUtils.calculateTodayTime(domainUsage);
+        });
+
+        const limitMinutes = group.timeLimitMinutes;
+        const limitSeconds = limitMinutes * 60;
+        const usedPercent = Math.min(100, (totalGroupUsageSeconds / limitSeconds) * 100);
+
+        const statsBar = document.createElement('div');
+        statsBar.className = 'group-stats-bar';
+
+        const progressTrack = document.createElement('div');
+        progressTrack.className = 'group-progress-track';
+
+        const progressFill = document.createElement('div');
+        progressFill.className = 'group-progress-fill';
+        progressFill.style.width = `${usedPercent}%`;
+        if (usedPercent >= 90) {
+            progressFill.classList.add('danger');
+        } else if (usedPercent >= 70) {
+            progressFill.classList.add('warning');
+        }
+        progressTrack.appendChild(progressFill);
+
+        const statsText = document.createElement('div');
+        statsText.className = 'group-stats-text';
+
+        const usedFormatted = TimeUtils.formatTime(totalGroupUsageSeconds);
+        const limitFormatted = `${limitMinutes}m`;
+        let remainingText = '';
+        if (totalGroupUsageSeconds >= limitSeconds) {
+            const overSeconds = totalGroupUsageSeconds - limitSeconds;
+            remainingText = `Over limit by <strong>${TimeUtils.formatTime(overSeconds)}</strong>`;
+        } else {
+            const remainingSeconds = limitSeconds - totalGroupUsageSeconds;
+            remainingText = `Remaining: <strong>${TimeUtils.formatTime(remainingSeconds)}</strong>`;
+        }
+
+        statsText.innerHTML = `
+            <span>Used: <strong>${usedFormatted}</strong> / ${limitFormatted}</span>
+            <span>${remainingText}</span>
+        `;
+
+        statsBar.appendChild(progressTrack);
+        statsBar.appendChild(statsText);
+
         container.appendChild(header);
+        container.appendChild(statsBar);
         container.appendChild(domainList);
         container.appendChild(addRow);
 
