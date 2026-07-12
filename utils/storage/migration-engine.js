@@ -130,10 +130,7 @@ class MigrationEngine {
         }
 
         // blockList: guard against corrupt non-array
-        if (
-            result.blockList !== undefined &&
-            !Array.isArray(result.blockList)
-        ) {
+        if (result.blockList !== undefined && !Array.isArray(result.blockList)) {
             await chrome.storage.local.set({ blockList: [] });
         }
 

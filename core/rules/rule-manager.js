@@ -174,7 +174,9 @@ class RuleManager {
      */
     getGroupForDomain(domain) {
         const normalized = domain.toLowerCase().replace(/^www\./, '');
-        return this.groups.find((g) => !g.deletedAt && g.isEnabled && g.contains(normalized)) || null;
+        return (
+            this.groups.find((g) => !g.deletedAt && g.isEnabled && g.contains(normalized)) || null
+        );
     }
 
     /**

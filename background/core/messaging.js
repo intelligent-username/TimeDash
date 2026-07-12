@@ -84,9 +84,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     break;
                 case 'GET_GROUPS':
                     sendResponse(
-                        this.ruleManager.groups
-                            .filter((g) => !g.deletedAt)
-                            .map((g) => g.toJSON())
+                        this.ruleManager.groups.filter((g) => !g.deletedAt).map((g) => g.toJSON())
                     );
                     break;
 
@@ -103,14 +101,23 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     }
                     let conflict = null;
                     for (const d of domains) {
-                        const clean = d.toLowerCase().replace(/^www\./, '').trim();
+                        const clean = d
+                            .toLowerCase()
+                            .replace(/^www\./, '')
+                            .trim();
                         if (clean) {
                             const g = this.ruleManager.getGroupContainingDomain(clean);
-                            if (g) { conflict = g.name; break; }
+                            if (g) {
+                                conflict = g.name;
+                                break;
+                            }
                         }
                     }
                     if (conflict) {
-                        sendResponse({ success: false, error: `Domain already belongs to group "${conflict}"` });
+                        sendResponse({
+                            success: false,
+                            error: `Domain already belongs to group "${conflict}"`,
+                        });
                         break;
                     }
                     const group = new GroupRule({ name, domains, timeLimitMinutes });
@@ -238,8 +245,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                                 shouldBlock: true,
                                 reason: 'restricted',
                                 domain:
-                                    message.domain ||
-                                    DomainUtils.extractDomain(message.url || ''),
+                                    message.domain || DomainUtils.extractDomain(message.url || ''),
                             });
                             break;
                         }
@@ -264,9 +270,13 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     const usage = await this.storage.getDomainUsage(message.domain);
                     const todayTime = TimeUtils.calculateTodayTime(usage);
                     sendResponse(
-                        this.ruleManager.evaluateAccess(message.url, {
-                            todayTimeSeconds: todayTime,
-                        }, groupUsageSecondsMap)
+                        this.ruleManager.evaluateAccess(
+                            message.url,
+                            {
+                                todayTimeSeconds: todayTime,
+                            },
+                            groupUsageSecondsMap
+                        )
                     );
                     break;
                 }

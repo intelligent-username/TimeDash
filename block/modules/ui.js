@@ -45,7 +45,8 @@ function applyBlockUiMethods(BlockPageController) {
         } else if (this.blockReason === 'restricted_group') {
             if (headingEl) headingEl.textContent = 'Group Limit Reached';
             if (reasonEl)
-                reasonEl.textContent = 'Your budget group has used all its allotted time today. Access will reset at midnight.';
+                reasonEl.textContent =
+                    'Your budget group has used all its allotted time today. Access will reset at midnight.';
             document.title = 'Group Limit Reached';
             this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
             this.updateStatLabel('blockCount', 'Time used today');

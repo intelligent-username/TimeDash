@@ -303,25 +303,75 @@
     background: color-mix(in srgb, var(--border-subtle) 50%, transparent 50%);
 }
 
-.privacy-accordion p {
-    padding: var(--spacing-sm) var(--spacing);
+.privacy-accordion-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: var(--spacing) 0 0 0;
+}
+
+.privacy-policy-section {
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-small);
+    padding: var(--spacing);
+    transition: all var(--transition);
+}
+
+.privacy-policy-section:hover {
+    border-color: color-mix(in srgb, var(--primary-color) 20%, var(--border-subtle));
+    background: color-mix(in srgb, var(--primary-fade) 20%, var(--background));
+}
+
+.privacy-policy-section h3 {
+    margin: 0 0 10px 0;
+    padding: 0 0 var(--spacing-xs) 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.privacy-policy-section p {
+    padding: 0;
+    margin: 0 0 10px 0;
     color: var(--text-secondary);
     line-height: 1.6;
+    font-size: 0.88rem;
+}
+
+.privacy-policy-section p.privacy-muted-text {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.privacy-policy-section ul,
+.privacy-policy-section ol {
     margin: 8px 0;
+    padding-left: 20px;
 }
 
-.privacy-accordion h3 {
-    padding: var(--spacing-sm) var(--spacing);
-    margin: var(--spacing) 0 0;
-}
-
-.privacy-accordion ul,
-.privacy-accordion ol {
-    margin: 8px 0;
-}
-
-.privacy-accordion li {
-    padding: 4px 0;
+.privacy-policy-section li {
+    padding: 3px 0;
     color: var(--text-secondary);
     line-height: 1.5;
+    font-size: 0.88rem;
+}
+
+.privacy-policy-section p:last-child,
+.privacy-policy-section ul:last-child,
+.privacy-policy-section ol:last-child {
+    margin-bottom: 0;
+}
+
+.privacy-policy-section code {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.85em;
+    font-family: var(--font-mono, monospace);
+    border-radius: 4px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--accent-color, var(--primary-color));
+    font-weight: 500;
 }

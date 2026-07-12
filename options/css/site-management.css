@@ -69,7 +69,6 @@
     display: inline-block;
 }
 
-/* Editable Logic */
 .rule-limit-input-edit {
     width: 70px;
     padding: 4px 8px;
@@ -79,6 +78,13 @@
     border-radius: var(--radius-small);
     color: var(--text-primary);
     background: var(--background);
+    -moz-appearance: textfield;
+}
+
+.rule-limit-input-edit::-webkit-outer-spin-button,
+.rule-limit-input-edit::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .rule-limit-input-edit:focus {
@@ -313,7 +319,9 @@
     margin-bottom: var(--spacing);
     background: var(--card-bg);
     box-shadow: var(--shadow);
-    transition: box-shadow var(--transition), border-color var(--transition);
+    transition:
+        box-shadow var(--transition),
+        border-color var(--transition);
 }
 
 .group-container:hover {
@@ -323,12 +331,10 @@
 
 .group-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding-bottom: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--border-subtle);
-    gap: var(--spacing-sm);
     flex-wrap: wrap;
 }
 
@@ -347,28 +353,27 @@
 .group-domain-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: var(--spacing-xs) 0;
+    margin: 0 -16px;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--background);
 }
 
 .group-domain-row {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
-    background: var(--background);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-small);
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
     transition: all var(--transition);
 }
 
-.group-domain-row:hover {
-    background: var(--card-bg);
-    border-color: var(--border);
-    transform: translateX(2px);
+.group-domain-row:last-child {
+    border-bottom: none;
 }
 
-.group-domain-row .group-controls {
-    margin-left: auto;
+.group-domain-row:hover {
+    background: var(--primary-fade);
 }
 
 .group-add-domain-row {
@@ -477,7 +482,11 @@
 
 .group-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #00b7ff) 100%);
+    background: linear-gradient(
+        90deg,
+        var(--primary-color) 0%,
+        color-mix(in srgb, var(--primary-color) 70%, #00b7ff) 100%
+    );
     border-radius: 3px;
     transition: width 0.3s ease;
     width: 0%;
@@ -493,7 +502,7 @@
 
 .group-stats-text {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     font-size: 0.78rem;
     color: var(--text-muted);
@@ -502,4 +511,30 @@
 .group-stats-text strong {
     color: var(--text-primary);
     font-weight: 600;
+}
+
+/* ── Rule Alignment Grid Columns ─────────────────────────────────────────── */
+.rule-row-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.rule-row-middle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 140px;
+    flex-shrink: 0;
+    justify-content: flex-end;
+}
+
+.rule-row-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 44px;
+    flex-shrink: 0;
 }

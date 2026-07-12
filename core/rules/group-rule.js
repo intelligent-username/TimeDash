@@ -15,13 +15,7 @@ class GroupRule {
      * @param {number} [params.timeLimitMinutes] - Daily limit in minutes
      * @param {boolean} [params.isEnabled] - Whether the group is active
      */
-    constructor({
-        id,
-        name,
-        domains = [],
-        timeLimitMinutes = 60,
-        isEnabled = true,
-    } = {}) {
+    constructor({ id, name, domains = [], timeLimitMinutes = 60, isEnabled = true } = {}) {
         this.id = id || crypto.randomUUID();
         this.name = name;
         this.domains = domains.map((d) => d.toLowerCase().replace(/^www\./, ''));
