@@ -2,7 +2,6 @@
 /.dev
 eslint.config*
 
-_locales/
 node_modules/*
 .inspiration/*
 .inspiration/**
