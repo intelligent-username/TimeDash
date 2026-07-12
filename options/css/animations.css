@@ -91,9 +91,6 @@
     animation: titleReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.page-subtitle {
-    animation: fadeSlideDown 0.4s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 
 /* ── Tab pane entrance ──────────────────────────────────────── */
 .tab-pane.active {
@@ -301,7 +298,6 @@
     .rule-item,
     .setting-item,
     .page-title,
-    .page-subtitle,
     .tab-pane.active,
     .stat-value-cycle,
     .banner,

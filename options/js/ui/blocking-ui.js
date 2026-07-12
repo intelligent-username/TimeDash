@@ -1,5 +1,20 @@
 import { getFaviconUrl } from '../utils/dom.js';
 
+const GROUP_ICONS = {
+    folder: `<svg class="icon-folder" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`,
+    briefcase: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+    code: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
+    book: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
+    gamepad: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line><rect x="2" y="6" width="20" height="12" rx="3"></rect></svg>`,
+    globe: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+    play: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+    message: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+    heart: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
+    shopping: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
+    music: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
+    lock: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`
+};
+
 /**
  *
  */
@@ -12,6 +27,8 @@ export class BlockingUI {
         this.controller = controller;
         this.limitUpdateTimers = new Map();
         this._restrictedMinutes = 30;
+        this.undoStack = [];
+        this.isUndoing = false;
     }
 
     /**
@@ -67,6 +84,46 @@ export class BlockingUI {
         if (newGroupBtn) {
             newGroupBtn.addEventListener('click', () => this._toggleNewGroupForm());
         }
+
+        // Undo key listener
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                const pane = document.getElementById('blocking');
+                if (!pane || !pane.classList.contains('active')) return;
+
+                // Do not trigger undo if user is focusing an input/textarea
+                if (
+                    e.target.tagName === 'INPUT' ||
+                    e.target.tagName === 'TEXTAREA' ||
+                    e.target.isContentEditable
+                ) {
+                    return;
+                }
+
+                e.preventDefault();
+                this.undoLastGroupingChange();
+            }
+        });
+    }
+
+    /**
+     * Set up favicon loading with protocol-fallback retries.
+     * @param {HTMLImageElement} img
+     * @param {string} domain
+     */
+    _setupFaviconFallback(img, domain) {
+        if (!img || !domain) return;
+        img.onerror = () => {
+            if (!img.dataset.retryCount) {
+                img.dataset.retryCount = '1';
+                img.src = `https://www.google.com/s2/favicons?domain=https://${domain}&sz=32`;
+            } else if (img.dataset.retryCount === '1') {
+                img.dataset.retryCount = '2';
+                img.src = `https://www.google.com/s2/favicons?domain=http://${domain}&sz=32`;
+            } else {
+                img.style.display = 'none';
+            }
+        };
     }
 
     /**
@@ -158,7 +215,7 @@ export class BlockingUI {
             li.className = 'rule-item';
             li.innerHTML = `
                 <div class="rule-item-info">
-                    <img class="rule-favicon" src="${getFaviconUrl(domain)}" alt="" onerror="this.style.display='none'">
+                    <img class="rule-favicon" src="${getFaviconUrl(domain)}" alt="">
                     <span class="rule-domain">${domain}</span>
                 </div>
                 <button class="rule-delete-btn icon-btn" title="Remove block">
@@ -171,6 +228,9 @@ export class BlockingUI {
                     <span class="sr-only">Remove</span>
                 </button>
             `;
+            const img = li.querySelector('.rule-favicon');
+            this._setupFaviconFallback(img, domain);
+
             li.querySelector('.rule-delete-btn').addEventListener('click', () => {
                 this.removeSiteRule(domain);
             });
@@ -196,26 +256,6 @@ export class BlockingUI {
         const oldList = list;
         const newList = oldList.cloneNode(false);
         oldList.parentNode.replaceChild(newList, oldList);
-
-        // Drop target: dropping a group domain row ungroups it
-        newList.addEventListener('dragover', (e) => {
-            if (e.dataTransfer.types.includes('text/x-group-id')) {
-                e.preventDefault();
-                newList.classList.add('drag-ungroup');
-            }
-        });
-        newList.addEventListener('dragleave', () => {
-            newList.classList.remove('drag-ungroup');
-        });
-        newList.addEventListener('drop', (e) => {
-            e.preventDefault();
-            newList.classList.remove('drag-ungroup');
-            const domain = e.dataTransfer.getData('text/plain');
-            const groupId = e.dataTransfer.getData('text/x-group-id');
-            if (domain && groupId) {
-                this.removeDomainFromGroup(groupId, domain);
-            }
-        });
 
         const domainLimitMap = {};
         sites.forEach((s) => {
@@ -264,9 +304,7 @@ export class BlockingUI {
         const favicon = document.createElement('img');
         favicon.className = 'rule-favicon';
         favicon.src = getFaviconUrl(domain);
-        favicon.onerror = () => {
-            favicon.style.display = 'none';
-        };
+        this._setupFaviconFallback(favicon, domain);
 
         const domainWrapper = document.createElement('div');
         domainWrapper.className = 'rule-domain-wrapper';
@@ -403,7 +441,9 @@ export class BlockingUI {
             e.preventDefault();
             container.classList.remove('drag-over');
             const domain = e.dataTransfer.getData('text/plain');
-            if (domain) {
+            const sourceGroupId = e.dataTransfer.getData('text/x-group-id');
+            // Skip same-group drops — handled by domainList reorder handler
+            if (domain && sourceGroupId !== group.id) {
                 this.addDomainToGroup(group.id, domain);
             }
         };
@@ -422,11 +462,58 @@ export class BlockingUI {
 
         const groupTitleSection = document.createElement('div');
         groupTitleSection.className = 'group-title-section';
-        groupTitleSection.innerHTML = `
-            <svg class="icon-folder" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-        `;
+
+        const iconWrapper = document.createElement('button');
+        iconWrapper.className = 'group-icon-picker-btn';
+        iconWrapper.title = 'Change group icon';
+        iconWrapper.type = 'button';
+        iconWrapper.innerHTML = GROUP_ICONS[group.icon] || GROUP_ICONS.folder;
+
+        const closePicker = () => {
+            const dropdown = groupTitleSection.querySelector('.group-icon-picker-dropdown');
+            if (dropdown) dropdown.remove();
+            document.removeEventListener('click', closePicker);
+        };
+
+        iconWrapper.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const existingPicker = groupTitleSection.querySelector('.group-icon-picker-dropdown');
+            if (existingPicker) {
+                const wasThisOne = existingPicker.dataset.groupId === group.id;
+                existingPicker.remove();
+                if (wasThisOne) {
+                    document.removeEventListener('click', closePicker);
+                    return;
+                }
+            }
+
+            const picker = document.createElement('div');
+            picker.className = 'group-icon-picker-dropdown';
+            picker.dataset.groupId = group.id;
+
+            Object.entries(GROUP_ICONS).forEach(([key, svgMarkup]) => {
+                const optBtn = document.createElement('button');
+                optBtn.type = 'button';
+                optBtn.className = `icon-picker-option${group.icon === key ? ' active' : ''}`;
+                optBtn.innerHTML = svgMarkup;
+                optBtn.title = key;
+                optBtn.addEventListener('click', async (optEv) => {
+                    optEv.stopPropagation();
+                    picker.remove();
+                    document.removeEventListener('click', closePicker);
+                    iconWrapper.innerHTML = svgMarkup;
+                    group.icon = key;
+                    await this.updateGroupIcon(group.id, key);
+                });
+                picker.appendChild(optBtn);
+            });
+
+            groupTitleSection.appendChild(picker);
+            document.addEventListener('click', closePicker);
+        });
+
+        groupTitleSection.appendChild(iconWrapper);
+
         const nameSpan = document.createElement('span');
         nameSpan.className = 'group-name-text';
         nameSpan.textContent = group.name;
@@ -493,13 +580,16 @@ export class BlockingUI {
                 e.dataTransfer.effectAllowed = 'move';
                 row.classList.add('dragging');
             });
-            row.addEventListener('dragend', () => {
+            row.addEventListener('dragend', (e) => {
                 row.classList.remove('dragging');
                 document
                     .querySelectorAll('.drag-over')
                     .forEach((el) => el.classList.remove('drag-over'));
+                // Dropped outside any valid target → remove from group (make general)
+                if (e.dataTransfer.dropEffect === 'none') {
+                    this.removeDomainFromGroup(group.id, domain);
+                }
             });
-
             // Drag handle indicator
             const dragHandle = document.createElement('span');
             dragHandle.className = 'drag-handle-indicator';
@@ -508,9 +598,7 @@ export class BlockingUI {
             const favicon = document.createElement('img');
             favicon.className = 'rule-favicon';
             favicon.src = getFaviconUrl(domain);
-            favicon.onerror = () => {
-                favicon.style.display = 'none';
-            };
+            this._setupFaviconFallback(favicon, domain);
 
             const domainWrapper = document.createElement('div');
             domainWrapper.className = 'rule-domain-wrapper';
@@ -663,7 +751,7 @@ export class BlockingUI {
         const limitFormatted = `${limitMinutes}m`;
 
         statsText.innerHTML = `
-            <span>Used: <strong>${usedFormatted}</strong> / ${limitFormatted}</span>
+            <span><strong>${usedFormatted}</strong> / ${limitFormatted}</span>
         `;
 
         statsBar.appendChild(progressTrack);
@@ -824,6 +912,23 @@ export class BlockingUI {
     }
 
     /**
+     * Update a group's icon setting
+     * @param {string} id
+     * @param {string} icon
+     */
+    async updateGroupIcon(id, icon) {
+        try {
+            await chrome.runtime.sendMessage({
+                type: 'UPDATE_GROUP',
+                id,
+                icon,
+            });
+        } catch (error) {
+            console.error('Error updating group icon:', error);
+        }
+    }
+
+    /**
      * Soft-delete a group
      * @param {string} id
      */
@@ -855,6 +960,15 @@ export class BlockingUI {
                 domain: cleanDomain,
             });
             if (response.success) {
+                if (!this.isUndoing) {
+                    if (response.previousGroupId) {
+                        // Moved from another group — undo moves it back
+                        this.undoStack.push({ type: 'move', domain: cleanDomain, fromGroupId: response.previousGroupId });
+                    } else {
+                        // Fresh add — undo removes from group
+                        this.undoStack.push({ type: 'remove', domain: cleanDomain, groupId });
+                    }
+                }
                 await this.loadSiteRules();
             } else {
                 this.controller.showWarning(response.error || 'Failed to add domain');
@@ -871,14 +985,51 @@ export class BlockingUI {
      */
     async removeDomainFromGroup(groupId, domain) {
         try {
-            await chrome.runtime.sendMessage({
+            const response = await chrome.runtime.sendMessage({
                 type: 'REMOVE_DOMAIN_FROM_GROUP',
                 groupId,
                 domain,
             });
-            await this.loadSiteRules();
+            if (response.success) {
+                if (!this.isUndoing) {
+                    this.undoStack.push({ type: 'add', domain, groupId });
+                }
+                await this.loadSiteRules();
+            } else {
+                this.controller.showWarning(response.error || 'Failed to remove domain');
+            }
         } catch (error) {
             console.error('Error removing domain from group:', error);
+        }
+    }
+
+    /**
+     * Undo the last grouping action (add or remove from group)
+     */
+    async undoLastGroupingChange() {
+        if (this.undoStack.length === 0) {
+            this.controller.showWarning('Nothing to undo');
+            return;
+        }
+
+        const action = this.undoStack.pop();
+        this.isUndoing = true;
+        try {
+            if (action.type === 'remove') {
+                await this.removeDomainFromGroup(action.groupId, action.domain);
+                this.controller.showSuccess(`Undid: Removed ${action.domain} from group`);
+            } else if (action.type === 'add') {
+                await this.addDomainToGroup(action.groupId, action.domain);
+                this.controller.showSuccess(`Undid: Re-added ${action.domain} to group`);
+            } else if (action.type === 'move') {
+                await this.addDomainToGroup(action.fromGroupId, action.domain);
+                this.controller.showSuccess(`Undid: Moved ${action.domain} back to original group`);
+            }
+        } catch (error) {
+            console.error('Error executing undo:', error);
+            this.controller.showError('Failed to undo grouping change');
+        } finally {
+            this.isUndoing = false;
         }
     }
 

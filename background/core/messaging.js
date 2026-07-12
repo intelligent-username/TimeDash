@@ -148,6 +148,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     if (message.timeLimitMinutes !== undefined)
                         target.timeLimitMinutes = message.timeLimitMinutes;
                     if (message.isEnabled !== undefined) target.isEnabled = message.isEnabled;
+                    if (message.icon !== undefined) target.icon = message.icon;
+                    if (message.domains !== undefined) target.domains = message.domains.map(
+                        (d) => d.toLowerCase().replace(/^www\./, '')
+                    );
                     target.updatedAt = Date.now();
                     await this.ruleManager.saveGroupsToStorage();
                     sendResponse({ success: true });
@@ -186,12 +190,19 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         break;
                     }
                     const conflict = this.ruleManager.getGroupContainingDomain(cleanDomain);
+                    let previousGroupId = null;
                     if (conflict) {
-                        sendResponse({
-                            success: false,
-                            error: `Domain already belongs to group "${conflict.name}"`,
-                        });
-                        break;
+                        if (conflict.id === addGroup.id) {
+                            sendResponse({ success: false, error: 'Domain already in this group' });
+                            break;
+                        }
+                        previousGroupId = conflict.id;
+                        // Remove from the old group (move operation)
+                        const idx = conflict.domains.indexOf(cleanDomain);
+                        if (idx !== -1) {
+                            conflict.domains.splice(idx, 1);
+                            conflict.updatedAt = Date.now();
+                        }
                     }
                     if (addGroup.domains.includes(cleanDomain)) {
                         sendResponse({ success: false, error: 'Domain already in this group' });
@@ -200,7 +211,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     addGroup.domains.push(cleanDomain);
                     addGroup.updatedAt = Date.now();
                     await this.ruleManager.saveGroupsToStorage();
-                    sendResponse({ success: true });
+                    sendResponse({ success: true, previousGroupId });
                     break;
                 }
 

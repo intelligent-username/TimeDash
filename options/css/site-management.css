@@ -1,5 +1,22 @@
 /* Site Management specific styles */
 
+/* Full height cards in blocking tab */
+#blocking .content-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0;
+}
+
+#blocking .content-card .card-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+}
+
+
+
 /* Rule Manager - Input Group */
 .rule-input-group {
     display: flex;
@@ -138,7 +155,7 @@
     padding: 6px 0;
     border: 1px dashed var(--border);
     border-radius: var(--radius-medium);
-    width: 100%;
+    width: 30%;
 }
 
 .circ-picker-inner-wrap {
@@ -307,8 +324,7 @@
 }
 
 .group-title-section svg {
-    color: var(--primary-color);
-    filter: drop-shadow(0 2px 4px var(--primary-fade));
+    color: #888888;
 }
 
 /* ── Budget Groups (rendered within restricted list) ─────────────────────── */
@@ -433,22 +449,15 @@
 }
 
 /* ── Drag-and-Drop states ────────────────────────────────────────────────── */
-.group-container.drag-over {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 25%, transparent);
-    background: color-mix(in srgb, var(--primary-color) 5%, var(--card-bg));
-}
-
-#restrictedList.drag-ungroup {
-    outline: 2px dashed var(--danger-color, #ef4444);
-    outline-offset: -4px;
-    border-radius: var(--radius-medium);
-    min-height: 40px;
-}
-
 .rule-item.dragging,
 .group-domain-row.dragging {
     opacity: 0.4;
+}
+
+/* Group container highlight when dragging over it */
+.group-container.drag-over {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 4%, var(--card-bg));
 }
 
 /* Screen-reader only utility */
@@ -466,6 +475,9 @@
 
 /* ── Group Statistics Styles ────────────────────────────────────────────── */
 .group-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 6px 0;
     margin-bottom: 12px;
     border-bottom: 1px dashed var(--border-subtle);
@@ -473,11 +485,11 @@
 }
 
 .group-progress-track {
+    flex: 1;
     height: 6px;
     background: var(--border-subtle);
     border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 8px;
 }
 
 .group-progress-fill {
@@ -501,11 +513,10 @@
 }
 
 .group-stats-text {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    white-space: nowrap;
     font-size: 0.78rem;
     color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 .group-stats-text strong {
@@ -537,4 +548,74 @@
     justify-content: flex-end;
     width: 44px;
     flex-shrink: 0;
+}
+
+/* ── Group Icon Picker ──────────────────────────────────────────────────── */
+.group-title-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.group-icon-picker-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-small);
+    color: #888888;
+    padding: 6px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.group-icon-picker-btn:hover {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.15);
+    border-color: rgba(128, 128, 128, 0.3);
+}
+
+.group-icon-picker-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-medium);
+    animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.icon-picker-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-small);
+    color: #888888;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.icon-picker-option:hover {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.15);
+    border-color: rgba(128, 128, 128, 0.3);
+}
+
+.icon-picker-option.active {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.25);
+    border-color: rgba(128, 128, 128, 0.5);
 }

@@ -105,8 +105,7 @@ export function applyOptionsNavigationMethods(OptionsController) {
 
     OptionsController.prototype.updateHeader = function updateHeader(tab) {
         const titleEl = document.getElementById('pageTitle');
-        const subtitleEl = document.getElementById('pageSubtitle');
-        if (!titleEl || !subtitleEl) return;
+        if (!titleEl) return;
 
         const titles = {
             analytics: 'Analytics',
@@ -117,17 +116,6 @@ export function applyOptionsNavigationMethods(OptionsController) {
             help: 'Help ',
         };
 
-        const subtitles = {
-            general: 'Appearance and notifications',
-            analytics: 'Usage overview',
-            video: 'Customize speed controls',
-            blocking: 'Manage blocked and restricted sites',
-            privacy: 'Control your data and privacy settings',
-            help: 'FAQ and support',
-            undefined: 'Settings',
-        };
-
         titleEl.textContent = titles[tab] || 'Settings';
-        subtitleEl.textContent = subtitles[tab] || '';
     };
 }

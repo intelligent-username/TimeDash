@@ -1,31 +1,6 @@
 <div class="two-column-grid">
     <div class="content-card">
         <div class="card-header">
-            <h2>Hard-Blocked Sites</h2>
-        </div>
-        <div class="card-body">
-            <p class="section-description">These sites are completely inaccessible.</p>
-            <div class="rule-manager" id="blockedManager">
-                <div class="rule-input-group modern-input-group">
-                    <label for="blockedDomainInput" class="sr-only">Domain to block</label>
-                    <input
-                        type="text"
-                        id="blockedDomainInput"
-                        placeholder="e.g., facebook.com…"
-                        class="modern-input"
-                        autocomplete="off"
-                        name="blocked-domain"
-                        spellcheck="false"
-                    />
-                    <button id="addBlockedBtn" class="btn btn-primary">Add</button>
-                </div>
-                <ul class="rule-list modern-list" id="blockedList"></ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="content-card">
-        <div class="card-header">
             <h2>Restricted Access</h2>
         </div>
         <div class="card-body">
@@ -92,6 +67,31 @@
                     <button id="newGroupBtn" class="btn-new-group">+ New Group</button>
                 </div>
                 <ul class="rule-list modern-list" id="restrictedList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Hard-Blocked Sites</h2>
+        </div>
+        <div class="card-body">
+            <p class="section-description">These sites are completely inaccessible.</p>
+            <div class="rule-manager" id="blockedManager">
+                <div class="rule-input-group modern-input-group">
+                    <label for="blockedDomainInput" class="sr-only">Domain to block</label>
+                    <input
+                        type="text"
+                        id="blockedDomainInput"
+                        placeholder="e.g., facebook.com…"
+                        class="modern-input"
+                        autocomplete="off"
+                        name="blocked-domain"
+                        spellcheck="false"
+                    />
+                    <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+                </div>
+                <ul class="rule-list modern-list" id="blockedList"></ul>
             </div>
         </div>
     </div>

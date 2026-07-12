@@ -13,14 +13,16 @@ class GroupRule {
      * @param {string} params.name - Human-readable group name
      * @param {string[]} [params.domains] - Domain list
      * @param {number} [params.timeLimitMinutes] - Daily limit in minutes
-     * @param {boolean} [params.isEnabled] - Whether the group is active
+     * @param {string} [params.isEnabled] - Whether the group is active
+     * @param {string} [params.icon] - Group category icon key
      */
-    constructor({ id, name, domains = [], timeLimitMinutes = 60, isEnabled = true } = {}) {
+    constructor({ id, name, domains = [], timeLimitMinutes = 60, isEnabled = true, icon = 'folder' } = {}) {
         this.id = id || crypto.randomUUID();
         this.name = name;
         this.domains = domains.map((d) => d.toLowerCase().replace(/^www\./, ''));
         this.timeLimitMinutes = timeLimitMinutes;
         this.isEnabled = isEnabled;
+        this.icon = icon || 'folder';
         this.createdAt = Date.now();
         this.updatedAt = Date.now();
         this.deletedAt = null;
@@ -75,6 +77,7 @@ class GroupRule {
             domains: [...this.domains],
             timeLimitMinutes: this.timeLimitMinutes,
             isEnabled: this.isEnabled,
+            icon: this.icon,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
             deletedAt: this.deletedAt,
@@ -93,6 +96,7 @@ class GroupRule {
             domains: data.domains || [],
             timeLimitMinutes: data.timeLimitMinutes,
             isEnabled: data.isEnabled,
+            icon: data.icon || 'folder',
         });
         group.createdAt = data.createdAt || Date.now();
         group.updatedAt = data.updatedAt || Date.now();
