@@ -180,7 +180,6 @@ body {
     letter-spacing: -0.02em;
 }
 
-
 /* Scrollable Content Area */
 .content-scrollable {
     flex: 1;
@@ -311,7 +310,6 @@ body {
     .page-title {
         font-size: 1.6rem;
     }
-
 
     /* Content */
     .content-scrollable {

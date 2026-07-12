@@ -16,7 +16,14 @@ class GroupRule {
      * @param {string} [params.isEnabled] - Whether the group is active
      * @param {string} [params.icon] - Group category icon key
      */
-    constructor({ id, name, domains = [], timeLimitMinutes = 60, isEnabled = true, icon = 'folder' } = {}) {
+    constructor({
+        id,
+        name,
+        domains = [],
+        timeLimitMinutes = 60,
+        isEnabled = true,
+        icon = 'folder',
+    } = {}) {
         this.id = id || crypto.randomUUID();
         this.name = name;
         this.domains = domains.map((d) => d.toLowerCase().replace(/^www\./, ''));

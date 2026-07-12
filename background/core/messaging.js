@@ -149,9 +149,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         target.timeLimitMinutes = message.timeLimitMinutes;
                     if (message.isEnabled !== undefined) target.isEnabled = message.isEnabled;
                     if (message.icon !== undefined) target.icon = message.icon;
-                    if (message.domains !== undefined) target.domains = message.domains.map(
-                        (d) => d.toLowerCase().replace(/^www\./, '')
-                    );
+                    if (message.domains !== undefined)
+                        target.domains = message.domains.map((d) =>
+                            d.toLowerCase().replace(/^www\./, '')
+                        );
                     target.updatedAt = Date.now();
                     await this.ruleManager.saveGroupsToStorage();
                     sendResponse({ success: true });

@@ -91,7 +91,6 @@
     animation: titleReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-
 /* ── Tab pane entrance ──────────────────────────────────────── */
 .tab-pane.active {
     animation: fadeSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
