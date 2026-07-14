@@ -48,3 +48,23 @@
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+/* Focus-visible styles for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Tabular numbers for time displays */
+#siteTime,
+#todayTotal,
+#weekAverage,
+#totalTime,
+.site-item-time,
+.stat-value {
+    font-variant-numeric: tabular-nums;
+}

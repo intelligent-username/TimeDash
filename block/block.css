@@ -201,6 +201,7 @@ body {
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.25rem;
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-label {

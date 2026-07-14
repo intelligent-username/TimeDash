@@ -43,3 +43,23 @@ a:hover {
 .fade-in {
     animation: fadeIn var(--transition-fast) ease-out;
 }
+
+/* Focus-visible styles for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--accent-color, var(--primary-color));
+    outline-offset: 2px;
+}
+
+/* Tabular numbers for time/speed displays */
+.stat-value,
+#analyticsTodayTotal,
+#analyticsWeekAverage,
+#analyticsTotalTime,
+#analyticsNetChange,
+#currentPlaybackSpeed {
+    font-variant-numeric: tabular-nums;
+}

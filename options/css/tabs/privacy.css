@@ -206,7 +206,8 @@
 }
 
 .modern-input.wide-number:focus {
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px var(--primary-fade);
 }
@@ -315,7 +316,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-small);
     padding: var(--spacing);
-    transition: all var(--transition);
+    transition: border-color var(--transition), background-color var(--transition);
 }
 
 .privacy-policy-section:hover {

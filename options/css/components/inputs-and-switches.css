@@ -13,7 +13,8 @@
 }
 
 .modern-input:focus {
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px var(--primary-fade);
 }
@@ -92,7 +93,7 @@ input.modern-input.short[type='number']:focus::-webkit-inner-spin-button {
     right: 0;
     bottom: 0;
     background-color: color-mix(in srgb, var(--border) 78%, #8b949e 22%);
-    transition: 0.4s;
+    transition: background-color 0.4s, border-color 0.4s;
     border: 1px solid color-mix(in srgb, var(--border) 86%, #7c8794 14%);
 }
 
@@ -104,7 +105,7 @@ input.modern-input.short[type='number']:focus::-webkit-inner-spin-button {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: 0.4s;
+    transition: transform 0.4s, background-color 0.4s;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -117,11 +118,11 @@ input:checked + .slider {
     border-color: color-mix(in srgb, var(--success-color) 70%, var(--accent-color) 30%);
 }
 
-input:focus + .slider {
+input:focus-visible + .slider {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 45%, transparent 55%);
 }
 
-input:checked:focus + .slider {
+input:checked:focus-visible + .slider {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 40%, var(--success-color) 60%);
 }
 

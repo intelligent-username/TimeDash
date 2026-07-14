@@ -39,18 +39,18 @@
         "default_popup": "popup/popup.html",
         "default_title": "TimeDash",
         "default_icon": {
-            "16": "imgs/Logo.png",
-            "32": "imgs/Logo.png",
-            "48": "imgs/Logo.png",
-            "128": "imgs/Logo.png"
+            "16": "imgs/icon16.png",
+            "32": "imgs/icon32.png",
+            "48": "imgs/icon48.png",
+            "128": "imgs/icon128.png"
         }
     },
     "options_page": "options/options.html",
     "icons": {
-        "16": "imgs/Logo.png",
-        "32": "imgs/Logo.png",
-        "48": "imgs/Logo.png",
-        "128": "imgs/Logo.png"
+        "16": "imgs/icon16.png",
+        "32": "imgs/icon32.png",
+        "48": "imgs/icon48.png",
+        "128": "imgs/icon128.png"
     },
     "commands": {
         "toggle-tracking": {

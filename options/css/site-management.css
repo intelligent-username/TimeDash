@@ -104,7 +104,8 @@
 
 .rule-limit-input-edit:focus {
     border-color: var(--primary-color);
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
 }
 
 /* .rule-delete-btn consolidated into components/settings-and-lists.css */
@@ -200,7 +201,8 @@
 }
 
 .circ-center-input:focus {
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
     background: color-mix(in srgb, var(--primary-color) 10%, transparent);
     border-radius: 4px;
 }
@@ -231,7 +233,8 @@
 }
 
 .circ-handle:focus {
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
     filter: drop-shadow(0 0 0 3px color-mix(in srgb, var(--primary-color) 40%, transparent));
 }
 
@@ -298,7 +301,7 @@
     border: 1px solid transparent;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: background-color var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
 .icon-btn:hover {
@@ -379,7 +382,7 @@
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--border-subtle);
-    transition: all var(--transition);
+    transition: background-color var(--transition);
 }
 
 .group-domain-row:last-child {
@@ -415,7 +418,7 @@
     font-weight: 500;
     white-space: nowrap;
     line-height: 1.4;
-    transition: all var(--transition);
+    transition: border-color var(--transition), color var(--transition), background-color var(--transition);
 }
 
 .btn-new-group:hover {
@@ -566,7 +569,7 @@
     color: #888888;
     padding: 6px;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .group-icon-picker-btn:hover {
@@ -603,7 +606,7 @@
     height: 28px;
     padding: 0;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .icon-picker-option:hover {
