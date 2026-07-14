@@ -2,11 +2,11 @@
 /.dev
 eslint.config*
 
-node_modules/*
-.inspiration/*
-.inspiration/**
-
+node_modules/
+.inspiration/
+.ideas/
 notes/
+
 *.zip
 *.md
-
+*.py
