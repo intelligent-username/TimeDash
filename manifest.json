@@ -68,7 +68,7 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["content/overlay.js"],
+            "resources": ["content/overlay.js", "block/block.html"],
             "matches": ["<all_urls>"]
         }
     ],

@@ -93,7 +93,9 @@ input.modern-input.short[type='number']:focus::-webkit-inner-spin-button {
     right: 0;
     bottom: 0;
     background-color: color-mix(in srgb, var(--border) 78%, #8b949e 22%);
-    transition: background-color 0.4s, border-color 0.4s;
+    transition:
+        background-color 0.4s,
+        border-color 0.4s;
     border: 1px solid color-mix(in srgb, var(--border) 86%, #7c8794 14%);
 }
 
@@ -105,7 +107,9 @@ input.modern-input.short[type='number']:focus::-webkit-inner-spin-button {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: transform 0.4s, background-color 0.4s;
+    transition:
+        transform 0.4s,
+        background-color 0.4s;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 

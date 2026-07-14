@@ -1,5 +1,7 @@
 'use strict';
 
+/* global DomainUtils, TimeUtils */
+
 function applyBackgroundTrackingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.addToPendingUpdates = function addToPendingUpdates(
         domain,
@@ -88,8 +90,47 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 this.tabTracker.stopTrackingTab(track.tabId);
                 return;
             }
+
+            // Perform real-time limit/blocking check
+            const domain = DomainUtils.extractDomain(tab.url);
+            await this.tabTracker.checkAndHandleBlocking(tab, domain);
         } catch {
             this.tabTracker.stopTrackingTab(track.tabId);
         }
+    };
+
+    TimeDashBackground.prototype.getRealTimeUsage = async function getRealTimeUsage(
+        domain,
+        allUsage = null
+    ) {
+        let totalSeconds = 0;
+        const normalized = DomainUtils.normalizeDomain(domain);
+
+        // 1. Get stored usage for this normalized domain
+        if (!allUsage) {
+            allUsage = await this.storage.getAllUsage();
+        }
+        if (allUsage[normalized]) {
+            totalSeconds += TimeUtils.calculateTodayTime(allUsage[normalized]);
+        }
+
+        // 2. Add pending updates from memory
+        if (this.pendingUpdates && this.pendingUpdates.has(normalized)) {
+            totalSeconds += this.pendingUpdates.get(normalized);
+        }
+
+        // 3. Add currently active tracking time if it matches
+        const track = this.currentTrack;
+        if (track && track.domain) {
+            const trackNormalized = DomainUtils.normalizeDomain(track.domain);
+            if (trackNormalized === normalized) {
+                const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
+                if (elapsed > 0) {
+                    totalSeconds += elapsed;
+                }
+            }
+        }
+
+        return totalSeconds;
     };
 }

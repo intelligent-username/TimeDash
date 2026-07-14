@@ -12,7 +12,10 @@
     background: var(--background);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-small);
-    transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
+    transition:
+        border-color var(--transition),
+        background-color var(--transition),
+        transform var(--transition);
 }
 
 .feature-item:hover {
@@ -140,7 +143,9 @@ button.inline-link.quick-link svg {
     background: var(--background);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-small);
-    transition: border-color var(--transition), background-color var(--transition);
+    transition:
+        border-color var(--transition),
+        background-color var(--transition);
 }
 
 .help-section:hover {

@@ -84,7 +84,9 @@
     padding: 4px 8px;
     border-radius: 4px;
     flex-shrink: 0;
-    transition: background-color var(--transition), color var(--transition);
+    transition:
+        background-color var(--transition),
+        color var(--transition);
 }
 
 .rule-delete-btn:hover {

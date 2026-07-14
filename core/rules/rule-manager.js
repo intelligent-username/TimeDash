@@ -1,4 +1,4 @@
-/* global SiteRule, BlockedRule, RestrictedRule, GroupRule */
+/* global SiteRule, BlockedRule, RestrictedRule, GroupRule, DomainUtils */
 
 /**
  * @file RuleManager - manages all site access rules
@@ -99,17 +99,12 @@ class RuleManager {
      * @param {string} domain - Domain to remove
      */
     removeRule(domain) {
-        const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
+        const normalizedDomain = DomainUtils.normalizeDomain(domain);
         this.rules.delete(normalizedDomain);
     }
 
-    /**
-     * Get a rule by domain
-     * @param {string} domain - Domain to look up
-     * @returns {SiteRule|undefined}
-     */
     getRule(domain) {
-        const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
+        const normalizedDomain = DomainUtils.normalizeDomain(domain);
         return this.rules.get(normalizedDomain);
     }
 
@@ -173,7 +168,7 @@ class RuleManager {
      * @returns {GroupRule|null}
      */
     getGroupForDomain(domain) {
-        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        const normalized = DomainUtils.normalizeDomain(domain);
         return (
             this.groups.find((g) => !g.deletedAt && g.isEnabled && g.contains(normalized)) || null
         );
@@ -194,7 +189,7 @@ class RuleManager {
      * @returns {GroupRule|null}
      */
     getGroupContainingDomain(domain) {
-        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        const normalized = DomainUtils.normalizeDomain(domain);
         return this.groups.find((g) => !g.deletedAt && g.domains.includes(normalized)) || null;
     }
 
@@ -208,11 +203,10 @@ class RuleManager {
      */
     evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}) {
         try {
-            const urlObj = new URL(url);
-            const domain = urlObj.hostname.toLowerCase().replace(/^www\./, '');
+            const domain = DomainUtils.extractDomain(url);
 
             // 1. Individual rule check
-            const rule = this.rules.get(domain);
+            const rule = this.getRule(domain);
             if (rule && rule.isEnabled) {
                 const result = rule.evaluate(usageStats);
                 if (result.shouldBlock) {

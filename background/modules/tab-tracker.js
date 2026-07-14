@@ -162,6 +162,18 @@ class TabTracker {
             for (const domainUsage of Object.values(allUsage)) {
                 totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
             }
+            if (this.instance.pendingUpdates) {
+                for (const timeSpent of this.instance.pendingUpdates.values()) {
+                    totalTodaySeconds += timeSpent;
+                }
+            }
+            const track = this.instance.currentTrack;
+            if (track) {
+                const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
+                if (elapsed > 0) {
+                    totalTodaySeconds += elapsed;
+                }
+            }
 
             if (totalTodaySeconds >= dailyLimitMinutes * 60) {
                 try {
@@ -189,14 +201,13 @@ class TabTracker {
             for (const g of activeGroups) {
                 let total = 0;
                 for (const d of g.domains) {
-                    total += TimeUtils.calculateTodayTime(allUsage[d] || {});
+                    total += await this.instance.getRealTimeUsage(d, allUsage);
                 }
                 groupUsageSecondsMap[g.id] = total;
             }
         }
 
-        const usage = await this.instance.storage.getDomainUsage(domain);
-        const todayTimeSeconds = TimeUtils.calculateTodayTime(usage);
+        const todayTimeSeconds = await this.instance.getRealTimeUsage(domain, allUsage);
         const accessResult = this.instance.ruleManager.evaluateAccess(
             tab.url,
             { todayTimeSeconds },

@@ -3,6 +3,8 @@
  * Provides polymorphic interface for evaluating site access policies
  */
 
+/* global DomainUtils */
+
 /**
  * Abstract base class for site access rules
  * All site policies (blocked, restricted) inherit from this
@@ -22,7 +24,7 @@ class SiteRule {
         if (new.target === SiteRule) {
             throw new Error('SiteRule is abstract and cannot be instantiated directly');
         }
-        this.domain = domain.toLowerCase().replace(/^www\./, '');
+        this.domain = DomainUtils.normalizeDomain(domain);
         this.type = type;
         this.isEnabled = isEnabled;
         this.createdAt = Date.now();
@@ -35,13 +37,9 @@ class SiteRule {
      */
     isMatch(urlOrDomain) {
         try {
-            let domain;
-            if (urlOrDomain.includes('://')) {
-                const url = new URL(urlOrDomain);
-                domain = url.hostname.toLowerCase().replace(/^www\./, '');
-            } else {
-                domain = urlOrDomain.toLowerCase().replace(/^www\./, '');
-            }
+            const domain = urlOrDomain.includes('://')
+                ? DomainUtils.extractDomain(urlOrDomain)
+                : DomainUtils.normalizeDomain(urlOrDomain);
             return this.domain === domain;
         } catch {
             return false;

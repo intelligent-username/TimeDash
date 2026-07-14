@@ -316,7 +316,9 @@
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-small);
     padding: var(--spacing);
-    transition: border-color var(--transition), background-color var(--transition);
+    transition:
+        border-color var(--transition),
+        background-color var(--transition);
 }
 
 .privacy-policy-section:hover {

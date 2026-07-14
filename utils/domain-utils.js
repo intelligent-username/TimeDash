@@ -10,11 +10,23 @@ class DomainUtils {
     static extractDomain(url) {
         try {
             const urlObj = new URL(url);
-            return urlObj.hostname.replace(/^www\./, '');
+            const hostname = urlObj.hostname.toLowerCase();
+            const parts = hostname.split('.');
+            if (parts.length >= 2) {
+                return parts.slice(-2).join('.');
+            }
+            return hostname;
         } catch {
             // Fallback for invalid URLs
             const match = url.match(/(?:https?:\/\/)?(?:www\.)?([^/?#]+)/);
-            return match ? match[1].replace(/^www\./, '') : url;
+            if (match) {
+                const parts = match[1].toLowerCase().split('.');
+                if (parts.length >= 2) {
+                    return parts.slice(-2).join('.');
+                }
+                return match[1];
+            }
+            return url;
         }
     }
 
@@ -24,10 +36,15 @@ class DomainUtils {
      * @returns {string} Normalized domain
      */
     static normalizeDomain(domain) {
-        return domain
+        const clean = domain
             .toLowerCase()
             .replace(/^www\./, '')
             .trim();
+        const parts = clean.split('.');
+        if (parts.length >= 2) {
+            return parts.slice(-2).join('.');
+        }
+        return clean;
     }
 
     /**

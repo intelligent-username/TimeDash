@@ -2,11 +2,18 @@
 /.dev
 eslint.config*
 
+# Bigger work
 node_modules/
 .inspiration/
 .ideas/
 notes/
 
+# Stuff for my own convenience
 *.zip
 *.md
+# !README.md 
+#   don't add an exception for the README since it's already tracked. If adding exception, it will accidentally be included in the bundled zip file.
 *.py
+
+# Specific files
+test-rules.js

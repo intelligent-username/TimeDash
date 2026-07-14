@@ -15,7 +15,7 @@ function applyBackgroundDataMethods(TimeDashBackground) {
     TimeDashBackground.prototype.getUsageData = async function getUsageData() {
         const usage = await this.storage.getAllUsage();
         const settings = await this.storage.getSettings();
-        const blockList = await this.storage.getBlockList();
+        const blockList = this.ruleManager.getBlockedDomains();
 
         const domains = Object.entries(usage)
             .map(([domain, data]) => ({
@@ -44,12 +44,15 @@ function applyBackgroundDataMethods(TimeDashBackground) {
     TimeDashBackground.prototype.toggleSiteBlock = async function toggleSiteBlock(domain) {
         if (!domain) return;
 
-        const blockList = await this.storage.getBlockList();
-        const idx = blockList.indexOf(domain);
-        if (idx >= 0) blockList.splice(idx, 1);
-        else blockList.push(domain);
+        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        const existing = this.ruleManager.rules.get(normalized);
+        if (existing && existing.type === 'BLOCKED') {
+            this.ruleManager.removeRule(normalized);
+        } else {
+            this.ruleManager.addRule(new BlockedRule(normalized));
+        }
 
-        await this.storage.setBlockList(blockList);
+        await this.ruleManager.saveToStorage();
         this.broadcastUpdate();
     };
 }

@@ -42,7 +42,7 @@ class GroupRule {
      */
     contains(domain) {
         const normalized = domain.toLowerCase().replace(/^www\./, '');
-        return this.domains.includes(normalized);
+        return this.domains.some((d) => normalized === d || normalized.endsWith('.' + d));
     }
 
     /**

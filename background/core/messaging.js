@@ -251,6 +251,18 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         for (const domainUsage of Object.values(allUsage)) {
                             totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
                         }
+                        if (this.pendingUpdates) {
+                            for (const timeSpent of this.pendingUpdates.values()) {
+                                totalTodaySeconds += timeSpent;
+                            }
+                        }
+                        const track = this.currentTrack;
+                        if (track) {
+                            const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
+                            if (elapsed > 0) {
+                                totalTodaySeconds += elapsed;
+                            }
+                        }
 
                         if (totalTodaySeconds >= dailyLimitMinutes * 60) {
                             sendResponse({
@@ -273,14 +285,13 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         for (const g of activeGroups) {
                             let total = 0;
                             for (const d of g.domains) {
-                                total += TimeUtils.calculateTodayTime(allUsage[d] || {});
+                                total += await this.getRealTimeUsage(d, allUsage);
                             }
                             groupUsageSecondsMap[g.id] = total;
                         }
                     }
 
-                    const usage = await this.storage.getDomainUsage(message.domain);
-                    const todayTime = TimeUtils.calculateTodayTime(usage);
+                    const todayTime = await this.getRealTimeUsage(message.domain, allUsage);
                     sendResponse(
                         this.ruleManager.evaluateAccess(
                             message.url,

@@ -301,7 +301,11 @@
     border: 1px solid transparent;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: background-color var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
+    transition:
+        background-color var(--transition),
+        color var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
 }
 
 .icon-btn:hover {
@@ -418,7 +422,10 @@
     font-weight: 500;
     white-space: nowrap;
     line-height: 1.4;
-    transition: border-color var(--transition), color var(--transition), background-color var(--transition);
+    transition:
+        border-color var(--transition),
+        color var(--transition),
+        background-color var(--transition);
 }
 
 .btn-new-group:hover {
@@ -569,7 +576,10 @@
     color: #888888;
     padding: 6px;
     cursor: pointer;
-    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
 }
 
 .group-icon-picker-btn:hover {
@@ -606,7 +616,10 @@
     height: 28px;
     padding: 0;
     cursor: pointer;
-    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
 }
 
 .icon-picker-option:hover {
