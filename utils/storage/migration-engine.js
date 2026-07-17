@@ -69,8 +69,6 @@ class MigrationEngine {
         // settings
         if (result.settings) {
             const merged = { ...STORAGE_DEFAULT_SETTINGS, ...result.settings };
-            // Remove legacy field that was previously renamed inline
-            delete merged.defaultPlaybackSpeed;
             // Ensure firstInstallDate is set
             if (merged.firstInstallDate === null || merged.firstInstallDate === undefined) {
                 merged.firstInstallDate = Date.now();

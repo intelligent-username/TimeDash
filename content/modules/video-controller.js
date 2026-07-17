@@ -246,17 +246,6 @@ class VideoController {
             }
         }
 
-        if (!videoId && connectedVideos.length > 0) {
-            const recentVideo = connectedVideos.find((video) =>
-                this.instance.hasRecentVideoInteraction(video)
-            );
-            return (
-                recentVideo ||
-                connectedVideos.find((video) => !video.paused && !video.ended) ||
-                connectedVideos[0]
-            );
-        }
-
         if (connectedVideos.length > 0) {
             const recentVideo = connectedVideos.find((video) =>
                 this.instance.hasRecentVideoInteraction(video)

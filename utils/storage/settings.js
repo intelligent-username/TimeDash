@@ -13,7 +13,6 @@ function applyStorageSettingsMethods(StorageManager) {
                     result.settings.currentPlaybackSpeed === undefined
                 ) {
                     result.settings.currentPlaybackSpeed = result.settings.defaultPlaybackSpeed;
-                    delete result.settings.defaultPlaybackSpeed;
                     await this.setSettings(result.settings);
                 }
 

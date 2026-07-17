@@ -519,8 +519,6 @@ export class BlockingUI {
         nameSpan.textContent = group.name;
         groupTitleSection.appendChild(nameSpan);
 
-        // Removed controls wrapper as we use column layout
-
         const limitInput = document.createElement('input');
         limitInput.type = 'number';
         limitInput.className = 'rule-limit-input-edit';

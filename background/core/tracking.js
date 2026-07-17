@@ -133,4 +133,64 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
 
         return totalSeconds;
     };
+
+    TimeDashBackground.prototype.evaluateAccessForDomain = async function evaluateAccessForDomain(
+        url,
+        domain
+    ) {
+        const settings = await this.storage.getSettings();
+        const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
+
+        let allUsage = null;
+        if (dailyLimitMinutes > 0) {
+            allUsage = await this.storage.getAllUsage();
+            let totalTodaySeconds = 0;
+            for (const domainUsage of Object.values(allUsage)) {
+                totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
+            }
+            if (this.pendingUpdates) {
+                for (const timeSpent of this.pendingUpdates.values()) {
+                    totalTodaySeconds += timeSpent;
+                }
+            }
+            const track = this.currentTrack;
+            if (track) {
+                const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
+                if (elapsed > 0) {
+                    totalTodaySeconds += elapsed;
+                }
+            }
+
+            if (totalTodaySeconds >= dailyLimitMinutes * 60) {
+                return {
+                    shouldBlock: true,
+                    reason: 'restricted',
+                    domain: domain || DomainUtils.extractDomain(url || ''),
+                };
+            }
+        }
+
+        // Pre-calculate group usage if groups exist
+        let groupUsageSecondsMap = {};
+        const activeGroups = this.ruleManager.groups.filter(
+            (g) => g.isEnabled && !g.deletedAt
+        );
+        if (activeGroups.length > 0) {
+            if (!allUsage) allUsage = await this.storage.getAllUsage();
+            for (const g of activeGroups) {
+                let total = 0;
+                for (const d of g.domains) {
+                    total += await this.getRealTimeUsage(d, allUsage);
+                }
+                groupUsageSecondsMap[g.id] = total;
+            }
+        }
+
+        const todayTimeSeconds = await this.getRealTimeUsage(domain, allUsage);
+        return this.ruleManager.evaluateAccess(
+            url,
+            { todayTimeSeconds },
+            groupUsageSecondsMap
+        );
+    };
 }

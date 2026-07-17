@@ -151,68 +151,7 @@ class TabTracker {
     }
 
     async checkAndHandleBlocking(tab, domain) {
-        const settings = await this.instance.storage.getSettings();
-        const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
-
-        let allUsage = null;
-
-        if (dailyLimitMinutes > 0) {
-            allUsage = await this.instance.storage.getAllUsage();
-            let totalTodaySeconds = 0;
-            for (const domainUsage of Object.values(allUsage)) {
-                totalTodaySeconds += TimeUtils.calculateTodayTime(domainUsage || {});
-            }
-            if (this.instance.pendingUpdates) {
-                for (const timeSpent of this.instance.pendingUpdates.values()) {
-                    totalTodaySeconds += timeSpent;
-                }
-            }
-            const track = this.instance.currentTrack;
-            if (track) {
-                const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
-                if (elapsed > 0) {
-                    totalTodaySeconds += elapsed;
-                }
-            }
-
-            if (totalTodaySeconds >= dailyLimitMinutes * 60) {
-                try {
-                    await this.instance.storage.incrementBlockCount(domain);
-                } catch (error) {
-                    console.error('Failed to increment block count:', error);
-                }
-
-                const blockPageUrl =
-                    chrome.runtime.getURL('block/block.html') +
-                    `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=global_limit`;
-                await new Promise((resolve) => setTimeout(resolve, 50));
-                await chrome.tabs.update(tab.id, { url: blockPageUrl });
-                return true;
-            }
-        }
-
-        // Pre-calculate group usage if groups exist
-        let groupUsageSecondsMap = {};
-        const activeGroups = this.instance.ruleManager.groups.filter(
-            (g) => g.isEnabled && !g.deletedAt
-        );
-        if (activeGroups.length > 0) {
-            if (!allUsage) allUsage = await this.instance.storage.getAllUsage();
-            for (const g of activeGroups) {
-                let total = 0;
-                for (const d of g.domains) {
-                    total += await this.instance.getRealTimeUsage(d, allUsage);
-                }
-                groupUsageSecondsMap[g.id] = total;
-            }
-        }
-
-        const todayTimeSeconds = await this.instance.getRealTimeUsage(domain, allUsage);
-        const accessResult = this.instance.ruleManager.evaluateAccess(
-            tab.url,
-            { todayTimeSeconds },
-            groupUsageSecondsMap
-        );
+        const accessResult = await this.instance.evaluateAccessForDomain(tab.url, domain);
 
         if (accessResult.shouldBlock) {
             try {
