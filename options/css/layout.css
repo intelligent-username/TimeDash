@@ -211,13 +211,6 @@ body {
     display: block;
 }
 
-#blocking.tab-pane {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
 #blocking.tab-pane.active {
     display: flex;
     flex-direction: column;

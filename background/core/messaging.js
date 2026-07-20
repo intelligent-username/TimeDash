@@ -69,10 +69,14 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'ADD_SITE_RULE': {
                     const { domain, ruleType, timeLimitMinutes } = message;
                     if (ruleType === 'BLOCKED') this.ruleManager.addRule(new BlockedRule(domain));
-                    if (ruleType === 'RESTRICTED')
+                    if (ruleType === 'RESTRICTED') {
+                        const settings = await this.storage.getSettings();
+                        const maxCap = Number(settings.restrictedSliderMax || 120);
+                        const cappedLimit = Math.min(timeLimitMinutes ?? 30, maxCap);
                         this.ruleManager.addRule(
-                            new RestrictedRule(domain, timeLimitMinutes ?? 30)
+                            new RestrictedRule(domain, cappedLimit)
                         );
+                    }
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });
                     break;
@@ -120,7 +124,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         });
                         break;
                     }
-                    const group = new GroupRule({ name, domains, timeLimitMinutes });
+                    const settings = await this.storage.getSettings();
+                    const maxCap = Number(settings.restrictedSliderMax || 120);
+                    const cappedLimit = Math.min(timeLimitMinutes ?? 60, maxCap);
+                    const group = new GroupRule({ name, domains, timeLimitMinutes: cappedLimit });
                     this.ruleManager.groups.push(group);
                     await this.ruleManager.saveGroupsToStorage();
                     sendResponse({ success: true, group: group.toJSON() });
@@ -145,8 +152,11 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         }
                         target.name = message.name;
                     }
-                    if (message.timeLimitMinutes !== undefined)
-                        target.timeLimitMinutes = message.timeLimitMinutes;
+                    if (message.timeLimitMinutes !== undefined) {
+                        const settings = await this.storage.getSettings();
+                        const maxCap = Number(settings.restrictedSliderMax || 120);
+                        target.timeLimitMinutes = Math.min(message.timeLimitMinutes, maxCap);
+                    }
                     if (message.isEnabled !== undefined) target.isEnabled = message.isEnabled;
                     if (message.icon !== undefined) target.icon = message.icon;
                     if (message.domains !== undefined)

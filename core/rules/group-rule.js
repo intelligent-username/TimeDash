@@ -48,17 +48,21 @@ class GroupRule {
     /**
      * Evaluate collective usage against the group limit
      * @param {number} groupUsageSeconds - Total seconds used by all group domains today
+     * @param {number} [maxCap=0] - Optional global max cap in minutes
      * @returns {{ shouldBlock: boolean, reason: string|null, remainingMinutes: number }}
      */
-    evaluate(groupUsageSeconds) {
+    evaluate(groupUsageSeconds, maxCap = 0) {
+        const effectiveLimit =
+            maxCap > 0 ? Math.min(this.timeLimitMinutes, maxCap) : this.timeLimitMinutes;
+
         if (!this.isEnabled) {
-            return { shouldBlock: false, reason: null, remainingMinutes: this.timeLimitMinutes };
+            return { shouldBlock: false, reason: null, remainingMinutes: effectiveLimit };
         }
 
         const totalMinutesToday = groupUsageSeconds / 60;
-        const remaining = Math.max(0, this.timeLimitMinutes - totalMinutesToday);
+        const remaining = Math.max(0, effectiveLimit - totalMinutesToday);
 
-        if (totalMinutesToday >= this.timeLimitMinutes) {
+        if (totalMinutesToday >= effectiveLimit) {
             return {
                 shouldBlock: true,
                 reason: 'restricted_group',

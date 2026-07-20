@@ -24,17 +24,20 @@ class RestrictedRule extends SiteRule {
     /**
      * Evaluate access based on usage time
      * @param {object} usageStats - Must contain { todayTimeSeconds }
+     * @param {number} [maxCap=0] - Optional global max cap in minutes
      * @returns {{ shouldBlock: boolean, reason: string, remainingMinutes?: number }}
      */
-    evaluate(usageStats) {
+    evaluate(usageStats, maxCap = 0) {
         if (!this.isEnabled) {
             return { shouldBlock: false, reason: null };
         }
 
+        const effectiveLimit =
+            maxCap > 0 ? Math.min(this.timeLimitMinutes, maxCap) : this.timeLimitMinutes;
         const todayTimeMinutes = (usageStats?.todayTimeSeconds || 0) / 60;
-        const remaining = this.timeLimitMinutes - todayTimeMinutes;
+        const remaining = effectiveLimit - todayTimeMinutes;
 
-        if (todayTimeMinutes >= this.timeLimitMinutes) {
+        if (todayTimeMinutes >= effectiveLimit) {
             return {
                 shouldBlock: true,
                 reason: 'restricted',

@@ -190,7 +190,8 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
         return this.ruleManager.evaluateAccess(
             url,
             { todayTimeSeconds },
-            groupUsageSecondsMap
+            groupUsageSecondsMap,
+            settings
         );
     };
 }

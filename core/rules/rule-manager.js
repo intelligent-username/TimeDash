@@ -199,16 +199,18 @@ class RuleManager {
      * @param {string} url - URL to evaluate
      * @param {object} usageStats - Usage statistics {todayTimeSeconds}
      * @param {object} [groupUsageSecondsMap] - Map of groupId -> total seconds used today
+     * @param {object} [settings={}] - Extension settings object
      * @returns {{ shouldBlock: boolean, reason: string|null, domain: string, groupName?: string }}
      */
-    evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}) {
+    evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}, settings = {}) {
         try {
             const domain = DomainUtils.extractDomain(url);
+            const restrictedCap = Number(settings.restrictedSliderMax || 0);
 
             // 1. Individual rule check
             const rule = this.getRule(domain);
             if (rule && rule.isEnabled) {
-                const result = rule.evaluate(usageStats);
+                const result = rule.evaluate(usageStats, restrictedCap);
                 if (result.shouldBlock) {
                     return { ...result, domain };
                 }
@@ -219,7 +221,7 @@ class RuleManager {
             if (group) {
                 const groupSeconds = groupUsageSecondsMap[group.id];
                 if (groupSeconds !== undefined) {
-                    const groupResult = group.evaluate(groupSeconds);
+                    const groupResult = group.evaluate(groupSeconds, restrictedCap);
                     if (groupResult.shouldBlock) {
                         return { ...groupResult, domain, groupName: group.name };
                     }

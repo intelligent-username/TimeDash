@@ -138,6 +138,9 @@ export class BlockingUI {
             return;
         }
 
+        const maxCap = this.controller?.settings?.restrictedSliderMax || 120;
+        const cappedLimit = Math.min(timeLimitMinutes, maxCap);
+
         const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z0-9][a-zA-Z0-9-]*)+$/;
         const cleanDomain = domain
             .toLowerCase()
@@ -154,7 +157,7 @@ export class BlockingUI {
                 type: 'ADD_SITE_RULE',
                 domain: cleanDomain,
                 ruleType,
-                timeLimitMinutes,
+                timeLimitMinutes: cappedLimit,
             });
             await this.loadSiteRules();
             this.controller.showSuccess(`Added ${cleanDomain} to ${ruleType.toLowerCase()} list`);
@@ -323,14 +326,16 @@ export class BlockingUI {
         domainWrapper.appendChild(domainSpan);
         domainWrapper.appendChild(usageSpan);
 
+        const maxCap = this.controller?.settings?.restrictedSliderMax || 120;
+        const initialValue = Math.min(timeLimitMinutes, maxCap);
         const limitInput = document.createElement('input');
         limitInput.type = 'number';
         limitInput.className = 'rule-limit-input-edit';
-        limitInput.value = timeLimitMinutes;
+        limitInput.value = initialValue;
         limitInput.min = 0;
-        limitInput.max = 1440;
+        limitInput.max = maxCap;
         limitInput.step = 1;
-        limitInput.title = 'Edit daily limit (minutes)';
+        limitInput.title = `Edit daily limit (max ${maxCap} min)`;
 
         const suffixSpan = document.createElement('span');
         suffixSpan.className = 'limit-suffix';
@@ -351,16 +356,16 @@ export class BlockingUI {
         deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
 
         const saveLimit = async () => {
-            const newLimit = parseInt(limitInput.value, 10);
-            if (
-                !Number.isNaN(newLimit) &&
-                newLimit >= 0 &&
-                newLimit <= 1440 &&
-                newLimit !== timeLimitMinutes
-            ) {
-                await this.addSiteRule(domain, 'RESTRICTED', newLimit);
-                timeLimitMinutes = newLimit;
-            } else if (Number.isNaN(newLimit) || newLimit < 0 || newLimit > 1440) {
+            const currentCap = this.controller?.settings?.restrictedSliderMax || 120;
+            let newLimit = parseInt(limitInput.value, 10);
+            if (!Number.isNaN(newLimit)) {
+                newLimit = Math.min(Math.max(0, newLimit), currentCap);
+                limitInput.value = newLimit;
+                if (newLimit !== timeLimitMinutes) {
+                    await this.addSiteRule(domain, 'RESTRICTED', newLimit);
+                    timeLimitMinutes = newLimit;
+                }
+            } else {
                 limitInput.value = timeLimitMinutes;
             }
         };
