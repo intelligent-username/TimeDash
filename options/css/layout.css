@@ -186,17 +186,16 @@ body {
     padding: var(--spacing-lg);
     overflow-y: auto;
     scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 .tab-content-wrapper {
     width: 100%;
     margin: 0;
-    padding-bottom: 40px;
-    /* Space for toast/footer */
-}
-
-#blocking.tab-pane.active ~ .tab-pane + .tab-content-wrapper,
-.tab-content-wrapper:has(#blocking.tab-pane.active) {
+    padding-bottom: 24px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -212,7 +211,21 @@ body {
     display: block;
 }
 
+#blocking.tab-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 #blocking.tab-pane.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#blockingTabContent {
     display: flex;
     flex-direction: column;
     flex: 1;

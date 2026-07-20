@@ -29,6 +29,19 @@
     color: var(--text-primary);
 }
 
+.card-title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
 .card-body {
     padding: var(--spacing);
     overflow: visible;

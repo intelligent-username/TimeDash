@@ -4,15 +4,33 @@
 #blocking .content-card {
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    height: 100%;
+    min-height: 100%;
     margin-bottom: 0;
+    box-sizing: border-box;
 }
 
 #blocking .content-card .card-body {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
+    padding: var(--spacing);
+}
+
+#blocking .rule-manager {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#blocking .rule-list {
+    flex: 1;
+    min-height: 100px;
+    max-height: none;
     overflow-y: auto;
-    padding: var(--spacing-sm);
 }
 
 /* Rule Manager - Input Group */
@@ -119,6 +137,7 @@
     border-radius: var(--radius-large);
     padding: var(--spacing);
     border: 1px solid var(--border-subtle);
+    margin-bottom: var(--spacing);
 }
 
 .restricted-form-row {

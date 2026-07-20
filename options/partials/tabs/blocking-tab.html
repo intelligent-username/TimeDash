@@ -1,12 +1,13 @@
 <div class="two-column-grid">
     <div class="content-card">
         <div class="card-header">
-            <h2>Restricted Access</h2>
+            <div class="card-title-group">
+                <h2>Restricted Access</h2>
+                <span class="card-subtitle">Sites allowed for specific amounts of time per day.</span>
+            </div>
+            <button id="newGroupBtn" class="btn-new-group">+ New Group</button>
         </div>
         <div class="card-body">
-            <p class="section-description">
-                Sites allowed for <i>specific</i> amounts of time per day.
-            </p>
             <div class="rule-manager" id="restrictedManager">
                 <div class="restricted-form-container">
                     <div class="restricted-form-row">
@@ -49,23 +50,6 @@
                     </div>
                 </div>
 
-                <div
-                    class="restricted-list-header"
-                    style="
-                        margin-top: 2rem;
-                        margin-bottom: 1rem;
-                        border-bottom: 1px solid var(--border);
-                        padding-bottom: 0.5rem;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    "
-                >
-                    <h3 style="font-size: 1rem; margin: 0; color: var(--text-primary)">
-                        Restricted Websites
-                    </h3>
-                    <button id="newGroupBtn" class="btn-new-group">+ New Group</button>
-                </div>
                 <ul class="rule-list modern-list" id="restrictedList"></ul>
             </div>
         </div>
@@ -73,10 +57,12 @@
 
     <div class="content-card">
         <div class="card-header">
-            <h2>Hard-Blocked Sites</h2>
+            <div class="card-title-group">
+                <h2>Hard-Blocked Sites</h2>
+                <span class="card-subtitle">These sites are completely inaccessible.</span>
+            </div>
         </div>
         <div class="card-body">
-            <p class="section-description">These sites are completely inaccessible.</p>
             <div class="rule-manager" id="blockedManager">
                 <div class="rule-input-group modern-input-group">
                     <label for="blockedDomainInput" class="sr-only">Domain to block</label>
