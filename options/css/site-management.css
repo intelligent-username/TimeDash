@@ -1,6 +1,20 @@
 /* Site Management specific styles */
 
 /* Full height cards in blocking tab */
+.blocking-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    min-height: 0;
+    flex: 1;
+}
+
+.blocking-right-col .content-card {
+    flex: 1;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
 #blocking .content-card {
     display: flex;
     flex-direction: column;

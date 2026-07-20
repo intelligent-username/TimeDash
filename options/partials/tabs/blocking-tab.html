@@ -55,29 +55,58 @@
         </div>
     </div>
 
-    <div class="content-card">
-        <div class="card-header">
-            <div class="card-title-group">
-                <h2>Hard-Blocked Sites</h2>
-                <span class="card-subtitle">These sites are completely inaccessible.</span>
+    <div class="blocking-right-col">
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2>Whitelisted Domains</h2>
+                    <span class="card-subtitle">These sites will never be tracked.</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="rule-manager" id="whitelistManager">
+                    <div class="rule-input-group modern-input-group">
+                        <label for="whitelistInput" class="sr-only">Domain to whitelist</label>
+                        <input
+                            type="text"
+                            id="whitelistInput"
+                            placeholder="e.g., test.com…"
+                            class="modern-input"
+                            autocomplete="off"
+                            name="whitelist-domain"
+                            spellcheck="false"
+                        />
+                        <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
+                    </div>
+                    <ul class="rule-list modern-list" id="whitelistList"></ul>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="rule-manager" id="blockedManager">
-                <div class="rule-input-group modern-input-group">
-                    <label for="blockedDomainInput" class="sr-only">Domain to block</label>
-                    <input
-                        type="text"
-                        id="blockedDomainInput"
-                        placeholder="e.g., facebook.com…"
-                        class="modern-input"
-                        autocomplete="off"
-                        name="blocked-domain"
-                        spellcheck="false"
-                    />
-                    <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2>Hard-Blocked Sites</h2>
+                    <span class="card-subtitle">These sites are completely inaccessible.</span>
                 </div>
-                <ul class="rule-list modern-list" id="blockedList"></ul>
+            </div>
+            <div class="card-body">
+                <div class="rule-manager" id="blockedManager">
+                    <div class="rule-input-group modern-input-group">
+                        <label for="blockedDomainInput" class="sr-only">Domain to block</label>
+                        <input
+                            type="text"
+                            id="blockedDomainInput"
+                            placeholder="e.g., facebook.com…"
+                            class="modern-input"
+                            autocomplete="off"
+                            name="blocked-domain"
+                            spellcheck="false"
+                        />
+                        <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+                    </div>
+                    <ul class="rule-list modern-list" id="blockedList"></ul>
+                </div>
             </div>
         </div>
     </div>
