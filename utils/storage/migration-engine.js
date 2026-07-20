@@ -6,8 +6,7 @@
  * Schema migration engine for TimeDash.
  * Tracks schemaVersion in chrome.storage.local and runs missing migrations.
  * Each migration normalizes stored data to the current expected shape.
- * No backup/rollback — version is updated per-step so partial states are
- * always at a known version.
+ * Version updates per step so partial states stay at a known version.
  */
 class MigrationEngine {
     static LATEST_VERSION = 3;
@@ -57,7 +56,7 @@ class MigrationEngine {
      * Handles settings, siteRules, usage, blockList, blockStats.
      */
     async migrateV2() {
-        // ── Settings: merge stored settings with defaults ──
+        // Settings: merge stored settings with defaults
         const result = await chrome.storage.local.get([
             'settings',
             'siteRules',
@@ -94,7 +93,7 @@ class MigrationEngine {
             await chrome.storage.local.set({ siteRules: updated });
         }
 
-        // usage: per-domain entries
+        // usage per domain entries
         if (result.usage && typeof result.usage === 'object') {
             let changed = false;
             const usage = result.usage;
@@ -127,7 +126,7 @@ class MigrationEngine {
             }
         }
 
-        // blockList: guard against corrupt non-array
+        // blockList guard against corrupt non array
         if (result.blockList !== undefined && !Array.isArray(result.blockList)) {
             await chrome.storage.local.set({ blockList: [] });
         }

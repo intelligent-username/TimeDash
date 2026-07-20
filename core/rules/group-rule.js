@@ -1,20 +1,20 @@
 /**
- * @file Group budget rule — shared daily time limit across multiple domains
+ * @file Group budget rule for shared daily time limits across domains
  */
 
 /**
- * A group budget aggregates multiple domains under one collective daily time limit.
- * Does NOT extend SiteRule — groups are a compound concept, not a per-domain rule.
+ * Group budget aggregating multiple domains under one shared daily time limit.
+ * Does not extend SiteRule as groups represent a compound concept.
  */
 class GroupRule {
     /**
      * @param {object} params
-     * @param {string} [params.id] - Unique ID (auto-generated if omitted)
-     * @param {string} params.name - Human-readable group name
-     * @param {string[]} [params.domains] - Domain list
-     * @param {number} [params.timeLimitMinutes] - Daily limit in minutes
-     * @param {string} [params.isEnabled] - Whether the group is active
-     * @param {string} [params.icon] - Group category icon key
+     * @param {string} [params.id] Unique ID (auto generated if omitted)
+     * @param {string} params.name Group name
+     * @param {string[]} [params.domains] List of domains
+     * @param {number} [params.timeLimitMinutes] Daily limit in minutes
+     * @param {string} [params.isEnabled] Group active status
+     * @param {string} [params.icon] Category icon key
      */
     constructor({
         id,
@@ -37,7 +37,7 @@ class GroupRule {
 
     /**
      * Check if a domain belongs to this group
-     * @param {string} domain - Domain to check
+     * @param {string} domain Target domain to check
      * @returns {boolean}
      */
     contains(domain) {
@@ -47,8 +47,8 @@ class GroupRule {
 
     /**
      * Evaluate collective usage against the group limit
-     * @param {number} groupUsageSeconds - Total seconds used by all group domains today
-     * @param {number} [maxCap=0] - Optional global max cap in minutes
+     * @param {number} groupUsageSeconds Total seconds used today
+     * @param {number} [maxCap=0] Optional global max cap in minutes
      * @returns {{ shouldBlock: boolean, reason: string|null, remainingMinutes: number }}
      */
     evaluate(groupUsageSeconds, maxCap = 0) {
@@ -97,7 +97,7 @@ class GroupRule {
 
     /**
      * Create GroupRule from serialized data
-     * @param {object} data - Serialized group data
+     * @param {object} data Serialized group data
      * @returns {GroupRule}
      */
     static fromJSON(data) {

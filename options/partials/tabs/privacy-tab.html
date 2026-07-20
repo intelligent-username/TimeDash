@@ -20,7 +20,7 @@
     <div class="setting-item">
         <div class="setting-info">
             <div class="setting-title">Pause Tracking</div>
-            <div class="setting-desc">Temporarily stop all data collection</div>
+            <div class="setting-desc">Temporarily pause all data collection</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="trackingPaused" />
@@ -30,7 +30,7 @@
     <div class="setting-item">
         <div class="setting-info">
             <div class="setting-title">Incognito Tracking</div>
-            <div class="setting-desc">Enable tracking in incognito windows</div>
+            <div class="setting-desc">Track time spent in incognito tabs</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="incognitoTracking" />
@@ -46,7 +46,7 @@
     <div class="setting-item">
         <div class="setting-info">
             <div class="setting-title">Auto-purge Old Data</div>
-            <div class="setting-desc">Automatically delete data older than a specified period</div>
+            <div class="setting-desc">Automatically delete records older than a set number of days</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="autoPurgeEnabled" />
@@ -75,8 +75,7 @@
         <div class="storage-limit-warning-text">
             <strong>Storage limit reached</strong>
             <span id="storageLimitWarningDetail"
-                >You have exceeded your custom storage limit. Consider purging old data or
-                increasing your limit.</span
+                >You have reached your custom storage limit. Delete old data or increase your limit.</span
             >
         </div>
     </div>
@@ -169,72 +168,55 @@
             <div class="privacy-policy-section">
                 <h3>Overview</h3>
                 <p>
-                    TimeDash runs entirely in your browser. It does not include analytics,
-                    telemetry, ads, or any other form of remote tracking. There is no login, no
-                    account, and no server that receives your browsing history. All data processing
-                    happens locally on your device using your browser's built-in storage APIs.
+                    TimeDash runs entirely in your browser. It has no analytics, telemetry, ads, or remote tracking. There are no accounts or servers logging your browsing history. Your data stays on your device and is processed using built-in browser storage APIs.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
                 <h3>Data Storage</h3>
                 <p>
-                    TimeDash stores data in your browser profile using Chrome's
-                    <code>chrome.storage.local</code> API. This storage is scoped to the extension
-                    and your browser profile. No data is written outside of this API. The stored
-                    data includes:
+                    TimeDash saves your preferences and history in Chrome's local storage API (<code>chrome.storage.local</code>). Nothing is written outside your browser profile. The extension stores:
                 </p>
                 <ul>
-                    <li>Time tracking records and per-domain usage history</li>
-                    <li>Playback speed preferences per domain</li>
-                    <li>Site blocking and restriction rules</li>
-                    <li>Theme, accent color, and other UI customization settings</li>
+                    <li>Time tracking logs and per-domain history</li>
+                    <li>Playback speed preferences per site</li>
+                    <li>Site blocking and daily restriction rules</li>
+                    <li>Theme and UI customization options</li>
                 </ul>
                 <p>
-                    TimeDash reads this data solely to display your usage statistics and enforce
-                    your configured rules. No portion of this data is transmitted to any remote
-                    service.
+                    This data is used only to display your usage stats and enforce your rules. No part of it is sent to external servers.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
                 <h3>Network Activity</h3>
                 <p>
-                    TimeDash does not make any network requests of its own. If you see requests in
-                    DevTools, they originate from the browser's built-in favicon resolution or from
-                    extension-scoped resources. The extension itself contains no networking code
-                    that sends data to an external server.
+                    TimeDash makes no outgoing network calls. Any network requests seen in DevTools come from your browser resolving site favicons or loading extension resources locally.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
                 <h3>Permissions</h3>
                 <p class="privacy-muted-text">
-                    These are the permissions that TimeDash needs in your browser:
+                    TimeDash requests only the permissions needed to track time and enforce your rules:
                 </p>
                 <ol style="padding-left: var(--spacing-lg)">
-                    <li><code>storage</code>: for settings and usage records only.</li>
+                    <li><code>storage</code>: Saves settings and history locally.</li>
                     <li>
-                        <code>tabs</code>: for reading the active tab URL. Attributes time to the
-                        correct site and to apply block or restriction rules.
+                        <code>tabs</code>: Reads active tab URLs to record time and apply site rules.
                     </li>
                     <li>
-                        <code>scripting</code>: injects video speed controls into HTML5 video
-                        players.
+                        <code>scripting</code>: Injects video speed controls into web video players.
                     </li>
-                    <li><code>webNavigation</code>: tracks URL changes across frames.</li>
+                    <li><code>webNavigation</code>: Follows URL navigation across frames.</li>
                     <li>
-                        <code>host_permissions</code>: allows content scripts to run on the sites
-                        you visit. Without this, tracking and video controls would only work on a
-                        limited set of pre-approved domains.
+                        <code>host_permissions</code>: Lets content scripts run on visited sites to track time and manage video playback.
                     </li>
                     <li>
-                        <code>alarms</code>: for scheduled maintenance (daily usage resets and
-                        optional auto-purge sweeps).
+                        <code>alarms</code>: Runs daily resets and optional data purges.
                     </li>
                     <li>
-                        <code>notifications</code>: (optional) alerts (e.g., daily time limit
-                        reached). Never used for marketing or promotional purposes.
+                        <code>notifications</code>: (Optional) Alerts you when daily time limits are reached.
                     </li>
                 </ol>
             </div>
@@ -242,24 +224,17 @@
             <div class="privacy-policy-section">
                 <h3>Data Deletion</h3>
                 <p>
-                    You retain full control over your data at all times. You can delete individual
-                    domain records or wipe everything from the Data Management section above.
-                    Uninstalling the extension automatically removes all stored data from your
-                    browser profile. No residual data remains on any remote system because no remote
-                    system has ever received it.
+                    You own your data. You can delete single domain records or wipe all data using the controls in Data Management above. Uninstalling TimeDash removes all stored extension data from your browser automatically.
                 </p>
                 <ul>
                     <li>
-                        Use <strong>Delete All Data</strong> in the Data Management section above to
-                        clear every stored record immediately.
+                        Click <strong>Delete All Data</strong> to wipe every record right away.
                     </li>
                     <li>
-                        Enable <strong>Auto-purge Old Data</strong> to automatically remove records
-                        older than a configurable number of days.
+                        Turn on <strong>Auto-purge Old Data</strong> to clear older records automatically.
                     </li>
                     <li>
-                        Use the search field under <strong>Delete Specific Data</strong> to target
-                        records for a single domain.
+                        Use <strong>Delete Specific Data</strong> to search and delete records for a single domain.
                     </li>
                 </ul>
             </div>
@@ -267,33 +242,26 @@
             <div class="privacy-policy-section">
                 <h3>No Account Required</h3>
                 <p>
-                    TimeDash does not have accounts, logins, registration forms, or cloud sync. All
-                    data is stored exclusively on your device. You are solely responsible for it,
-                    and no one else can access it through the extension.
+                    TimeDash requires no account, email, or cloud sync. All data lives on your device under your control.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
                 <h3>Third-Party Code</h3>
                 <p>
-                    TimeDash uses a small number of open-source third-party libraries for
-                    development tooling (linters, formatters). These are not present in the
-                    distributed extension and cannot access your data. The extension runtime
-                    contains no third-party analytics, telemetry, or tracking libraries.
+                    TimeDash uses open-source libraries for development tooling only. The distributed extension contains no third-party tracking, analytics, or external SDKs.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
                 <h3>License</h3>
                 <p>
-                    TimeDash is released under the <strong>MIT License</strong>. You are free to
-                    use, modify, and distribute the extension in accordance with the terms of the
-                    license. The full license text is available in the
+                    TimeDash is released under the <strong>MIT License</strong>. You can use, modify, and share it freely under license terms. View the source on
                     <a
                         href="https://github.com/intelligent-username/TimeDash/blob/main/LICENSE"
                         target="_blank"
                         rel="noopener"
-                        >repository</a
+                        >GitHub</a
                     >.
                 </p>
             </div>
@@ -301,16 +269,14 @@
             <div class="privacy-policy-section">
                 <h3>Contact &amp; Questions</h3>
                 <p>
-                    If you have a privacy concern or believe something is incorrect, open an issue
-                    at
+                    If you find a bug or have a privacy question, open an issue on
                     <a
                         href="https://github.com/intelligent-username/TimeDash/issues"
                         target="_blank"
                         rel="noopener"
-                        >github.com/intelligent-username/TimeDash/issues</a
+                        >GitHub</a
                     >
-                    and include a description of what you are seeing along with any relevant
-                    screenshots. Issues are typically addressed within a few business days.
+                    with a description and any relevant screenshots.
                 </p>
             </div>
         </div>
