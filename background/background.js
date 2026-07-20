@@ -45,11 +45,11 @@ class TimeDashBackground {
     }
 
     async init() {
-        await this.storage.init();
-        await this.ruleManager.init();
-
         const engine = new MigrationEngine();
         await engine.run();
+
+        await this.storage.init();
+        await this.ruleManager.init();
 
         this.tabTracker.setupEventListeners();
         this.setupMessageHandling();

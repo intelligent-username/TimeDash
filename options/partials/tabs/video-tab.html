@@ -4,57 +4,27 @@
             <h2>Speed Configuration</h2>
         </div>
         <div class="card-body">
-            <div
-                class="setting-item"
-                style="
-                    background: var(--card-bg);
-                    padding: 16px;
-                    border-radius: var(--radius);
-                    margin-bottom: 20px;
-                    border: 1px solid var(--border);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: stretch;
-                    gap: 12px;
-                    box-shadow: var(--shadow-sm);
-                "
-            >
-                <div
-                    class="setting-info"
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        width: 100%;
-                    "
-                >
+            <div class="speed-hero-card">
+                <div class="speed-hero-info">
                     <div>
-                        <div
-                            class="setting-title"
-                            style="font-size: 1.1rem; color: var(--primary-color); font-weight: 600"
-                        >
-                            Current Playback Speed
-                        </div>
-                        <div class="setting-desc">
+                        <div class="speed-hero-title">Current Playback Speed</div>
+                        <div class="speed-hero-desc">
                             Universal active speed applied to all video elements
                         </div>
                     </div>
-                    <input
-                        type="number"
-                        id="currentPlaybackSpeed"
-                        min="0.05"
-                        max="16"
-                        step="0.05"
-                        placeholder="1.00"
-                        class="modern-input short"
-                        style="
-                            font-weight: bold;
-                            font-size: 1.1rem;
-                            width: 100px;
-                            text-align: center;
-                            color: var(--primary-color);
-                        "
-                    />
+                    <div class="speed-hero-input-wrap">
+                        <input
+                            type="number"
+                            id="currentPlaybackSpeed"
+                            min="0.05"
+                            max="16"
+                            step="0.05"
+                            placeholder="1.00"
+                            class="modern-input speed-hero-input"
+                            aria-label="Current Playback Speed"
+                        />
+                        <span class="speed-hero-unit">x</span>
+                    </div>
                 </div>
                 <input
                     type="range"
@@ -62,12 +32,13 @@
                     min="0.05"
                     max="16"
                     step="0.05"
-                    style="width: 100%; accent-color: var(--primary-color)"
+                    class="speed-hero-slider"
+                    aria-label="Current Playback Speed Slider"
                 />
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Reset Speed</div>
+                    <label for="defaultSpeed" class="setting-title">Reset Speed</label>
                     <div class="setting-desc">Default speed when pressing reset hotkey</div>
                 </div>
                 <div class="setting-control">
@@ -84,7 +55,7 @@
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Max Speed</div>
+                    <label for="maxSpeed" class="setting-title">Max Speed</label>
                     <div class="setting-desc">Upper limit for speed increase</div>
                 </div>
                 <div class="setting-control">
@@ -101,7 +72,7 @@
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Speed Step</div>
+                    <label for="speedStep" class="setting-title">Speed Step</label>
                     <div class="setting-desc">Increment per shortcut press</div>
                 </div>
                 <div class="setting-control">
@@ -118,7 +89,7 @@
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Controller Skip Pace</div>
+                    <label for="controllerSkipPace" class="setting-title">Controller Skip Pace</label>
                     <div class="setting-desc">Seconds for rewind/skip controls</div>
                 </div>
                 <div class="setting-control">
@@ -140,7 +111,7 @@
         <div class="card-header">
             <h2>Shortcuts</h2>
             <div class="setting-item-right">
-                <label class="switch">
+                <label class="switch" aria-label="Enable Keyboard Shortcuts">
                     <input type="checkbox" id="keyboardShortcuts" checked />
                     <span class="slider round"></span>
                 </label>
@@ -149,7 +120,7 @@
         <div class="card-body">
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Increase Speed</div>
+                    <label for="increaseSpeedKey" class="setting-title">Increase Speed</label>
                     <div class="setting-desc">Speed up playback</div>
                 </div>
                 <div class="setting-control">
@@ -164,7 +135,7 @@
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Decrease Speed</div>
+                    <label for="decreaseSpeedKey" class="setting-title">Decrease Speed</label>
                     <div class="setting-desc">Slow down playback</div>
                 </div>
                 <div class="setting-control">
@@ -179,7 +150,7 @@
             </div>
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-title">Reset Speed</div>
+                    <label for="resetSpeedKey" class="setting-title">Reset Speed</label>
                     <div class="setting-desc">Restore default speed</div>
                 </div>
                 <div class="setting-control">

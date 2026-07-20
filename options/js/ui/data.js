@@ -175,16 +175,58 @@ export class DataManager {
             const text = await file.text();
             const data = JSON.parse(text);
 
-            if (!data.usage && !data.settings && !data.blockList) {
+            if (!data.usage && !data.settings && !data.blockList && !data.siteRules) {
                 throw new Error('Invalid data format');
             }
 
             if (!confirm('Import will overwrite current data. Continue?')) return;
 
-            if (data.usage) await this.controller.storageManager.saveUsage(data.usage);
-            if (data.blockList) await this.controller.storageManager.saveBlockList(data.blockList);
-            if (data.settings) await this.controller.storageManager.saveSettings(data.settings);
+            if (data.usage) {
+                await chrome.storage.local.set({ usage: data.usage });
+            }
+            if (data.settings) {
+                await this.controller.storageManager.saveSettings(data.settings);
+            }
 
+            let rulesToSave = [];
+            if (data.siteRules) {
+                if (Array.isArray(data.siteRules.blocked)) {
+                    for (const domain of data.siteRules.blocked) {
+                        rulesToSave.push({
+                            domain,
+                            type: 'BLOCKED',
+                            isEnabled: true,
+                            createdAt: Date.now(),
+                        });
+                    }
+                }
+                if (Array.isArray(data.siteRules.restricted)) {
+                    for (const rule of data.siteRules.restricted) {
+                        rulesToSave.push({
+                            domain: rule.domain,
+                            type: 'RESTRICTED',
+                            isEnabled: true,
+                            timeLimitMinutes: rule.timeLimitMinutes || 30,
+                            createdAt: Date.now(),
+                        });
+                    }
+                }
+            } else if (Array.isArray(data.blockList)) {
+                for (const domain of data.blockList) {
+                    rulesToSave.push({
+                        domain,
+                        type: 'BLOCKED',
+                        isEnabled: true,
+                        createdAt: Date.now(),
+                    });
+                }
+            }
+
+            if (rulesToSave.length > 0 || data.siteRules || data.blockList) {
+                await chrome.storage.local.set({ siteRules: rulesToSave });
+            }
+
+            await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.controller.showSuccess('Data imported successfully');
@@ -201,13 +243,13 @@ export class DataManager {
         if (!confirm('Reset ALL settings and data? This cannot be undone.')) return;
 
         try {
-            await this.controller.storageManager.resetSettings();
-            await this.controller.storageManager.saveBlockList([]); // Clear blocks?
+            await this.controller.storageManager.clearAllData();
 
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.controller.showSuccess('Settings reset to defaults');
-        } catch {
+        } catch (error) {
+            console.error('Failed to reset settings:', error);
             this.controller.showError('Failed to reset settings');
         }
     }

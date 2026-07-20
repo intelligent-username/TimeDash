@@ -1,8 +1,98 @@
-/* Currently Playing Video Panel */
+/* Video Control & Currently Playing Tab */
+
+/* ── Speed Configuration Hero Card ─────────────────────────────────────── */
+.speed-hero-card {
+    background: color-mix(in srgb, var(--accent-fade, var(--primary-fade)) 20%, var(--card-bg));
+    border: 1px solid color-mix(in srgb, var(--accent-color, var(--primary-color)) 25%, var(--border));
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.speed-hero-card:focus-within {
+    border-color: var(--accent-color, var(--primary-color));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, var(--primary-color)) 15%, transparent);
+}
+
+.speed-hero-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+}
+
+.speed-hero-title {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+}
+
+.speed-hero-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.speed-hero-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    padding: 2px 8px 2px 4px;
+    border-radius: var(--radius-small);
+    border: 1px solid var(--border);
+}
+
+.speed-hero-input {
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    width: 90px !important;
+    text-align: center !important;
+    color: var(--primary-color) !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 6px 4px !important;
+}
+
+.speed-hero-input:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.speed-hero-unit {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    user-select: none;
+}
+
+.speed-hero-slider {
+    width: 100%;
+    accent-color: var(--primary-color);
+    height: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: var(--border);
+}
+
+.speed-hero-slider:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+/* ── Currently Playing Video Panel ─────────────────────────────────────── */
 
 .currently-playing-panel {
-    margin-top: var(--spacing);
-    padding-top: var(--spacing);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
     border-top: 1px solid var(--border-subtle);
 }
 
@@ -10,56 +100,58 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing);
 }
 
 .currently-playing-header .setting-title {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.3;
 }
 
 .currently-playing-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
-    max-height: 380px;
+    gap: 12px;
+    max-height: 420px;
     overflow-y: auto;
-    padding-right: 2px;
+    padding-right: 4px;
 }
 
 .currently-playing-item {
-    border: 1px solid var(--border-subtle);
-    background: var(--background);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
     border-radius: var(--radius-small);
-    padding: 10px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     overflow: hidden;
     flex-shrink: 0;
-    transition: background-color var(--transition-fast);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .currently-playing-item:hover {
-    background-color: color-mix(in srgb, var(--secondary-color) 6%, var(--background) 94%);
+    border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border));
+    background-color: color-mix(in srgb, var(--primary-color) 4%, var(--card-bg));
 }
 
 .currently-playing-meta {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
 .currently-playing-title {
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.3;
 }
 
 .currently-playing-title-btn {
@@ -70,6 +162,9 @@
     border: none;
     padding: 0;
     cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .currently-playing-title-btn:hover {
@@ -78,7 +173,7 @@
 }
 
 .currently-playing-subtitle {
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
@@ -88,7 +183,7 @@
 .currently-playing-title-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .currently-playing-title-row .currently-playing-title-btn {
@@ -97,50 +192,64 @@
 }
 
 .currently-playing-dismiss {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: var(--card-bg);
-    color: var(--text-muted);
+    background: var(--background);
+    color: var(--text-secondary);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
-    font-size: 14px;
+    font-size: 16px;
     padding: 0;
     flex-shrink: 0;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .currently-playing-dismiss:hover {
     border-color: var(--danger-color);
+    background: var(--danger-fade);
     color: var(--danger-color);
+}
+
+.currently-playing-dismiss:focus-visible {
+    outline: 2px solid var(--danger-color);
+    outline-offset: 2px;
 }
 
 .currently-playing-seek {
     width: 100%;
-    accent-color: var(--accent-color);
+    accent-color: var(--primary-color);
+    height: 6px;
+    cursor: pointer;
 }
 
 .currently-playing-controls {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 }
 
 .currently-playing-control-small {
-    min-width: 32px;
-    width: 32px;
-    padding: 0;
+    min-width: 38px;
+    height: 36px;
+    padding: 0 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .currently-playing-toggle-btn {
-    min-width: 64px;
-    width: 64px;
+    min-width: 72px;
+    height: 36px;
     text-align: center;
     justify-content: center;
+    font-weight: 600;
 }

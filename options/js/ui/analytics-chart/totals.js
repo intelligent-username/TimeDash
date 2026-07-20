@@ -28,7 +28,7 @@ export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
                     }
                 }
 
-                dailyTotals.push({ date: currentYear.toString(), time: yearTotal });
+                dailyTotals.push({ date: currentYear.toString(), time: yearTotal, year: currentYear });
             }
 
             return dailyTotals;
@@ -51,7 +51,7 @@ export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
                     year: 'numeric',
                 });
 
-                dailyTotals.push({ date: monthLabel, time: monthTotal });
+                dailyTotals.push({ date: monthLabel, time: monthTotal, year, month });
             }
 
             return dailyTotals;

@@ -12,13 +12,17 @@
 }
 
 .setting-title {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.98rem;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+    display: block;
+    line-height: 1.35;
 }
 
 .setting-desc {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
     color: var(--text-secondary);
 }
 

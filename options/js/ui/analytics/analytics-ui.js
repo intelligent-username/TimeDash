@@ -26,6 +26,10 @@ export class AnalyticsUI {
 
         this.chart = new AnalyticsChart(dataContext);
         this.heatmap = new AnalyticsHeatmap(dataContext);
+
+        this.chart.onPointClick = (dateStr, pointData) => {
+            this.showTopSitesForDate(dateStr, pointData);
+        };
     }
 }
 

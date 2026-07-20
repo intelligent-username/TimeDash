@@ -58,8 +58,17 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
 
         const pointSvg = points
             .map((p) => {
-                const fill = p.isEarliest ? EARLIEST_COLOR : LINE_COLOR;
-                return `<circle cx="${p.x}" cy="${p.y}" r="${pointR}" fill="${fill}" stroke="white" stroke-width="2" class="chart-point" />`;
+                const isSelected = p.day.date === this._selectedDate;
+                const fill = isSelected
+                    ? 'var(--accent-color, #3b82f6)'
+                    : p.isEarliest
+                      ? EARLIEST_COLOR
+                      : LINE_COLOR;
+                const r = isSelected ? Math.max(pointR + 2, 6) : pointR;
+                const stroke = isSelected ? 'var(--card-bg, #ffffff)' : 'white';
+                const strokeWidth = isSelected ? 3 : 2;
+                const extraClass = isSelected ? ' chart-point--selected' : '';
+                return `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" class="chart-point${extraClass}" />`;
             })
             .join('');
 
@@ -77,7 +86,9 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
                         day: 'numeric',
                     });
                 }
-                return `<div class="chart-point-hitarea" style="left:${point.x}px;top:${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}">
+                const isSelected = point.day.date === this._selectedDate;
+                const selectedClass = isSelected ? ' chart-point-hitarea--selected' : '';
+                return `<div class="chart-point-hitarea${selectedClass}" style="left:${point.x}px;top:${point.y}px;" data-date="${point.day.date}" data-time="${formatTime(point.day.time)}" role="button" tabindex="0" aria-label="${displayDate}: ${formatTime(point.day.time)}">
                 <div class="chart-tooltip">${displayDate}<br><strong>${formatTime(point.day.time)}</strong></div>
             </div>`;
             })
@@ -102,6 +113,28 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
             `<div class="chart-points-overlay">${hitareas}</div>`,
             '</div>',
         ].join('');
+
+        container.querySelectorAll('.chart-point-hitarea[data-date]').forEach((el) => {
+            const dateStr = el.dataset.date;
+            const pointData = points.find((p) => p.day.date === dateStr)?.day;
+
+            const handleClick = () => {
+                const todayStr = formatDateString(new Date());
+                this._selectedDate = dateStr === todayStr ? null : dateStr;
+                this.render();
+                if (this.onPointClick) {
+                    this.onPointClick(dateStr, pointData);
+                }
+            };
+
+            el.addEventListener('click', handleClick);
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleClick();
+                }
+            });
+        });
     };
 
     AnalyticsChart.prototype.buildRollingAverageSvg = function buildRollingAverageSvg(

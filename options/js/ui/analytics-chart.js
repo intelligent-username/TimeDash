@@ -16,6 +16,8 @@ export class AnalyticsChart {
         this.period = 'week';
         this.offset = 0;
         this._ro = null;
+        this._selectedDate = null;
+        this.onPointClick = null;
     }
 
     /**
@@ -25,6 +27,7 @@ export class AnalyticsChart {
     setPeriod(period) {
         this.period = period;
         this.offset = 0;
+        this._selectedDate = null;
     }
 
     /**
