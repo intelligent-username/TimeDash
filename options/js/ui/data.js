@@ -206,7 +206,7 @@ export class DataManager {
                             domain: rule.domain,
                             type: 'RESTRICTED',
                             isEnabled: true,
-                            timeLimitMinutes: rule.timeLimitMinutes || 30,
+                            timeLimitMinutes: rule.timeLimitMinutes ?? 30,
                             createdAt: Date.now(),
                         });
                     }

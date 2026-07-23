@@ -139,7 +139,7 @@ export class BlockingUI {
         }
 
         const maxCap = this.controller?.settings?.restrictedSliderMax || 120;
-        const cappedLimit = Math.min(timeLimitMinutes, maxCap);
+        const cappedLimit = Math.max(0, Math.min(timeLimitMinutes, maxCap));
 
         const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z0-9][a-zA-Z0-9-]*)+$/;
         const cleanDomain = domain
@@ -355,24 +355,36 @@ export class BlockingUI {
         `;
         deleteBtn.addEventListener('click', () => this.removeSiteRule(domain));
 
+        let lastValidLimit = timeLimitMinutes;
+
+        limitInput.addEventListener('input', () => {
+            if (!limitInput.validity.valid || limitInput.value.includes('-')) {
+                limitInput.value = limitInput.value.replace(/[-+eE]/g, '');
+            }
+        });
+
         const saveLimit = async () => {
             const currentCap = this.controller?.settings?.restrictedSliderMax || 120;
-            let newLimit = parseInt(limitInput.value, 10);
-            if (!Number.isNaN(newLimit)) {
-                newLimit = Math.min(Math.max(0, newLimit), currentCap);
-                limitInput.value = newLimit;
-                if (newLimit !== timeLimitMinutes) {
-                    await this.addSiteRule(domain, 'RESTRICTED', newLimit);
-                    timeLimitMinutes = newLimit;
-                }
-            } else {
-                limitInput.value = timeLimitMinutes;
+            const rawVal = limitInput.value.trim();
+            let newLimit = parseInt(rawVal, 10);
+
+            if (!limitInput.validity.valid || rawVal === '' || Number.isNaN(newLimit) || newLimit < 0) {
+                limitInput.value = '';
+                limitInput.value = lastValidLimit;
+                return;
+            }
+
+            newLimit = Math.min(newLimit, currentCap);
+            limitInput.value = '';
+            limitInput.value = newLimit;
+
+            if (newLimit !== lastValidLimit) {
+                lastValidLimit = newLimit;
+                timeLimitMinutes = newLimit;
+                await this.addSiteRule(domain, 'RESTRICTED', newLimit);
             }
         };
 
-        // Only save on blur (user leaves the field) so focus is never
-        // destroyed mid-edit by a re-render. This lets arrow keys, held
-        // down or tapped repeatedly, change the value freely.
         limitInput.addEventListener('blur', async () => {
             const existingTimer = this.limitUpdateTimers.get(domain);
             if (existingTimer) {
@@ -382,10 +394,15 @@ export class BlockingUI {
             await saveLimit();
         });
 
-        // Arrow keys: increment/decrement locally without saving yet.
-        // preventDefault stops the browser from firing a 'change' event
-        // on its own schedule which would have triggered a re-render.
+        limitInput.addEventListener('change', async () => {
+            await saveLimit();
+        });
+
         limitInput.addEventListener('keydown', async (event) => {
+            if (['-', '+', 'e', 'E'].includes(event.key)) {
+                event.preventDefault();
+                return;
+            }
             if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 const cur = parseInt(limitInput.value, 10);
@@ -620,7 +637,7 @@ export class BlockingUI {
             domainWrapper.appendChild(domainSpan);
             domainWrapper.appendChild(usageSpan);
 
-            const individualLimit = domainLimitMap[domain] || 30;
+            const individualLimit = domainLimitMap[domain] ?? 30;
             const limitInput = document.createElement('input');
             limitInput.type = 'number';
             limitInput.className = 'rule-limit-input-edit';
@@ -646,28 +663,55 @@ export class BlockingUI {
             `;
             removeBtn.addEventListener('click', () => this.removeDomainFromGroup(group.id, domain));
 
+            let lastValidIndivLimit = individualLimit;
+
+            limitInput.addEventListener('input', () => {
+                if (!limitInput.validity.valid || limitInput.value.includes('-')) {
+                    limitInput.value = limitInput.value.replace(/[-+eE]/g, '');
+                }
+            });
+
             // Save individual limit change via ADD_SITE_RULE (updates existing rule)
-            const saveLimit = async () => {
-                const val = parseInt(limitInput.value, 10);
-                if (!isNaN(val) && val >= 0 && val <= 1440 && val !== individualLimit) {
+            const saveIndivLimit = async () => {
+                const rawVal = limitInput.value.trim();
+                let val = parseInt(rawVal, 10);
+
+                if (!limitInput.validity.valid || rawVal === '' || isNaN(val) || val < 0) {
+                    limitInput.value = '';
+                    limitInput.value = lastValidIndivLimit;
+                    return;
+                }
+
+                val = Math.min(val, 1440);
+                limitInput.value = '';
+                limitInput.value = val;
+
+                if (val !== lastValidIndivLimit) {
+                    lastValidIndivLimit = val;
                     await this.addSiteRule(domain, 'RESTRICTED', val);
                 }
             };
-            limitInput.addEventListener('blur', saveLimit);
+            limitInput.addEventListener('blur', saveIndivLimit);
+            limitInput.addEventListener('change', saveIndivLimit);
             limitInput.addEventListener('keydown', (e) => {
+                if (['-', '+', 'e', 'E'].includes(e.key)) {
+                    e.preventDefault();
+                    return;
+                }
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    saveLimit().then(() => limitInput.blur());
+                    saveIndivLimit().then(() => limitInput.blur());
                 }
                 if (e.key === 'ArrowUp') {
                     e.preventDefault();
                     const cur = parseInt(limitInput.value, 10);
-                    if (!isNaN(cur)) limitInput.value = cur + 1;
+                    limitInput.value = (isNaN(cur) ? 0 : cur) + 1;
                 }
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     const cur = parseInt(limitInput.value, 10);
-                    if (!isNaN(cur) && cur > 0) limitInput.value = cur - 1;
+                    const next = (isNaN(cur) ? 0 : cur) - 1;
+                    if (next >= 0) limitInput.value = next;
                 }
             });
 
@@ -765,29 +809,58 @@ export class BlockingUI {
         container.appendChild(domainList);
         container.appendChild(addRow);
 
-        // Bind limit change
-        let timeout;
-        limitInput.addEventListener('blur', () => {
-            clearTimeout(timeout);
-            const val = parseInt(limitInput.value, 10);
-            if (!isNaN(val) && val > 0 && val !== group.timeLimitMinutes) {
-                this.updateGroupLimit(group.id, val);
+        let lastValidGroupLimit = group.timeLimitMinutes;
+
+        limitInput.addEventListener('input', () => {
+            if (!limitInput.validity.valid || limitInput.value.includes('-')) {
+                limitInput.value = limitInput.value.replace(/[-+eE]/g, '');
             }
         });
+
+        // Bind limit change
+        let timeout;
+        const saveGroupLimit = () => {
+            clearTimeout(timeout);
+            const rawVal = limitInput.value.trim();
+            let val = parseInt(rawVal, 10);
+
+            if (!limitInput.validity.valid || rawVal === '' || isNaN(val) || val < 0) {
+                limitInput.value = '';
+                limitInput.value = lastValidGroupLimit;
+                return;
+            }
+
+            val = Math.min(val, 1440);
+            limitInput.value = '';
+            limitInput.value = val;
+
+            if (val !== lastValidGroupLimit) {
+                lastValidGroupLimit = val;
+                this.updateGroupLimit(group.id, val);
+            }
+        };
+        limitInput.addEventListener('blur', saveGroupLimit);
+        limitInput.addEventListener('change', saveGroupLimit);
         limitInput.addEventListener('keydown', (e) => {
+            if (['-', '+', 'e', 'E'].includes(e.key)) {
+                e.preventDefault();
+                return;
+            }
             if (e.key === 'Enter') {
                 e.preventDefault();
+                saveGroupLimit();
                 limitInput.blur();
             }
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 const cur = parseInt(limitInput.value, 10);
-                if (!isNaN(cur)) limitInput.value = cur + 1;
+                limitInput.value = (isNaN(cur) ? 0 : cur) + 1;
             }
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 const cur = parseInt(limitInput.value, 10);
-                if (!isNaN(cur) && cur > 1) limitInput.value = cur - 1;
+                const next = (isNaN(cur) ? 0 : cur) - 1;
+                if (next >= 0) limitInput.value = next;
             }
         });
 
@@ -832,8 +905,18 @@ export class BlockingUI {
         limitInput.type = 'number';
         limitInput.className = 'rule-limit-input-edit';
         limitInput.value = '30';
-        limitInput.min = 1;
+        limitInput.min = 0;
         limitInput.title = 'Daily limit (minutes)';
+        limitInput.addEventListener('keydown', (e) => {
+            if (['-', '+', 'e', 'E'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+        limitInput.addEventListener('input', () => {
+            if (!limitInput.validity.valid || limitInput.value.includes('-')) {
+                limitInput.value = limitInput.value.replace(/[-+eE]/g, '');
+            }
+        });
 
         const createBtn = document.createElement('button');
         createBtn.className = 'btn btn-primary btn-small';
@@ -845,7 +928,8 @@ export class BlockingUI {
 
         const doCreate = () => {
             const name = nameInput.value.trim();
-            const limit = parseInt(limitInput.value, 10) || 30;
+            const parsedLimit = parseInt(limitInput.value, 10);
+            const limit = isNaN(parsedLimit) || parsedLimit < 0 ? 30 : parsedLimit;
             if (!name) {
                 this.controller.showWarning('Please enter a group name');
                 return;
@@ -1197,7 +1281,15 @@ export class BlockingUI {
             }
         });
 
+        centerInput.addEventListener('keydown', (e) => {
+            if (['-', '+', 'e', 'E'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
         centerInput.addEventListener('input', () => {
+            if (!centerInput.validity.valid || centerInput.value.includes('-')) {
+                centerInput.value = centerInput.value.replace(/[-+eE]/g, '');
+            }
             const v = parseInt(centerInput.value, 10);
             if (!isNaN(v) && v >= 0) {
                 this._restrictedMinutes = Math.min(maxMin, v);
@@ -1205,7 +1297,11 @@ export class BlockingUI {
             }
         });
         centerInput.addEventListener('blur', () => {
-            // Clamp and sync on blur
+            const v = parseInt(centerInput.value, 10);
+            if (isNaN(v) || v < 0 || !centerInput.validity.valid) {
+                this._restrictedMinutes = 30;
+            }
+            centerInput.value = '';
             update(this._restrictedMinutes);
         });
 

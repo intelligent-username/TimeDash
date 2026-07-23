@@ -85,7 +85,7 @@ class MigrationEngine {
                 type: rule.type || 'RESTRICTED',
                 isEnabled: rule.isEnabled !== undefined ? rule.isEnabled : true,
                 createdAt: rule.createdAt || Date.now(),
-                timeLimitMinutes: rule.timeLimitMinutes || 30,
+                timeLimitMinutes: rule.timeLimitMinutes ?? 30,
                 updatedAt: rule.updatedAt || nowIso,
                 deletedAt: rule.deletedAt !== undefined ? rule.deletedAt : null,
                 syncedAt: rule.syncedAt !== undefined ? rule.syncedAt : null,

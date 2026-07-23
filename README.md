@@ -21,24 +21,34 @@ Boost your productivity with strict time tracking, site blocking, analytics, adv
 - **Video Speed Controller:** Easily control HTML5 video playback speed across the web using customizable keyboard shortcuts or the extension popup.
 - **Data Privacy:** Everything is stored locally in your browser. No external servers, no cloud sync, completely private.
 
-## Running Locally
+## Running
 
-If you'd like to run the extension from source, follow these steps:
+### Quickly
+
+1) Download from the [Google Extension Store](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb).
+2) Do the initial setup (setting default speed, colors, whatever else).
+3) Enjoy :)
+
+### As a Developer
+
+If you'd like to modify the extension and then run it:
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/intelligent-username/TimeDash.git
    cd TimeDash
    ```
 
 2. **Install dependencies:**
-   *(Used solely for linting and formatting tooling)*
+   *(Not even necessary, it's just for linting and formatting)*
    ```bash
    npm install
    ```
 
 3. **Load the extension into Chrome:**
-   - Open your Chromium-based browser and navigate to `chrome://extensions/`.
+
+   - Open your Chromium-based browser and navigate to `chrome://extensions/` (or other //extensions address).
    - Enable **"Developer mode"** in the top right corner.
    - Click **"Load unpacked"** in the top left corner.
    - Select the `TimeDash` project folder.
