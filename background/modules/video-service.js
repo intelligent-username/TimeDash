@@ -30,7 +30,7 @@ class VideoService {
         const tabs = await chrome.tabs.query({});
         const sessionResults = await Promise.all(
             tabs
-                .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
+                .filter((tab) => tab && tab.id && tab.url && /^(https?|file):\/\//.test(tab.url))
                 .map(async (tab) => {
                     try {
                         await this.ensureContentScriptReady(tab.id);
@@ -141,7 +141,7 @@ class VideoService {
 
         await Promise.all(
             tabs
-                .filter((tab) => tab && tab.id && tab.url && /^https?:\/\//.test(tab.url))
+                .filter((tab) => tab && tab.id && tab.url && /^(https?|file):\/\//.test(tab.url))
                 .map(async (tab) => {
                     await this.ensureContentScriptReady(tab.id);
                     const frameIds = await this.getTabFrameIds(tab.id);

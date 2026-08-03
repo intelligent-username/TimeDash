@@ -53,9 +53,7 @@ class TimeDashContent {
             this.startVisibilityCheck();
             this.setupListeners();
 
-            if (this.currentSpeed !== 1.0) {
-                this.controller.updateAllVideoSpeeds();
-            }
+            this.controller.updateAllVideoSpeeds();
         } catch (error) {
             console.error('Error initializing TimeDash content script:', error);
             this.currentSpeed = this.settings?.defaultPlaybackSpeed || 1.0;

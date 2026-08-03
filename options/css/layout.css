@@ -89,6 +89,7 @@ body {
     flex-direction: column;
     gap: 4px;
     overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
 }
 

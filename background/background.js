@@ -1,32 +1,34 @@
 /* global RuleManager, AlarmManager, TabTracker, VideoService,
    applyBackgroundMessagingMethods, applyBackgroundTrackingMethods,
    applyBackgroundDataMethods, StorageManager, MigrationEngine */
-importScripts(
-    '../utils/storage/defaults.js',
-    '../utils/storage/settings.js',
-    '../utils/storage/usage.js',
-    '../utils/storage/blocking.js',
-    '../utils/storage/misc.js',
-    '../utils/storage.js',
-    '../utils/storage/migration-engine.js',
-    '../utils/time-utils.js',
-    '../utils/domain-utils.js',
-    '../core/rules/site-rule.js',
-    '../core/rules/blocked-rule.js',
-    '../core/rules/restricted-rule.js',
-    '../core/rules/group-rule.js',
-    '../core/rules/rule-manager.js',
-    'core/messaging.js',
-    'core/tracking.js',
-    'core/data.js',
-    'alarm-manager/scheduling.js',
-    'alarm-manager/handlers.js',
-    'alarm-manager/notifications.js',
-    'alarm-manager/maintenance.js',
-    'alarm-manager.js',
-    'modules/tab-tracker.js',
-    'modules/video-service.js'
-);
+if (typeof importScripts === 'function') {
+    importScripts(
+        '../utils/storage/defaults.js',
+        '../utils/storage/settings.js',
+        '../utils/storage/usage.js',
+        '../utils/storage/blocking.js',
+        '../utils/storage/misc.js',
+        '../utils/storage.js',
+        '../utils/storage/migration-engine.js',
+        '../utils/time-utils.js',
+        '../utils/domain-utils.js',
+        '../core/rules/site-rule.js',
+        '../core/rules/blocked-rule.js',
+        '../core/rules/restricted-rule.js',
+        '../core/rules/group-rule.js',
+        '../core/rules/rule-manager.js',
+        'core/messaging.js',
+        'core/tracking.js',
+        'core/data.js',
+        'alarm-manager/scheduling.js',
+        'alarm-manager/handlers.js',
+        'alarm-manager/notifications.js',
+        'alarm-manager/maintenance.js',
+        'alarm-manager.js',
+        'modules/tab-tracker.js',
+        'modules/video-service.js'
+    );
+}
 
 class TimeDashBackground {
     constructor() {

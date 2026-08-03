@@ -110,6 +110,15 @@ class TabTracker {
 
         if (!settings.trackingEnabled) return;
 
+        try {
+            const tab = await chrome.tabs.get(tabId);
+            if (tab && tab.incognito && !settings.incognitoTracking) {
+                return;
+            }
+        } catch {
+            // Tab lookup failed
+        }
+
         if (settings.whitelist && settings.whitelist.includes(domain)) return;
 
         // Stop any previous tracking before starting new one

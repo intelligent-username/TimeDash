@@ -9,6 +9,20 @@ class VideoController {
         this.instance = instance;
     }
 
+    applyNativePlaybackRate(video, rate) {
+        if (!video) return;
+        try {
+            const descriptor = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'playbackRate');
+            if (descriptor && typeof descriptor.set === 'function') {
+                descriptor.set.call(video, rate);
+            } else {
+                video.playbackRate = rate;
+            }
+        } catch {
+            video.playbackRate = rate;
+        }
+    }
+
     setupVideo(video) {
         if (this.instance.videos.has(video)) return;
         this.instance.videos.add(video);
@@ -20,7 +34,7 @@ class VideoController {
         const setupSpeed = () => {
             if (this.instance.currentSpeed !== null && this.instance.initialized) {
                 this.instance._settingSpeed = true;
-                video.playbackRate = this.instance.currentSpeed;
+                this.applyNativePlaybackRate(video, this.instance.currentSpeed);
                 this.instance._settingSpeed = false;
                 this.instance.markVideoInteraction(video);
                 if (
@@ -53,7 +67,7 @@ class VideoController {
             const externalSpeed = video.playbackRate;
             if (Math.abs(externalSpeed - this.instance.currentSpeed) > 0.05) {
                 this.instance._settingSpeed = true;
-                video.playbackRate = this.instance.currentSpeed;
+                this.applyNativePlaybackRate(video, this.instance.currentSpeed);
                 this.instance._settingSpeed = false;
                 if (this.instance.ui) {
                     this.showSpeedOverlayIndicator(true);
@@ -96,7 +110,7 @@ class VideoController {
                 return;
             }
             if (video) {
-                video.playbackRate = this.instance.currentSpeed;
+                this.applyNativePlaybackRate(video, this.instance.currentSpeed);
                 this.instance.markVideoInteraction(video);
             }
         });

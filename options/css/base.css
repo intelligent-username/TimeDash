@@ -21,9 +21,14 @@ a:hover {
 }
 
 /* Scrollbar Customization */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--border) 60%, transparent 40%) transparent;
+}
+
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -31,8 +36,8 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
+    background: color-mix(in srgb, var(--border) 60%, transparent 40%);
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

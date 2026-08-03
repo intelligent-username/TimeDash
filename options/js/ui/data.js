@@ -167,6 +167,94 @@ export class DataManager {
      *
      * @param event
      */
+    promptImportMode() {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('confirmTitle');
+            const msg = document.getElementById('confirmMessage');
+            const cancelBtn = document.getElementById('confirmCancel');
+            const okBtn = document.getElementById('confirmOk');
+
+            if (!modal || !title || !msg || !okBtn || !cancelBtn) {
+                const mode = confirm(
+                    'Click OK to MERGE (append to current data).\nClick Cancel to OVERWRITE (wipe current data).'
+                );
+                resolve(mode ? 'merge' : 'overwrite');
+                return;
+            }
+
+            title.textContent = 'Import Data Mode';
+            msg.textContent =
+                'Choose how you want to process the imported file: append to existing tracking history and settings, or wipe and replace current data.';
+
+            okBtn.textContent = 'Append (Merge)';
+            cancelBtn.textContent = 'Wipe & Replace';
+
+            modal.classList.add('show');
+
+            const cleanup = () => {
+                modal.classList.remove('show');
+                okBtn.removeEventListener('click', onMerge);
+                cancelBtn.removeEventListener('click', onOverwrite);
+                okBtn.textContent = 'Confirm';
+                cancelBtn.textContent = 'Cancel';
+            };
+
+            const onMerge = () => {
+                cleanup();
+                resolve('merge');
+            };
+
+            const onOverwrite = () => {
+                cleanup();
+                resolve('overwrite');
+            };
+
+            okBtn.addEventListener('click', onMerge);
+            cancelBtn.addEventListener('click', onOverwrite);
+        });
+    }
+
+    mergeUsage(existingUsage, importedUsage) {
+        const merged = JSON.parse(JSON.stringify(existingUsage || {}));
+        if (!importedUsage) return merged;
+
+        for (const [domain, impData] of Object.entries(importedUsage)) {
+            if (!merged[domain]) {
+                merged[domain] = JSON.parse(JSON.stringify(impData));
+                continue;
+            }
+            const cur = merged[domain];
+            let cumGen = 0;
+            let cumRes = 0;
+
+            for (const [k, v] of Object.entries(impData)) {
+                if (typeof v === 'number') {
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+                        cur[k] = (cur[k] || 0) + v;
+                    } else if (/^\d{4}-\d{2}-\d{2}_general$/.test(k)) {
+                        cur[k] = (cur[k] || 0) + v;
+                        cumGen += v;
+                    } else if (/^\d{4}-\d{2}-\d{2}_restricted$/.test(k)) {
+                        cur[k] = (cur[k] || 0) + v;
+                        cumRes += v;
+                    }
+                } else if (!(k in cur)) {
+                    cur[k] = v;
+                }
+            }
+
+            cur.cumulative_general = (cur.cumulative_general || 0) + cumGen;
+            cur.cumulative_restricted = (cur.cumulative_restricted || 0) + cumRes;
+            cur.cumulative = (cur.cumulative_general || 0) + (cur.cumulative_restricted || 0);
+        }
+        return merged;
+    }
+
+    /**
+     *
+     * @param event
+     */
     async importData(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -179,19 +267,110 @@ export class DataManager {
                 throw new Error('Invalid data format');
             }
 
-            if (!confirm('Import will overwrite current data. Continue?')) return;
+            const importMode = await this.promptImportMode();
+            if (!importMode) return;
 
-            if (data.usage) {
-                await chrome.storage.local.set({ usage: data.usage });
-            }
-            if (data.settings) {
-                await this.controller.storageManager.saveSettings(data.settings);
-            }
+            if (importMode === 'merge') {
+                if (data.usage) {
+                    const existingUsage = (await chrome.storage.local.get('usage')).usage || {};
+                    const mergedUsage = this.mergeUsage(existingUsage, data.usage);
+                    await chrome.storage.local.set({ usage: mergedUsage });
+                }
 
-            let rulesToSave = [];
-            if (data.siteRules) {
-                if (Array.isArray(data.siteRules.blocked)) {
-                    for (const domain of data.siteRules.blocked) {
+                if (data.settings) {
+                    const existingSettings = await this.controller.storageManager.getSettings();
+                    const mergedSettings = { ...existingSettings, ...data.settings };
+                    await this.controller.storageManager.saveSettings(mergedSettings);
+                }
+
+                let rulesToSave = [];
+                const existingRulesObj = (await chrome.storage.local.get('siteRules')) || {};
+                const existingRules = Array.isArray(existingRulesObj.siteRules)
+                    ? existingRulesObj.siteRules
+                    : [];
+                rulesToSave = [...existingRules];
+
+                const existingKeys = new Set(existingRules.map((r) => `${r.domain}|${r.type}`));
+
+                if (data.siteRules) {
+                    if (Array.isArray(data.siteRules.blocked)) {
+                        for (const domain of data.siteRules.blocked) {
+                            const key = `${domain}|BLOCKED`;
+                            if (!existingKeys.has(key)) {
+                                existingKeys.add(key);
+                                rulesToSave.push({
+                                    domain,
+                                    type: 'BLOCKED',
+                                    isEnabled: true,
+                                    createdAt: Date.now(),
+                                });
+                            }
+                        }
+                    }
+                    if (Array.isArray(data.siteRules.restricted)) {
+                        for (const rule of data.siteRules.restricted) {
+                            const key = `${rule.domain}|RESTRICTED`;
+                            if (!existingKeys.has(key)) {
+                                existingKeys.add(key);
+                                rulesToSave.push({
+                                    domain: rule.domain,
+                                    type: 'RESTRICTED',
+                                    isEnabled: true,
+                                    timeLimitMinutes: rule.timeLimitMinutes ?? 30,
+                                    createdAt: Date.now(),
+                                });
+                            }
+                        }
+                    }
+                } else if (Array.isArray(data.blockList)) {
+                    for (const domain of data.blockList) {
+                        const key = `${domain}|BLOCKED`;
+                        if (!existingKeys.has(key)) {
+                            existingKeys.add(key);
+                            rulesToSave.push({
+                                domain,
+                                type: 'BLOCKED',
+                                isEnabled: true,
+                                createdAt: Date.now(),
+                            });
+                        }
+                    }
+                }
+
+                await chrome.storage.local.set({ siteRules: rulesToSave });
+            } else {
+                if (data.usage) {
+                    await chrome.storage.local.set({ usage: data.usage });
+                }
+                if (data.settings) {
+                    await this.controller.storageManager.saveSettings(data.settings);
+                }
+
+                let rulesToSave = [];
+                if (data.siteRules) {
+                    if (Array.isArray(data.siteRules.blocked)) {
+                        for (const domain of data.siteRules.blocked) {
+                            rulesToSave.push({
+                                domain,
+                                type: 'BLOCKED',
+                                isEnabled: true,
+                                createdAt: Date.now(),
+                            });
+                        }
+                    }
+                    if (Array.isArray(data.siteRules.restricted)) {
+                        for (const rule of data.siteRules.restricted) {
+                            rulesToSave.push({
+                                domain: rule.domain,
+                                type: 'RESTRICTED',
+                                isEnabled: true,
+                                timeLimitMinutes: rule.timeLimitMinutes ?? 30,
+                                createdAt: Date.now(),
+                            });
+                        }
+                    }
+                } else if (Array.isArray(data.blockList)) {
+                    for (const domain of data.blockList) {
                         rulesToSave.push({
                             domain,
                             type: 'BLOCKED',
@@ -200,39 +379,21 @@ export class DataManager {
                         });
                     }
                 }
-                if (Array.isArray(data.siteRules.restricted)) {
-                    for (const rule of data.siteRules.restricted) {
-                        rulesToSave.push({
-                            domain: rule.domain,
-                            type: 'RESTRICTED',
-                            isEnabled: true,
-                            timeLimitMinutes: rule.timeLimitMinutes ?? 30,
-                            createdAt: Date.now(),
-                        });
-                    }
-                }
-            } else if (Array.isArray(data.blockList)) {
-                for (const domain of data.blockList) {
-                    rulesToSave.push({
-                        domain,
-                        type: 'BLOCKED',
-                        isEnabled: true,
-                        createdAt: Date.now(),
-                    });
-                }
-            }
 
-            if (rulesToSave.length > 0 || data.siteRules || data.blockList) {
                 await chrome.storage.local.set({ siteRules: rulesToSave });
             }
 
             await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
             await this.controller.loadAllData();
             this.controller.refreshUI();
-            this.controller.showSuccess('Data imported successfully');
+            this.controller.showSuccess(
+                `Data ${importMode === 'merge' ? 'merged' : 'replaced'} successfully`
+            );
         } catch (error) {
             console.error('Failed to import:', error);
             this.controller.showError('Failed to import data');
+        } finally {
+            event.target.value = '';
         }
     }
 
