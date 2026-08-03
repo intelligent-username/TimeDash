@@ -23,18 +23,20 @@
                             class="modern-input speed-hero-input"
                             aria-label="Current Playback Speed"
                         />
-                        <span class="speed-hero-unit">x</span>
                     </div>
                 </div>
-                <input
-                    type="range"
-                    id="currentSpeedSlider"
-                    min="0.05"
-                    max="16"
-                    step="0.05"
-                    class="speed-hero-slider"
-                    aria-label="Current Playback Speed Slider"
-                />
+                <div class="speed-slider-wrap">
+                    <canvas class="speed-slider-wave" height="8" aria-hidden="true"></canvas>
+                    <input
+                        type="range"
+                        id="currentSpeedSlider"
+                        min="0.05"
+                        max="16"
+                        step="0.05"
+                        class="speed-hero-slider"
+                        aria-label="Current Playback Speed Slider"
+                    />
+                </div>
             </div>
             <div class="setting-item">
                 <div class="setting-info">
