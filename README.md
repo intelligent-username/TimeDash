@@ -2,6 +2,8 @@
 
 [![Chrome WebStore Banner](imgs/ws_banner.png)](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb)
 
+[![FireFox Store Banner](imgs/ff_banner.png)](https://addons.mozilla.org/en-US/firefox/addon/timedash/)
+
 
 Boost your productivity with strict time tracking, site blocking, analytics, advanced video playback controls.
 
