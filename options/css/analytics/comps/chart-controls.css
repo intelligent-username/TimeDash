@@ -1,0 +1,92 @@
+/* Chart Controls & Navigation */
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing);
+    flex-wrap: wrap;
+}
+
+.chart-period-selector {
+    display: flex;
+    background: var(--background);
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.period-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.period-btn:hover {
+    color: var(--text-primary);
+    background: var(--border-subtle);
+    transform: translateY(-1px);
+}
+
+.period-btn.active {
+    background: var(--primary-color);
+    color: white;
+    transform: none;
+}
+
+.chart-navigation {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.nav-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-color var(--transition-fast);
+}
+
+.nav-btn:hover {
+    background: var(--surface);
+    color: var(--text-primary);
+    border-color: color-mix(in srgb, var(--accent-color) 20%, var(--border) 80%);
+    transform: scale(1.08);
+}
+
+.nav-btn:active {
+    transform: scale(0.94);
+}
+
+.nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.chart-period-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 110px;
+    text-align: center;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s ease;
+}

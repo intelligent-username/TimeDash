@@ -1,0 +1,65 @@
+/* Block Page Theming */
+:root {
+    --font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+    /* Dark Theme (Default) */
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #18181b;
+    --bg-tertiary: #27272a;
+
+    --text-primary: #fafafa;
+    --text-secondary: #e4e4e7;
+    --text-tertiary: #a1a1aa;
+    --text-muted: #71717a;
+
+    --border-color: #27272a;
+    --border-hover: #3f3f46;
+
+    /* Semantic Colors */
+    --color-danger: #ef4444;
+    --color-warning: #fbbf24;
+    --color-success: #10b981;
+
+    --accent-color: #ef4444;
+}
+
+html[data-theme='light'] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f4f4f5;
+    --bg-tertiary: #e4e4e7;
+
+    --text-primary: #18181b;
+    --text-secondary: #27272a;
+    --text-tertiary: #52525b;
+    --text-muted: #71717a;
+
+    --border-color: #e4e4e7;
+    --border-hover: #d4d4d8;
+}
+
+@media (prefers-color-scheme: light) {
+    html[data-theme='auto'] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f4f4f5;
+        --bg-tertiary: #e4e4e7;
+
+        --text-primary: #18181b;
+        --text-secondary: #27272a;
+        --text-tertiary: #52525b;
+        --text-muted: #71717a;
+
+        --border-color: #e4e4e7;
+        --border-hover: #d4d4d8;
+    }
+}
+
+html[data-accent='blue'] { --accent-color: #0168bd; }
+html[data-accent='purple'] { --accent-color: #9c27b0; }
+html[data-accent='green'] { --accent-color: #4caf50; }
+html[data-accent='orange'] { --accent-color: #ff9800; }
+html[data-accent='red'] { --accent-color: #f44336; }
+html[data-accent='teal'] { --accent-color: #009688; }
+html[data-accent='pink'] { --accent-color: #e91e63; }
+html[data-accent='cyan'] { --accent-color: #00bcd4; }

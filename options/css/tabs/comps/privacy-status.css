@@ -1,0 +1,98 @@
+/* Privacy Status & Glassmorphism Header */
+.content-card > .card-header ~ * {
+    padding-left: var(--spacing);
+    padding-right: var(--spacing);
+}
+
+.content-card > .card-header + * {
+    padding-top: var(--spacing);
+}
+
+.content-card > :last-child {
+    padding-bottom: var(--spacing);
+}
+
+.privacy-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--spacing);
+    margin: 0;
+    background: color-mix(in srgb, var(--card-bg) 65%, transparent 35%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid color-mix(in srgb, var(--border) 45%, transparent 55%);
+    border-radius: var(--radius);
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-subtle) 35%, transparent 65%);
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.status-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.highlight-success {
+    color: var(--success-color);
+    font-weight: 600;
+    animation: privacyPulse 3s ease-in-out infinite;
+}
+
+@keyframes privacyPulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.65;
+    }
+}
+
+.setting-item:has(.switch input:checked) .switch .slider {
+    box-shadow: 0 0 10px color-mix(in srgb, var(--success-color) 25%, transparent 75%);
+}
+
+.collapse-section {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 var(--spacing) 0 calc(var(--spacing) * 2);
+    transition:
+        max-height 0.35s ease,
+        opacity 0.35s ease,
+        margin 0.35s ease;
+    margin: 0 var(--spacing);
+}
+
+.collapse-section.visible {
+    max-height: 80px;
+    opacity: 1;
+    margin-bottom: var(--spacing-sm);
+    margin-top: 0;
+}
+
+.data-search-group {
+    padding: 0 var(--spacing);
+}
+
+.data-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}

@@ -1,0 +1,59 @@
+/* Full height cards in blocking tab */
+.blocking-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    min-height: 0;
+    flex: 1;
+}
+
+.blocking-right-col .content-card {
+    flex: 1;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+#blocking .content-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+    margin-bottom: 0;
+    box-sizing: border-box;
+}
+
+#blocking .content-card .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: var(--spacing);
+}
+
+#blocking .rule-manager {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#blocking .rule-list {
+    flex: 1;
+    min-height: 100px;
+    max-height: none;
+    overflow-y: auto;
+}
+
+.rule-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--spacing);
+}
+
+.rule-input-group .modern-input {
+    flex: 1;
+    min-width: 200px;
+}

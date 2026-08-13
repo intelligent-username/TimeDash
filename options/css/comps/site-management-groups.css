@@ -1,0 +1,423 @@
+/* Budget Groups, Drag & Drop, and Row Layouts */
+
+.rule-item-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.rule-favicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.rule-domain-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.rule-domain {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rule-usage-today {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.limit-suffix {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-left: var(--spacing-sm);
+    margin-right: var(--spacing);
+    white-space: nowrap;
+    width: 55px;
+    text-align: left;
+    display: inline-block;
+}
+
+.rule-limit-input-edit {
+    width: 70px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    color: var(--text-primary);
+    background: var(--background);
+    -moz-appearance: textfield;
+}
+
+.rule-limit-input-edit::-webkit-outer-spin-button,
+.rule-limit-input-edit::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.rule-limit-input-edit:focus {
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
+.drag-handle-indicator {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: grab;
+    user-select: none;
+    padding-right: 8px;
+    transition: color var(--transition);
+}
+
+.drag-handle-indicator:hover {
+    color: var(--primary-color);
+}
+
+.rule-item.dragging .drag-handle-indicator,
+.group-domain-row.dragging .drag-handle-indicator {
+    cursor: grabbing;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+        background-color var(--transition),
+        color var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.icon-btn:hover {
+    background: var(--primary-fade);
+    color: var(--primary-color);
+    border-color: var(--border);
+}
+
+.icon-btn.rule-delete-btn:hover {
+    background: var(--danger-fade);
+    color: var(--danger-color);
+    border-color: color-mix(in srgb, var(--danger-color) 20%, transparent);
+}
+
+.group-container {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    transition:
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.group-container:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border));
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+}
+
+.group-name-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.group-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.group-domain-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0 -16px;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--background);
+}
+
+.group-domain-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color var(--transition);
+}
+
+.group-domain-row:last-child {
+    border-bottom: none;
+}
+
+.group-domain-row:hover {
+    background: var(--primary-fade);
+}
+
+.group-add-domain-row {
+    display: flex;
+    gap: 8px;
+    margin-top: var(--spacing);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--border);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.btn-new-group {
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    line-height: 1.4;
+    transition:
+        border-color var(--transition),
+        color var(--transition),
+        background-color var(--transition);
+}
+
+.btn-new-group:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: var(--primary-fade);
+}
+
+.new-group-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+}
+
+.new-group-form .modern-input {
+    flex: 1;
+    min-width: 140px;
+}
+
+.new-group-form .rule-limit-input-edit {
+    width: 60px;
+    flex: none;
+}
+
+.rule-item.dragging,
+.group-domain-row.dragging {
+    opacity: 0.4;
+}
+
+.group-container.drag-over {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 4%, var(--card-bg));
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.group-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--border-subtle);
+    padding-bottom: 12px;
+}
+
+.group-progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border-subtle);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.group-progress-fill {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--primary-color) 0%,
+        color-mix(in srgb, var(--primary-color) 70%, #00b7ff) 100%
+    );
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.group-progress-fill.warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.group-progress-fill.danger {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.group-stats-text {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.group-stats-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.rule-row-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.rule-row-middle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 140px;
+    flex-shrink: 0;
+    justify-content: flex-end;
+}
+
+.rule-row-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 44px;
+    flex-shrink: 0;
+}
+
+.group-title-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.group-title-section svg {
+    color: #888888;
+}
+
+.group-icon-picker-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-small);
+    color: #888888;
+    padding: 6px;
+    cursor: pointer;
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.group-icon-picker-btn:hover {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.15);
+    border-color: rgba(128, 128, 128, 0.3);
+}
+
+.group-icon-picker-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-medium);
+    animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.icon-picker-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-small);
+    color: #888888;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.icon-picker-option:hover {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.15);
+    border-color: rgba(128, 128, 128, 0.3);
+}
+
+.icon-picker-option.active {
+    color: #888888;
+    background: rgba(128, 128, 128, 0.25);
+    border-color: rgba(128, 128, 128, 0.5);
+}
