@@ -95,6 +95,9 @@ export class OptionsController {
 
         this.blockingUI.loadSiteRules();
         this.analyticsUI.update();
+        if (this.dataManager && this.dataManager.updateStorageUsage) {
+            this.dataManager.updateStorageUsage();
+        }
         this.updateSaveButton();
     }
 

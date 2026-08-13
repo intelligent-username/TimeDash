@@ -10,14 +10,16 @@ export const privacySettingsMethods = {
         const limitInput = document.getElementById('storageLimitMB');
         if (limitInput) {
             limitInput.addEventListener('input', () => {
-                setTimeout(() => {
-                    if (
-                        this.controller.dataManager &&
-                        this.controller.dataManager.updateStorageUsage
-                    ) {
-                        this.controller.dataManager.updateStorageUsage();
-                    }
-                }, 100);
+                const val = parseFloat(limitInput.value);
+                if (!isNaN(val) && val > 0) {
+                    this.controller.settings.storageLimitMB = val;
+                }
+                if (
+                    this.controller.dataManager &&
+                    this.controller.dataManager.updateStorageUsage
+                ) {
+                    this.controller.dataManager.updateStorageUsage();
+                }
             });
         }
 

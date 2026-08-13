@@ -40,8 +40,30 @@ export class DataManager {
         const exportPrivacyBtn = document.getElementById('exportDataPrivacy');
         if (exportPrivacyBtn) exportPrivacyBtn.addEventListener('click', () => this.exportData());
 
+        const compactBtn = document.getElementById('compactStorageBtn');
+        if (compactBtn) {
+            compactBtn.addEventListener('click', () => this.compactStorage());
+        }
+
         this.setupDataSearch();
         this.updateStorageUsage();
+    }
+
+    /**
+     *
+     */
+    async compactStorage() {
+        try {
+            await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+            await this.controller.storageManager.compactStorage();
+            await this.controller.loadAllData();
+            this.controller.refreshUI();
+            this.updateStorageUsage();
+            this.controller.showSuccess('Storage compacted successfully');
+        } catch (error) {
+            console.error('Failed to compact storage:', error);
+            this.controller.showError('Failed to compact storage');
+        }
     }
 
     /**
@@ -105,28 +127,41 @@ export class DataManager {
     async updateStorageUsage() {
         if (!this.controller.storageManager.getStorageUsage) return;
         const bytes = await this.controller.storageManager.getStorageUsage();
-        const kb = (bytes / 1024).toFixed(0);
-        const mb = (bytes / 1024 / 1024).toFixed(2);
+        
+        let usageText = '0 KB';
+        if (bytes >= 1024 * 1024) {
+            usageText = `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+        } else if (bytes >= 1024) {
+            usageText = `${(bytes / 1024).toFixed(1)} KB`;
+        } else {
+            usageText = `${bytes} B`;
+        }
 
-        const usageText = parseFloat(mb) >= 0.1 ? `${mb} MB` : `${kb} KB`;
         const valEl = document.getElementById('storageUsageValue');
         if (valEl) valEl.textContent = usageText;
 
         // Use the user's custom storage limit, falling back to 10MB
         const settings = this.controller.settings || {};
-        const limitMB = settings.storageLimitMB || 10;
+        const limitMB = Number(settings.storageLimitMB) || 10;
         const limitBytes = limitMB * 1024 * 1024;
-        const percent = Math.min((bytes / limitBytes) * 100, 100).toFixed(1);
+        const rawPercent = (bytes / limitBytes) * 100;
+        
+        let percentStr;
+        if (rawPercent === 0) percentStr = '0%';
+        else if (rawPercent < 0.01) percentStr = '<0.01%';
+        else if (rawPercent < 1) percentStr = `${rawPercent.toFixed(2)}%`;
+        else percentStr = `${rawPercent.toFixed(1)}%`;
+
         const exceeded = bytes >= limitBytes;
 
         const fillEl = document.getElementById('storageUsageFill');
         if (fillEl) {
-            fillEl.style.width = `${percent}%`;
+            fillEl.style.width = `${Math.min(rawPercent, 100)}%`;
             fillEl.classList.toggle('exceeded', exceeded);
         }
 
         const quotaEl = document.getElementById('storageQuotaValue');
-        if (quotaEl) quotaEl.textContent = `${percent}% of ${limitMB}MB limit`;
+        if (quotaEl) quotaEl.textContent = `${percentStr} of ${limitMB}MB limit`;
 
         // Show or hide the warning banner
         const warningEl = document.getElementById('storageLimitWarning');
@@ -169,49 +204,52 @@ export class DataManager {
      */
     promptImportMode() {
         return new Promise((resolve) => {
-            const modal = document.getElementById('confirmModal');
-            const title = document.getElementById('confirmTitle');
-            const msg = document.getElementById('confirmMessage');
-            const cancelBtn = document.getElementById('confirmCancel');
-            const okBtn = document.getElementById('confirmOk');
+            const modal = document.getElementById('importModal');
+            const title = document.getElementById('importModalTitle');
+            const msg = document.getElementById('importModalMessage');
+            const appendBtn = document.getElementById('importAppendBtn');
+            const replaceBtn = document.getElementById('importReplaceBtn');
+            const cancelBtn = document.getElementById('importCancelBtn');
 
-            if (!modal || !title || !msg || !okBtn || !cancelBtn) {
-                const mode = confirm(
-                    'Click OK to MERGE (append to current data).\nClick Cancel to OVERWRITE (wipe current data).'
+            if (!modal || !title || !msg || !appendBtn || !replaceBtn || !cancelBtn) {
+                const choice = confirm(
+                    'Should the imported data be appended to the currently-existing data or replace it?\n\nClick OK to Append.\nClick Cancel to Replace.'
                 );
-                resolve(mode ? 'merge' : 'overwrite');
+                resolve(choice ? 'merge' : 'overwrite');
                 return;
             }
 
-            title.textContent = 'Import Data Mode';
+            title.textContent = 'Import Data';
             msg.textContent =
-                'Choose how you want to process the imported file: append to existing tracking history and settings, or wipe and replace current data.';
-
-            okBtn.textContent = 'Append (Merge)';
-            cancelBtn.textContent = 'Wipe & Replace';
+                'Should the imported data be appended to the currently-existing data or replace it?';
 
             modal.classList.add('show');
 
             const cleanup = () => {
                 modal.classList.remove('show');
-                okBtn.removeEventListener('click', onMerge);
-                cancelBtn.removeEventListener('click', onOverwrite);
-                okBtn.textContent = 'Confirm';
-                cancelBtn.textContent = 'Cancel';
+                appendBtn.removeEventListener('click', onAppend);
+                replaceBtn.removeEventListener('click', onReplace);
+                cancelBtn.removeEventListener('click', onCancel);
             };
 
-            const onMerge = () => {
+            const onAppend = () => {
                 cleanup();
                 resolve('merge');
             };
 
-            const onOverwrite = () => {
+            const onReplace = () => {
                 cleanup();
                 resolve('overwrite');
             };
 
-            okBtn.addEventListener('click', onMerge);
-            cancelBtn.addEventListener('click', onOverwrite);
+            const onCancel = () => {
+                cleanup();
+                resolve(null);
+            };
+
+            appendBtn.addEventListener('click', onAppend);
+            replaceBtn.addEventListener('click', onReplace);
+            cancelBtn.addEventListener('click', onCancel);
         });
     }
 
@@ -225,8 +263,6 @@ export class DataManager {
                 continue;
             }
             const cur = merged[domain];
-            let cumGen = 0;
-            let cumRes = 0;
 
             for (const [k, v] of Object.entries(impData)) {
                 if (typeof v === 'number') {
@@ -234,19 +270,41 @@ export class DataManager {
                         cur[k] = (cur[k] || 0) + v;
                     } else if (/^\d{4}-\d{2}-\d{2}_general$/.test(k)) {
                         cur[k] = (cur[k] || 0) + v;
-                        cumGen += v;
                     } else if (/^\d{4}-\d{2}-\d{2}_restricted$/.test(k)) {
                         cur[k] = (cur[k] || 0) + v;
-                        cumRes += v;
+                    } else if (/^\d{4}-\d{2}-\d{2}_blocked$/.test(k)) {
+                        cur[k] = (cur[k] || 0) + v;
+                    } else if (k === 'blockedToday') {
+                        cur[k] = (cur[k] || 0) + v;
                     }
                 } else if (!(k in cur)) {
                     cur[k] = v;
                 }
             }
 
-            cur.cumulative_general = (cur.cumulative_general || 0) + cumGen;
-            cur.cumulative_restricted = (cur.cumulative_restricted || 0) + cumRes;
-            cur.cumulative = (cur.cumulative_general || 0) + (cur.cumulative_restricted || 0);
+            // Recalculate cumulative totals accurately from daily timestamps
+            let totalGeneral = 0;
+            let totalRestricted = 0;
+            for (const [k, v] of Object.entries(cur)) {
+                if (typeof v === 'number') {
+                    if (/^\d{4}-\d{2}-\d{2}_general$/.test(k)) totalGeneral += v;
+                    else if (/^\d{4}-\d{2}-\d{2}_restricted$/.test(k)) totalRestricted += v;
+                }
+            }
+
+            if (totalGeneral > 0 || totalRestricted > 0) {
+                cur.cumulative_general = totalGeneral;
+                cur.cumulative_restricted = totalRestricted;
+                cur.cumulative = totalGeneral + totalRestricted;
+            } else {
+                let dailySum = 0;
+                for (const [k, v] of Object.entries(cur)) {
+                    if (typeof v === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(k)) {
+                        dailySum += v;
+                    }
+                }
+                cur.cumulative = dailySum;
+            }
         }
         return merged;
     }
@@ -263,7 +321,13 @@ export class DataManager {
             const text = await file.text();
             const data = JSON.parse(text);
 
-            if (!data.usage && !data.settings && !data.blockList && !data.siteRules) {
+            if (
+                !data.usage &&
+                !data.settings &&
+                !data.blockList &&
+                !data.siteRules &&
+                !data.siteGroups
+            ) {
                 throw new Error('Invalid data format');
             }
 
@@ -279,7 +343,12 @@ export class DataManager {
 
                 if (data.settings) {
                     const existingSettings = await this.controller.storageManager.getSettings();
+                    const currentLimit = this.controller.settings?.storageLimitMB || existingSettings.storageLimitMB;
                     const mergedSettings = { ...existingSettings, ...data.settings };
+                    // Preserve the user's actively configured storage limit
+                    if (currentLimit !== undefined) {
+                        mergedSettings.storageLimitMB = currentLimit;
+                    }
                     await this.controller.storageManager.saveSettings(mergedSettings);
                 }
 
@@ -294,7 +363,9 @@ export class DataManager {
 
                 if (data.siteRules) {
                     if (Array.isArray(data.siteRules.blocked)) {
-                        for (const domain of data.siteRules.blocked) {
+                        for (const item of data.siteRules.blocked) {
+                            const domain = typeof item === 'string' ? item : item.domain;
+                            if (!domain) continue;
                             const key = `${domain}|BLOCKED`;
                             if (!existingKeys.has(key)) {
                                 existingKeys.add(key);
@@ -309,11 +380,13 @@ export class DataManager {
                     }
                     if (Array.isArray(data.siteRules.restricted)) {
                         for (const rule of data.siteRules.restricted) {
-                            const key = `${rule.domain}|RESTRICTED`;
+                            const domain = typeof rule === 'string' ? rule : rule.domain;
+                            if (!domain) continue;
+                            const key = `${domain}|RESTRICTED`;
                             if (!existingKeys.has(key)) {
                                 existingKeys.add(key);
                                 rulesToSave.push({
-                                    domain: rule.domain,
+                                    domain,
                                     type: 'RESTRICTED',
                                     isEnabled: true,
                                     timeLimitMinutes: rule.timeLimitMinutes ?? 30,
@@ -330,6 +403,7 @@ export class DataManager {
                             rulesToSave.push({
                                 domain,
                                 type: 'BLOCKED',
+                                subdomainsIncluded: true,
                                 isEnabled: true,
                                 createdAt: Date.now(),
                             });
@@ -338,18 +412,40 @@ export class DataManager {
                 }
 
                 await chrome.storage.local.set({ siteRules: rulesToSave });
-            } else {
-                if (data.usage) {
-                    await chrome.storage.local.set({ usage: data.usage });
+
+                if (Array.isArray(data.siteGroups)) {
+                    const existingGroupsObj = (await chrome.storage.local.get('siteGroups')) || {};
+                    const existingGroups = Array.isArray(existingGroupsObj.siteGroups)
+                        ? existingGroupsObj.siteGroups
+                        : [];
+                    const existingGroupIds = new Set(existingGroups.map((g) => g.id));
+                    const mergedGroups = [...existingGroups];
+
+                    for (const g of data.siteGroups) {
+                        if (g && g.id && !existingGroupIds.has(g.id)) {
+                            existingGroupIds.add(g.id);
+                            mergedGroups.push(g);
+                        }
+                    }
+                    await chrome.storage.local.set({ siteGroups: mergedGroups });
                 }
-                if (data.settings) {
+            } else {
+                // Clear any lingering in-memory updates from background so old data isn't re-saved
+                await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+
+                if (data.usage !== undefined) {
+                    await chrome.storage.local.set({ usage: data.usage || {} });
+                }
+                if (data.settings !== undefined) {
                     await this.controller.storageManager.saveSettings(data.settings);
                 }
 
                 let rulesToSave = [];
                 if (data.siteRules) {
                     if (Array.isArray(data.siteRules.blocked)) {
-                        for (const domain of data.siteRules.blocked) {
+                        for (const item of data.siteRules.blocked) {
+                            const domain = typeof item === 'string' ? item : item.domain;
+                            if (!domain) continue;
                             rulesToSave.push({
                                 domain,
                                 type: 'BLOCKED',
@@ -360,8 +456,10 @@ export class DataManager {
                     }
                     if (Array.isArray(data.siteRules.restricted)) {
                         for (const rule of data.siteRules.restricted) {
+                            const domain = typeof rule === 'string' ? rule : rule.domain;
+                            if (!domain) continue;
                             rulesToSave.push({
-                                domain: rule.domain,
+                                domain,
                                 type: 'RESTRICTED',
                                 isEnabled: true,
                                 timeLimitMinutes: rule.timeLimitMinutes ?? 30,
@@ -380,14 +478,18 @@ export class DataManager {
                     }
                 }
 
-                await chrome.storage.local.set({ siteRules: rulesToSave });
+                await chrome.storage.local.set({
+                    siteRules: rulesToSave,
+                    siteGroups: Array.isArray(data.siteGroups) ? data.siteGroups : [],
+                });
             }
 
-            await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+            // Sync controller data and update all UI views
+            this.controller.isDirty = false;
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.controller.showSuccess(
-                `Data ${importMode === 'merge' ? 'merged' : 'replaced'} successfully`
+                `Data ${importMode === 'merge' ? 'appended' : 'replaced'} successfully`
             );
         } catch (error) {
             console.error('Failed to import:', error);

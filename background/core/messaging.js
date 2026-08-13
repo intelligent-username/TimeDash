@@ -58,7 +58,16 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     sendResponse({ success: true });
                     break;
                 case 'EXPORT_DATA_JSON':
+                    if (typeof this.processPendingUpdates === 'function') {
+                        await this.processPendingUpdates();
+                    }
                     sendResponse({ data: await this.storage.getExportPayload(this.ruleManager) });
+                    break;
+                case 'COMPACT_STORAGE':
+                    if (typeof this.processPendingUpdates === 'function') {
+                        await this.processPendingUpdates();
+                    }
+                    sendResponse({ success: await this.storage.compactStorage() });
                     break;
                 case 'GET_SITE_RULES':
                     sendResponse({

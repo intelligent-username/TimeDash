@@ -42,6 +42,12 @@ class TabTracker {
                 // Tab may have been closed between event and lookup
             }
         });
+
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            if (areaName === 'local' && changes.settings) {
+                this.handleSettingsChanged(changes.settings.newValue || {});
+            }
+        });
     }
 
     async handleTabActivated(tabId) {
@@ -102,6 +108,32 @@ class TabTracker {
             } catch (error) {
                 console.error('Error handling window activation change:', error);
             }
+        }
+    }
+
+    async handleSettingsChanged(newSettings) {
+        try {
+            const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+            if (!tabs || tabs.length === 0) return;
+            const currentActiveTab = tabs[0];
+
+            if (!DomainUtils.shouldTrackUrl(currentActiveTab.url)) {
+                this.stopTracking();
+                return;
+            }
+
+            const domain = DomainUtils.extractDomain(currentActiveTab.url);
+            const isIncognitoDisallowed = currentActiveTab.incognito && !newSettings.incognitoTracking;
+            const isWhitelisted = newSettings.whitelist && newSettings.whitelist.includes(domain);
+            const isTrackingDisabled = newSettings.trackingEnabled === false;
+
+            if (isIncognitoDisallowed || isWhitelisted || isTrackingDisabled) {
+                this.stopTracking();
+            } else if (!this.instance.currentTrack || this.instance.currentTrack.tabId !== currentActiveTab.id) {
+                await this.handleTabActivated(currentActiveTab.id);
+            }
+        } catch (error) {
+            console.error('Error handling settings change in tab tracker:', error);
         }
     }
 

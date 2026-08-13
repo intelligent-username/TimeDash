@@ -46,11 +46,14 @@ export function applyOptionsSyncMethods(OptionsController) {
                     this.storageManager.getAllUsage(),
                 ]);
 
+                if (latestSettings.theme && latestSettings.theme !== this.settings.theme) {
+                    this.applyImmediateChanges('theme', latestSettings.theme);
+                }
+                if (latestSettings.accentColor && latestSettings.accentColor !== this.settings.accentColor) {
+                    this.applyImmediateChanges('accentColor', latestSettings.accentColor);
+                }
                 this.settings = { ...this.settings, ...latestSettings };
                 this.usage = latestUsage;
-
-                this.applyImmediateChanges('theme', this.settings.theme || 'light');
-                this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
                 this.syncCurrentPlaybackSpeedUI();
 
                 if (this.analyticsUI) this.analyticsUI.update();

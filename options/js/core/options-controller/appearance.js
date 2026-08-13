@@ -5,13 +5,17 @@
 export function applyOptionsAppearanceMethods(OptionsController) {
     OptionsController.prototype.applyImmediateChanges = function applyImmediateChanges(key, value) {
         if (key === 'theme') {
-            console.log('[TimeDash] Applying theme:', value);
-            document.documentElement.setAttribute('data-theme', value);
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current !== value) {
+                document.documentElement.setAttribute('data-theme', value);
+            }
         }
 
         if (key === 'accentColor') {
-            console.log('[TimeDash] Applying accent:', value);
-            this.applyAccentColor(value);
+            const currentAccent = document.documentElement.getAttribute('data-accent');
+            if (currentAccent !== value || /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) {
+                this.applyAccentColor(value);
+            }
         }
     };
 

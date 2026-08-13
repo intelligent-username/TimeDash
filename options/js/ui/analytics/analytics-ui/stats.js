@@ -345,8 +345,11 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             let dayTotal = 0;
             for (const domain of Object.keys(usage)) {
                 if (!restrictedDomains.has(domain)) continue;
-                // Key: "2026-07-09_restricted"
-                dayTotal += usage[domain][`${dateStr}_restricted`] || 0;
+                const domainUsage = usage[domain] || {};
+                const restrictedTime = domainUsage[`${dateStr}_restricted`];
+                const totalDayTime = domainUsage[dateStr] || 0;
+                // Use explicit restricted time, or fallback to total time on that day for this newly restricted site
+                dayTotal += (restrictedTime !== undefined && restrictedTime > 0) ? restrictedTime : totalDayTime;
             }
             values.push(dayTotal);
         }
@@ -422,7 +425,10 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
         for (const domain of Object.keys(usage)) {
             if (!restrictedDomains.has(domain)) continue;
-            const seconds = usage[domain][`${dateStr}_restricted`] || 0;
+            const domainUsage = usage[domain] || {};
+            const restrictedSecs = domainUsage[`${dateStr}_restricted`];
+            const totalSecs = domainUsage[dateStr] || 0;
+            const seconds = (restrictedSecs !== undefined && restrictedSecs > 0) ? restrictedSecs : totalSecs;
             if (seconds > 0) sitesWithTime.push({ domain, todayTime: seconds * 1000 });
         }
 

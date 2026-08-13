@@ -6,10 +6,6 @@ import { showToast } from '../../utils/dom.js';
  */
 export function applyOptionsSaveMethods(OptionsController) {
     OptionsController.prototype.setupAutoSave = function setupAutoSave() {
-        setInterval(() => {
-            if (this.isDirty) this.saveSettings(true);
-        }, 5000);
-
         window.addEventListener('beforeunload', () => {
             if (this.isDirty) this.saveSettings(true);
         });
@@ -33,7 +29,6 @@ export function applyOptionsSaveMethods(OptionsController) {
             }, 1000);
 
             if (!silent) this.showSuccess('Settings saved');
-            chrome.runtime.sendMessage({ type: 'SETTINGS_UPDATED', settings: this.settings });
         } catch (error) {
             console.error(error);
             this.updateSaveStatus('Error saving', true);
@@ -77,6 +72,9 @@ export function applyOptionsSaveMethods(OptionsController) {
         domains
     ) {
         this.restrictedDomains = domains;
+        if (this.analyticsUI && typeof this.analyticsUI.update === 'function') {
+            this.analyticsUI.update();
+        }
     };
 
     OptionsController.prototype.showBanner = function showBanner(message, type = 'info') {

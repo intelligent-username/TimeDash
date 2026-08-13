@@ -9,8 +9,8 @@ Boost your productivity with strict time tracking, site blocking, analytics, adv
 
 ## Features
 
-| | |
-|:---:|:---:|
+|                                |                                |
+|:------------------------------:|:------------------------------:|
 | ![Screenshot 1](imgs/ss/1.png) | ![Screenshot 2](imgs/ss/2.png) |
 | ![Screenshot 3](imgs/ss/3.png) | ![Screenshot 4](imgs/ss/4.png) |
 
