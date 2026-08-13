@@ -55,7 +55,15 @@ class TabTracker {
             this.stopTrackingAllTabs();
 
             const tab = await chrome.tabs.get(tabId);
-            if (tab.url && DomainUtils.shouldTrackUrl(tab.url)) {
+            if (!tab || !tab.url) return;
+
+            const extBlockPrefix = chrome.runtime.getURL('block/block.html');
+            if (tab.url.startsWith(extBlockPrefix)) {
+                await this.checkAndRedirectUnblockedPage(tab);
+                return;
+            }
+
+            if (DomainUtils.shouldTrackUrl(tab.url)) {
                 const domain = DomainUtils.extractDomain(tab.url);
                 const wasBlocked = await this.checkAndHandleBlocking(tab, domain);
                 if (!wasBlocked) {
@@ -69,6 +77,16 @@ class TabTracker {
 
     async handleTabUpdated(tabId, url) {
         try {
+            const extBlockPrefix = chrome.runtime.getURL('block/block.html');
+            if (url && url.startsWith(extBlockPrefix)) {
+                this.stopTrackingTab(tabId);
+                const tab = await chrome.tabs.get(tabId);
+                if (tab) {
+                    await this.checkAndRedirectUnblockedPage(tab);
+                }
+                return;
+            }
+
             if (!DomainUtils.shouldTrackUrl(url)) {
                 this.stopTrackingTab(tabId);
                 return;
@@ -89,6 +107,25 @@ class TabTracker {
             }
         } catch (error) {
             console.error('Error handling tab update:', error);
+        }
+    }
+
+    async checkAndRedirectUnblockedPage(tab) {
+        try {
+            const urlObj = new URL(tab.url);
+            const origUrl = urlObj.searchParams.get('url');
+            const origDomain = urlObj.searchParams.get('domain');
+
+            const domain = origUrl ? DomainUtils.extractDomain(origUrl) : (origDomain || '');
+            if (!domain) return;
+
+            const accessResult = await this.instance.evaluateAccessForDomain(origUrl || `https://${domain}`, domain);
+            if (!accessResult.shouldBlock) {
+                const destination = origUrl || `https://${domain}`;
+                await chrome.tabs.update(tab.id, { url: destination });
+            }
+        } catch (error) {
+            console.error('Error checking unblocked page redirect:', error);
         }
     }
 

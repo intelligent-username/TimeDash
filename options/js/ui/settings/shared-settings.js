@@ -119,6 +119,20 @@ export const sharedSettingsMethods = {
         const resKey = document.getElementById('resetSpeedKey');
         if (resKey) resKey.value = settings.resetSpeedKey || 'Period';
 
+        const helpShortcuts = document.getElementById('helpCurrentShortcuts');
+        if (helpShortcuts) {
+            const formatKey = (k) => {
+                if (k === 'Plus') return '+';
+                if (k === 'Minus') return '-';
+                if (k === 'Period') return '.';
+                return k;
+            };
+            const inc = formatKey(settings.increaseSpeedKey || 'Plus');
+            const dec = formatKey(settings.decreaseSpeedKey || 'Minus');
+            const res = formatKey(settings.resetSpeedKey || 'Period');
+            helpShortcuts.innerHTML = `<code>${inc}</code> / <code>${dec}</code>, and <code>${res}</code>`;
+        }
+
         const paused = document.getElementById('trackingPaused');
         if (paused) paused.checked = !settings.trackingEnabled;
 

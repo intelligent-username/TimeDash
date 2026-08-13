@@ -44,7 +44,9 @@ function applyBackgroundDataMethods(TimeDashBackground) {
     TimeDashBackground.prototype.toggleSiteBlock = async function toggleSiteBlock(domain) {
         if (!domain) return;
 
-        const normalized = domain.toLowerCase().replace(/^www\./, '');
+        const normalized = DomainUtils.normalizeDomain(domain);
+        if (!DomainUtils.isValidDomain(normalized)) return;
+
         const existing = this.ruleManager.rules.get(normalized);
         if (existing && existing.type === 'BLOCKED') {
             this.ruleManager.removeRule(normalized);

@@ -276,10 +276,55 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.handleCommand = async function handleCommand(command) {
         try {
             const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-            if (tabs.length === 0) return;
-            const domain = DomainUtils.extractDomain(tabs[0].url);
-            if (command === 'toggle-tracking') await this.toggleTracking();
-            if (command === 'toggle-block') await this.toggleSiteBlock(domain);
+            if (tabs.length === 0 || !tabs[0].url) return;
+            
+            const activeUrl = tabs[0].url;
+            if (command === 'toggle-tracking') {
+                await this.toggleTracking();
+                return;
+            }
+
+            if (command === 'toggle-block') {
+                let targetDomain = '';
+                const isExtensionPage = activeUrl.startsWith('chrome-extension://') || activeUrl.startsWith('moz-extension://');
+
+                if (isExtensionPage) {
+                    try {
+                        const urlObj = new URL(activeUrl);
+                        const origUrl = urlObj.searchParams.get('url');
+                        const origDomain = urlObj.searchParams.get('domain');
+                        if (origUrl && DomainUtils.shouldTrackUrl(origUrl)) {
+                            targetDomain = DomainUtils.extractDomain(origUrl);
+                        } else if (origDomain && DomainUtils.isValidDomain(origDomain)) {
+                            targetDomain = DomainUtils.normalizeDomain(origDomain);
+                        }
+                    } catch {
+                        // ignore parsing errors
+                    }
+                } else if (DomainUtils.shouldTrackUrl(activeUrl)) {
+                    targetDomain = DomainUtils.extractDomain(activeUrl);
+                }
+
+                if (targetDomain) {
+                    await this.toggleSiteBlock(targetDomain);
+
+                    // If we were on an extension block page and just unblocked, redirect immediately
+                    if (isExtensionPage) {
+                        try {
+                            const urlObj = new URL(activeUrl);
+                            const origUrl = urlObj.searchParams.get('url');
+                            const origDomain = urlObj.searchParams.get('domain');
+                            const isStillBlocked = this.ruleManager.isDomainBlocked(targetDomain);
+                            if (!isStillBlocked) {
+                                const destination = origUrl || `https://${origDomain || targetDomain}`;
+                                await chrome.tabs.update(tabs[0].id, { url: destination });
+                            }
+                        } catch {
+                            // ignore navigation errors
+                        }
+                    }
+                }
+            }
         } catch (error) {
             console.error('Error handling command:', error);
         }
