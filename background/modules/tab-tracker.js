@@ -32,6 +32,18 @@ class TabTracker {
 
         chrome.webNavigation.onCommitted.addListener(async (details) => {
             if (details.frameId !== 0) return;
+
+            const isExtUrl = details.url && (details.url.startsWith('chrome-extension://') || details.url.startsWith('moz-extension://'));
+            if (isExtUrl && (details.url.includes('domain=') || details.url.includes('url='))) {
+                try {
+                    const tab = await chrome.tabs.get(details.tabId);
+                    if (tab) await this.checkAndRedirectUnblockedPage(tab);
+                } catch {
+                    // Tab may have closed
+                }
+                return;
+            }
+
             if (!DomainUtils.shouldTrackUrl(details.url)) return;
             try {
                 const tab = await chrome.tabs.get(details.tabId);
@@ -57,8 +69,8 @@ class TabTracker {
             const tab = await chrome.tabs.get(tabId);
             if (!tab || !tab.url) return;
 
-            const extBlockPrefix = chrome.runtime.getURL('block/block.html');
-            if (tab.url.startsWith(extBlockPrefix)) {
+            const isExtUrl = tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://');
+            if (isExtUrl && (tab.url.includes('domain=') || tab.url.includes('url='))) {
                 await this.checkAndRedirectUnblockedPage(tab);
                 return;
             }
@@ -77,8 +89,8 @@ class TabTracker {
 
     async handleTabUpdated(tabId, url) {
         try {
-            const extBlockPrefix = chrome.runtime.getURL('block/block.html');
-            if (url && url.startsWith(extBlockPrefix)) {
+            const isExtUrl = url && (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://'));
+            if (isExtUrl && (url.includes('domain=') || url.includes('url='))) {
                 this.stopTrackingTab(tabId);
                 const tab = await chrome.tabs.get(tabId);
                 if (tab) {

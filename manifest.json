@@ -20,6 +20,7 @@
         "notifications"
     ],
     "host_permissions": ["<all_urls>"],
+    "incognito": "spanning",
     "background": {
         "service_worker": "background/background.js"
     },
@@ -74,7 +75,22 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["content/overlay.js", "block/block.html"],
+            "resources": [
+                "content/overlay.js",
+                "block/block.html",
+                "block/block.css",
+                "block/comps/block-theme.css",
+                "block/comps/block-components.css",
+                "block/block.js",
+                "block/modules/access.js",
+                "block/modules/ui.js",
+                "utils/storage/defaults.js",
+                "utils/storage/settings.js",
+                "utils/storage/usage.js",
+                "utils/storage/blocking.js",
+                "utils/storage/misc.js",
+                "utils/storage.js"
+            ],
             "matches": ["<all_urls>"]
         }
     ],

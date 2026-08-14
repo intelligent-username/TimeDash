@@ -36,10 +36,11 @@ function applyBlockAccessMethods(BlockPageController) {
 
     BlockPageController.prototype.redirectToOriginalUrl = function redirectToOriginalUrl() {
         try {
-            if (!this.blockedUrl) return;
-            const normalized = this.blockedUrl.startsWith('http')
-                ? this.blockedUrl
-                : `https://${this.blockedUrl}`;
+            const urlToRedirect = this.blockedUrl || (this.blockedDomain ? `https://${this.blockedDomain}` : '');
+            if (!urlToRedirect) return;
+            const normalized = urlToRedirect.startsWith('http')
+                ? urlToRedirect
+                : `https://${urlToRedirect}`;
             const target = new URL(normalized);
             if (!['http:', 'https:'].includes(target.protocol)) return;
             window.location.replace(target.toString());

@@ -1,4 +1,6 @@
 /* Layout & Structure */
+@import './comps/layout-sidebar.css';
+@import './comps/layout-content.css';
 
 body {
     margin: 0;
@@ -40,6 +42,3 @@ body {
     align-self: stretch;
 }
 
-/* Modular Layout Imports */
-@import './comps/layout-sidebar.css';
-@import './comps/layout-content.css';
