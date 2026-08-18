@@ -193,11 +193,12 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
         }
 
         const todayTimeSeconds = await this.getRealTimeUsage(domain, allUsage);
-        return this.ruleManager.evaluateAccess(
+        const result = this.ruleManager.evaluateAccess(
             url,
             { todayTimeSeconds },
             groupUsageSecondsMap,
             settings
         );
+        return { ...result, todayTimeSeconds };
     };
 }

@@ -7,6 +7,7 @@ export const generalSettingsMethods = {
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
             badgeEnabled: 'badgeEnabled',
+            animationsEnabled: 'animationsEnabled',
         });
 
         const trackingCb = document.getElementById('trackingEnabled');
@@ -17,18 +18,8 @@ export const generalSettingsMethods = {
             });
         }
 
-        this.setupThemeToggle();
         this.setupColorPicker('accentColorPicker', 'accentColor');
         this.setupColorPicker('overlayColorPicker', 'overlayColor');
-    },
-
-    setupThemeToggle() {
-        const themeToggle = document.getElementById('themeToggle');
-        if (!themeToggle) return;
-
-        themeToggle.addEventListener('change', () => {
-            this.controller.updateSetting('theme', themeToggle.checked ? 'dark' : 'light');
-        });
     },
 
     setupColorPicker(pickerId, settingKey) {

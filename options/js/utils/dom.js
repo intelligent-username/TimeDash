@@ -34,6 +34,8 @@ export function showToast(message, type = 'info') {
     document.body.appendChild(notification);
 
     setTimeout(() => {
-        notification.remove();
+        notification.classList.add('leaving');
+        notification.addEventListener('transitionend', () => notification.remove(), { once: true });
+        setTimeout(() => notification.remove(), 300); // fallback if transitionend never fires
     }, 5000);
 }

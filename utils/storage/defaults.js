@@ -13,6 +13,7 @@ const STORAGE_DEFAULT_SETTINGS = {
     theme: 'auto',
     accentColor: 'blue',
     overlayColor: 'blue',
+    animationsEnabled: true,
     badgeEnabled: true,
     keyboardShortcutsEnabled: true,
     notificationsEnabled: true,

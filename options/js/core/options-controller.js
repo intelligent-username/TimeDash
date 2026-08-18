@@ -52,6 +52,7 @@ export class OptionsController {
         this.currentlyPlayingUI.setup();
 
         this.setupNavigation();
+        this.setupNavbarThemeToggle();
         this.refreshUI();
         this.setupAutoSave();
         this.setupHelpLinks();
@@ -87,6 +88,7 @@ export class OptionsController {
         this.settingsManager.populateAll(this.settings);
         this.applyImmediateChanges('theme', this.settings.theme || 'light');
         this.applyImmediateChanges('accentColor', this.settings.accentColor || 'blue');
+        this.applyImmediateChanges('animationsEnabled', this.settings.animationsEnabled !== false);
 
         const versionEl = document.querySelector('.version-text');
         if (versionEl) {
@@ -107,7 +109,7 @@ export class OptionsController {
      * @param value
      */
     updateSetting(key, value) {
-        if (key === 'theme' || key === 'accentColor') {
+        if (key === 'theme' || key === 'accentColor' || key === 'animationsEnabled') {
             this.applyImmediateChanges(key, value);
         }
 
@@ -134,6 +136,38 @@ export class OptionsController {
      */
     showToast(message, type) {
         showToast(message, type);
+    }
+
+    /**
+     * Wire the navbar sun/moon theme toggle button.
+     */
+    setupNavbarThemeToggle() {
+        const btn = document.getElementById('navbarThemeToggle');
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            const effective = this.getEffectiveTheme(this.settings.theme);
+            this.updateSetting('theme', effective === 'dark' ? 'light' : 'dark');
+        });
+
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        const onOsChange = () => {
+            if (this.settings.theme === 'auto') this.applyThemeMode('auto');
+        };
+        if (mq.addEventListener) mq.addEventListener('change', onOsChange);
+        else if (mq.addListener) mq.addListener(onOsChange);
+    }
+
+    /**
+     * Resolve a stored theme value to an effective light/dark mode.
+     *
+     * @param {string} value
+     * @returns {string}
+     */
+    getEffectiveTheme(value) {
+        if (value === 'dark') return 'dark';
+        if (value === 'light') return 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 }
 

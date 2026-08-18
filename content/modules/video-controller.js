@@ -202,7 +202,7 @@ class VideoController {
                 case 'toggle-play':
                     if (video.paused) await video.play();
                     else video.pause();
-                    break;
+                    return { success: true, paused: video.paused };
                 case 'pause':
                     video.pause();
                     break;

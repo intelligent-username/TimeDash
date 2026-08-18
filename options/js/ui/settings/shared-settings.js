@@ -76,6 +76,7 @@ export const sharedSettingsMethods = {
             notificationsEnabled: 'notificationsEnabled',
             quotaWarnings: 'quotaWarnings',
             badgeEnabled: 'badgeEnabled',
+            animationsEnabled: 'animationsEnabled',
             currentPlaybackSpeed: 'currentPlaybackSpeed',
             defaultPlaybackSpeed: 'defaultSpeed',
             maxPlaybackSpeed: 'maxSpeed',
@@ -135,12 +136,6 @@ export const sharedSettingsMethods = {
 
         const paused = document.getElementById('trackingPaused');
         if (paused) paused.checked = !settings.trackingEnabled;
-
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            const effectiveTheme = settings.theme === 'dark' ? 'dark' : 'light';
-            themeToggle.checked = effectiveTheme === 'dark';
-        }
 
         const autoPurgeParams = document.getElementById('autoPurgeSettings');
         if (autoPurgeParams)

@@ -9,6 +9,7 @@ export function applyOptionsAppearanceMethods(OptionsController) {
             if (current !== value) {
                 document.documentElement.setAttribute('data-theme', value);
             }
+            this.applyThemeMode(value);
         }
 
         if (key === 'accentColor') {
@@ -17,6 +18,24 @@ export function applyOptionsAppearanceMethods(OptionsController) {
                 this.applyAccentColor(value);
             }
         }
+
+        if (key === 'animationsEnabled') {
+            if (value === false) {
+                document.documentElement.setAttribute('data-reduced-motion', 'true');
+            } else {
+                document.documentElement.removeAttribute('data-reduced-motion');
+            }
+        }
+    };
+
+    OptionsController.prototype.applyThemeMode = function applyThemeMode(value) {
+        const effective =
+            value === 'auto'
+                ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light'
+                : value;
+        document.documentElement.setAttribute('data-theme-mode', effective);
     };
 
     OptionsController.prototype.applyAccentColor = function applyAccentColor(value) {

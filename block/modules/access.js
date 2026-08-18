@@ -54,6 +54,14 @@ function applyBlockAccessMethods(BlockPageController) {
         this.blockedUrl = urlParams.get('url') || '';
         this.blockReason = urlParams.get('reason') || 'blocked';
 
+        // Accurate "time used today" computed by the background at block time
+        // (same function the block decision used). Preferred over re-reading
+        // storage, which can lag the in-memory tracking by up to a batch interval.
+        const used = urlParams.get('used');
+        if (used != null) {
+            this.usedFromUrl = Number(used) || 0;
+        }
+
         if (!this.blockedUrl) {
             const domain = urlParams.get('domain') || 'Unknown Site';
             this.blockedDomain = domain.replace(/^www\./, '');

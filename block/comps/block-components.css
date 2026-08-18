@@ -84,6 +84,30 @@ body {
     justify-content: center;
 }
 
+/* Tiny fade-up entrance on load */
+@keyframes td-fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.block-stats .stat-card {
+    animation: td-fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.block-stats .stat-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+[data-reduced-motion='true'] .block-stats .stat-card {
+    animation: none !important;
+}
+
 .stat-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);

@@ -10,7 +10,10 @@ function applyBlockUiMethods(BlockPageController) {
 
             this.blockStats.count = domainData.blockedToday || 1;
             this.blockStats.timeSpent = domainData.cumulative || 0;
-            this.blockStats.todayTime = domainData[today] || 0;
+            // Prefer the accurate value passed from the background at block time;
+            // fall back to storage (e.g. on a manual refresh without the param).
+            this.blockStats.todayTime =
+                this.usedFromUrl != null ? this.usedFromUrl : domainData[today] || 0;
         } catch (error) {
             console.error('Failed to load block data:', error);
         }

@@ -170,6 +170,12 @@ export const uiMethods = {
         const root = document.documentElement;
         root.setAttribute('data-theme', this.settings.theme || 'auto');
 
+        if (this.settings.animationsEnabled === false) {
+            root.setAttribute('data-reduced-motion', 'true');
+        } else {
+            root.removeAttribute('data-reduced-motion');
+        }
+
         const accent = this.settings.accentColor || 'blue';
         const isCustomHex =
             typeof accent === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(accent);

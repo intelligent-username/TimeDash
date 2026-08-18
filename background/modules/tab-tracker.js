@@ -250,9 +250,21 @@ class TabTracker {
                 console.error('Failed to increment block count:', error);
             }
 
+            // Flush in-memory tracking time to storage so the block page shows
+            // the accurate usage total (otherwise it reads up to 10s behind and
+            // the floored minute display is off by one).
+            try {
+                await this.instance.processPendingUpdates();
+            } catch (error) {
+                console.error('Failed to flush usage before blocking:', error);
+            }
+
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
-                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}`;
+                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}` +
+                (accessResult.todayTimeSeconds != null
+                    ? `&used=${Math.round(accessResult.todayTimeSeconds)}`
+                    : '');
             await new Promise((resolve) => setTimeout(resolve, 50));
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
             return true;

@@ -14,12 +14,12 @@
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-disabled: #94a3b8;
-    --background: #f1f5f9;
-    --surface: #ffffff;
-    --surface-elevated: #f8fafc;
-    --border: #e2e8f0;
-    --shadow: rgba(0, 0, 0, 0.03);
-    --shadow-elevated: rgba(0, 0, 0, 0.06);
+    --background: #e6eaf0;
+    --surface: #f4f6fa;
+    --surface-elevated: #fafbfd;
+    --border: #d3dae3;
+    --shadow: rgba(0, 0, 0, 0.05);
+    --shadow-elevated: rgba(0, 0, 0, 0.08);
 
     /* Sizing */
     --radius: 12px;
@@ -41,12 +41,12 @@ html[data-theme='light'],
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-disabled: #94a3b8;
-    --background: #f1f5f9;
-    --surface: #ffffff;
-    --surface-elevated: #f8fafc;
-    --border: #e2e8f0;
-    --shadow: rgba(0, 0, 0, 0.03);
-    --shadow-elevated: rgba(0, 0, 0, 0.06);
+    --background: #e6eaf0;
+    --surface: #f4f6fa;
+    --surface-elevated: #fafbfd;
+    --border: #d3dae3;
+    --shadow: rgba(0, 0, 0, 0.05);
+    --shadow-elevated: rgba(0, 0, 0, 0.08);
 }
 
 /* Dark Theme */

@@ -53,8 +53,24 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                     frameId: Number.isInteger(frameId) ? frameId : undefined,
                 });
 
-                if (!res || !res.success) showToast('Could not control video', 'error');
-                this.refreshNow();
+                if (!res || !res.success) {
+                    showToast('Could not control video', 'error');
+                    this.refreshNow();
+                    return;
+                }
+
+                if (action === 'toggle-play') {
+                    // Set the label from the authoritative paused state returned by
+                    // the content script, so it reflects reality immediately.
+                    const toggleBtn = list.querySelector(
+                        `.currently-playing-toggle-btn[data-video-id="${videoId}"]`
+                    );
+                    if (toggleBtn && typeof res.paused === 'boolean') {
+                        toggleBtn.textContent = res.paused ? 'Play' : 'Pause';
+                    }
+                } else {
+                    this.refreshNow();
+                }
             } catch {
                 showToast('Action failed', 'error');
             }

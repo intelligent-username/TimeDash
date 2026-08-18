@@ -105,7 +105,8 @@ input.modern-input.short[type='number']:focus::-webkit-inner-spin-button {
     height: 18px;
     width: 18px;
     left: 3px;
-    bottom: 3px;
+    top: 50%;
+    transform: translateY(-50%);
     background-color: white;
     transition:
         transform 0.4s,
@@ -131,7 +132,7 @@ input:checked:focus-visible + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(20px);
+    transform: translate(20px, -50%);
 }
 
 .slider.round {
@@ -140,19 +141,4 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
-}
-
-.theme-switch .slider.round:before {
-    content: '☀';
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    color: #b45309;
-    line-height: 1;
-}
-
-.theme-switch input:checked + .slider.round:before {
-    content: '☾';
-    color: #475569;
 }

@@ -8,7 +8,9 @@ class BlockPageController {
         this.blockStats = {
             count: 0,
             timeSpent: 0,
+            todayTime: 0,
         };
+        this.usedFromUrl = null;
 
         this.motivationalQuotes = [
             {
@@ -86,6 +88,11 @@ class BlockPageController {
         if (settings) {
             document.documentElement.setAttribute('data-theme', settings.theme || 'auto');
             document.documentElement.setAttribute('data-accent', settings.accentColor || 'blue');
+            if (settings.animationsEnabled === false) {
+                document.documentElement.setAttribute('data-reduced-motion', 'true');
+            } else {
+                document.documentElement.removeAttribute('data-reduced-motion');
+            }
         }
     }
 

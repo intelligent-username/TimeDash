@@ -269,16 +269,14 @@
     animation: td-popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* ── Reduced motion ──────────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-    .popup-container,
-    .current-site,
-    .quick-stats,
-    .top-sites,
-    .popup-footer,
-    .site-item,
-    .stat-value {
-        animation: none !important;
-        transition-duration: 0.01ms !important;
-    }
+/* ── Reduced motion (in-extension setting) ───────────────────── */
+[data-reduced-motion='true'] .popup-container,
+[data-reduced-motion='true'] .current-site,
+[data-reduced-motion='true'] .quick-stats,
+[data-reduced-motion='true'] .top-sites,
+[data-reduced-motion='true'] .popup-footer,
+[data-reduced-motion='true'] .site-item,
+[data-reduced-motion='true'] .stat-value {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
 }

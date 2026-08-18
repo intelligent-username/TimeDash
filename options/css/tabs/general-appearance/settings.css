@@ -15,17 +15,6 @@
     font-size: 0.95rem;
 }
 
-.theme-toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-sm);
-}
-
-.theme-toggle-row .setting-label-block {
-    margin-bottom: 0;
-}
-
 .appearance-heading {
     font-size: 1.2rem;
 }

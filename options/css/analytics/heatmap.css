@@ -189,7 +189,7 @@
 }
 
 .heatmap-cell[data-level='0'] {
-    background: #e5e7eb;
+    background: #d9dee5;
 }
 
 html[data-theme='dark'] .heatmap-cell[data-level='0'],
