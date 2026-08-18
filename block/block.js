@@ -14,38 +14,38 @@ class BlockPageController {
 
         this.motivationalQuotes = [
             {
-                quote: 'The way to get started is to quit talking and begin doing.',
-                author: 'Walt Disney',
+                quote: I18n.t('quote1'),
+                author: I18n.t('quote1Author'),
             },
-            { quote: 'Be productive instead of just being busy.', author: 'Tim Ferriss' },
+            { quote: I18n.t('quote2'), author: I18n.t('quote2Author') },
             {
-                quote: 'You are never too old to set another goal or to dream a new dream.',
-                author: 'C.S. Lewis',
+                quote: I18n.t('quote3'),
+                author: I18n.t('quote3Author'),
             },
-            { quote: 'The future depends on what you do today.', author: 'Mahatma Gandhi' },
+            { quote: I18n.t('quote4'), author: I18n.t('quote4Author') },
             {
-                quote: "Don't watch the clock; do what it does. Keep going.",
-                author: 'Sam Levenson',
-            },
-            {
-                quote: 'Success is the sum of small efforts repeated day in and day out.',
-                author: 'Robert Collier',
+                quote: I18n.t('quote5'),
+                author: I18n.t('quote5Author'),
             },
             {
-                quote: 'The only way to do great work is to love what you do.',
-                author: 'Steve Jobs',
+                quote: I18n.t('quote6'),
+                author: I18n.t('quote6Author'),
             },
-            { quote: "Believe you can and you're halfway there.", author: 'Theodore Roosevelt' },
+            {
+                quote: I18n.t('quote7'),
+                author: I18n.t('quote7Author'),
+            },
+            { quote: I18n.t('quote8'), author: I18n.t('quote8Author') },
         ];
 
         this.productivityTips = [
-            'Try the Pomodoro Technique: Work for 25 minutes, then take a 5-minute break.',
-            'Create a distraction-free workspace to improve concentration.',
-            'Use the 2-minute rule: If it takes less than 2 minutes, do it now.',
-            'Block time in your calendar for important tasks.',
-            'Take regular breaks to maintain high productivity levels.',
-            'Set specific, measurable goals for each work session.',
-            'Keep a notepad nearby to jot down random thoughts that pop up.',
+            I18n.t('tip1'),
+            I18n.t('tip2'),
+            I18n.t('tip3'),
+            I18n.t('tip4'),
+            I18n.t('tip5'),
+            I18n.t('tip6'),
+            I18n.t('tip7'),
         ];
 
         this.init();

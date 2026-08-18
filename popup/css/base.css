@@ -17,4 +17,10 @@ body {
     width: 400px;
     max-height: 800px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.popup-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }

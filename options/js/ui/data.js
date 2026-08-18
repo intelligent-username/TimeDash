@@ -61,10 +61,10 @@ export class DataManager {
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.updateStorageUsage();
-            this.controller.showSuccess('Storage compacted successfully');
+            this.controller.showSuccess(chrome.i18n.getMessage('storageCompacted'));
         } catch (error) {
             console.error('Failed to compact storage:', error);
-            this.controller.showError('Failed to compact storage');
+            this.controller.showError(chrome.i18n.getMessage('failedCompactStorage'));
         }
     }
 
@@ -101,7 +101,7 @@ export class DataManager {
                 } else {
                     resultsDiv.style.display = 'block';
                     resultsDiv.innerHTML =
-                        '<div style="padding: 8px; color: var(--text-secondary);">No matches found</div>';
+                        `<div style="padding: 8px; color: var(--text-secondary);">${chrome.i18n.getMessage('noMatchesFound')}</div>`;
                 }
             });
 
@@ -196,10 +196,10 @@ export class DataManager {
             a.click();
             URL.revokeObjectURL(url);
 
-            this.controller.showSuccess('Data exported successfully');
+            this.controller.showSuccess(chrome.i18n.getMessage('dataExportedSuccess'));
         } catch (error) {
             console.error('Failed to export data:', error);
-            this.controller.showError('Failed to export data');
+            this.controller.showError(chrome.i18n.getMessage('failedExportData'));
         }
     }
 
@@ -218,15 +218,15 @@ export class DataManager {
 
             if (!modal || !title || !msg || !appendBtn || !replaceBtn || !cancelBtn) {
                 const choice = confirm(
-                    'Should the imported data be appended to the currently-existing data or replace it?\n\nClick OK to Append.\nClick Cancel to Replace.'
+                    chrome.i18n.getMessage('importDataPrompt')
                 );
                 resolve(choice ? 'merge' : 'overwrite');
                 return;
             }
 
-            title.textContent = 'Import Data';
+            title.textContent = chrome.i18n.getMessage('importData');
             msg.textContent =
-                'Should the imported data be appended to the currently-existing data or replace it?';
+                chrome.i18n.getMessage('importDataMessage');
 
             modal.classList.add('show');
 
@@ -453,11 +453,11 @@ export class DataManager {
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.controller.showSuccess(
-                `Data ${importMode === 'merge' ? 'appended' : 'replaced'} successfully`
+                chrome.i18n.getMessage(importMode === 'merge' ? 'dataAppended' : 'dataReplaced')
             );
         } catch (error) {
             console.error('Failed to import:', error);
-            this.controller.showError('Failed to import data');
+            this.controller.showError(chrome.i18n.getMessage('failedImportData'));
         } finally {
             event.target.value = '';
         }
@@ -467,17 +467,17 @@ export class DataManager {
      *
      */
     async resetSettings() {
-        if (!confirm('Reset ALL settings and data? This cannot be undone.')) return;
+        if (!confirm(chrome.i18n.getMessage('resetAllConfirm'))) return;
 
         try {
             await this.controller.storageManager.clearAllData();
 
             await this.controller.loadAllData();
             this.controller.refreshUI();
-            this.controller.showSuccess('Settings reset to defaults');
+            this.controller.showSuccess(chrome.i18n.getMessage('settingsResetDefaults'));
         } catch (error) {
             console.error('Failed to reset settings:', error);
-            this.controller.showError('Failed to reset settings');
+            this.controller.showError(chrome.i18n.getMessage('failedResetSettings'));
         }
     }
 }

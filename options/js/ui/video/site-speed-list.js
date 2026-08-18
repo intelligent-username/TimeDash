@@ -59,7 +59,7 @@ export class SiteSpeedList {
             .split('/')[0];
         const speed = speedInput ? parseFloat(speedInput.value) : 1.0;
 
-        if (!domain) return showToast('Invalid domain', 'error');
+        if (!domain) return showToast(chrome.i18n.getMessage('msgInvalidDomain'), 'error');
 
         try {
             const res = await chrome.runtime.sendMessage({ type: 'SET_SITE_SPEED', domain, speed });
@@ -70,7 +70,7 @@ export class SiteSpeedList {
                 showToast(`Speed set for ${domain}`, 'success');
             }
         } catch {
-            showToast('Failed to set speed', 'error');
+            showToast(chrome.i18n.getMessage('failedSetSpeed'), 'error');
         }
     }
 
@@ -81,11 +81,11 @@ export class SiteSpeedList {
     async handleAction(e) {
         if (e.target.closest('.remove-speed')) {
             const domain = e.target.closest('.remove-speed').dataset.domain;
-            if (confirm(`Remove custom speed for ${domain}?`)) {
+            if (confirm(chrome.i18n.getMessage('removeDomainConfirm', [domain]))) {
                 await chrome.runtime.sendMessage({ type: 'REMOVE_SITE_SPEED', domain });
                 delete this.siteSpeeds[domain];
                 this.render();
-                showToast('Removed', 'success');
+                showToast(chrome.i18n.getMessage('speedUpdated'), 'success');
             }
         }
     }
@@ -100,7 +100,7 @@ export class SiteSpeedList {
             const speed = parseFloat(e.target.value);
             await chrome.runtime.sendMessage({ type: 'SET_SITE_SPEED', domain, speed });
             this.siteSpeeds[domain] = speed;
-            showToast('Speed updated', 'success');
+            showToast(chrome.i18n.getMessage('speedUpdated'), 'success');
         }
     }
 
@@ -113,7 +113,7 @@ export class SiteSpeedList {
 
         const speeds = Object.entries(this.siteSpeeds);
         if (speeds.length === 0) {
-            container.innerHTML = '<div class="empty-state">No custom speeds.</div>';
+            container.innerHTML = `<div class="empty-state">${chrome.i18n.getMessage('noCustomSpeeds')}</div>`;
             return;
         }
 

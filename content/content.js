@@ -78,7 +78,7 @@ class TimeDashContent {
 
             if (this.ui) this.ui.updateSettings(this.settings);
         } catch (error) {
-            if (error.message && error.message.includes('Extension context invalidated')) {
+            if (error.message && error.message.includes(chrome.i18n.getMessage('contextInvalidated'))) {
                 this.contextValid = false;
                 return;
             }
@@ -111,7 +111,7 @@ class TimeDashContent {
                 speed: this.currentSpeed,
             });
         } catch (error) {
-            if (error.message?.includes('Extension context invalidated')) {
+            if (error.message?.includes(chrome.i18n.getMessage('contextInvalidated'))) {
                 this.handleOrphanedState();
                 return;
             }

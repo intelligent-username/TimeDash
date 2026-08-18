@@ -35,7 +35,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                         type: 'FOCUS_VIDEO_TAB',
                         tabId,
                     });
-                    if (!focusRes || !focusRes.success) showToast('Could not focus tab', 'error');
+                    if (!focusRes || !focusRes.success) showToast(chrome.i18n.getMessage('couldNotFocusTab'), 'error');
                     return;
                 }
 
@@ -54,7 +54,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 });
 
                 if (!res || !res.success) {
-                    showToast('Could not control video', 'error');
+                    showToast(chrome.i18n.getMessage('couldNotControlVideo'), 'error');
                     this.refreshNow();
                     return;
                 }
@@ -72,7 +72,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                     this.refreshNow();
                 }
             } catch {
-                showToast('Action failed', 'error');
+                showToast(chrome.i18n.getMessage('actionFailed'), 'error');
             }
         });
 
@@ -95,7 +95,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 frameId: Number.isInteger(frameId) ? frameId : undefined,
             });
 
-            if (!res || !res.success) showToast('Seek failed', 'error');
+            if (!res || !res.success) showToast(chrome.i18n.getMessage('seekFailed'), 'error');
             this.refreshNow();
         });
     };
@@ -129,13 +129,13 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 12000
             );
             if (!refreshResponse || refreshResponse.success === false)
-                showToast('Video refresh failed', 'error');
+                showToast(chrome.i18n.getMessage('videoRefreshFailed'), 'error');
             if (refreshResponse && Array.isArray(refreshResponse.sessions)) {
                 this.render(refreshResponse.sessions);
                 return;
             }
         } catch {
-            showToast('Video refresh failed', 'error');
+            showToast(chrome.i18n.getMessage('videoRefreshFailed'), 'error');
         }
 
         await this.refreshNow(true);
@@ -154,7 +154,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
             );
             if (!response || response.error) {
                 list.innerHTML =
-                    '<div class="analytics-empty-state">Failed to load active videos.</div>';
+                    `<div class="analytics-empty-state">${chrome.i18n.getMessage('failedLoadVideos')}</div>`;
                 return;
             }
 
@@ -162,7 +162,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
             this.render(sessions);
         } catch {
             list.innerHTML =
-                '<div class="analytics-empty-state">Unable to load active videos.</div>';
+                `<div class="analytics-empty-state">${chrome.i18n.getMessage('unableLoadVideos')}</div>`;
         }
     };
 }

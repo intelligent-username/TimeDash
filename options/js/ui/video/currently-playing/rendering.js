@@ -39,13 +39,13 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
             (item) => !this.dismissedKeys.has(this.getVideoKey(item))
         );
         if (visibleItems.length === 0) {
-            list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
+            list.innerHTML = `<div class="analytics-empty-state">${chrome.i18n.getMessage('noActiveVideos')}</div>`;
             return;
         }
 
         list.innerHTML = visibleItems.map((item) => this.renderItem(item)).join('');
         if (!list.innerHTML)
-            list.innerHTML = '<div class="analytics-empty-state">No active videos found.</div>';
+            list.innerHTML = `<div class="analytics-empty-state">${chrome.i18n.getMessage('noActiveVideos')}</div>`;
     };
 
     CurrentlyPlayingUI.prototype.renderItem = function renderItem(item) {
@@ -114,7 +114,7 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
             const base = host.split('.').slice(-2, -1)[0] || host;
             return base.replace(/[-_]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
         } catch {
-            return 'Unknown source';
+            return chrome.i18n.getMessage('unknownSource');
         }
     };
 
@@ -137,7 +137,7 @@ export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
 
     CurrentlyPlayingUI.prototype.cleanTitle = function cleanTitle(title) {
         const raw = String(title || '').trim();
-        if (!raw) return 'Untitled video';
+        if (!raw) return chrome.i18n.getMessage('untitledVideo');
         return raw
             .replace(/\s*[-|•|·]\s*YouTube\s*$/i, '')
             .replace(/\s*[-|•|·]\s*Vimeo\s*$/i, '')

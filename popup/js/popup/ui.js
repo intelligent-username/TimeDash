@@ -28,8 +28,8 @@ export const uiMethods = {
             !this.currentTab.url ||
             !PopupHelpers.shouldTrackUrl(this.currentTab.url)
         ) {
-            siteName.textContent = 'Non-trackable page';
-            siteTime.textContent = 'Time tracking disabled for this page';
+            siteName.textContent = I18n.t('nonTrackablePage');
+            siteTime.textContent = I18n.t('trackingDisabledPage');
             siteFavicon.style.display = 'none';
             blockBtn.style.display = 'none';
             return;
@@ -43,14 +43,14 @@ export const uiMethods = {
 
         siteName.textContent = PopupHelpers.capitalize(domain);
         siteTime.textContent = domainData
-            ? `Today: ${PopupHelpers.formatDetailedTime(domainData.todayTime)}`
-            : 'No time recorded today';
+            ? I18n.t('todayTimeLabel', [PopupHelpers.formatDetailedTime(domainData.todayTime)])
+            : I18n.t('noTimeToday');
 
         siteFavicon.src = PopupHelpers.getFaviconUrl(domain);
         siteFavicon.style.display = 'block';
 
         const isBlocked = (domainData && domainData.isBlocked) || false;
-        blockBtn.textContent = isBlocked ? 'Unblock Site' : 'Block Site';
+        blockBtn.textContent = isBlocked ? I18n.t('unblockSite') : I18n.t('blockSite');
         blockBtn.className = `action-btn block-btn ${isBlocked ? 'blocked' : ''}`;
     },
 
@@ -72,7 +72,7 @@ export const uiMethods = {
 
         if (!this.usageData || !this.usageData.domains || this.usageData.domains.length === 0) {
             sitesList.innerHTML =
-                '<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>No sites tracked yet.<br>Start browsing to see your usage!</p></div>';
+                `<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>${I18n.t('noSitesTracked').replace(/\n/g, '<br>')}</p></div>`;
             return;
         }
 
@@ -101,7 +101,7 @@ export const uiMethods = {
 
         if (topSites.length === 0) {
             sitesList.innerHTML =
-                '<div class="popup-empty-state"><p>No activity today yet.<br>Your tracked sites will appear here.</p></div>';
+                `<div class="popup-empty-state"><p>${I18n.t('noActivityToday').replace(/\n/g, '<br>')}</p></div>`;
             return;
         }
 
@@ -132,7 +132,7 @@ export const uiMethods = {
                     <div class="site-progress-track">
                         <div class="site-progress-fill${isOver ? ' site-progress-over' : ''}" style="width:${pct}%"></div>
                     </div>
-                    <span class="site-progress-label">${pct}% of ${limitMinutes}m</span>`;
+                    <span class="site-progress-label">${I18n.t('progressOfLimit', [pct, limitMinutes])}</span>`;
                 siteItem.appendChild(bar);
             }
 
@@ -152,10 +152,12 @@ export const uiMethods = {
         const totalSites =
             this.usageData && this.usageData.domains ? this.usageData.domains.length : 0;
 
-        trackingStatus.textContent = isTracking ? '● Tracking Active' : '● Tracking Paused';
+        trackingStatus.textContent = isTracking
+            ? I18n.t('trackingActive')
+            : I18n.t('trackingPaused');
         trackingStatus.className = `tracking-status ${isTracking ? 'active' : 'paused'}`;
-        sitesCount.textContent = `${totalSites} sites tracked`;
-        toggleBtn.textContent = isTracking ? 'Pause Tracking' : 'Resume Tracking';
+        sitesCount.textContent = I18n.t('sitesTracked', [totalSites]);
+        toggleBtn.textContent = isTracking ? I18n.t('pauseTracking') : I18n.t('resumeTracking');
         toggleBtn.className = `toggle-btn ${isTracking ? '' : 'paused'}`;
     },
 

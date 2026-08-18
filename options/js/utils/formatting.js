@@ -2,7 +2,7 @@
  * Format milliseconds into readable duration
  * @param {number} ms - Time in milliseconds
  * @param compact
- * @returns {string} Formatted string (e.g., "2h 30m" or "45m")
+ * @returns {string} Formatted string (e.g., "45m")
  */
 export function formatTime(ms, compact = false) {
     return TimeUtils.formatMilliseconds(ms, compact);

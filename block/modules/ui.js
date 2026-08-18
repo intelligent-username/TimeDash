@@ -38,29 +38,26 @@ function applyBlockUiMethods(BlockPageController) {
         const blockIcon = document.querySelector('.block-icon');
 
         if (this.blockReason === 'restricted') {
-            if (headingEl) headingEl.textContent = 'Daily Limit Reached';
+            if (headingEl) headingEl.textContent = I18n.t('dailyLimitReached');
             if (reasonEl)
-                reasonEl.textContent = `You've used all your allotted time for ${this.blockedDomain} today. Access will reset at midnight.`;
-            document.title = `${this.blockedDomain} - Limit Reached`;
+                reasonEl.textContent = I18n.t('restrictedReason', [this.blockedDomain]);
+            document.title = I18n.t('limitReachedTitle', [this.blockedDomain]);
             this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
-            this.updateStatLabel('blockCount', 'Time used today');
+            this.updateStatLabel('blockCount', I18n.t('timeUsedToday'));
             if (blockIcon) blockIcon.style.color = '#f59e0b';
         } else if (this.blockReason === 'restricted_group') {
-            if (headingEl) headingEl.textContent = 'Group Limit Reached';
-            if (reasonEl)
-                reasonEl.textContent =
-                    'Your budget group has used all its allotted time today. Access will reset at midnight.';
-            document.title = 'Group Limit Reached';
+            if (headingEl) headingEl.textContent = I18n.t('groupLimitReached');
+            if (reasonEl) reasonEl.textContent = I18n.t('groupLimitReason');
+            document.title = I18n.t('groupLimitReachedTitle');
             this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
-            this.updateStatLabel('blockCount', 'Time used today');
+            this.updateStatLabel('blockCount', I18n.t('timeUsedToday'));
             if (blockIcon) blockIcon.style.color = '#f59e0b';
         } else {
-            if (headingEl) headingEl.textContent = 'This site is blocked';
-            if (reasonEl)
-                reasonEl.textContent = 'This site is on your block list to reduce distractions.';
-            document.title = `${this.blockedDomain} is blocked`;
+            if (headingEl) headingEl.textContent = I18n.t('blockedSite');
+            if (reasonEl) reasonEl.textContent = I18n.t('blockReasonDefault');
+            document.title = I18n.t('blockedTitleDomain', [this.blockedDomain]);
             this.updateStat('blockCount', this.blockStats.count);
-            this.updateStatLabel('blockCount', 'Times blocked today');
+            this.updateStatLabel('blockCount', I18n.t('timesBlockedToday'));
         }
 
         this.updateStat('timeSpent', this.formatTime(this.blockStats.timeSpent));

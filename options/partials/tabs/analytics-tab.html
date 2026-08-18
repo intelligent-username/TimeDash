@@ -9,7 +9,7 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsTodayTotal">0m</div>
-            <div class="stat-label">Time Today</div>
+            <span data-i18n="timeToday">Time Today</span>
         </div>
     </div>
     <div class="stat-card">
@@ -20,7 +20,7 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsWeekAverage">0m</div>
-            <div class="stat-label">Daily Average</div>
+            <span data-i18n="dailyAverage">Daily Average</span>
         </div>
     </div>
     <div class="stat-card">
@@ -33,7 +33,7 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsTotalTime">0h</div>
-            <div class="stat-label">All Time</div>
+            <span data-i18n="allTime">All Time</span>
         </div>
     </div>
     <div class="stat-card">
@@ -44,14 +44,14 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsNetChange">0m</div>
-            <div class="stat-label">from last week to this week</div>
+            <span data-i18n="fromLastWeek">from last week to this week</span>
         </div>
     </div>
 </div>
 
 <div class="content-card large-card">
     <div class="card-header">
-        <h2>Usage Trends</h2>
+        <h2 data-i18n="usageTrends">Usage Trends</h2>
         <div class="chart-controls">
             <div
                 class="chart-options"
@@ -73,7 +73,7 @@
                         id="rollingAverageToggle"
                         style="width: 14px; height: 14px"
                     />
-                    Rolling Average
+                    <span data-i18n="rollingAverage">Rolling Average</span>
                 </label>
             </div>
             <div class="chart-period-selector" role="group" aria-label="Chart Range">
@@ -139,7 +139,7 @@
             <div class="chart-x-axis" id="chartXAxis"></div>
             <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none">
                 <div class="earliest-line"></div>
-                <span class="earliest-label">Tracking started</span>
+                <span data-i18n="trackingStarted">Tracking started</span>
             </div>
         </div>
     </div>
@@ -148,8 +148,8 @@
 <div class="content-card">
     <div class="card-header">
         <div style="display: flex; align-items: center; gap: var(--spacing-sm)">
-            <h2 style="line-height: 1">Activity Heatmap</h2>
-            <span class="heatmap-sites-count" id="heatmapSitesCount">0 Sites Tracked</span>
+            <h2 data-i18n="activityHeatmap">Activity Heatmap</h2>
+            <span class="heatmap-sites-count" id="heatmapSitesCount" data-i18n="zeroSitesTrackedAnalytics">0 Sites Tracked</span>
         </div>
         <div class="heatmap-year-nav" id="heatmapYearNav">
             <button
@@ -192,8 +192,8 @@
                 class="modern-select"
                 aria-label="Filter heatmap by site type"
             >
-                <option value="all">All Sites</option>
-                <option value="restricted">Restricted Sites Only</option>
+                <option value="all" data-i18n="allSites">All Sites</option>
+                <option value="restricted" data-i18n="restrictedSites">Restricted Sites Only</option>
             </select>
         </div>
     </div>
@@ -202,13 +202,13 @@
             <div class="heatmap-months" id="heatmapMonths"></div>
             <div class="heatmap-grid-wrapper">
                 <div class="heatmap-days">
-                    <span>Sun</span>
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span>Fri</span>
-                    <span>Sat</span>
+                    <span data-i18n="sun">Sun</span>
+                    <span data-i18n="mon">Mon</span>
+                    <span data-i18n="tue">Tue</span>
+                    <span data-i18n="wed">Wed</span>
+                    <span data-i18n="thu">Thu</span>
+                    <span data-i18n="fri">Fri</span>
+                    <span data-i18n="sat">Sat</span>
                 </div>
                 <div class="heatmap-grid" id="heatmapGrid"></div>
             </div>
@@ -223,8 +223,8 @@
         style="display: flex; justify-content: space-between; align-items: center"
     >
         <div>
-            <h2>Restricted Time per Day</h2>
-            <p class="card-subheader">Time spent on non-blocked websites with a daily time limit</p>
+            <h2 data-i18n="restrictedTime">Restricted Time per Day</h2>
+            <p class="card-subheader" data-i18n="restrictedTimeSub">Time spent on non-blocked websites with a daily time limit</p>
         </div>
         <div
             class="chart-period-selector restriction-chart-controls"
@@ -245,7 +245,7 @@
         class="card-header"
         style="display: flex; justify-content: space-between; align-items: center"
     >
-        <h2 id="topSitesHeading">Top Sites Today</h2>
+        <h2 data-i18n="topSitesToday">Top Sites Today</h2>
         <div class="setting-group" style="margin: 0; display: flex; align-items: center; gap: 8px">
             <label
                 for="trackingFrequency"
@@ -258,12 +258,12 @@
                     gap: 4px;
                 "
             >
-                Tracking Interval (s)
+                <span data-i18n="trackingInterval">Tracking Interval (s)</span>
                 <span
                     class="info-tooltip"
                     title="How often the extension updates your time logs. Lower values are more accurate but use more resources."
-                    >?</span
-                >
+                    data-i18n-html="trackingIntervalTooltip">?
+                </span>
             </label>
             <input
                 type="number"
@@ -279,7 +279,7 @@
     </div>
     <div class="card-body">
         <div class="analytics-sites-list" id="analyticsTopSites">
-            <div class="analytics-empty-state">No activity recorded today.</div>
+            <div class="analytics-empty-state" data-i18n="noActivity">No activity recorded today.</div>
         </div>
     </div>
 </div>

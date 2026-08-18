@@ -42,7 +42,7 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
 
     const iconWrapper = document.createElement('button');
     iconWrapper.className = 'group-icon-picker-btn';
-    iconWrapper.title = 'Change group icon';
+    iconWrapper.title = I18n.t('changeGroupIcon');
     iconWrapper.type = 'button';
     iconWrapper.innerHTML = GROUP_ICONS[group.icon] || GROUP_ICONS.folder;
 
@@ -105,11 +105,11 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
 
     const suffixSpan = document.createElement('span');
     suffixSpan.className = 'limit-suffix';
-    suffixSpan.textContent = 'min/day';
+    suffixSpan.textContent = I18n.t('minPerDay');
 
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'rule-delete-btn icon-btn';
-    deleteBtn.title = 'Delete group';
+    deleteBtn.title = I18n.t('deleteGroup');
     deleteBtn.innerHTML = `
         <svg class="icon-trash" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="3 6 5 6 21 6"></polyline>
@@ -151,7 +151,7 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
             controller: context.controller,
             onSaveLimit: async (newLimit) => context.addSiteRule(domain, 'RESTRICTED', newLimit),
             onDelete: (d) => context.removeDomainFromGroup(group.id, d),
-            deleteTitle: 'Remove domain from group',
+            deleteTitle: I18n.t('removeDomainFromGroup'),
             groupId: group.id,
             onDragOut: (d) => context.removeDomainFromGroup(group.id, d),
         });
@@ -165,12 +165,12 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
     const addInput = document.createElement('input');
     addInput.type = 'text';
     addInput.className = 'modern-input';
-    addInput.placeholder = 'Add domain to group...';
+    addInput.placeholder = I18n.t('addDomainToGroup');
     addInput.style.flex = '1';
 
     const addBtn = document.createElement('button');
     addBtn.className = 'btn btn-secondary btn-small';
-    addBtn.textContent = 'Add';
+    addBtn.textContent = I18n.t('addLabel');
     const doAdd = () => {
         const domain = addInput.value.trim();
         if (domain) {

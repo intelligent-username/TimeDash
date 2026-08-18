@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="color-scheme" content="light dark" />
-        <title>TimeDash Settings</title>
+        <title data-i18n="optionsTitle">TimeDash Settings</title>
         <link rel="stylesheet" href="options.css" />
         <style>
             .dashboard-container {
@@ -17,7 +17,7 @@
     </head>
 
     <body>
-        <div class="dashboard-container" role="region" aria-label="TimeDash Dashboard">
+        <div class="dashboard-container" role="region" aria-label="TimeDash Dashboard" data-i18n-aria-label="dashboardAria">
             <div id="optionsSidebarMount"></div>
 
             <main class="main-content">
@@ -34,6 +34,8 @@
                             id="navbarThemeToggle"
                             aria-label="Toggle theme"
                             title="Toggle theme"
+                            data-i18n-aria-label="toggleTheme"
+                            data-i18n-title="toggleTheme"
                         >
                             <svg
                                 class="theme-icon-sun"

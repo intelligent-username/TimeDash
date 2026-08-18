@@ -110,12 +110,12 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'CREATE_GROUP': {
                     const { name, domains = [], timeLimitMinutes } = message;
                     if (!name) {
-                        sendResponse({ success: false, error: 'Group name is required' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameRequired') });
                         break;
                     }
                     const existing = this.ruleManager.getGroupByName(name);
                     if (existing) {
-                        sendResponse({ success: false, error: 'Group name already exists' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameExists') });
                         break;
                     }
                     let conflict = null;
@@ -135,7 +135,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     if (conflict) {
                         sendResponse({
                             success: false,
-                            error: `Domain already belongs to group "${conflict}"`,
+                            error: chrome.i18n.getMessage('msgDomainInOtherGroup', [conflict]),
                         });
                         break;
                     }
@@ -154,7 +154,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.id && !g.deletedAt
                     );
                     if (!target) {
-                        sendResponse({ success: false, error: 'Group not found' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
                         break;
                     }
                     if (message.name !== undefined) {
@@ -162,7 +162,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                             (g) => g.id !== message.id && !g.deletedAt && g.name === message.name
                         );
                         if (nameConflict) {
-                            sendResponse({ success: false, error: 'Group name already exists' });
+                            sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameExists') });
                             break;
                         }
                         target.name = message.name;
@@ -189,7 +189,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.id && !g.deletedAt
                     );
                     if (!delGroup) {
-                        sendResponse({ success: false, error: 'Group not found' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
                         break;
                     }
                     delGroup.deletedAt = Date.now();
@@ -204,7 +204,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.groupId && !g.deletedAt
                     );
                     if (!addGroup) {
-                        sendResponse({ success: false, error: 'Group not found' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
                         break;
                     }
                     const cleanDomain = message.domain
@@ -212,14 +212,14 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         .replace(/^www\./, '')
                         .trim();
                     if (!cleanDomain) {
-                        sendResponse({ success: false, error: 'Invalid domain' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgInvalidDomain') });
                         break;
                     }
                     const conflict = this.ruleManager.getGroupContainingDomain(cleanDomain);
                     let previousGroupId = null;
                     if (conflict) {
                         if (conflict.id === addGroup.id) {
-                            sendResponse({ success: false, error: 'Domain already in this group' });
+                            sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainAlreadyInGroup') });
                             break;
                         }
                         previousGroupId = conflict.id;
@@ -231,7 +231,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         }
                     }
                     if (addGroup.domains.includes(cleanDomain)) {
-                        sendResponse({ success: false, error: 'Domain already in this group' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainAlreadyInGroup') });
                         break;
                     }
                     addGroup.domains.push(cleanDomain);
@@ -246,7 +246,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.groupId && !g.deletedAt
                     );
                     if (!remGroup) {
-                        sendResponse({ success: false, error: 'Group not found' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
                         break;
                     }
                     const clean = message.domain
@@ -255,7 +255,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         .trim();
                     const idx = remGroup.domains.indexOf(clean);
                     if (idx === -1) {
-                        sendResponse({ success: false, error: 'Domain not found in group' });
+                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainNotInGroup') });
                         break;
                     }
                     remGroup.domains.splice(idx, 1);
@@ -271,7 +271,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     break;
                 }
                 default:
-                    sendResponse({ error: 'Unknown message type' });
+                    sendResponse({ error: chrome.i18n.getMessage('msgUnknownMessageType') });
             }
         } catch (error) {
             console.error('Error handling message:', error);

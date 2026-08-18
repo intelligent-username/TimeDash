@@ -58,7 +58,7 @@ export class OptionsController {
         this.setupHelpLinks();
         this.setupExternalSettingsSync();
 
-        this.showBanner('Settings loaded', 'success');
+        this.showBanner(I18n.t('settingsLoaded'), 'success');
     }
 
     /**

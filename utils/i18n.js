@@ -45,6 +45,22 @@ class I18n {
             const text = I18n.t(key);
             if (text) node.setAttribute('aria-label', text);
         });
+
+        // title/tooltip translations
+        const titleNodes = root.querySelectorAll('[data-i18n-title]');
+        titleNodes.forEach((node) => {
+            const key = node.getAttribute('data-i18n-title');
+            const text = I18n.t(key);
+            if (text) node.setAttribute('title', text);
+        });
+
+        // placeholder translations
+        const placeholderNodes = root.querySelectorAll('[data-i18n-placeholder]');
+        placeholderNodes.forEach((node) => {
+            const key = node.getAttribute('data-i18n-placeholder');
+            const text = I18n.t(key);
+            if (text) node.setAttribute('placeholder', text);
+        });
     }
 
     /**

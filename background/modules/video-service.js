@@ -81,7 +81,7 @@ class VideoService {
 
                         return {
                             tabId: tab.id,
-                            title: tab.title || 'Untitled tab',
+                            title: tab.title || chrome.i18n.getMessage('untitledTab'),
                             url: tab.url,
                             favIconUrl: tab.favIconUrl || '',
                             videos: deduped,
@@ -100,7 +100,7 @@ class VideoService {
 
     async controlVideoPlayback(message) {
         if (!message || !message.tabId || !message.action) {
-            return { success: false, error: 'Invalid control request' };
+            return { success: false, error: chrome.i18n.getMessage('invalidControlRequest') };
         }
 
         try {
@@ -129,9 +129,9 @@ class VideoService {
                 );
             }
 
-            return response || { success: false, error: 'No response from content script' };
+            return response || { success: false, error: chrome.i18n.getMessage('noContentScriptResponse') };
         } catch (error) {
-            return { success: false, error: error.message || 'Failed to control video' };
+            return { success: false, error: error.message || chrome.i18n.getMessage('failedToControlVideo') };
         }
     }
 
@@ -185,7 +185,7 @@ class VideoService {
 
     async focusVideoTab(message) {
         const tabId = Number(message && message.tabId);
-        if (!tabId) return { success: false, error: 'Invalid tab id' };
+        if (!tabId) return { success: false, error: chrome.i18n.getMessage('invalidTabId') };
         try {
             const tab = await chrome.tabs.get(tabId);
             await chrome.tabs.update(tabId, { active: true });

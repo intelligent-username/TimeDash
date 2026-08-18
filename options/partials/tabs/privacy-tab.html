@@ -1,26 +1,26 @@
 <div class="content-card">
     <div class="card-header">
-        <h2>Data Privacy Health</h2>
+        <h2 data-i18n="dataPrivacyHealth">Data Privacy Health</h2>
     </div>
     <div class="privacy-status">
         <div class="status-item">
-            <span class="status-label">Data Storage</span>
-            <span class="status-value highlight-success">Local Only</span>
+            <span class="status-label" data-i18n="dataStorage">Data Storage</span>
+            <span class="status-value highlight-success" data-i18n="localOnly">Local Only</span>
         </div>
         <div class="status-item">
-            <span class="status-label">Telemetry</span>
-            <span class="status-value highlight-success">Disabled</span>
+            <span class="status-label" data-i18n="telemetry">Telemetry</span>
+            <span class="status-value highlight-success" data-i18n="disabled">Disabled</span>
         </div>
         <div class="status-item">
-            <span class="status-label">Account Required</span>
-            <span class="status-value highlight-success">No</span>
+            <span class="status-label" data-i18n="accountRequired">Account Required</span>
+            <span class="status-value highlight-success" data-i18n="no">No</span>
         </div>
     </div>
 
     <div class="setting-item">
         <div class="setting-info">
-            <div class="setting-title">Pause Tracking</div>
-            <div class="setting-desc">Temporarily pause all data collection</div>
+            <div class="setting-title" data-i18n="pauseTracking">Pause Tracking</div>
+            <div class="setting-desc" data-i18n="pauseTrackingDesc">Temporarily pause all data collection</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="trackingPaused" />
@@ -29,8 +29,8 @@
     </div>
     <div class="setting-item">
         <div class="setting-info">
-            <div class="setting-title">Incognito Tracking</div>
-            <div class="setting-desc">Track time spent in incognito tabs</div>
+            <div class="setting-title" data-i18n="incognitoTracking">Incognito Tracking</div>
+            <div class="setting-desc" data-i18n="incognitoTrackingDesc">Track time spent in incognito tabs</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="incognitoTracking" />
@@ -41,12 +41,12 @@
 
 <div class="content-card">
     <div class="card-header">
-        <h2>Data Management</h2>
+        <h2 data-i18n="dataManagement">Data Management</h2>
     </div>
     <div class="setting-item">
         <div class="setting-info">
-            <div class="setting-title">Auto-purge Old Data</div>
-            <div class="setting-desc">Automatically delete records older than a set number of days</div>
+            <div class="setting-title" data-i18n="autoPurgeOldData">Auto-purge Old Data</div>
+            <div class="setting-desc" data-i18n="autoPurgeOldDataDesc">Automatically delete records older than a set number of days</div>
         </div>
         <label class="switch">
             <input type="checkbox" id="autoPurgeEnabled" />
@@ -55,7 +55,7 @@
     </div>
     <div id="autoPurgeSettings" class="collapse-section">
         <label
-            >Keep data for
+            ><span data-i18n="keepDataForDays">Keep data for</span>
             <input
                 type="number"
                 id="autoPurgeDays"
@@ -64,7 +64,7 @@
                 placeholder="30"
                 class="modern-input wide-number"
             />
-            days</label
+            <span data-i18n="days">days</span></label
         >
     </div>
 
@@ -73,8 +73,8 @@
             <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
         </svg>
         <div class="storage-limit-warning-text">
-            <strong>Storage limit reached</strong>
-            <span id="storageLimitWarningDetail"
+            <strong data-i18n="storageLimitReached">Storage limit reached</strong>
+            <span id="storageLimitWarningDetail" data-i18n="storageLimitReachedDetail"
                 >You have reached your custom storage limit. Delete old data or increase your limit.</span
             >
         </div>
@@ -82,8 +82,8 @@
 
     <div class="storage-meter-container">
         <div class="storage-header">
-            <span>Storage Usage</span>
-            <span id="storageUsageValue">Checking…</span>
+            <span data-i18n="storageUsage">Storage Usage</span>
+            <span id="storageUsageValue" data-i18n="checking">Checking…</span>
         </div>
         <div class="storage-bar-bg">
             <div class="storage-bar-fill" id="storageUsageFill"></div>
@@ -91,7 +91,7 @@
         <div class="storage-footer">
             <div id="storageQuotaValue" class="storage-quota"></div>
             <div class="storage-limit-setting">
-                <label for="storageLimitMB">Limit:</label>
+                <label for="storageLimitMB" data-i18n="limitLabel">Limit:</label>
                 <input
                     type="number"
                     id="storageLimitMB"
@@ -106,13 +106,14 @@
         </div>
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg); padding: 0 var(--spacing)">Delete Specific Data</h3>
+    <h3 style="margin-top: var(--spacing-lg); padding: 0 var(--spacing)" data-i18n="deleteSpecificData">Delete Specific Data</h3>
     <div class="data-search-group" style="padding: 0 var(--spacing)">
-        <label for="deleteDataSearch" class="sr-only">Search domain to delete data</label>
+        <label for="deleteDataSearch" class="sr-only" data-i18n="searchDomainToDelete">Search domain to delete data</label>
         <input
             type="text"
             id="deleteDataSearch"
             placeholder="Search domain to delete data…"
+            data-i18n-placeholder="searchDomainToDeletePlaceholder"
             class="modern-input"
             autocomplete="off"
             spellcheck="false"
@@ -124,9 +125,9 @@
         ></div>
     </div>
 
-    <h3 style="margin-top: 20px; margin-bottom: 12px; padding: 0 var(--spacing)">Data Actions</h3>
+    <h3 style="margin-top: 20px; margin-bottom: 12px; padding: 0 var(--spacing)" data-i18n="dataActions">Data Actions</h3>
     <div class="action-row data-actions" style="padding: 0 var(--spacing) var(--spacing)">
-        <button id="importData" class="btn btn-outline">
+        <button id="importData" class="btn btn-outline" data-i18n="importData">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path
                     d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,11V15H11V11H9L12,8L15,11H13Z"
@@ -135,7 +136,7 @@
             Import Data
         </button>
         <input type="file" id="importFile" accept=".json" class="sr-only" />
-        <button id="exportBtn" class="btn btn-outline">
+        <button id="exportBtn" class="btn btn-outline" data-i18n="exportData">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path
                     d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M13,13V17H11V13H9L12,10L15,13H11Z"
@@ -143,7 +144,7 @@
             </svg>
             Export Data
         </button>
-        <button id="compactStorageBtn" class="btn btn-outline" title="Purge database logs and compact storage without losing any data">
+        <button id="compactStorageBtn" class="btn btn-outline" title="Purge database logs and compact storage without losing any data" data-i18n-title="compactStorageTitle" data-i18n="compactStorage">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path
                     d="M12,4V1L8,5L12,9V6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12H4A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"
@@ -151,7 +152,7 @@
             </svg>
             Compact Storage
         </button>
-        <button id="resetBtn" class="btn btn-danger">
+        <button id="resetBtn" class="btn btn-danger" data-i18n="deleteAllData">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path
                     d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
@@ -164,106 +165,106 @@
 
 <div class="content-card" id="privacy-policy-card">
     <div class="card-header">
-        <h2>Privacy Policy</h2>
-        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px">
+        <h2 data-i18n="privacyPolicy">Privacy Policy</h2>
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px" data-i18n="lastUpdated">
             Last updated: April 2026
         </div>
     </div>
     <details class="privacy-accordion" open>
-        <summary>Read Full Policy</summary>
+        <summary data-i18n="readFullPolicy">Read Full Policy</summary>
 
         <div class="privacy-accordion-content">
             <div class="privacy-policy-section">
-                <h3>Overview</h3>
-                <p>
+                <h3 data-i18n="privacyOverview">Overview</h3>
+                <p data-i18n="privacyOverviewBody">
                     TimeDash runs entirely in your browser. It has no analytics, telemetry, ads, or remote tracking. There are no accounts or servers logging your browsing history. Your data stays on your device and is processed using built-in browser storage APIs.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Data Storage</h3>
-                <p>
+                <h3 data-i18n="privacyDataStorage">Data Storage</h3>
+                <p data-i18n-html="privacyDataStorageBody1">
                     TimeDash saves your preferences and history in Chrome's local storage API (<code>chrome.storage.local</code>). Nothing is written outside your browser profile. The extension stores:
                 </p>
                 <ul>
-                    <li>Time tracking logs and per-domain history</li>
-                    <li>Playback speed preferences per site</li>
-                    <li>Site blocking and daily restriction rules</li>
-                    <li>Theme and UI customization options</li>
+                    <li data-i18n="privacyDataStorageItem1">Time tracking logs and per-domain history</li>
+                    <li data-i18n="privacyDataStorageItem2">Playback speed preferences per site</li>
+                    <li data-i18n="privacyDataStorageItem3">Site blocking and daily restriction rules</li>
+                    <li data-i18n="privacyDataStorageItem4">Theme and UI customization options</li>
                 </ul>
-                <p>
+                <p data-i18n="privacyDataStorageBody2">
                     This data is used only to display your usage stats and enforce your rules. No part of it is sent to external servers.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Network Activity</h3>
-                <p>
+                <h3 data-i18n="privacyNetworkActivity">Network Activity</h3>
+                <p data-i18n="privacyNetworkActivityBody">
                     TimeDash makes no outgoing network calls. Any network requests seen in DevTools come from your browser resolving site favicons or loading extension resources locally.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Permissions</h3>
-                <p class="privacy-muted-text">
+                <h3 data-i18n="privacyPermissions">Permissions</h3>
+                <p class="privacy-muted-text" data-i18n="privacyPermissionsBody">
                     TimeDash requests only the permissions needed to track time and enforce your rules:
                 </p>
                 <ol style="padding-left: var(--spacing-lg)">
-                    <li><code>storage</code>: Saves settings and history locally.</li>
-                    <li>
+                    <li data-i18n-html="privacyPermissionStorage"><code>storage</code>: Saves settings and history locally.</li>
+                    <li data-i18n-html="privacyPermissionTabs">
                         <code>tabs</code>: Reads active tab URLs to record time and apply site rules.
                     </li>
-                    <li>
+                    <li data-i18n-html="privacyPermissionScripting">
                         <code>scripting</code>: Injects video speed controls into web video players.
                     </li>
-                    <li><code>webNavigation</code>: Follows URL navigation across frames.</li>
-                    <li>
+                    <li data-i18n-html="privacyPermissionWebNavigation"><code>webNavigation</code>: Follows URL navigation across frames.</li>
+                    <li data-i18n-html="privacyPermissionHost">
                         <code>host_permissions</code>: Lets content scripts run on visited sites to track time and manage video playback.
                     </li>
-                    <li>
+                    <li data-i18n-html="privacyPermissionAlarms">
                         <code>alarms</code>: Runs daily resets and optional data purges.
                     </li>
-                    <li>
+                    <li data-i18n-html="privacyPermissionNotifications">
                         <code>notifications</code>: (Optional) Alerts you when daily time limits are reached.
                     </li>
                 </ol>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Data Deletion</h3>
-                <p>
+                <h3 data-i18n="privacyDataDeletion">Data Deletion</h3>
+                <p data-i18n="privacyDataDeletionBody">
                     You own your data. You can delete single domain records or wipe all data using the controls in Data Management above. Uninstalling TimeDash removes all stored extension data from your browser automatically.
                 </p>
                 <ul>
-                    <li>
+                    <li data-i18n-html="privacyDataDeletionItem1">
                         Click <strong>Delete All Data</strong> to wipe every record right away.
                     </li>
-                    <li>
+                    <li data-i18n-html="privacyDataDeletionItem2">
                         Turn on <strong>Auto-purge Old Data</strong> to clear older records automatically.
                     </li>
-                    <li>
+                    <li data-i18n-html="privacyDataDeletionItem3">
                         Use <strong>Delete Specific Data</strong> to search and delete records for a single domain.
                     </li>
                 </ul>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>No Account Required</h3>
-                <p>
+                <h3 data-i18n="privacyNoAccount">No Account Required</h3>
+                <p data-i18n="privacyNoAccountBody">
                     TimeDash requires no account, email, or cloud sync. All data lives on your device under your control.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Third-Party Code</h3>
-                <p>
+                <h3 data-i18n="privacyThirdParty">Third-Party Code</h3>
+                <p data-i18n="privacyThirdPartyBody">
                     TimeDash uses open-source libraries for development tooling only. The distributed extension contains no third-party tracking, analytics, or external SDKs.
                 </p>
             </div>
 
             <div class="privacy-policy-section">
-                <h3>License</h3>
-                <p>
+                <h3 data-i18n="privacyLicense">License</h3>
+                <p data-i18n-html="privacyLicenseBody">
                     TimeDash is released under the <strong>MIT License</strong>. You can use, modify, and share it freely under license terms. View the source on
                     <a
                         href="https://github.com/intelligent-username/TimeDash/blob/main/LICENSE"
@@ -275,8 +276,8 @@
             </div>
 
             <div class="privacy-policy-section">
-                <h3>Contact &amp; Questions</h3>
-                <p>
+                <h3 data-i18n="privacyContact">Contact &amp; Questions</h3>
+                <p data-i18n-html="privacyContactBody">
                     If you find a bug or have a privacy question, open an issue on
                     <a
                         href="https://github.com/intelligent-username/TimeDash/issues"

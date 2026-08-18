@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Site Blocked - TimeDash</title>
+        <title data-i18n="blockedTitle">Site Blocked - TimeDash</title>
         <link rel="stylesheet" href="block.css" />
     </head>
 
@@ -27,9 +27,9 @@
                             <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
                         </svg>
                     </div>
-                    <h1 id="blockHeading">This site is blocked</h1>
+                    <h1 id="blockHeading" data-i18n="blockedSite">This site is blocked</h1>
                     <p class="blocked-url" id="blockedUrl"></p>
-                    <p class="block-reason" id="blockReason">
+                    <p class="block-reason" id="blockReason" data-i18n="blockReasonDefault">
                         This site is on your block list to reduce distractions.
                     </p>
                 </div>
@@ -38,21 +38,19 @@
                 <div class="block-stats">
                     <div class="stat-card">
                         <div class="stat-value" id="blockCount">0</div>
-                        <div class="stat-label">Times blocked today</div>
+                        <div class="stat-label" data-i18n="timesBlockedToday">Times blocked today</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="timeSpent">0m</div>
-                        <div class="stat-label">Time spent on this site</div>
+                        <div class="stat-label" data-i18n="timeSpentOnSite">Time spent on this site</div>
                     </div>
                 </div>
 
                 <!-- Motivation Section -->
                 <div class="motivation-section">
                     <div class="motivation-quote" id="motivationQuote">
-                        <blockquote>
-                            &ldquo;The way to get started is to quit talking and begin doing.&rdquo;
-                        </blockquote>
-                        <cite>&mdash; Walt Disney</cite>
+                        <blockquote data-i18n="quote1"></blockquote>
+                        <cite data-i18n="quote1Author"></cite>
                     </div>
 
                     <div class="productivity-tip" id="productivityTip">
@@ -102,6 +100,7 @@
         <script src="../utils/storage/blocking.js"></script>
         <script src="../utils/storage/misc.js"></script>
         <script src="../utils/storage.js"></script>
+        <script src="../utils/i18n.js"></script>
         <script src="modules/access.js"></script>
         <script src="modules/ui.js"></script>
         <script src="block.js"></script>

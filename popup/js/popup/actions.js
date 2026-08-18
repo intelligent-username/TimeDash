@@ -19,7 +19,7 @@ export const actionMethods = {
             this.updateCurrentSpeed();
         } catch (error) {
             console.error('Failed to change speed:', error);
-            PopupHelpers.showToast('Failed to change speed', 'error');
+            PopupHelpers.showToast(I18n.t('failedToChangeSpeed'), 'error');
         }
     },
 
@@ -39,7 +39,7 @@ export const actionMethods = {
 
     async toggleCurrentSiteBlock() {
         if (!this.currentTab || !PopupHelpers.shouldTrackUrl(this.currentTab.url)) {
-            PopupHelpers.showToast('Cannot block this type of page', 'error');
+            PopupHelpers.showToast(I18n.t('cannotBlockPage'), 'error');
             return;
         }
 
@@ -57,7 +57,7 @@ export const actionMethods = {
             await this.refreshData();
         } catch (error) {
             console.error('Error toggling site block:', error);
-            PopupHelpers.showToast('Failed to toggle site blocking', 'error');
+            PopupHelpers.showToast(I18n.t('failedToggleBlocking'), 'error');
         }
     },
 
@@ -89,10 +89,10 @@ export const actionMethods = {
             anchor.download = `TDE_${new Date().toISOString().split('T')[0]}.json`;
             anchor.click();
             URL.revokeObjectURL(url);
-            PopupHelpers.showToast('Data exported successfully', 'success');
+            PopupHelpers.showToast(I18n.t('dataExportedSuccess'), 'success');
         } catch (error) {
             console.error('Error exporting data:', error);
-            PopupHelpers.showToast('Failed to export data', 'error');
+            PopupHelpers.showToast(I18n.t('failedExportData'), 'error');
         }
     },
 
@@ -107,10 +107,10 @@ export const actionMethods = {
             this.updateUI();
 
             refreshBtn.innerHTML = originalContent;
-            PopupHelpers.showToast('Data refreshed', 'success');
+            PopupHelpers.showToast(I18n.t('dataRefreshed'), 'success');
         } catch (error) {
             console.error('Error refreshing data:', error);
-            PopupHelpers.showToast('Failed to refresh data', 'error');
+            PopupHelpers.showToast(I18n.t('failedRefreshData'), 'error');
         }
     },
 
@@ -125,12 +125,12 @@ export const actionMethods = {
             this.settings = newSettings;
             this.updateFooter();
             PopupHelpers.showToast(
-                `Time tracking ${newSettings.trackingEnabled ? 'enabled' : 'disabled'}`,
+                chrome.i18n.getMessage(newSettings.trackingEnabled ? 'trackingEnabled' : 'trackingPaused'),
                 'success'
             );
         } catch (error) {
             console.error('Error toggling tracking:', error);
-            PopupHelpers.showToast('Failed to toggle tracking', 'error');
+            PopupHelpers.showToast(I18n.t('failedToggleTracking'), 'error');
         }
     },
 

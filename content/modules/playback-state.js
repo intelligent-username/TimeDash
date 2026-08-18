@@ -131,6 +131,6 @@ class PlaybackState {
         }
 
         const host = (window.location.hostname || '').replace(/^www\./, '');
-        return host || 'Unknown source';
+        return host || chrome.i18n.getMessage('unknownSource');
     }
 }

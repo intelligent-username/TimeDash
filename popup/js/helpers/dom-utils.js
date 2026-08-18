@@ -55,7 +55,7 @@ export const domUtils = {
         const actions = this.createElement('div', { className: 'site-item-actions' });
         const blockBtn = this.createElement('button', {
             className: `site-item-btn ${isBlocked ? 'blocked' : ''}`,
-            title: isBlocked ? 'Unblock site' : 'Block site',
+            title: isBlocked ? I18n.t('unblockSite') : I18n.t('blockSite'),
             'data-domain': domain,
         });
 

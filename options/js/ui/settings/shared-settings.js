@@ -32,7 +32,7 @@ export const sharedSettingsMethods = {
                 (color) => `
             <div class="custom-swatch">
                 <button type="button" class="color-swatch ${color === activeColor ? 'active' : ''}" data-color="${color}" style="background: ${color};" title="${color}"></button>
-                <div class="swatch-delete" title="Delete Color">×</div>
+                <div class="swatch-delete" title="${chrome.i18n.getMessage('deleteColor')}">×</div>
             </div>
         `
             )

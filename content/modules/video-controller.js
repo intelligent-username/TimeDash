@@ -191,7 +191,7 @@ class VideoController {
     async controlPlayback(action, videoId, value) {
         const video = this.getVideoById(videoId);
         if (!video) {
-            return { success: false, error: 'Video not found' };
+            return { success: false, error: chrome.i18n.getMessage('videoNotFound') };
         }
 
         const stepSeconds = this.instance.getControllerSkipPaceSeconds();
@@ -234,18 +234,18 @@ class VideoController {
                 case 'seek': {
                     const target = Number(value);
                     if (!Number.isFinite(target)) {
-                        return { success: false, error: 'Invalid seek value' };
+                        return { success: false, error: chrome.i18n.getMessage('invalidSeekValue') };
                     }
                     const maxSeek = Number.isFinite(video.duration) ? video.duration : target;
                     video.currentTime = Math.max(0, Math.min(maxSeek, target));
                     break;
                 }
                 default:
-                    return { success: false, error: 'Unknown action' };
+                    return { success: false, error: chrome.i18n.getMessage('unknownAction') };
             }
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.message || 'Playback control failed' };
+            return { success: false, error: error.message || chrome.i18n.getMessage('playbackControlFailed') };
         }
     }
 

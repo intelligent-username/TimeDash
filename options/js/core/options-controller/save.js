@@ -19,20 +19,20 @@ export function applyOptionsSaveMethods(OptionsController) {
 
     OptionsController.prototype.saveSettings = async function saveSettings(silent = false) {
         try {
-            this.updateSaveStatus('Saving changes…', true);
+            this.updateSaveStatus(I18n.t('savingChanges'), true);
             await this.storageManager.saveSettings(this.settings);
             this.isDirty = false;
 
-            this.updateSaveStatus('Saved', true);
+            this.updateSaveStatus(I18n.t('saved'), true);
             setTimeout(() => {
                 this.updateSaveStatus('', false);
             }, 1000);
 
-            if (!silent) this.showSuccess('Settings saved');
+            if (!silent) this.showSuccess(I18n.t('settingsSaved'));
         } catch (error) {
             console.error(error);
-            this.updateSaveStatus('Error saving', true);
-            this.showError('Failed to save settings');
+            this.updateSaveStatus(I18n.t('errorSaving'), true);
+            this.showError(I18n.t('failedSaveSettings'));
         }
     };
 

@@ -14,11 +14,11 @@ export const groupActions = {
                 await context.loadSiteRules();
                 context.controller.showSuccess(`Created group "${name}"`);
             } else {
-                context.controller.showWarning(response?.error || 'Failed to create group');
+                context.controller.showWarning(response?.error || I18n.t('failedCreateGroup'));
             }
         } catch (error) {
             console.error('Error creating group:', error);
-            context.controller.showError('Failed to create group');
+            context.controller.showError(I18n.t('failedCreateGroup'));
         }
     },
 
@@ -51,7 +51,7 @@ export const groupActions = {
         try {
             await chrome.runtime.sendMessage({ type: 'DELETE_GROUP', id });
             await context.loadSiteRules();
-            context.controller.showSuccess('Group removed');
+            context.controller.showSuccess(I18n.t('groupRemoved'));
         } catch (error) {
             console.error('Error deleting group:', error);
         }
@@ -83,7 +83,7 @@ export const groupActions = {
                 }
                 await context.loadSiteRules();
             } else {
-                context.controller.showWarning(response?.error || 'Failed to add domain');
+                context.controller.showWarning(response?.error || I18n.t('failedAddDomain'));
             }
         } catch (error) {
             console.error('Error adding domain to group:', error);
@@ -103,7 +103,7 @@ export const groupActions = {
                 }
                 await context.loadSiteRules();
             } else {
-                context.controller.showWarning(response?.error || 'Failed to remove domain');
+                context.controller.showWarning(response?.error || I18n.t('failedRemoveDomain'));
             }
         } catch (error) {
             console.error('Error removing domain from group:', error);
@@ -112,7 +112,7 @@ export const groupActions = {
 
     async undoLastGroupingChange(context) {
         if (context.undoStack.length === 0) {
-            context.controller.showWarning('Nothing to undo');
+            context.controller.showWarning(I18n.t('nothingToUndo'));
             return;
         }
 
@@ -131,7 +131,7 @@ export const groupActions = {
             }
         } catch (error) {
             console.error('Error executing undo:', error);
-            context.controller.showError('Failed to undo grouping change');
+            context.controller.showError(I18n.t('failedUndo'));
         } finally {
             context.isUndoing = false;
         }

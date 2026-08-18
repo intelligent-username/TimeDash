@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>TimeDash - Productivity Monitor</title>
+        <title data-i18n="appTitle">TimeDash - Productivity Monitor</title>
         <link rel="stylesheet" href="popup.css" />
     </head>
 
@@ -30,7 +30,7 @@
                     />
                     <div class="header-text">
                         <h1 data-i18n="appName">TimeDash</h1>
-                        <p class="tagline">Use the dashboard for details</p>
+                        <p class="tagline" data-i18n="tagline">Use the dashboard for details</p>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -70,8 +70,8 @@
                             height="24"
                         />
                         <div class="site-details">
-                            <h3 class="site-name" id="siteName">Loading…</h3>
-                            <p class="site-time" id="siteTime">Calculating…</p>
+                            <h3 class="site-name" id="siteName" data-i18n="loadingSite">Loading…</h3>
+                            <p class="site-time" id="siteTime" data-i18n="calculatingSite">Calculating…</p>
                         </div>
                         <div
                             class="speed-inline-controls"
@@ -90,6 +90,7 @@
                                     padding: 0 4px;
                                 "
                                 title="Decrease Speed"
+                                data-i18n-title="decreaseSpeed"
                             >
                                 -
                             </button>
@@ -106,13 +107,14 @@
                                     padding: 0 4px;
                                 "
                                 title="Increase Speed"
+                                data-i18n-title="increaseSpeed"
                             >
                                 +
                             </button>
                         </div>
                     </div>
                     <div class="site-actions">
-                        <button id="blockBtn" class="action-btn block-btn">
+                        <button id="blockBtn" class="action-btn block-btn" data-i18n="blockSite">
                             <svg
                                 width="16"
                                 height="16"
@@ -138,21 +140,21 @@
                                     d="M13,2.05V5.08C16.39,5.57 19,8.47 19,12C19,12.9 18.82,13.75 18.5,14.54L21.12,16.07C21.68,14.83 22,13.45 22,12C22,6.82 18.05,2.55 13,2.05M12,19C8.13,19 5,15.87 5,12C5,8.13 8.13,5 12,5V1C5.93,1 1,5.93 1,12C1,18.07 5.93,23 12,23C15.14,23 18.03,21.38 19.78,18.78L17.25,17.1C16.01,18.29 14.1,19 12,19M8,12A4,4 0 0,1 12,8V12L15.29,15.29C14.27,16.22 12.9,16.76 11.4,16.76C9.18,16.76 7.37,15.17 7.06,13.06L8,12Z"
                                 />
                             </svg>
-                            Speed: <span id="currentSpeed">1.0x</span>
+                            <span data-i18n="speedLabel">Speed:</span> <span id="currentSpeed">1.0x</span>
                         </button>
                     </div>
                 </div>
             </section>
 
             <!-- Quick Stats -->
-            <section class="quick-stats" role="region" aria-label="Usage statistics">
+            <section class="quick-stats" role="region" aria-label="Usage statistics" data-i18n-aria-label="usageStats">
                 <div class="stat-card">
                     <div class="stat-value" id="todayTotal">0m</div>
                     <div class="stat-label" data-i18n="todayTime">Today</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="weekAverage">0m</div>
-                    <div class="stat-label">Daily Avg</div>
+                    <div class="stat-label" data-i18n="dailyAvg">Daily Avg</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="totalTime">0h</div>
@@ -163,8 +165,8 @@
             <!-- Top Sites -->
             <section class="top-sites">
                 <div class="section-header">
-                    <h3>Top Sites Today</h3>
-                    <button id="refreshBtn" class="refresh-btn" title="Refresh">
+                    <h3 data-i18n="topSitesToday">Top Sites Today</h3>
+                    <button id="refreshBtn" class="refresh-btn" title="Refresh" data-i18n-title="refresh">
                         <svg
                             width="16"
                             height="16"
@@ -179,21 +181,21 @@
                     </button>
                 </div>
                 <div class="sites-list" id="sitesList">
-                    <div class="loading">Loading sites…</div>
+                    <div class="loading" data-i18n="loadingSites">Loading sites…</div>
                 </div>
             </section>
 
             <!-- Footer -->
             <footer class="popup-footer">
                 <div class="footer-stats">
-                    <span id="trackingStatus" class="tracking-status active"
+                    <span id="trackingStatus" class="tracking-status active" data-i18n="trackingActive"
                         >● Tracking Active</span
                     >
-                    <span id="sitesCount" class="sites-count">0 sites tracked</span>
+                    <span id="sitesCount" class="sites-count" data-i18n="zeroSitesTracked">0 sites tracked</span>
                 </div>
                 <div class="footer-actions">
-                    <button id="openDashboard" class="dashboard-btn">Dashboard</button>
-                    <button id="toggleTracking" class="toggle-btn">Pause Tracking</button>
+                    <button id="openDashboard" class="dashboard-btn" data-i18n="dashboard">Dashboard</button>
+                    <button id="toggleTracking" class="toggle-btn" data-i18n="pauseTracking">Pause Tracking</button>
                 </div>
             </footer>
         </div>
@@ -211,7 +213,7 @@
             <div class="modal-content" tabindex="-1">
                 <div class="setup-header">
                     <h2 id="setupModalTitle" data-i18n="setupTitle">Welcome to TimeDash!</h2>
-                    <p id="setupModalBody">Your all-in-one productivity companion:</p>
+                    <p id="setupModalBody" data-i18n="setupBody">Your all-in-one productivity companion:</p>
                     <div
                         class="feature-list"
                         style="
@@ -222,27 +224,27 @@
                             margin: 12px 0;
                         "
                     >
-                        <div style="font-size: 0.9em; margin-bottom: 6px">
+                        <div style="font-size: 0.9em; margin-bottom: 6px" data-i18n-html="setupFeatureTracking">
                             ⏱️ <strong>Time Tracking:</strong> Monitor your browsing habits.
                         </div>
-                        <div style="font-size: 0.9em; margin-bottom: 6px">
+                        <div style="font-size: 0.9em; margin-bottom: 6px" data-i18n-html="setupFeatureVideo">
                             ⏩ <strong>Video Speed:</strong> Control speed on any site.
                         </div>
-                        <div style="font-size: 0.9em">
+                        <div style="font-size: 0.9em" data-i18n-html="setupFeatureBlocking">
                             🛡️ <strong>Site Blocking:</strong> Stay on track with limits.
                         </div>
                     </div>
-                    <p style="font-size: 0.9em; color: var(--text-muted)">
+                    <p style="font-size: 0.9em; color: var(--text-muted)" data-i18n="setupConfigure">
                         Let's configure your initial settings.
                     </p>
                 </div>
                 <div class="setup-content">
                     <div class="setup-step">
-                        <h3>Default Video Speed</h3>
-                        <select id="defaultSpeed" aria-label="Default video speed">
+                        <h3 data-i18n="defaultVideoSpeed">Default Video Speed</h3>
+                        <select id="defaultSpeed" aria-label="Default video speed" data-i18n-aria-label="defaultVideoSpeedAria">
                             <option value="0.5">0.5x</option>
                             <option value="0.75">0.75x</option>
-                            <option value="1.0" selected>1.0x (Normal)</option>
+                            <option value="1.0" selected data-i18n="speedNormal">1.0x (Normal)</option>
                             <option value="1.25">1.25x</option>
                             <option value="1.5">1.5x</option>
                             <option value="2.0">2.0x</option>
@@ -250,7 +252,7 @@
                     </div>
                 </div>
                 <div class="setup-footer">
-                    <button id="completeSetup" class="primary-btn">Save</button>
+                    <button id="completeSetup" class="primary-btn" data-i18n="save">Save</button>
                 </div>
             </div>
         </div>

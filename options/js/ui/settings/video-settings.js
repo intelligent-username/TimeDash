@@ -109,7 +109,7 @@ export const videoSettingsMethods = {
             if (!el) return;
 
             el.addEventListener('click', () => {
-                el.value = 'Press any key…';
+                el.value = chrome.i18n.getMessage('pressAnyKey');
                 el.classList.add('recording');
 
                 const handler = (e) => {

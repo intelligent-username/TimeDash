@@ -6,7 +6,8 @@
         "lint": "eslint .",
         "format": "prettier --write .",
         "lint:fix": "eslint . --fix",
-        "jsdoc": "jsdoc -c jsdoc.json"
+        "jsdoc": "jsdoc -c jsdoc.json",
+        "i18n": "node scripts/i18n-coverage.js"
     },
     "devDependencies": {
         "eslint": "^9.9.0",

@@ -2,10 +2,10 @@
     <div class="content-card">
         <div class="card-header">
             <div class="card-title-group">
-                <h2>Restricted Access</h2>
-                <span class="card-subtitle">Sites allowed for specific amounts of time per day.</span>
+                <h2 data-i18n="restrictedAccess">Restricted Access</h2>
+                <span class="card-subtitle" data-i18n="restrictedAccessSubtitle">Sites allowed for specific amounts of time per day.</span>
             </div>
-            <button id="newGroupBtn" class="btn-new-group">+ New Group</button>
+            <button id="newGroupBtn" class="btn-new-group" data-i18n="newGroup">+ New Group</button>
         </div>
         <div class="card-body">
             <div class="rule-manager" id="restrictedManager">
@@ -15,13 +15,14 @@
                             class="restricted-form-group"
                             style="height: 100%; display: flex; flex-direction: column"
                         >
-                            <label for="restrictedDomainInput" class="restricted-form-label"
+                            <label for="restrictedDomainInput" class="restricted-form-label" data-i18n="websiteDomain"
                                 >Website Domain</label
                             >
                             <input
                                 type="text"
                                 id="restrictedDomainInput"
                                 placeholder="e.g., youtube.com…"
+                                data-i18n-placeholder="exampleDomainYoutube"
                                 class="modern-input restricted-form-input"
                                 autocomplete="off"
                                 name="restricted-domain"
@@ -32,6 +33,7 @@
                                     id="addRestrictedBtn"
                                     class="btn btn-primary"
                                     style="width: 100%; max-width: 300px"
+                                data-i18n="addRestriction"
                                 >
                                     Add Restriction
                                 </button>
@@ -39,11 +41,12 @@
                         </div>
 
                         <div class="restricted-form-group">
-                            <label class="restricted-form-label">Time Allowed Per Day</label>
+                            <label class="restricted-form-label" data-i18n="timeAllowedPerDay">Time Allowed Per Day</label>
                             <div class="circ-picker-wrap">
                                 <div
                                     id="restrictedPickerMount"
                                     aria-label="Time limit picker"
+                                    data-i18n-aria-label="timeLimitPicker"
                                 ></div>
                             </div>
                         </div>
@@ -59,24 +62,25 @@
         <div class="content-card">
             <div class="card-header">
                 <div class="card-title-group">
-                    <h2>Whitelisted Domains</h2>
-                    <span class="card-subtitle">These sites will never be tracked.</span>
+                    <h2 data-i18n="whitelistedDomains">Whitelisted Domains</h2>
+                    <span class="card-subtitle" data-i18n="whitelistedDomainsSubtitle">These sites will never be tracked.</span>
                 </div>
             </div>
             <div class="card-body">
                 <div class="rule-manager" id="whitelistManager">
                     <div class="rule-input-group modern-input-group">
-                        <label for="whitelistInput" class="sr-only">Domain to whitelist</label>
+                        <label for="whitelistInput" class="sr-only" data-i18n="domainToWhitelist">Domain to whitelist</label>
                         <input
                             type="text"
                             id="whitelistInput"
                             placeholder="e.g., test.com…"
+                            data-i18n-placeholder="exampleDomainTest"
                             class="modern-input"
                             autocomplete="off"
                             name="whitelist-domain"
                             spellcheck="false"
                         />
-                        <button id="addWhitelistBtn" class="btn btn-primary">Add</button>
+                        <button id="addWhitelistBtn" class="btn btn-primary" data-i18n="add">Add</button>
                     </div>
                     <ul class="rule-list modern-list" id="whitelistList"></ul>
                 </div>
@@ -86,24 +90,25 @@
         <div class="content-card">
             <div class="card-header">
                 <div class="card-title-group">
-                    <h2>Hard-Blocked Sites</h2>
-                    <span class="card-subtitle">These sites are completely inaccessible.</span>
+                    <h2 data-i18n="hardBlockedSites">Hard-Blocked Sites</h2>
+                    <span class="card-subtitle" data-i18n="hardBlockedSitesSubtitle">These sites are completely inaccessible.</span>
                 </div>
             </div>
             <div class="card-body">
                 <div class="rule-manager" id="blockedManager">
                     <div class="rule-input-group modern-input-group">
-                        <label for="blockedDomainInput" class="sr-only">Domain to block</label>
+                        <label for="blockedDomainInput" class="sr-only" data-i18n="domainToBlock">Domain to block</label>
                         <input
                             type="text"
                             id="blockedDomainInput"
                             placeholder="e.g., facebook.com…"
+                            data-i18n-placeholder="exampleDomainFacebook"
                             class="modern-input"
                             autocomplete="off"
                             name="blocked-domain"
                             spellcheck="false"
                         />
-                        <button id="addBlockedBtn" class="btn btn-primary">Add</button>
+                        <button id="addBlockedBtn" class="btn btn-primary" data-i18n="add">Add</button>
                     </div>
                     <ul class="rule-list modern-list" id="blockedList"></ul>
                 </div>

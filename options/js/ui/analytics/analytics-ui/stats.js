@@ -219,7 +219,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
                 : 1;
             const overallAvg = daysSinceStart > 0 ? Math.round(totalOverall / daysSinceStart) : 0;
             change = thisAvg - overallAvg;
-            label = 'since you started using the extension';
+            label = chrome.i18n.getMessage('sinceTracking');
         }
 
         const el = document.getElementById('analyticsNetChange');
@@ -263,7 +263,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             endDate.setDate(now.getDate() + this.chart.offset * 7);
             const startDate = new Date(endDate);
             startDate.setDate(endDate.getDate() - 6);
-            periodLabel = this.chart.offset === 0 ? 'Past 7 Days' : 'Selected Week';
+            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('past7Days') : chrome.i18n.getMessage('selectedWeek');
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
@@ -278,7 +278,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
                 now.getMonth() + this.chart.offset + 1,
                 0
             ).getDate();
-            periodLabel = this.chart.offset === 0 ? 'This Month' : 'Selected Month';
+            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('thisMonth') : chrome.i18n.getMessage('selectedMonth');
             for (let i = 1; i <= daysInMonth; i++) {
                 const date = new Date(startOfMonth);
                 date.setDate(i);
@@ -288,7 +288,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             }
         } else if (this.currentPeriod === 'year') {
             const year = now.getFullYear() + this.chart.offset;
-            periodLabel = this.chart.offset === 0 ? 'This Year' : year.toString();
+            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('thisYear') : year.toString();
             for (let month = 0; month < 12; month++) {
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 for (let day = 1; day <= daysInMonth; day++) {
@@ -301,7 +301,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         } else {
             const today = formatDateString(now);
             periodDays = 1;
-            periodLabel = 'Today';
+periodLabel = chrome.i18n.getMessage('today');
             for (const domain of domains) periodTotal += (usage[domain][today] || 0) * 1000;
         }
 
@@ -359,7 +359,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const formatVal = (v) => {
             const h = Math.floor(v / 3600);
             const m = Math.floor((v % 3600) / 60);
-            if (h === 0 && m === 0) return '< 1m';
+            if (h === 0 && m === 0) return chrome.i18n.getMessage('lessThanOneMin');
             if (h === 0) return `${m}m`;
             if (m === 0) return `${h}h`;
             return `${h}h\u00a0${m}m`;
@@ -374,7 +374,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const allZero = values.every((v) => v === 0);
 
         if (allZero) {
-            el.innerHTML = `<div class="mini-bar-empty">No restricted-site activity yet for this period</div>`;
+            el.innerHTML = `<div class="mini-bar-empty">${chrome.i18n.getMessage('noRestrictedActivity')}</div>`;
             return;
         }
 

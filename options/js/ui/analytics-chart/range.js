@@ -20,9 +20,9 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
             const year = now.getFullYear() + this.offset;
             const label =
                 this.offset === 0
-                    ? 'This Year'
+                    ? chrome.i18n.getMessage('thisYear')
                     : this.offset === -1
-                      ? 'Last Year'
+                      ? chrome.i18n.getMessage('lastYear')
                       : year.toString();
             const xLabels = [
                 'Jan',
@@ -68,7 +68,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
 
         const label =
             this.offset === 0
-                ? 'Past 7 Days'
+                ? chrome.i18n.getMessage('past7Days')
                 : `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
         return { dates, label, xLabels, isYearly: false, year: null };
@@ -124,8 +124,8 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         ];
         xLabels = xLabels.slice(0, daysInMonth);
 
-        let label = 'This Month';
-        if (this.offset === -1) label = 'Last Month';
+        let label = chrome.i18n.getMessage('thisMonth');
+        if (this.offset === -1) label = chrome.i18n.getMessage('lastMonth');
         else if (this.offset !== 0) {
             label = startOfMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         }
@@ -150,7 +150,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         }
 
         const xLabels = this.buildAllTimeLabels(dates);
-        return { dates, label: 'All Time', xLabels, isYearly: false, isAllTime: false };
+        return { dates, label: chrome.i18n.getMessage('allTime'), xLabels, isYearly: false, isAllTime: false };
     };
 
     AnalyticsChart.prototype.buildAllTimeLabels = function buildAllTimeLabels(dates) {

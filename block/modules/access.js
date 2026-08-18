@@ -63,7 +63,7 @@ function applyBlockAccessMethods(BlockPageController) {
         }
 
         if (!this.blockedUrl) {
-            const domain = urlParams.get('domain') || 'Unknown Site';
+            const domain = urlParams.get('domain') || chrome.i18n.getMessage('unknownSite');
             this.blockedDomain = domain.replace(/^www\./, '');
             return;
         }

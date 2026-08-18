@@ -108,14 +108,14 @@ export function applyOptionsNavigationMethods(OptionsController) {
         if (!titleEl) return;
 
         const titles = {
-            analytics: 'Analytics',
-            general: 'General Settings',
-            video: 'Video Control',
-            blocking: 'Site Blocking',
-            privacy: 'Privacy & Data',
-            help: 'Help ',
+            analytics: I18n.t('analytics'),
+            general: I18n.t('generalSettings'),
+            video: I18n.t('videoControl'),
+            blocking: I18n.t('siteBlocking'),
+            privacy: I18n.t('privacyData'),
+            help: I18n.t('help'),
         };
 
-        titleEl.textContent = titles[tab] || 'Settings';
+        titleEl.textContent = titles[tab] || I18n.t('settings');
     };
 }
