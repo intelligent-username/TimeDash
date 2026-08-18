@@ -1,5 +1,7 @@
 'use strict';
 
+/* global withUsageLock */
+
 function applyStorageBlockingMethods(StorageManager) {
     StorageManager.prototype.getBlockList = async function getBlockList() {
         try {
@@ -58,31 +60,33 @@ function applyStorageBlockingMethods(StorageManager) {
     };
 
     StorageManager.prototype.incrementBlockCount = async function incrementBlockCount(domain) {
-        try {
-            const result = await chrome.storage.local.get('usage');
-            const usage = result.usage || {};
-            const domainUsage = usage[domain] || { cumulative: 0, lastVisit: Date.now() };
+        return withUsageLock(async () => {
+            try {
+                const result = await chrome.storage.local.get('usage');
+                const usage = result.usage || {};
+                const domainUsage = usage[domain] || { cumulative: 0, lastVisit: Date.now() };
 
-            const today = new Date().toDateString();
-            if (domainUsage.lastBlockDate !== today) {
-                domainUsage.blockedToday = 0;
-                domainUsage.lastBlockDate = today;
+                const today = new Date().toDateString();
+                if (domainUsage.lastBlockDate !== today) {
+                    domainUsage.blockedToday = 0;
+                    domainUsage.lastBlockDate = today;
+                }
+
+                domainUsage.blockedToday = (domainUsage.blockedToday || 0) + 1;
+
+                // Per-date block count for historical charts
+                const now = new Date();
+                const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                const blockedKey = `${dateStr}_blocked`;
+                domainUsage[blockedKey] = (domainUsage[blockedKey] || 0) + 1;
+
+                usage[domain] = domainUsage;
+                await chrome.storage.local.set({ usage });
+                return true;
+            } catch (error) {
+                console.error('Failed to update block count:', error);
+                return false;
             }
-
-            domainUsage.blockedToday = (domainUsage.blockedToday || 0) + 1;
-
-            // Per-date block count for historical charts
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            const blockedKey = `${dateStr}_blocked`;
-            domainUsage[blockedKey] = (domainUsage[blockedKey] || 0) + 1;
-
-            usage[domain] = domainUsage;
-            await chrome.storage.local.set({ usage });
-            return true;
-        } catch (error) {
-            console.error('Failed to update block count:', error);
-            return false;
-        }
+        });
     };
 }

@@ -69,6 +69,12 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     }
                     sendResponse({ success: await this.storage.compactStorage() });
                     break;
+                case 'DELETE_DOMAIN_DATA':
+                    sendResponse({ success: await this.storage.deleteDomainUsage(message.domain) });
+                    break;
+                case 'IMPORT_USAGE':
+                    sendResponse({ success: await this.storage.importUsage(message.usage, message.mode) });
+                    break;
                 case 'GET_SITE_RULES':
                     sendResponse({
                         blocked: this.ruleManager.getBlockedDomains(),

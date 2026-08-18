@@ -1,5 +1,7 @@
 'use strict';
 
+/* global withUsageLock */
+
 function applyStorageMiscMethods(StorageManager) {
     StorageManager.prototype.getCurrentSpeed = async function getCurrentSpeed() {
         try {
@@ -45,17 +47,47 @@ function applyStorageMiscMethods(StorageManager) {
     };
 
     StorageManager.prototype.compactStorage = async function compactStorage() {
-        try {
-            const allData = await chrome.storage.local.get(null);
-            if (!allData || Object.keys(allData).length === 0) return true;
-            
-            // Re-set clean keys directly without clearing storage to avoid data loss
-            await chrome.storage.local.set(allData);
-            return true;
-        } catch (error) {
-            console.error('Failed to compact storage:', error);
-            return false;
-        }
+        return withUsageLock(async () => {
+            try {
+                const allData = await chrome.storage.local.get(null);
+                if (!allData || Object.keys(allData).length === 0) return true;
+
+                // Retain only valid production keys
+                const cleanStorage = {};
+
+                if (allData.settings && typeof allData.settings === 'object') {
+                    cleanStorage.settings = allData.settings;
+                }
+                if (Array.isArray(allData.siteRules)) {
+                    cleanStorage.siteRules = allData.siteRules;
+                }
+                if (Array.isArray(allData.siteGroups)) {
+                    cleanStorage.siteGroups = allData.siteGroups;
+                }
+                if (Array.isArray(allData.blockList)) {
+                    cleanStorage.blockList = allData.blockList;
+                }
+                if (allData.blockStats && typeof allData.blockStats === 'object') {
+                    cleanStorage.blockStats = allData.blockStats;
+                }
+                if (allData.schemaVersion) {
+                    cleanStorage.schemaVersion = allData.schemaVersion;
+                }
+
+                // Retain full usage object as-is without any pruning or mutation
+                if (allData.usage !== undefined) {
+                    cleanStorage.usage = allData.usage;
+                }
+
+                // Replace storage with purely clean dataset (removes transient alarm flags, temp keys)
+                await chrome.storage.local.clear();
+                await chrome.storage.local.set(cleanStorage);
+                return true;
+            } catch (error) {
+                console.error('Failed to compact storage:', error);
+                return false;
+            }
+        });
     };
 
     StorageManager.prototype.getStorageUsage = async function getStorageUsage() {

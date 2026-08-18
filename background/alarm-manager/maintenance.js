@@ -2,37 +2,7 @@
 
 function applyAlarmMaintenanceMethods(AlarmManager) {
     AlarmManager.prototype.cleanupOldUsageData = async function cleanupOldUsageData() {
-        const settings = await chrome.storage.local.get('settings');
-        const userSettings = settings.settings || {};
-
-        const autoPurgeEnabled = userSettings.autoPurgeEnabled === true;
-        const autoPurgeDays = parseInt(userSettings.autoPurgeDays, 10) || 30;
-
-        // Use user-configured days when auto-purge is enabled,
-        // otherwise fall back to a 90-day hard floor as a built-in safeguard
-        const retentionDays = autoPurgeEnabled ? autoPurgeDays : 90;
-
-        const usage = await chrome.storage.local.get('usage');
-        const usageData = usage.usage || {};
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
-        const cutoffStr = this.getLocalDateString(cutoffDate);
-
-        let cleaned = false;
-
-        for (const domainData of Object.values(usageData)) {
-            for (const date of Object.keys(domainData)) {
-                if (date !== 'cumulative' && date < cutoffStr) {
-                    delete domainData[date];
-                    cleaned = true;
-                }
-            }
-        }
-
-        if (cleaned) {
-            await chrome.storage.local.set({ usage: usageData });
-            console.log('Cleaned up old usage data');
-        }
+        // Disabled: No automatic background deletion of usage history.
     };
 
     AlarmManager.prototype.cleanupOldBlockStats = async function cleanupOldBlockStats() {
@@ -58,6 +28,9 @@ function applyAlarmMaintenanceMethods(AlarmManager) {
 
     AlarmManager.prototype.createBackupData = async function createBackupData() {
         const data = await chrome.storage.local.get();
+        // Never nest previous backups inside a new snapshot — that grows
+        // quadratically (each backup contains the whole prior backups array).
+        delete data.backups;
         return {
             timestamp: new Date().toISOString(),
             version: chrome.runtime.getManifest().version,

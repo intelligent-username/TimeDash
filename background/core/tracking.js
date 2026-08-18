@@ -21,28 +21,34 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
     };
 
     TimeDashBackground.prototype.processPendingUpdates = async function processPendingUpdates() {
-        if (this.tabTracker && typeof this.tabTracker.flushActiveTime === 'function') {
-            this.tabTracker.flushActiveTime();
-        }
+        const run = async () => {
+            if (this.tabTracker && typeof this.tabTracker.flushActiveTime === 'function') {
+                this.tabTracker.flushActiveTime();
+            }
 
-        if (this.pendingUpdates.size === 0) return;
+            if (this.pendingUpdates.size === 0) return;
 
-        const updates = new Map(this.pendingUpdates);
-        this.pendingUpdates.clear();
+            const updates = new Map(this.pendingUpdates);
+            this.pendingUpdates.clear();
 
-        try {
-            await chrome.storage.session.remove('pendingUpdates');
-        } catch {
-            // non-critical
-        }
+            try {
+                await chrome.storage.session.remove('pendingUpdates');
+            } catch {
+                // non-critical
+            }
 
-        for (const [domain, timeSpent] of updates) {
-            const rule = this.ruleManager.getRule(domain);
-            const type = rule && rule.type === 'RESTRICTED' ? 'RESTRICTED' : 'GENERAL';
-            await this.storage.updateUsage(domain, timeSpent, type);
-        }
+            for (const [domain, timeSpent] of updates) {
+                const rule = this.ruleManager.getRule(domain);
+                const type = rule && rule.type === 'RESTRICTED' ? 'RESTRICTED' : 'GENERAL';
+                await this.storage.updateUsage(domain, timeSpent, type);
+            }
 
-        this.broadcastUpdate();
+            this.broadcastUpdate();
+        };
+
+        const next = this._processingUpdates ? this._processingUpdates.then(run, run) : run();
+        this._processingUpdates = next.catch(() => {});
+        return next;
     };
 
     TimeDashBackground.prototype.broadcastUpdate = function broadcastUpdate() {

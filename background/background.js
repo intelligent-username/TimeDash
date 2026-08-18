@@ -56,7 +56,6 @@ class TimeDashBackground {
         this.tabTracker.setupEventListeners();
         this.setupMessageHandling();
         this.startTrackingLoop();
-        this.alarmManager.handleCleanup();
     }
 }
 

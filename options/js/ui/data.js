@@ -54,8 +54,10 @@ export class DataManager {
      */
     async compactStorage() {
         try {
-            await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
-            await this.controller.storageManager.compactStorage();
+            const response = await chrome.runtime.sendMessage({ type: 'COMPACT_STORAGE' });
+            if (!response || response.success !== true) {
+                throw new Error('Background compact failed');
+            }
             await this.controller.loadAllData();
             this.controller.refreshUI();
             this.updateStorageUsage();
@@ -107,14 +109,17 @@ export class DataManager {
                 if (e.target.classList.contains('rule-delete-btn')) {
                     const domain = e.target.dataset.deleteDomain;
                     if (confirm(`Delete all data for ${domain}?`)) {
-                        delete this.controller.usage[domain];
-                        // Save directly via chrome.storage as StorageManager.saveUsage might be missing/generic
-                        await chrome.storage.local.set({ usage: this.controller.usage });
-
-                        this.controller.showSuccess(`Deleted data for ${domain}`);
-                        this.controller.refreshUI();
-                        this.updateStorageUsage();
-                        searchInput.dispatchEvent(new Event('input')); // Refresh list
+                        const response = await chrome.runtime.sendMessage({
+                            type: 'DELETE_DOMAIN_DATA',
+                            domain,
+                        });
+                        if (response && response.success) {
+                            delete this.controller.usage[domain];
+                            this.controller.showSuccess(`Deleted data for ${domain}`);
+                            this.controller.refreshUI();
+                            this.updateStorageUsage();
+                            searchInput.dispatchEvent(new Event('input')); // Refresh list
+                        }
                     }
                 }
             });
@@ -253,62 +258,6 @@ export class DataManager {
         });
     }
 
-    mergeUsage(existingUsage, importedUsage) {
-        const merged = JSON.parse(JSON.stringify(existingUsage || {}));
-        if (!importedUsage) return merged;
-
-        for (const [domain, impData] of Object.entries(importedUsage)) {
-            if (!merged[domain]) {
-                merged[domain] = JSON.parse(JSON.stringify(impData));
-                continue;
-            }
-            const cur = merged[domain];
-
-            for (const [k, v] of Object.entries(impData)) {
-                if (typeof v === 'number') {
-                    if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
-                        cur[k] = (cur[k] || 0) + v;
-                    } else if (/^\d{4}-\d{2}-\d{2}_general$/.test(k)) {
-                        cur[k] = (cur[k] || 0) + v;
-                    } else if (/^\d{4}-\d{2}-\d{2}_restricted$/.test(k)) {
-                        cur[k] = (cur[k] || 0) + v;
-                    } else if (/^\d{4}-\d{2}-\d{2}_blocked$/.test(k)) {
-                        cur[k] = (cur[k] || 0) + v;
-                    } else if (k === 'blockedToday') {
-                        cur[k] = (cur[k] || 0) + v;
-                    }
-                } else if (!(k in cur)) {
-                    cur[k] = v;
-                }
-            }
-
-            // Recalculate cumulative totals accurately from daily timestamps
-            let totalGeneral = 0;
-            let totalRestricted = 0;
-            for (const [k, v] of Object.entries(cur)) {
-                if (typeof v === 'number') {
-                    if (/^\d{4}-\d{2}-\d{2}_general$/.test(k)) totalGeneral += v;
-                    else if (/^\d{4}-\d{2}-\d{2}_restricted$/.test(k)) totalRestricted += v;
-                }
-            }
-
-            if (totalGeneral > 0 || totalRestricted > 0) {
-                cur.cumulative_general = totalGeneral;
-                cur.cumulative_restricted = totalRestricted;
-                cur.cumulative = totalGeneral + totalRestricted;
-            } else {
-                let dailySum = 0;
-                for (const [k, v] of Object.entries(cur)) {
-                    if (typeof v === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(k)) {
-                        dailySum += v;
-                    }
-                }
-                cur.cumulative = dailySum;
-            }
-        }
-        return merged;
-    }
-
     /**
      *
      * @param event
@@ -335,10 +284,18 @@ export class DataManager {
             if (!importMode) return;
 
             if (importMode === 'merge') {
-                if (data.usage) {
-                    const existingUsage = (await chrome.storage.local.get('usage')).usage || {};
-                    const mergedUsage = this.mergeUsage(existingUsage, data.usage);
-                    await chrome.storage.local.set({ usage: mergedUsage });
+                // Flush any lingering in-memory updates from background before merging
+                await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
+
+                if (data.usage !== undefined) {
+                    const usageResponse = await chrome.runtime.sendMessage({
+                        type: 'IMPORT_USAGE',
+                        usage: data.usage,
+                        mode: 'merge',
+                    });
+                    if (!usageResponse || usageResponse.success !== true) {
+                        throw new Error('Failed to import usage data');
+                    }
                 }
 
                 if (data.settings) {
@@ -434,7 +391,14 @@ export class DataManager {
                 await chrome.runtime.sendMessage({ type: 'FLUSH_PENDING_UPDATES' }).catch(() => {});
 
                 if (data.usage !== undefined) {
-                    await chrome.storage.local.set({ usage: data.usage || {} });
+                    const usageResponse = await chrome.runtime.sendMessage({
+                        type: 'IMPORT_USAGE',
+                        usage: data.usage,
+                        mode: 'replace',
+                    });
+                    if (!usageResponse || usageResponse.success !== true) {
+                        throw new Error('Failed to import usage data');
+                    }
                 }
                 if (data.settings !== undefined) {
                     await this.controller.storageManager.saveSettings(data.settings);
