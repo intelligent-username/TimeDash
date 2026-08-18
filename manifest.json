@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "TimeDash",
     "version": "1.3.6",
-    "description": "Boost your productivity with time tracking, site blocking, and speed control.",
+    "description": "Track time, block distractions, and control video speed. Private, local-only productivity analytics.",
     "default_locale": "en",
     "browser_specific_settings": {
         "gecko": {
