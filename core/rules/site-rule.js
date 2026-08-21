@@ -31,16 +31,18 @@ class SiteRule {
     }
 
     /**
-     * Check if this rule matches the given URL/domain
+     * Check if this rule matches the given URL/domain.
+     * Hierarchical: a rule for "utoronto.ca" matches "mail.utoronto.ca",
+     * while a rule for "mail.utoronto.ca" matches only that exact host.
      * @param {string} urlOrDomain - URL or domain to check
      * @returns {boolean} True if rule applies to this URL
      */
     isMatch(urlOrDomain) {
         try {
-            const domain = urlOrDomain.includes('://')
-                ? DomainUtils.extractDomain(urlOrDomain)
+            const host = urlOrDomain.includes('://')
+                ? DomainUtils.extractHostname(urlOrDomain)
                 : DomainUtils.normalizeDomain(urlOrDomain);
-            return this.domain === domain;
+            return host === this.domain || host.endsWith('.' + this.domain);
         } catch {
             return false;
         }

@@ -98,7 +98,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
             }
 
             // Perform real-time limit/blocking check
-            const domain = DomainUtils.extractDomain(tab.url);
+            const domain = this.ruleManager.resolveTrackingDomain(tab.url);
             await this.tabTracker.checkAndHandleBlocking(tab, domain);
         } catch {
             this.tabTracker.stopTrackingTab(track.tabId);
@@ -146,6 +146,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
     ) {
         const settings = await this.storage.getSettings();
         const dailyLimitMinutes = Number(settings.dailyTimeLimitMinutes || 0);
+        const resolvedDomain = this.ruleManager.resolveTrackingDomain(url) || domain;
 
         let allUsage = null;
         if (dailyLimitMinutes > 0) {
@@ -171,7 +172,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 return {
                     shouldBlock: true,
                     reason: 'restricted',
-                    domain: domain || DomainUtils.extractDomain(url || ''),
+                    domain: resolvedDomain || DomainUtils.extractDomain(url || ''),
                 };
             }
         }
@@ -192,7 +193,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
             }
         }
 
-        const todayTimeSeconds = await this.getRealTimeUsage(domain, allUsage);
+        const todayTimeSeconds = await this.getRealTimeUsage(resolvedDomain, allUsage);
         const result = this.ruleManager.evaluateAccess(
             url,
             { todayTimeSeconds },

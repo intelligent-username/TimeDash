@@ -48,7 +48,7 @@ class TabTracker {
             try {
                 const tab = await chrome.tabs.get(details.tabId);
                 if (!tab || !tab.id) return;
-                const domain = DomainUtils.extractDomain(details.url);
+                const domain = this.instance.ruleManager.resolveTrackingDomain(details.url);
                 await this.checkAndHandleBlocking(tab, domain);
             } catch {
                 // Tab may have been closed between event and lookup
@@ -76,7 +76,7 @@ class TabTracker {
             }
 
             if (DomainUtils.shouldTrackUrl(tab.url)) {
-                const domain = DomainUtils.extractDomain(tab.url);
+                const domain = this.instance.ruleManager.resolveTrackingDomain(tab.url);
                 const wasBlocked = await this.checkAndHandleBlocking(tab, domain);
                 if (!wasBlocked) {
                     await this.startTrackingTab(tabId, domain);
@@ -104,7 +104,7 @@ class TabTracker {
                 return;
             }
 
-            const domain = DomainUtils.extractDomain(url);
+            const domain = this.instance.ruleManager.resolveTrackingDomain(url);
             const tab = await chrome.tabs.get(tabId);
 
             if (tab.active) {
@@ -128,7 +128,9 @@ class TabTracker {
             const origUrl = urlObj.searchParams.get('url');
             const origDomain = urlObj.searchParams.get('domain');
 
-            const domain = origUrl ? DomainUtils.extractDomain(origUrl) : (origDomain || '');
+            const domain = origUrl
+                ? this.instance.ruleManager.resolveTrackingDomain(origUrl)
+                : origDomain || '';
             if (!domain) return;
 
             const accessResult = await this.instance.evaluateAccessForDomain(origUrl || `https://${domain}`, domain);
@@ -171,7 +173,7 @@ class TabTracker {
                 return;
             }
 
-            const domain = DomainUtils.extractDomain(currentActiveTab.url);
+            const domain = this.instance.ruleManager.resolveTrackingDomain(currentActiveTab.url);
             const isIncognitoDisallowed = currentActiveTab.incognito && !newSettings.incognitoTracking;
             const isWhitelisted = newSettings.whitelist && newSettings.whitelist.includes(domain);
             const isTrackingDisabled = newSettings.trackingEnabled === false;
@@ -242,10 +244,11 @@ class TabTracker {
 
     async checkAndHandleBlocking(tab, domain) {
         const accessResult = await this.instance.evaluateAccessForDomain(tab.url, domain);
+        const resolvedDomain = accessResult.domain || domain;
 
         if (accessResult.shouldBlock) {
             try {
-                await this.instance.storage.incrementBlockCount(domain);
+                await this.instance.storage.incrementBlockCount(resolvedDomain);
             } catch (error) {
                 console.error('Failed to increment block count:', error);
             }
@@ -261,7 +264,7 @@ class TabTracker {
 
             const blockPageUrl =
                 chrome.runtime.getURL('block/block.html') +
-                `?domain=${encodeURIComponent(domain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}` +
+                `?domain=${encodeURIComponent(resolvedDomain)}&url=${encodeURIComponent(tab.url)}&reason=${accessResult.reason}` +
                 (accessResult.todayTimeSeconds != null
                     ? `&used=${Math.round(accessResult.todayTimeSeconds)}`
                     : '');

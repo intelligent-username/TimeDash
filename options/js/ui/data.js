@@ -1,4 +1,62 @@
 /**
+ * Validate the structure of an imported backup payload.
+ * @param {*} data Parsed JSON from the import file.
+ * @returns {string|null} i18n message key describing the first error, or null if valid.
+ */
+function validateImportData(data) {
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+        return 'importErrorNotObject';
+    }
+    if (!(data.usage || data.settings || data.blockList || data.siteRules || data.siteGroups)) {
+        return 'importErrorEmpty';
+    }
+    if (data.usage !== undefined) {
+        if (typeof data.usage !== 'object' || data.usage === null || Array.isArray(data.usage)) {
+            return 'importErrorUsage';
+        }
+        if (Object.keys(data.usage).length > 50000) return 'importErrorTooLarge';
+        for (const entry of Object.values(data.usage)) {
+            if (typeof entry !== 'object' || entry === null) return 'importErrorUsage';
+            for (const value of Object.values(entry)) {
+                if (typeof value === 'number' && (!Number.isFinite(value) || value < 0)) {
+                    return 'importErrorNumbers';
+                }
+            }
+        }
+    }
+    if (
+        data.settings !== undefined &&
+        (typeof data.settings !== 'object' || data.settings === null || Array.isArray(data.settings))
+    ) {
+        return 'importErrorSettings';
+    }
+    if (data.blockList !== undefined && !Array.isArray(data.blockList)) {
+        return 'importErrorBlockList';
+    }
+    if (data.siteRules !== undefined) {
+        if (typeof data.siteRules !== 'object' || data.siteRules === null) return 'importErrorRules';
+        for (const kind of ['blocked', 'restricted']) {
+            const list = data.siteRules[kind];
+            if (list === undefined) continue;
+            if (!Array.isArray(list)) return 'importErrorRules';
+            for (const item of list) {
+                const domain = typeof item === 'string' ? item : item && item.domain;
+                if (typeof domain !== 'string' || !domain) return 'importErrorRules';
+            }
+        }
+    }
+    if (data.siteGroups !== undefined) {
+        if (!Array.isArray(data.siteGroups)) return 'importErrorGroups';
+        for (const g of data.siteGroups) {
+            if (!g || typeof g.id !== 'string' || typeof g.name !== 'string' || !Array.isArray(g.domains)) {
+                return 'importErrorGroups';
+            }
+        }
+    }
+    return null;
+}
+
+/**
  *
  */
 export class DataManager {

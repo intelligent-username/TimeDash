@@ -109,6 +109,34 @@ class RuleManager {
     }
 
     /**
+     * Get a rule only if its stored domain exactly equals the given host
+     * (i.e. the user specifically specified this subdomain)
+     * @param {string} domain - Full hostname to look up
+     * @returns {SiteRule|null}
+     */
+    getExactRule(domain) {
+        const normalized = DomainUtils.normalizeDomain(domain);
+        const rule = this.rules.get(normalized);
+        return rule && rule.domain === normalized ? rule : null;
+    }
+
+    /**
+     * Resolve the storage/tracking key for a URL:
+     * the full hostname when it is specifically specified by a rule,
+     * otherwise the registrable domain (aggregating pages + subdomains).
+     * @param {string} url - URL being tracked
+     * @returns {string} Tracking key
+     */
+    resolveTrackingDomain(url) {
+        const hostname = DomainUtils.extractHostname(url);
+        if (hostname) {
+            const exact = this.getExactRule(hostname);
+            if (exact && exact.isEnabled) return hostname;
+        }
+        return DomainUtils.extractDomain(url);
+    }
+
+    /**
      * Get all rules of a specific type
      * @param {string} type - Rule type (BLOCKED or RESTRICTED)
      * @returns {SiteRule[]}
@@ -204,11 +232,21 @@ class RuleManager {
      */
     evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}, settings = {}) {
         try {
-            const domain = DomainUtils.extractDomain(url);
+            const hostname = DomainUtils.extractHostname(url);
+            const registrable = DomainUtils.extractDomain(url);
+
+            // A specifically specified subdomain tracks (and blocks) under its
+            // full hostname; everything else aggregates under the registrable domain.
+            let domain = registrable;
+            let rule = this.getExactRule(hostname);
+            if (rule && rule.isEnabled) {
+                domain = hostname;
+            } else {
+                rule = this.getRule(registrable);
+            }
             const restrictedCap = Number(settings.restrictedSliderMax || 0);
 
             // 1. Individual rule check
-            const rule = this.getRule(domain);
             if (rule && rule.isEnabled) {
                 const result = rule.evaluate(usageStats, restrictedCap);
                 if (result.shouldBlock) {
@@ -216,8 +254,9 @@ class RuleManager {
                 }
             }
 
-            // 2. Group budget check
-            const group = this.getGroupForDomain(domain);
+            // 2. Group budget check (contains() already matches hierarchically)
+            const group =
+                this.getGroupForDomain(hostname) || this.getGroupForDomain(registrable);
             if (group) {
                 const groupSeconds = groupUsageSecondsMap[group.id];
                 if (groupSeconds !== undefined) {

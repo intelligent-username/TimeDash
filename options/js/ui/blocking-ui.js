@@ -1,7 +1,7 @@
 import { getFaviconUrl } from '../utils/dom.js';
 import { setupFaviconFallback } from './blocking/blocking-helpers.js';
 import { createDomainRow } from './blocking/domain-row.js';
-import { renderGroupRectangle } from './blocking/group-card.js';
+import { renderGroupRectangle, beginLiveReorder } from './blocking/group-card.js';
 import { buildCircularPicker } from './blocking/circular-picker.js';
 import { blockingRuleActions } from './blocking/rule-actions.js';
 import { groupActions } from './blocking/group-actions.js';

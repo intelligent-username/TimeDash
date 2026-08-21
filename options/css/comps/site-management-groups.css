@@ -258,13 +258,15 @@
 }
 
 /* Live reorder: dimmed slot left behind by the dragged row */
-.group-domain-row.drag-source {
+.group-domain-row.drag-source,
+.restrict-item.drag-source {
     opacity: 0.3;
     background: var(--primary-fade);
 }
 
 /* Live reorder: floating clone clamped to the list's vertical band */
-.group-domain-row.drag-ghost {
+.group-domain-row.drag-ghost,
+.restrict-item.drag-ghost {
     background: var(--card-bg);
     border: 1px solid color-mix(in srgb, var(--primary-color) 50%, var(--border));
     border-radius: var(--radius-small);

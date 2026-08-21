@@ -101,6 +101,35 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });
                     break;
+                case 'REORDER_RESTRICTED_RULES': {
+                    const order = Array.isArray(message.domains) ? message.domains : [];
+                    const entries = Array.from(this.ruleManager.rules.entries());
+                    const restricted = new Map(
+                        entries
+                            .filter(([, r]) => r.type === 'RESTRICTED')
+                            .map(([d, r]) => [d, r])
+                    );
+                    const reordered = new Map();
+                    // Blocked rules keep their relative position first
+                    entries.forEach(([d, r]) => {
+                        if (r.type === 'BLOCKED') reordered.set(d, r);
+                    });
+                    // Restricted rules follow the requested order
+                    order.forEach((domain) => {
+                        const key = String(domain).toLowerCase().replace(/^www\./, '');
+                        const rule = restricted.get(key);
+                        if (rule) {
+                            reordered.set(key, rule);
+                            restricted.delete(key);
+                        }
+                    });
+                    // Any rules not mentioned keep their existing order at the end
+                    restricted.forEach((r, d) => reordered.set(d, r));
+                    this.ruleManager.rules = reordered;
+                    await this.ruleManager.saveToStorage();
+                    sendResponse({ success: true });
+                    break;
+                }
                 case 'GET_GROUPS':
                     sendResponse(
                         this.ruleManager.groups.filter((g) => !g.deletedAt).map((g) => g.toJSON())

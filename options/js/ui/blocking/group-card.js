@@ -16,6 +16,246 @@ document.addEventListener('dragend', () => {
 });
 
 /**
+ * Active live-reorder gesture, shared across all group cards so rows can be
+ * dragged within and across group lists with a single ghost. Also handles
+ * standalone restricted rows (`kind: 'standalone'`).
+ * @type {{ row: HTMLElement, ghost: HTMLElement, kind: 'group'|'standalone',
+ *          sourceGroupId: string|null, sourceList: HTMLElement,
+ *          sourceOrder: string[], context: object } | null}
+ */
+let reorderState = null;
+
+/**
+ * Finds the drop target under the cursor for the active gesture.
+ * Group rows target group domain lists (falling back to containers for empty
+ * lists); standalone rows target the restricted list itself.
+ * @param {DragEvent} e
+ * @returns {{ list: HTMLElement } | null}
+ */
+function findDropTarget(e) {
+    if (reorderState?.kind === 'standalone') {
+        const list = document.getElementById('restrictedList');
+        if (!list) return null;
+        const r = list.getBoundingClientRect();
+        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+            return { list };
+        }
+        return null;
+    }
+    for (const list of document.querySelectorAll('.group-domain-list')) {
+        const r = list.getBoundingClientRect();
+        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+            return { list };
+        }
+    }
+    for (const c of document.querySelectorAll('.group-container')) {
+        const r = c.getBoundingClientRect();
+        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+            const list = c.querySelector('.group-domain-list');
+            if (list && !list.querySelector('.group-domain-row')) return { list };
+        }
+    }
+    return null;
+}
+
+/**
+ * Arms a live reorder gesture on dragstart of a reorderable row.
+ * @param {DragEvent} e
+ * @param {object} options
+ * @param {'group'|'standalone'} [options.kind] - Row kind being dragged
+ * @param {object} [options.group] - Source group (group rows only)
+ * @param {object} options.context - BlockingUI instance
+ */
+export function beginLiveReorder(e, { kind = 'group', group = null, context }) {
+    const row = e.target.closest?.('.group-domain-row, .restrict-item');
+    if (!row) return;
+    if (kind === 'group' && !row.classList.contains('group-domain-row')) return;
+    if (kind === 'standalone' && !row.classList.contains('restrict-item')) return;
+
+    // Suppress the native drag image — we render our own constrained ghost
+    const hidden = document.createElement('div');
+    hidden.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
+    document.body.appendChild(hidden);
+    e.dataTransfer.setDragImage(hidden, 0, 0);
+    requestAnimationFrame(() => hidden.remove());
+
+    const rect = row.getBoundingClientRect();
+    const ghost = row.cloneNode(true);
+    ghost.classList.remove('dragging');
+    ghost.classList.add('drag-ghost');
+    Object.assign(ghost.style, {
+        position: 'fixed',
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+        margin: '0',
+        pointerEvents: 'none',
+        zIndex: '1000',
+    });
+    document.body.appendChild(ghost);
+
+    reorderState = {
+        row,
+        ghost,
+        kind,
+        sourceGroupId: group ? group.id : null,
+        sourceList: row.parentElement,
+        sourceOrder:
+            kind === 'group'
+                ? [...group.domains]
+                : [...row.parentElement.querySelectorAll('.restrict-item .rule-domain')].map(
+                      (el) => el.textContent
+                  ),
+        context,
+    };
+    row.classList.add('drag-source');
+}
+
+/**
+ * Inserts a standalone row relative to its standalone siblings, ignoring group
+ * cards in between (they render before standalone rows anyway).
+ * @param {HTMLElement} list - Restricted list container
+ * @param {HTMLElement} row - Dragged row
+ * @param {number} clientY
+ */
+function swapStandaloneRow(list, row, clientY) {
+    const siblings = [...list.querySelectorAll('.restrict-item:not(.drag-source)')];
+    let before = null;
+    for (const sib of siblings) {
+        const rect = sib.getBoundingClientRect();
+        if (clientY < rect.top + rect.height / 2) {
+            before = sib;
+            break;
+        }
+    }
+    if (before && before !== row.nextElementSibling) {
+        flipSwap(list, () => list.insertBefore(row, before));
+    } else if (!before && siblings.length) {
+        const last = siblings[siblings.length - 1];
+        if (row !== last) flipSwap(list, () => list.insertBefore(row, last.nextElementSibling));
+    }
+}
+
+// Ghost movement + live swaps (fires on the source row, bubbles here even
+// after the row has been moved into another group's list)
+document.addEventListener('drag', (e) => {
+    if (!reorderState) return;
+    const { ghost, row } = reorderState;
+    const h = ghost.offsetHeight;
+
+    // Constrain ghost: vertical only, clamped to whichever list is hovered
+    const target = findDropTarget(e);
+    if (target) {
+        const listRect = target.list.getBoundingClientRect();
+        const y = Math.max(listRect.top, Math.min(listRect.bottom - h, e.clientY - h / 2));
+        ghost.style.top = `${y}px`;
+    } else {
+        ghost.style.top = `${e.clientY - h / 2}px`;
+    }
+
+    if (!target) return;
+
+    // Live swap when the ghost crosses a sibling's vertical midpoint
+    const list = target.list;
+    if (reorderState.kind === 'standalone') {
+        swapStandaloneRow(list, row, e.clientY);
+        return;
+    }
+    if (!list.contains(row)) {
+        flipSwap(list, () => list.appendChild(row));
+        return;
+    }
+    const siblings = [...list.querySelectorAll('.group-domain-row:not(.drag-source)')];
+    let before = null;
+    for (const sib of siblings) {
+        const rect = sib.getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) {
+            before = sib;
+            break;
+        }
+    }
+    if (before && before !== row.nextElementSibling) {
+        flipSwap(list, () => list.insertBefore(row, before));
+    } else if (!before && siblings.length && row !== list.lastElementChild) {
+        flipSwap(list, () => list.appendChild(row));
+    }
+});
+
+// Allow drops only over valid targets so "drop outside" still resolves to
+// dropEffect 'none' (which triggers the existing drag-out-of-group removal)
+document.addEventListener(
+    'dragover',
+    (e) => {
+        if (!reorderState) return;
+        if (!findDropTarget(e)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    },
+    true
+);
+
+// Swallow drops during a live reorder (persistence happens on dragend)
+document.addEventListener(
+    'drop',
+    (e) => {
+        if (!reorderState) return;
+        e.preventDefault();
+        e.stopPropagation();
+    },
+    true
+);
+
+document.addEventListener('dragend', () => {
+    if (!reorderState) return;
+    const { row, ghost, kind, sourceGroupId, sourceList, sourceOrder, context } = reorderState;
+    ghost.remove();
+    row.classList.remove('drag-source');
+    reorderState = null;
+
+    const domain = row.querySelector('.rule-domain')?.textContent;
+    if (!domain) return;
+
+    // Standalone restricted rows: persist rule order for the restricted list
+    if (kind === 'standalone') {
+        const list = row.closest('#restrictedList') || sourceList;
+        const newOrder = [...list.querySelectorAll('.restrict-item .rule-domain')].map(
+            (el) => el.textContent
+        );
+        if (newOrder.join('\u0000') === sourceOrder.join('\u0000')) return;
+        chrome.runtime.sendMessage({ type: 'REORDER_RESTRICTED_RULES', domains: newOrder })
+            .then(() => context.loadSiteRules())
+            .catch(() => {});
+        return;
+    }
+
+    const readDomains = (list) =>
+        [...list.querySelectorAll('.group-domain-row .rule-domain')].map((el) => el.textContent);
+
+    const targetContainer = row.closest('.group-container');
+    const targetGroupId = targetContainer?.dataset.groupId || sourceGroupId;
+    const targetList = row.closest('.group-domain-list') || sourceList;
+
+    if (targetGroupId === sourceGroupId) {
+        const newDomains = readDomains(targetList);
+        if (newDomains.join('\u0000') === reorderState.sourceOrder.join('\u0000')) return;
+        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: newDomains })
+            .then(() => context.loadSiteRules())
+            .catch(() => {});
+        return;
+    }
+
+    // Cross-group move: rewrite both groups' domain arrays from the DOM
+    const sourceDomains = readDomains(sourceList);
+    const targetDomains = readDomains(targetList);
+    Promise.all([
+        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: sourceDomains }),
+        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: targetGroupId, domains: targetDomains }),
+    ])
+        .then(() => context.loadSiteRules())
+        .catch(() => {});
+});
+/**
  * Moves an element within a list while animating all siblings from their old
  * positions to their new ones (FLIP technique) for smooth live reordering.
  * @param {HTMLElement} list
@@ -68,7 +308,18 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
         }
     };
     container.addEventListener('dragover', (e) => {
-        if (activeDragGroupId === group.id) return; // same-group reorder, not an incoming drop
+        if (activeDragGroupId) {
+            // Group-row drag: live preview handles it (incl. empty lists)
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (reorderState && group.id !== reorderState.sourceGroupId) {
+                const list = container.querySelector('.group-domain-list');
+                if (list && !list.contains(reorderState.row) && !list.querySelector('.group-domain-row')) {
+                    flipSwap(list, () => list.appendChild(reorderState.row));
+                }
+            }
+            return;
+        }
         e.preventDefault();
         container.classList.add('drag-over');
     });
@@ -203,110 +454,11 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
         domainList.appendChild(row);
     });
 
-    // --- Live vertical-only reorder ---
-    // A custom ghost follows the cursor but is clamped to the list's vertical
-    // band (X is locked to the row's column). The source row is swapped in the
-    // DOM in real time as the ghost crosses sibling midpoints, with FLIP
-    // animation on the displaced rows. Order is persisted on dragend.
-    let reorderState = null; // { row, ghost }
-
-    domainList.addEventListener('dragstart', (e) => {
-        const row = e.target.closest?.('.group-domain-row');
-        if (!row || !domainList.contains(row)) return;
-        if (e.dataTransfer.getData('text/x-group-id') !== group.id) return;
-
-        // Suppress the native drag image — we render our own constrained ghost
-        const hidden = document.createElement('div');
-        hidden.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
-        document.body.appendChild(hidden);
-        e.dataTransfer.setDragImage(hidden, 0, 0);
-        requestAnimationFrame(() => hidden.remove());
-
-        const rect = row.getBoundingClientRect();
-        const ghost = row.cloneNode(true);
-        ghost.classList.remove('dragging');
-        ghost.classList.add('drag-ghost');
-        Object.assign(ghost.style, {
-            position: 'fixed',
-            left: `${rect.left}px`,
-            top: `${rect.top}px`,
-            width: `${rect.width}px`,
-            height: `${rect.height}px`,
-            margin: '0',
-            pointerEvents: 'none',
-            zIndex: '1000',
-        });
-        document.body.appendChild(ghost);
-
-        reorderState = { row, ghost };
-        row.classList.add('drag-source');
-    });
-
-    domainList.addEventListener(
-        'dragover',
-        (e) => {
-            if (!reorderState) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        }
+    // Live cross-group capable reorder — all handling is module-level; this
+    // just arms the gesture for this card's list.
+    domainList.addEventListener('dragstart', (e) =>
+        beginLiveReorder(e, { kind: 'group', group, context })
     );
-
-    domainList.addEventListener('drag', (e) => {
-        if (!reorderState) return;
-        const { ghost, row } = reorderState;
-        const listRect = domainList.getBoundingClientRect();
-        const h = ghost.offsetHeight;
-
-        // Constrain ghost: vertical only, clamped to the list's band
-        const y = Math.max(listRect.top, Math.min(listRect.bottom - h, e.clientY - h / 2));
-        ghost.style.top = `${y}px`;
-
-        // Live swap when the ghost crosses a sibling's vertical midpoint
-        // (only while the cursor is actually over the list)
-        if (e.clientY < listRect.top || e.clientY > listRect.bottom) return;
-        const siblings = [...domainList.querySelectorAll('.group-domain-row:not(.drag-source)')];
-        let target = null;
-        for (const sib of siblings) {
-            const rect = sib.getBoundingClientRect();
-            if (e.clientY < rect.top + rect.height / 2) {
-                target = sib;
-                break;
-            }
-        }
-        if (target && target !== row.nextElementSibling) {
-            flipSwap(domainList, () => domainList.insertBefore(row, target));
-        } else if (!target && siblings.length && row !== domainList.lastElementChild) {
-            flipSwap(domainList, () => domainList.appendChild(row));
-        }
-    });
-
-    // Swallow drops for same-group reorders (persistence happens on dragend)
-    domainList.addEventListener('drop', (e) => {
-        if (reorderState) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    });
-
-    domainList.addEventListener('dragend', () => {
-        if (!reorderState) return;
-        reorderState.ghost.remove();
-        reorderState.row.classList.remove('drag-source');
-        reorderState = null;
-
-        const newDomains = [...domainList.querySelectorAll('.group-domain-row .rule-domain')].map(
-            (el) => el.textContent
-        );
-        if (newDomains.join('\u0000') === group.domains.join('\u0000')) return;
-        group.domains = newDomains;
-        chrome.runtime.sendMessage({
-            type: 'UPDATE_GROUP',
-            id: group.id,
-            domains: newDomains,
-        })
-            .then(() => context.loadSiteRules())
-            .catch(() => {});
-    });
 
     // Add domain input + button
     const addRow = document.createElement('div');

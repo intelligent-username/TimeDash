@@ -3,6 +3,21 @@
  */
 class DomainUtils {
     /**
+     * Extract the full hostname from a URL (subdomains preserved, www. stripped)
+     * @param {string} url - Full URL
+     * @returns {string} Full hostname
+     */
+    static extractHostname(url) {
+        try {
+            const urlObj = new URL(url);
+            return urlObj.hostname.toLowerCase().replace(/^www\./, '');
+        } catch {
+            const match = url.match(/(?:https?:\/\/)?(?:www\.)?([^/?#]+)/);
+            return match ? match[1].toLowerCase() : '';
+        }
+    }
+
+    /**
      * Extract domain from URL
      * @param {string} url - Full URL
      * @returns {string} Domain name
@@ -31,20 +46,17 @@ class DomainUtils {
     }
 
     /**
-     * Normalize domain for consistent storage
+     * Normalize domain for consistent storage.
+     * Preserves subdomains — only lowercases, trims and strips www.
+     * (Aggregation to the registrable domain happens at the tracking layer.)
      * @param {string} domain - Domain to normalize
      * @returns {string} Normalized domain
      */
     static normalizeDomain(domain) {
-        const clean = domain
+        return domain
             .toLowerCase()
             .replace(/^www\./, '')
             .trim();
-        const parts = clean.split('.');
-        if (parts.length >= 2) {
-            return parts.slice(-2).join('.');
-        }
-        return clean;
     }
 
     /**
