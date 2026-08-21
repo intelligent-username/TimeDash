@@ -476,16 +476,11 @@ periodLabel = chrome.i18n.getMessage('today');
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
-                const s = Math.floor(site.todayTime / 1000);
-                const h = Math.floor(s / 3600);
-                const m = Math.floor((s % 3600) / 60);
-                const time =
-                    h === 0 ? `${m}m` : m === 0 ? `${h}h` : `${h}h\u00a0${m}m`;
                 return `<div class="analytics-site-item">
                 <img class="analytics-site-favicon" alt="" data-domain="${escaped}">
                 <div class="analytics-site-info">
                     <div class="analytics-site-name">${escaped}</div>
-                    <div class="analytics-site-time">${time}</div>
+                    <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
                 </div>
                 <div class="analytics-site-bar">
                     <div class="analytics-site-bar-fill" style="width:${barWidth}%"></div>

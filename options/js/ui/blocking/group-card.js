@@ -519,8 +519,9 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
 
     const statsText = document.createElement('div');
     statsText.className = 'group-stats-text';
-    const usedFormatted = typeof TimeUtils !== 'undefined' ? TimeUtils.formatTime(totalGroupUsageSeconds) : `${Math.floor(totalGroupUsageSeconds / 60)}m`;
-    const limitFormatted = `${limitMinutes}m`;
+    const minUnit = typeof I18n !== 'undefined' ? I18n.t('unitMin') : 'm';
+    const usedFormatted = typeof TimeUtils !== 'undefined' ? TimeUtils.formatTime(totalGroupUsageSeconds) : `${Math.floor(totalGroupUsageSeconds / 60)}${minUnit}`;
+    const limitFormatted = `${limitMinutes}${minUnit}`;
 
     statsText.innerHTML = `<span><strong>${usedFormatted}</strong> / ${limitFormatted}</span>`;
 

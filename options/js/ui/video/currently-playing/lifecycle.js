@@ -34,7 +34,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                         type: 'FOCUS_VIDEO_TAB',
                         tabId,
                     });
-                    if (!focusRes || !focusRes.success) showToast(chrome.i18n.getMessage('couldNotFocusTab'), 'error');
+                    if (!focusRes || !focusRes.success) showToast(I18n.t('couldNotFocusTab'), 'error');
                     return;
                 }
 
@@ -53,7 +53,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 });
 
                 if (!res || !res.success) {
-                    showToast(chrome.i18n.getMessage('couldNotControlVideo'), 'error');
+                    showToast(I18n.t('couldNotControlVideo'), 'error');
                     this.refreshNow();
                     return;
                 }
@@ -65,13 +65,13 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                         `.currently-playing-toggle-btn[data-video-id="${videoId}"]`
                     );
                     if (toggleBtn && typeof res.paused === 'boolean') {
-                        toggleBtn.textContent = res.paused ? 'Play' : 'Pause';
+                        toggleBtn.textContent = res.paused ? I18n.t('play') : I18n.t('pause');
                     }
                 } else {
                     this.refreshNow();
                 }
             } catch {
-                showToast(chrome.i18n.getMessage('actionFailed'), 'error');
+                showToast(I18n.t('actionFailed'), 'error');
             }
         });
 
@@ -94,7 +94,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 frameId: Number.isInteger(frameId) ? frameId : undefined,
             });
 
-            if (!res || !res.success) showToast(chrome.i18n.getMessage('seekFailed'), 'error');
+            if (!res || !res.success) showToast(I18n.t('seekFailed'), 'error');
             this.refreshNow();
         });
     };
@@ -122,7 +122,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
         if (list)
             list.innerHTML =
                 '<div class="skeleton-row"></div><div class="skeleton-row"></div>' +
-                `<div class="analytics-empty-state">${chrome.i18n.getMessage('refreshingVideos')}</div>`;
+                `<div class="analytics-empty-state">${I18n.t('refreshingVideos')}</div>`;
 
         try {
             const refreshResponse = await this.sendMessageWithTimeout(
@@ -130,13 +130,13 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 12000
             );
             if (!refreshResponse || refreshResponse.success === false)
-                showToast(chrome.i18n.getMessage('videoRefreshFailed'), 'error');
+                showToast(I18n.t('videoRefreshFailed'), 'error');
             if (refreshResponse && Array.isArray(refreshResponse.sessions)) {
                 this.render(refreshResponse.sessions);
                 return;
             }
         } catch {
-            showToast(chrome.i18n.getMessage('videoRefreshFailed'), 'error');
+            showToast(I18n.t('videoRefreshFailed'), 'error');
         }
 
         await this.refreshNow(true);
@@ -155,7 +155,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
             );
             if (!response || response.error) {
                 list.innerHTML =
-                    `<div class="analytics-empty-state">${chrome.i18n.getMessage('failedLoadVideos')}</div>`;
+                    `<div class="analytics-empty-state">${I18n.t('failedLoadVideos')}</div>`;
                 return;
             }
 
@@ -163,7 +163,7 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
             this.render(sessions);
         } catch {
             list.innerHTML =
-                `<div class="analytics-empty-state">${chrome.i18n.getMessage('unableLoadVideos')}</div>`;
+                `<div class="analytics-empty-state">${I18n.t('unableLoadVideos')}</div>`;
         }
     };
 }

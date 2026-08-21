@@ -1,3 +1,21 @@
+const _nativeChromeGetMessage =
+    typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function'
+        ? chrome.i18n.getMessage.bind(chrome.i18n)
+        : null;
+
+if (_nativeChromeGetMessage) {
+    try {
+        chrome.i18n.getMessage = function (key, substitutions) {
+            if (I18n.activeMessages && I18n.activeMessages[key]) {
+                return I18n.t(key, substitutions);
+            }
+            return _nativeChromeGetMessage(key, substitutions);
+        };
+    } catch {
+        /* ignore */
+    }
+}
+
 /**
  * I18n utility for internationalization support with dynamic locale switching
  */
@@ -74,6 +92,9 @@ class I18n {
         }
 
         try {
+            if (_nativeChromeGetMessage) {
+                return _nativeChromeGetMessage(key, subs) || key;
+            }
             if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
                 return chrome.i18n.getMessage(key, subs) || key;
             }
@@ -88,13 +109,19 @@ class I18n {
      * @param {Element} root - Root element to search within
      */
     static init(root = document) {
-        const nodes = root.querySelectorAll('[data-i18n]');
+        const manifestVersion =
+            typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest
+                ? chrome.runtime.getManifest()?.version || '1.3.7'
+                : '1.3.7';
+
+        const nodes = root.querySelectorAll('[data-i18n], [data-i18n-html]');
         nodes.forEach((node) => {
-            const key = node.getAttribute('data-i18n');
-            const text = I18n.t(key);
+            const isHtml = node.hasAttribute('data-i18n-html');
+            const key = isHtml ? node.getAttribute('data-i18n-html') : node.getAttribute('data-i18n');
+            const subs = key === 'helpAboutBody' ? [manifestVersion] : [];
+            const text = I18n.t(key, subs);
             if (text) {
-                // Prefer textContent to prevent XSS; allow data-i18n-html for intentional HTML
-                if (node.hasAttribute('data-i18n-html')) {
+                if (isHtml || /<[a-z][\s\S]*>/i.test(text)) {
                     node.innerHTML = text;
                 } else {
                     node.textContent = text;

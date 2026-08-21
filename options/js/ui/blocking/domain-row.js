@@ -88,10 +88,12 @@ export function createDomainRow({
     usageSpan.className = 'rule-usage-today';
     const domainUsage = controller?.usage?.[domain] || {};
     const todaySeconds = typeof TimeUtils !== 'undefined' ? TimeUtils.calculateTodayTime(domainUsage) : 0;
+    const todayLabel = typeof I18n !== 'undefined' ? I18n.t('today').toLowerCase() : 'today';
+    const zeroSec = typeof I18n !== 'undefined' ? `0${I18n.t('unitSec')}` : '0s';
     usageSpan.textContent =
         todaySeconds > 0 && typeof TimeUtils !== 'undefined'
-            ? `${TimeUtils.formatTime(todaySeconds)} today`
-            : '0s today';
+            ? `${TimeUtils.formatTime(todaySeconds)} ${todayLabel}`
+            : `${zeroSec} ${todayLabel}`;
 
     domainWrapper.appendChild(domainSpan);
 
@@ -117,7 +119,7 @@ export function createDomainRow({
 
     const suffixSpan = document.createElement('span');
     suffixSpan.className = 'limit-suffix';
-    suffixSpan.textContent = 'min/day';
+    suffixSpan.textContent = typeof I18n !== 'undefined' ? I18n.t('minPerDay') : 'min/day';
 
     // Delete/Remove button
     const deleteBtn = document.createElement('button');

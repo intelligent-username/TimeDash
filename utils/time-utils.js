@@ -9,20 +9,45 @@ class TimeUtils {
      * @param {number} seconds - Time in seconds
      * @returns {string} Formatted time string
      */
+    static getUnit(key, fallback) {
+        try {
+            if (typeof I18n !== 'undefined' && I18n.t) {
+                const val = I18n.t(key);
+                if (val && val !== key) return val;
+            }
+            if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
+                const val = chrome.i18n.getMessage(key);
+                if (val) return val;
+            }
+        } catch {
+            /* ignore */
+        }
+        return fallback;
+    }
+
+    /**
+     * Format seconds into human-readable time string
+     * @param {number} seconds - Time in seconds
+     * @returns {string} Formatted time string
+     */
     static formatTime(seconds) {
-        if (!seconds || seconds < 0) return '0s';
+        const uS = this.getUnit('unitSec', 's');
+        const uM = this.getUnit('unitMin', 'm');
+        const uH = this.getUnit('unitHour', 'h');
+
+        if (!seconds || seconds < 0) return `0${uS}`;
         const totalSeconds = Math.floor(seconds);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const secs = totalSeconds % 60;
 
         if (hours > 0) {
-            return `${hours}h ${minutes}m`;
+            return `${hours}${uH} ${minutes}${uM}`;
         }
         if (minutes > 0) {
-            return `${minutes}m ${secs}s`;
+            return `${minutes}${uM} ${secs}${uS}`;
         }
-        return `${secs}s`;
+        return `${secs}${uS}`;
     }
 
     /**
@@ -54,7 +79,11 @@ class TimeUtils {
      * @returns {string} Formatted duration
      */
     static formatMilliseconds(ms, compact = false) {
-        if (!ms || ms < 0) return compact ? '0s' : '0s';
+        const uS = this.getUnit('unitSec', 's');
+        const uM = this.getUnit('unitMin', 'm');
+        const uH = this.getUnit('unitHour', 'h');
+
+        if (!ms || ms < 0) return `0${uS}`;
         const totalSeconds = Math.floor(ms / 1000);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -63,12 +92,12 @@ class TimeUtils {
         const s = compact ? '' : ' ';
 
         if (hours > 0) {
-            return `${hours}h${s}${minutes}m`;
+            return `${hours}${uH}${s}${minutes}${uM}`;
         }
         if (minutes > 0) {
-            return `${minutes}m${s}${seconds}s`;
+            return `${minutes}${uM}${s}${seconds}${uS}`;
         }
-        return `${seconds}s`;
+        return `${seconds}${uS}`;
     }
 
     /**
