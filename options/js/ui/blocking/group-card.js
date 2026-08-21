@@ -18,7 +18,7 @@ document.addEventListener('dragend', () => {
 /**
  * Active live-reorder gesture, shared across all group cards so rows can be
  * dragged within and across group lists with a single ghost. Also handles
- * standalone restricted rows (`kind: 'standalone'`).
+ * standalone restricted rows (kind standalone).
  * @type {{ row: HTMLElement, ghost: HTMLElement, kind: 'group'|'standalone',
  *          sourceGroupId: string|null, sourceList: HTMLElement,
  *          sourceOrder: string[], context: object } | null}

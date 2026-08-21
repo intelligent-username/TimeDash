@@ -331,6 +331,8 @@ function isDevOnlyLine(line) {
 	for (const pattern of DEV_LINE_PATTERNS) {
 		if (pattern.test(line)) return true;
 	}
+	// Function parameter defaults, e.g. function foo(x, { kind = 'group' })
+	if (/^\s*(export\s+)?(async\s+)?function\s*\w*\s*\(/.test(line)) return true;
 	return false;
 }
 
@@ -443,17 +445,21 @@ function findHardcoded(content, knownValues, isHtml) {
 /* ------------------------------------------------------------------ */
 
 /**
- * Render a coverage progress bar (0–100%).
+ * Render a coverage progress bar (0–100%) with green completed portion and red incomplete portion.
  * @param {number} pct - Percentage coverage (0-100).
  * @returns {string} Colored progress bar string.
  */
 function coverageBar(pct) {
 	const w = 20;
 	const filled = Math.round((w * pct) / 100);
-	const bar = '█'.repeat(filled) + '░'.repeat(w - filled);
-	const colorCode = process.stdout.isTTY ? (pct === 100 ? '\x1b[32m' : '\x1b[31m') : '';
+	const greenCode = process.stdout.isTTY ? '\x1b[32m' : '';
+	const redCode = process.stdout.isTTY ? '\x1b[31m' : '';
 	const resetCode = process.stdout.isTTY ? '\x1b[0m' : '';
-	return `${colorCode}${bar}${resetCode} ${String(pct).padStart(3)}%`;
+
+	const greenPart = filled > 0 ? `${greenCode}${'█'.repeat(filled)}${resetCode}` : '';
+	const redPart = w - filled > 0 ? `${redCode}${'░'.repeat(w - filled)}${resetCode}` : '';
+
+	return `${greenPart}${redPart}`;
 }
 
 /**
@@ -540,6 +546,8 @@ logOutput(`\n=== 2) Locale coverage vs en (${enKeys.length} keys) ===`);
 
 let allComplete = true;
 const incompleteLocales = [];
+const maxLocaleWidth = Math.max(...locales.map((l) => l.length), 5);
+const totalKeysDigits = String(enKeys.length).length;
 
 for (const locale of locales) {
 	const result = checkLocale(locale, enKeys);
@@ -547,7 +555,11 @@ for (const locale of locales) {
 		allComplete = false;
 		incompleteLocales.push(result);
 	}
-	logOutput(`  ${locale}: ${coverageBar(result.pct)} ${result.covered}/${result.total} (${result.pct}%) — ${result.status}`);
+	const localeCol = `${locale}:`.padEnd(maxLocaleWidth + 2);
+	const barCol = coverageBar(result.pct);
+	const pctCol = `${String(result.pct).padStart(3)}%`;
+	const countCol = `${String(result.covered).padStart(totalKeysDigits)}/${result.total}`;
+	logOutput(`  ${localeCol}${barCol}  ${pctCol}  ${countCol}`);
 }
 
 if (allComplete) {
