@@ -56,7 +56,11 @@ class BlockPageController {
             this.storageManager = new StorageManager();
             this.parseUrlParameters();
 
-            if (typeof I18n !== 'undefined') I18n.init(document);
+            const settings = await this.storageManager.getSettings();
+            if (typeof I18n !== 'undefined') {
+                await I18n.setLocale(settings?.language || 'auto');
+                I18n.init(document);
+            }
 
             // Apply theme immediately
             await this.applyTheme();

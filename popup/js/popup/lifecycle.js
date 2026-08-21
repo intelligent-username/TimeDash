@@ -5,6 +5,7 @@ export const lifecycleMethods = {
             await this.loadCurrentTab();
             await this.loadData();
 
+            await I18n.setLocale(this.settings?.language || 'auto');
             I18n.init(document);
             PopupHelpers.injectSkeletonList(document.getElementById('sitesList'), 5);
 

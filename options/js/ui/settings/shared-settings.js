@@ -70,6 +70,7 @@ export const sharedSettingsMethods = {
 
     populateAll(settings) {
         const mapping = {
+            language: 'languageSelect',
             trackingEnabled: 'trackingEnabled',
             dailyTimeLimitMinutes: 'dailyLimit',
             restrictedSliderMax: 'restrictedSliderMax',

@@ -1,17 +1,81 @@
 /**
- * I18n utility for internationalization support
+ * I18n utility for internationalization support with dynamic locale switching
  */
 class I18n {
+    static currentLocale = 'auto';
+    static messagesCache = new Map();
+    static activeMessages = null;
+
+    /**
+     * Set the current active locale and load its messages
+     * @param {string} locale - Locale code ('auto', 'en', 'es', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'sv', 'zh_CN', 'ar')
+     * @returns {Promise<void>}
+     */
+    static async setLocale(locale = 'auto') {
+        this.currentLocale = locale;
+        if (!locale || locale === 'auto') {
+            this.activeMessages = null;
+            return;
+        }
+
+        if (this.messagesCache.has(locale)) {
+            this.activeMessages = this.messagesCache.get(locale);
+            return;
+        }
+
+        try {
+            const url = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL
+                ? chrome.runtime.getURL(`_locales/${locale}/messages.json`)
+                : `/_locales/${locale}/messages.json`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                this.messagesCache.set(locale, data);
+                this.activeMessages = data;
+            }
+        } catch (e) {
+            console.warn(`[I18n] Failed to load locale "${locale}":`, e);
+            this.activeMessages = null;
+        }
+    }
+
     /**
      * Get localized message
      * @param {string} key - Message key
-     * @param {string[]} substitutions - Substitution values
+     * @param {string[]|string|number} substitutions - Substitution values
      * @returns {string} Localized message or key if not found
      */
     static t(key, substitutions = []) {
+        const subs = Array.isArray(substitutions) ? substitutions : [substitutions];
+
+        if (this.activeMessages && this.activeMessages[key] && this.activeMessages[key].message) {
+            let msg = this.activeMessages[key].message;
+            const placeholders = this.activeMessages[key].placeholders;
+
+            if (placeholders) {
+                for (const [name, pDef] of Object.entries(placeholders)) {
+                    const contentRef = pDef.content; // e.g. "$1"
+                    const indexMatch = contentRef && contentRef.match(/^\$(\d+)$/);
+                    let subVal = '';
+                    if (indexMatch) {
+                        const idx = parseInt(indexMatch[1], 10) - 1;
+                        subVal = subs[idx] !== undefined ? subs[idx] : '';
+                    }
+                    const regex = new RegExp(`\\$${name}\\$`, 'gi');
+                    msg = msg.replace(regex, subVal);
+                }
+            }
+
+            subs.forEach((sub, idx) => {
+                msg = msg.replace(new RegExp(`\\$${idx + 1}`, 'g'), sub !== undefined ? sub : '');
+            });
+
+            return msg;
+        }
+
         try {
             if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
-                return chrome.i18n.getMessage(key, substitutions) || key;
+                return chrome.i18n.getMessage(key, subs) || key;
             }
         } catch {
             /* chrome.i18n unavailable */
@@ -103,5 +167,3 @@ class I18n {
         }
     }
 }
-
-// Export for module usage

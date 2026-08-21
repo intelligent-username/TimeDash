@@ -19,6 +19,7 @@ export function applyOptionsSyncMethods(OptionsController) {
 
             const previousTheme = this.settings.theme;
             const previousAccent = this.settings.accentColor;
+            const previousLanguage = this.settings.language;
             const incoming = changes.settings.newValue;
 
             this.settings = { ...this.settings, ...incoming };
@@ -29,6 +30,10 @@ export function applyOptionsSyncMethods(OptionsController) {
 
             if (incoming.accentColor !== undefined && incoming.accentColor !== previousAccent) {
                 this.applyImmediateChanges('accentColor', incoming.accentColor);
+            }
+
+            if (incoming.language !== undefined && incoming.language !== previousLanguage) {
+                this.applyImmediateChanges('language', incoming.language);
             }
 
             this.syncCurrentPlaybackSpeedUI();

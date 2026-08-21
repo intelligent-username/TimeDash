@@ -25,6 +25,21 @@ export function applyOptionsAppearanceMethods(OptionsController) {
                 document.documentElement.removeAttribute('data-reduced-motion');
             }
         }
+
+        if (key === 'language') {
+            (async () => {
+                if (typeof I18n !== 'undefined') {
+                    await I18n.setLocale(value || 'auto');
+                    I18n.init(document);
+                    const navActive = document.querySelector('.nav-item.active');
+                    if (navActive && navActive.dataset.tab) {
+                        const titleEl = document.getElementById('pageTitle');
+                        const labelEl = navActive.querySelector('.nav-label');
+                        if (titleEl && labelEl) titleEl.textContent = labelEl.textContent;
+                    }
+                }
+            })();
+        }
     };
 
     OptionsController.prototype.applyThemeMode = function applyThemeMode(value) {

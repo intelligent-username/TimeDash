@@ -11,6 +11,7 @@ const STORAGE_DEFAULT_SETTINGS = {
     dailyTimeLimitMinutes: 0,
     restrictedSliderMax: 120,
     theme: 'auto',
+    language: 'auto',
     accentColor: 'blue',
     overlayColor: 'blue',
     animationsEnabled: true,

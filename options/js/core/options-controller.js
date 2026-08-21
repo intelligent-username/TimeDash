@@ -40,9 +40,12 @@ export class OptionsController {
      *
      */
     async init() {
-        if (typeof I18n !== 'undefined') I18n.init(document);
-
         await this.loadAllData();
+
+        if (typeof I18n !== 'undefined') {
+            await I18n.setLocale(this.settings.language || 'auto');
+            I18n.init(document);
+        }
 
         this.settingsManager.setup();
         this.dataManager.setup();

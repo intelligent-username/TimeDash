@@ -1,6 +1,7 @@
 export const generalSettingsMethods = {
     setupGeneral() {
         this.bindSettings({
+            language: 'languageSelect',
             trackingEnabled: 'trackingEnabled',
             dailyTimeLimitMinutes: 'dailyLimit',
             restrictedSliderMax: 'restrictedSliderMax',
