@@ -78,8 +78,8 @@ class TimeDashContent {
 
             if (this.ui) this.ui.updateSettings(this.settings);
         } catch (error) {
-            if (error.message && error.message.includes(chrome.i18n.getMessage('contextInvalidated'))) {
-                this.contextValid = false;
+            if (this.isOrphaned || /Extension context invalidated/.test(error?.message || '')) {
+                this.handleOrphanedState();
                 return;
             }
             console.error('Error loading settings:', error);
@@ -111,7 +111,7 @@ class TimeDashContent {
                 speed: this.currentSpeed,
             });
         } catch (error) {
-            if (error.message?.includes(chrome.i18n.getMessage('contextInvalidated'))) {
+            if (this.isOrphaned || /Extension context invalidated/.test(error?.message || '')) {
                 this.handleOrphanedState();
                 return;
             }

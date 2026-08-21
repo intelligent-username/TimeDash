@@ -333,14 +333,10 @@ export class DataManager {
             const text = await file.text();
             const data = JSON.parse(text);
 
-            if (
-                !data.usage &&
-                !data.settings &&
-                !data.blockList &&
-                !data.siteRules &&
-                !data.siteGroups
-            ) {
-                throw new Error('Invalid data format');
+            const validationError = validateImportData(data);
+            if (validationError) {
+                this.controller.showError(chrome.i18n.getMessage(validationError));
+                return;
             }
 
             const importMode = await this.promptImportMode();

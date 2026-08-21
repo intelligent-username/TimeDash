@@ -126,6 +126,19 @@ export class BlockingUI {
         if (!list) return;
 
         list.innerHTML = '';
+        if (domains.length === 0) {
+            const empty = document.createElement('li');
+            empty.className = 'empty-state';
+            const icon = document.createElement('span');
+            icon.className = 'empty-state-icon';
+            icon.textContent = '🛡️';
+            const text = document.createElement('p');
+            text.textContent = I18n.t('noRulesYet');
+            empty.appendChild(icon);
+            empty.appendChild(text);
+            list.appendChild(empty);
+            return;
+        }
         domains.forEach((domain) => {
             const li = document.createElement('li');
             li.className = 'rule-item';

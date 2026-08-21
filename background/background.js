@@ -56,6 +56,19 @@ class TimeDashBackground {
         this.tabTracker.setupEventListeners();
         this.setupMessageHandling();
         this.startTrackingLoop();
+        this.logBootDiagnostics();
+    }
+
+    async logBootDiagnostics() {
+        try {
+            const { schemaVersion } = await chrome.storage.local.get('schemaVersion');
+            const bytes = await chrome.storage.local.getBytesInUse(null);
+            console.log(
+                `[TimeDash] boot - schemaVersion: ${schemaVersion || 1}, storage: ${(bytes / 1024).toFixed(1)}KB`
+            );
+        } catch (error) {
+            console.warn('[TimeDash] boot diagnostics unavailable:', error);
+        }
     }
 }
 

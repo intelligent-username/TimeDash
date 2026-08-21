@@ -105,6 +105,14 @@ export class AnalyticsHeatmap {
         let lastMonth = -1;
         let cellIndex = 0;
 
+        if (maxTime === 0) {
+            grid.style.gridTemplateColumns = '1fr';
+            grid.innerHTML = `<div class="empty-state"><p>${I18n.t('noDataForPeriod')}</p></div>`;
+            if (monthsRow) monthsRow.innerHTML = '';
+            this._updateYearNav(earliestYear);
+            return;
+        }
+
         for (let i = 0; i < totalDays; i++) {
             const d = new Date(startMs + i * MS_PER_DAY);
             const dateStr = formatDateString(d);

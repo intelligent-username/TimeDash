@@ -56,11 +56,18 @@ class BlockPageController {
             this.storageManager = new StorageManager();
             this.parseUrlParameters();
 
+            if (typeof I18n !== 'undefined') I18n.init(document);
+
             // Apply theme immediately
             await this.applyTheme();
 
+            const loadingEl = document.getElementById('blockLoading');
+            if (loadingEl) loadingEl.hidden = false;
+
             // Check if access is now allowed (time limit may have been changed)
             const stillBlocked = await this.checkIfStillBlocked();
+
+            if (loadingEl) loadingEl.hidden = true;
             if (!stillBlocked && this.blockedUrl) {
                 // Access is now allowed - redirect back to the original site
                 this.redirectToOriginalUrl();

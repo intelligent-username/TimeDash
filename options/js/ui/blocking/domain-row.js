@@ -81,6 +81,7 @@ export function createDomainRow({
     const domainSpan = document.createElement('span');
     domainSpan.className = 'rule-domain';
     domainSpan.textContent = domain;
+    domainSpan.title = domain;
 
     const usageSpan = document.createElement('span');
     usageSpan.className = 'rule-usage-today';
@@ -92,6 +93,17 @@ export function createDomainRow({
             : '0s today';
 
     domainWrapper.appendChild(domainSpan);
+
+    // Multi-label domains are exact-host rules: tracked separately from their parent
+    if (domain.split('.').length > 2) {
+        const badge = document.createElement('span');
+        badge.className = 'rule-domain-badge';
+        badge.textContent = chrome.i18n.getMessage('exactHostBadge') || 'exact';
+        badge.title =
+            chrome.i18n.getMessage('exactHostTooltip') ||
+            'Subdomain specified exactly — time on it is tracked separately from its parent domain.';
+        domainWrapper.appendChild(badge);
+    }
     domainWrapper.appendChild(usageSpan);
 
     // Editable limit input

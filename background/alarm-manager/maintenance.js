@@ -43,7 +43,7 @@ function applyAlarmMaintenanceMethods(AlarmManager) {
         const existingBackups = backups.backups || [];
 
         existingBackups.push(backupData);
-        if (existingBackups.length > 7) {
+        if (existingBackups.length > 3) {
             existingBackups.shift();
         }
 

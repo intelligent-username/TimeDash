@@ -121,7 +121,9 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.forceRefresh = async function forceRefresh() {
         const list = document.getElementById('currentlyPlayingList');
         if (list)
-            list.innerHTML = '<div class="analytics-empty-state">Refreshing active videos…</div>';
+            list.innerHTML =
+                '<div class="skeleton-row"></div><div class="skeleton-row"></div>' +
+                `<div class="analytics-empty-state">${chrome.i18n.getMessage('refreshingVideos')}</div>`;
 
         try {
             const refreshResponse = await this.sendMessageWithTimeout(

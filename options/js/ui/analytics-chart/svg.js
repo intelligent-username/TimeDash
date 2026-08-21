@@ -37,7 +37,7 @@ export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
         });
 
         if (points.length === 0) {
-            container.innerHTML = '';
+            container.innerHTML = `<div class="empty-state"><p>${I18n.t('noDataForPeriod')}</p></div>`;
             return;
         }
 

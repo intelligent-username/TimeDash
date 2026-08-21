@@ -32,6 +32,20 @@
     text-overflow: ellipsis;
 }
 
+.rule-domain-badge {
+    align-self: flex-start;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: color-mix(in srgb, var(--accent-color, #00b7ff) 18%, transparent);
+    color: var(--accent-color, #00b7ff);
+    cursor: help;
+}
+
 .rule-usage-today {
     font-size: 0.75rem;
     color: var(--text-muted);

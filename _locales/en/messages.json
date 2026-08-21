@@ -435,6 +435,15 @@
     "settingsResetDefaults": { "message": "Settings reset to defaults" },
     "failedResetSettings": { "message": "Failed to reset settings" },
     "failedImportData": { "message": "Failed to import data" },
+    "importErrorNotObject": { "message": "Import failed: the file must contain a JSON object." },
+    "importErrorEmpty": { "message": "Import failed: no usage, settings, block list, rules, or groups found in the file." },
+    "importErrorUsage": { "message": "Import failed: the usage section is malformed." },
+    "importErrorTooLarge": { "message": "Import failed: the usage section contains too many domains (max 50,000)." },
+    "importErrorNumbers": { "message": "Import failed: the usage section contains invalid (negative or non-finite) numbers." },
+    "importErrorSettings": { "message": "Import failed: the settings section is malformed." },
+    "importErrorBlockList": { "message": "Import failed: the block list section must be an array." },
+    "importErrorRules": { "message": "Import failed: the site rules section is malformed." },
+    "importErrorGroups": { "message": "Import failed: the site groups section is malformed." },
     "dataAppended": { "message": "Data appended successfully" },
     "dataReplaced": { "message": "Data replaced successfully" },
 
@@ -508,5 +517,14 @@
     "editDailyLimit": { "message": "Edit daily limit" },
     "timeUsed": { "message": "time used today" },
     "unknownSite": { "message": "Unknown Site" },
-    "contextInvalidated": { "message": "Extension context invalidated" }
+    "contextInvalidated": { "message": "Extension context invalidated" },
+
+    "exactHostBadge": { "message": "exact" },
+    "noDataForPeriod": { "message": "No data for this period" },
+    "noRulesYet": { "message": "No rules yet.\nAdd a site above to get started." },
+    "noGroupsYet": { "message": "No groups yet.\nCreate a group to share a daily limit across sites." },
+    "checkingAccess": { "message": "Checking access…" },
+    "exactHostTooltip": {
+        "message": "Subdomain specified exactly — time on it is tracked separately from its parent domain."
+    }
 }

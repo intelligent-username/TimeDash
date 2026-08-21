@@ -156,7 +156,7 @@ export const uiMethods = {
             ? I18n.t('trackingActive')
             : I18n.t('trackingPaused');
         trackingStatus.className = `tracking-status ${isTracking ? 'active' : 'paused'}`;
-        sitesCount.textContent = I18n.t('sitesTracked', [totalSites]);
+        sitesCount.textContent = I18n.t('sitesTracked', [I18n.formatNumber(totalSites)]);
         toggleBtn.textContent = isTracking ? I18n.t('pauseTracking') : I18n.t('resumeTracking');
         toggleBtn.className = `toggle-btn ${isTracking ? '' : 'paused'}`;
     },

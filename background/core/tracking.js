@@ -40,7 +40,10 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
             for (const [domain, timeSpent] of updates) {
                 const rule = this.ruleManager.getRule(domain);
                 const type = rule && rule.type === 'RESTRICTED' ? 'RESTRICTED' : 'GENERAL';
-                await this.storage.updateUsage(domain, timeSpent, type);
+                const ok = await this.storage.updateUsage(domain, timeSpent, type);
+                if (!ok) {
+                    console.warn(`[TimeDash] usage write failed for ${domain} (+${timeSpent}ms)`);
+                }
             }
 
             this.broadcastUpdate();
