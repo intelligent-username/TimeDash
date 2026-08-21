@@ -9,6 +9,29 @@ export function getFaviconUrl(domain) {
 }
 
 /**
+ * Progressively recover a failed favicon image:
+ * 1. retry against the site's own /favicon.ico
+ * 2. replace with a letter-avatar tile
+ * @param {HTMLImageElement} img - Image with data-domain attribute
+ */
+export function handleFaviconError(img) {
+    const domain = (img.dataset.domain || '').trim().replace(/^www\./, '');
+    const stage = img.dataset.faviconStage || '0';
+
+    if (stage === '0' && domain) {
+        img.dataset.faviconStage = '1';
+        img.src = `https://${domain}/favicon.ico`;
+        return;
+    }
+
+    const letter = (domain[0] || '?').toUpperCase();
+    const span = document.createElement('span');
+    span.className = 'analytics-site-favicon favicon-fallback';
+    span.textContent = letter;
+    img.replaceWith(span);
+}
+
+/**
  * Replace failed favicon images inside a container with a letter avatar.
  * Call after setting container.innerHTML with favicon <img> elements.
  * @param {HTMLElement} container
@@ -16,18 +39,7 @@ export function getFaviconUrl(domain) {
 export function attachFaviconFallback(container) {
     if (!container) return;
     container.querySelectorAll('img.analytics-site-favicon').forEach((img) => {
-        img.addEventListener(
-            'error',
-            () => {
-                const domain = (img.dataset.domain || '').trim();
-                const letter = (domain.replace(/^www\./, '')[0] || '?').toUpperCase();
-                const span = document.createElement('span');
-                span.className = 'analytics-site-favicon favicon-fallback';
-                span.textContent = letter;
-                img.replaceWith(span);
-            },
-            { once: true }
-        );
+        img.addEventListener('error', () => handleFaviconError(img));
     });
 }
 

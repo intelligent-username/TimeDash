@@ -65,6 +65,11 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.startTrackingLoop = function startTrackingLoop() {
         setInterval(() => this.processPendingUpdates(), this.BATCH_UPDATE_INTERVAL);
         setInterval(() => this.updateActiveTracking(), this.TRACKING_INTERVAL);
+        setInterval(() => {
+            if (this.tabTracker && this.currentTrack) {
+                this.tabTracker.updateBadge();
+            }
+        }, 10000);
     };
 
     TimeDashBackground.prototype.restorePendingUpdates = async function restorePendingUpdates() {

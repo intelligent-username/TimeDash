@@ -29,6 +29,12 @@ export class AnalyticsUI {
         this.heatmap = new AnalyticsHeatmap(dataContext);
 
         this.chart.onPointClick = (dateStr, pointData) => {
+            // Sync the restricted-time bar chart to the week containing the clicked day
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const todayStr = formatDateString(new Date());
+                this._restrictedChartEndDate = dateStr === todayStr ? null : dateStr;
+                this.renderMiniCharts();
+            }
             this.showTopSitesForDate(dateStr, pointData);
         };
 

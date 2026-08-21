@@ -209,7 +209,7 @@ class TabTracker {
 
         this.instance.currentTrack = { tabId, domain, startTime: Date.now() };
 
-        await this.updateBadge(domain);
+        await this.updateBadge();
     }
 
     stopTracking() {
@@ -276,12 +276,27 @@ class TabTracker {
         return false;
     }
 
-    async updateBadge(domain) {
+    async updateBadge() {
         try {
-            const usage = await this.instance.storage.getDomainUsage(domain);
-            const todayTime = TimeUtils.calculateTodayTime(usage);
-            const minutes = Math.ceil(todayTime / 60);
+            // Total usage today across all domains, including pending batches
+            // and the currently-accumulating active time (real-time, not lagged).
+            const allUsage = await this.instance.storage.getAllUsage();
+            let seconds = 0;
+            for (const domainUsage of Object.values(allUsage)) {
+                seconds += TimeUtils.calculateTodayTime(domainUsage || {});
+            }
+            if (this.instance.pendingUpdates) {
+                for (const timeSpent of this.instance.pendingUpdates.values()) {
+                    seconds += timeSpent;
+                }
+            }
+            const track = this.instance.currentTrack;
+            if (track) {
+                const elapsed = Math.floor((Date.now() - track.startTime) / 1000);
+                if (elapsed > 0) seconds += elapsed;
+            }
 
+            const minutes = Math.ceil(seconds / 60);
             if (minutes > 0) {
                 chrome.action.setBadgeText({ text: String(minutes) });
                 chrome.action.setBadgeBackgroundColor({ color: '#00b7ff' });

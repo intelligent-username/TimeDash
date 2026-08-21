@@ -415,6 +415,25 @@ periodLabel = chrome.i18n.getMessage('today');
 
         const todayStr = formatDateString(new Date());
         const isToday = dateStr === todayStr;
+
+        // Sync the usage-trends line chart to the week containing this day
+        const lineChart = this.chart;
+        if (lineChart.period !== 'week') {
+            lineChart.setPeriod('week');
+            document.querySelectorAll('.period-btn').forEach((b) =>
+                b.classList.toggle('active', b.dataset.period === 'week')
+            );
+            this.currentPeriod = 'week';
+        }
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0, 0, 0, 0);
+        const clickedDate = new Date(dateStr + 'T00:00:00');
+        const diffDays = Math.round((clickedDate - todayMidnight) / 86400000);
+        lineChart.offset = Math.round(diffDays / 7);
+        lineChart._selectedDate = isToday ? null : dateStr;
+        lineChart.render();
+        this.updatePeriodStats();
+
         const localDate = new Date(dateStr + 'T00:00:00');
         const displayDate = localDate.toLocaleDateString(undefined, {
             day: 'numeric',

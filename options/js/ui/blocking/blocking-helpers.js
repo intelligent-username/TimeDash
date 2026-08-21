@@ -1,3 +1,5 @@
+import { handleFaviconError } from '../../utils/dom.js';
+
 export const GROUP_ICONS = {
     folder: `<svg class="icon-folder" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`,
     briefcase: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
@@ -14,23 +16,15 @@ export const GROUP_ICONS = {
 };
 
 /**
- * Set up favicon loading with protocol-fallback retries.
+ * Set up favicon loading with progressive fallbacks:
+ * Google's service → the site's own /favicon.ico → letter avatar.
  * @param {HTMLImageElement} img
  * @param {string} domain
  */
 export function setupFaviconFallback(img, domain) {
     if (!img || !domain) return;
-    img.onerror = () => {
-        if (!img.dataset.retryCount) {
-            img.dataset.retryCount = '1';
-            img.src = `https://www.google.com/s2/favicons?domain=https://${domain}&sz=32`;
-        } else if (img.dataset.retryCount === '1') {
-            img.dataset.retryCount = '2';
-            img.src = `https://www.google.com/s2/favicons?domain=http://${domain}&sz=32`;
-        } else {
-            img.style.display = 'none';
-        }
-    };
+    img.dataset.domain = domain;
+    img.addEventListener('error', () => handleFaviconError(img));
 }
 
 /**
