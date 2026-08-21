@@ -24,20 +24,9 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
                     : this.offset === -1
                       ? chrome.i18n.getMessage('lastYear')
                       : year.toString();
-            const xLabels = [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec',
-            ];
+            const xLabels = Array.from({ length: 12 }, (_, m) =>
+                new Date(year, m, 1).toLocaleDateString(undefined, { month: 'short' })
+            );
             return { dates: [], label, xLabels, isYearly: true, year };
         }
 
@@ -55,7 +44,9 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6);
 
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dayNames = Array.from({ length: 7 }, (_, d) =>
+            new Date(2024, 0, 7 + d).toLocaleDateString(undefined, { weekday: 'short' })
+        );
         const dates = [];
         const xLabels = [];
 
@@ -69,7 +60,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         const label =
             this.offset === 0
                 ? chrome.i18n.getMessage('past7Days')
-                : `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                : `${startDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
 
         return { dates, label, xLabels, isYearly: false, year: null };
     };
@@ -127,7 +118,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         let label = chrome.i18n.getMessage('thisMonth');
         if (this.offset === -1) label = chrome.i18n.getMessage('lastMonth');
         else if (this.offset !== 0) {
-            label = startOfMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            label = startOfMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
         }
 
         return { dates, label, xLabels, isYearly: false, year: null };
@@ -160,7 +151,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         if (count <= numLabels) {
             return dates.map((dateStr) => {
                 const [y, m, day] = dateStr.split('-').map(Number);
-                return new Date(y, m - 1, day).toLocaleDateString('en-US', {
+                return new Date(y, m - 1, day).toLocaleDateString(undefined, {
                     month: 'short',
                     day: 'numeric',
                 });
@@ -174,7 +165,7 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
 
             const [y, m, day] = dates[idx].split('-').map(Number);
             xLabels.push(
-                new Date(y, m - 1, day).toLocaleDateString('en-US', {
+                new Date(y, m - 1, day).toLocaleDateString(undefined, {
                     month: 'short',
                     day: 'numeric',
                     year: '2-digit',

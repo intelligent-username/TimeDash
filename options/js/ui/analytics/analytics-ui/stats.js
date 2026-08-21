@@ -1,4 +1,5 @@
 import { formatTime, formatDateString } from '../../../utils/formatting.js';
+import { attachFaviconFallback } from '../../../utils/dom.js';
 
 /**
  *
@@ -56,7 +57,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const { periodTotal, periodDays, periodLabel } = this.calculatePeriodTotal(usage);
 
         const totalEl = document.getElementById('analyticsTotalTime');
-        this.setStatCardValue(totalEl, formatTime(periodTotal), `Total ${periodLabel}`);
+        this.setStatCardValue(totalEl, formatTime(periodTotal), chrome.i18n.getMessage('analyticsTotalForPeriod', [periodLabel]));
     };
 
     AnalyticsUI.prototype.setStatCardValue = function setStatCardValue(valueEl, value, label) {
@@ -73,7 +74,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
     AnalyticsUI.prototype.updateSitesCount = function updateSitesCount(count) {
         const el = document.getElementById('heatmapSitesCount');
-        if (el) el.textContent = `${count} Sites Tracked`;
+        if (el) el.textContent = I18n.plural(count, 'sitesTrackedOne', 'sitesTrackedMany');
     };
 
     AnalyticsUI.prototype.calculateAverageForDays = function calculateAverageForDays(
@@ -141,7 +142,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const avgEl = document.getElementById('analyticsWeekAverage');
         if (!avgEl || !this._dailyAverages || this._dailyAverages.length === 0) return;
         const entry = this._dailyAverages[this._currentAvgIndex];
-        const label = `${entry.days}d Daily Average`;
+        const label = chrome.i18n.getMessage('analyticsDailyAverageDays', [entry.days]);
         this.setStatCardValue(avgEl, formatTime(entry.average), label);
         avgEl.classList.remove('stat-value-cycle');
         void avgEl.offsetWidth;
@@ -209,7 +210,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         let change, label;
         if (lastWeek.count > 0) {
             change = thisAvg - lastAvg;
-            label = 'from last week to this week';
+            label = chrome.i18n.getMessage('analyticsFromLastWeek');
         } else {
             const totalOverall = this.calculateTotalOverall(usage);
             const daysSinceStart = this.earliestDate
@@ -245,7 +246,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
         let periodTotal = 0;
         let periodDays = 0;
-        let periodLabel = 'Today';
+        let periodLabel = chrome.i18n.getMessage('today');
 
         const isValidDay = (dateStr) => dateStr >= earliestStr && dateStr <= todayStr;
 
@@ -317,20 +318,22 @@ periodLabel = chrome.i18n.getMessage('today');
         this._renderSingleMiniChart(
             'restrictedTimeChart',
             this._miniChartPeriods.restricted,
-            usage
+            usage,
+            this._restrictedChartEndDate || null
         );
     };
 
     AnalyticsUI.prototype._renderSingleMiniChart = function _renderSingleMiniChart(
         containerId,
         period,
-        usage
+        usage,
+        endDate
     ) {
         const el = document.getElementById(containerId);
         if (!el) return;
 
         const days = period === 'month' ? 30 : 7;
-        const now = new Date();
+        const now = endDate ? new Date(endDate + 'T00:00:00') : new Date();
         const labels = [];
         const values = [];
 
@@ -367,8 +370,9 @@ periodLabel = chrome.i18n.getMessage('today');
 
         const shortLabel = (ds) => {
             const d = new Date(ds + 'T00:00:00');
-            if (days <= 7) return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
-            return `${d.getMonth() + 1}/${d.getDate()}`;
+            if (days <= 7)
+                return d.toLocaleDateString(undefined, { weekday: 'short' });
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         };
 
         const allZero = values.every((v) => v === 0);
@@ -417,7 +421,9 @@ periodLabel = chrome.i18n.getMessage('today');
             month: 'short',
         });
 
-        heading.textContent = isToday ? 'Top Sites Today' : `Restricted Sites on ${displayDate}`;
+        heading.textContent = isToday
+            ? chrome.i18n.getMessage('topSitesToday')
+            : chrome.i18n.getMessage('analyticsRestrictedSitesOnDate', [displayDate]);
 
         const usage = this.controller.usage || {};
         const restrictedDomains = new Set(this.controller.restrictedDomains || []);
@@ -435,7 +441,11 @@ periodLabel = chrome.i18n.getMessage('today');
         sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
 
         if (sitesWithTime.length === 0) {
-            container.innerHTML = `<div class="analytics-empty-state">No restricted-site activity${isToday ? ' today' : ` on ${displayDate}`}.</div>`;
+            container.innerHTML = `<div class="analytics-empty-state">${
+                isToday
+                    ? chrome.i18n.getMessage('analyticsNoActivity')
+                    : chrome.i18n.getMessage('analyticsNoActivityOnDate', [displayDate])
+            }</div>`;
             return;
         }
 
@@ -444,7 +454,7 @@ periodLabel = chrome.i18n.getMessage('today');
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
                 const escaped = site.domain
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
@@ -458,7 +468,7 @@ periodLabel = chrome.i18n.getMessage('today');
                     return `${h}h\u00a0${m}m`;
                 })();
                 return `<div class="analytics-site-item">
-                <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
+                <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escaped}">
                 <div class="analytics-site-info">
                     <div class="analytics-site-name">${escaped}</div>
                     <div class="analytics-site-time">${time}</div>
@@ -469,6 +479,7 @@ periodLabel = chrome.i18n.getMessage('today');
             </div>`;
             })
             .join('');
+        attachFaviconFallback(container);
 
         // Highlight selected bar
         const chart = document.getElementById('restrictedTimeChart');

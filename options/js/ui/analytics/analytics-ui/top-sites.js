@@ -1,4 +1,5 @@
 import { formatTime, escapeHtml, formatDateString } from '../../../utils/formatting.js';
+import { attachFaviconFallback } from '../../../utils/dom.js';
 
 /**
  *
@@ -10,8 +11,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
         if (!container) return;
 
         if (sites.length === 0) {
-            container.innerHTML =
-                '<div class="analytics-empty-state">No activity recorded today.</div>';
+            container.innerHTML = `<div class="analytics-empty-state">${chrome.i18n.getMessage('analyticsNoActivity')}</div>`;
             return;
         }
 
@@ -19,11 +19,11 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
 
                 return `
                 <div class="analytics-site-item">
-                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
+                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escapeHtml(site.domain)}">
                     <div class="analytics-site-info">
                         <div class="analytics-site-name">${escapeHtml(site.domain)}</div>
                         <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
@@ -35,6 +35,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             `;
             })
             .join('');
+        attachFaviconFallback(container);
     };
 
     AnalyticsUI.prototype.showTopSitesForDate = function showTopSitesForDate(dateStr, pointData) {
@@ -57,7 +58,9 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
                 ...(!isCurrentYear && { year: 'numeric' }),
             });
 
-            heading.textContent = isToday ? 'Top Sites Today' : `Top Sites on ${displayDate}`;
+            heading.textContent = isToday
+                ? chrome.i18n.getMessage('topSitesToday')
+                : chrome.i18n.getMessage('analyticsTopSitesOnDate', [displayDate]);
 
             for (const domain of Object.keys(usage)) {
                 const domainData = usage[domain];
@@ -70,7 +73,11 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
 
             if (sitesWithTime.length === 0) {
-                container.innerHTML = `<div class="analytics-empty-state">No activity recorded${isToday ? ' today' : ` on ${displayDate}`}.</div>`;
+                container.innerHTML = `<div class="analytics-empty-state">${
+                    isToday
+                        ? chrome.i18n.getMessage('analyticsNoActivity')
+                        : chrome.i18n.getMessage('analyticsNoActivityOnDate', [displayDate])
+                }</div>`;
                 return;
             }
 
@@ -80,7 +87,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             const month = pointData.month;
 
             if (month !== undefined) {
-                heading.textContent = `Top Sites in ${dateStr}`;
+                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [dateStr]);
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
                 for (const domain of Object.keys(usage)) {
@@ -95,7 +102,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
                     }
                 }
             } else {
-                heading.textContent = `Top Sites in ${dateStr}`;
+                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [dateStr]);
 
                 for (const domain of Object.keys(usage)) {
                     const domainData = usage[domain];
@@ -116,7 +123,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             sitesWithTime.sort((a, b) => b.todayTime - a.todayTime);
 
             if (sitesWithTime.length === 0) {
-                container.innerHTML = `<div class="analytics-empty-state">No activity recorded in ${dateStr}.</div>`;
+                container.innerHTML = `<div class="analytics-empty-state">${chrome.i18n.getMessage('analyticsNoActivityInPeriod', [dateStr])}</div>`;
                 return;
             }
 

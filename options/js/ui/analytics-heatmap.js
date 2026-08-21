@@ -1,4 +1,5 @@
 import { formatTime, formatDateString } from '../utils/formatting.js';
+import { attachFaviconFallback } from '../utils/dom.js';
 
 /**
  *
@@ -181,6 +182,10 @@ export class AnalyticsHeatmap {
      * @param _dailyData
      */
     _onCellClick(dateStr, _dailyData) {
+        if (typeof this.onDaySelect === 'function') {
+            this.onDaySelect(dateStr);
+        }
+
         const heading = document.getElementById('topSitesHeading');
         if (!heading) return;
 
@@ -189,11 +194,14 @@ export class AnalyticsHeatmap {
         const isToday = dateStr === todayStr;
 
         if (isToday) {
-            heading.textContent = 'Top Sites Today';
+            heading.textContent = chrome.i18n.getMessage('topSitesToday');
             this._selectedDate = null;
         } else {
             const showYear = this.yearOffset !== 0;
-            heading.textContent = `Top Sites on ${this._formatDisplayDate(localDate, showYear)}`;
+            heading.textContent = chrome.i18n.getMessage(
+                'analyticsTopSitesOnDate',
+                [this._formatDisplayDate(localDate, showYear)]
+            );
             this._selectedDate = dateStr;
         }
 
@@ -213,7 +221,14 @@ export class AnalyticsHeatmap {
 
         if (sitesWithTime.length === 0) {
             const showYear = this.yearOffset !== 0;
-            container.innerHTML = `<div class="analytics-empty-state">No activity recorded${isToday ? ' today' : ` on ${this._formatDisplayDate(localDate, showYear)}`}.</div>`;
+            container.innerHTML = `<div class="analytics-empty-state">${
+                isToday
+                    ? chrome.i18n.getMessage('analyticsNoActivity')
+                    : chrome.i18n.getMessage(
+                          'analyticsNoActivityOnDate',
+                          [this._formatDisplayDate(localDate, showYear)]
+                      )
+            }</div>`;
             return;
         }
 
@@ -222,14 +237,14 @@ export class AnalyticsHeatmap {
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${site.domain}&sz=32`;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
                 const escaped = site.domain
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
                 return `
                 <div class="analytics-site-item">
-                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
+                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escaped}">
                     <div class="analytics-site-info">
                         <div class="analytics-site-name">${escaped}</div>
                         <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
@@ -241,6 +256,7 @@ export class AnalyticsHeatmap {
             `;
             })
             .join('');
+        attachFaviconFallback(container);
 
         const grid = document.getElementById('heatmapGrid');
         if (grid) {
@@ -285,7 +301,10 @@ export class AnalyticsHeatmap {
             this._selectedDate = null;
             this.render();
             const heading = document.getElementById('topSitesHeading');
-            if (heading) heading.textContent = 'Top Sites Today';
+            if (heading) heading.textContent = chrome.i18n.getMessage('topSitesToday');
+            if (typeof this.onDaySelect === 'function') {
+                this.onDaySelect(formatDateString(new Date()));
+            }
         });
 
         nextBtn.addEventListener('click', () => {
@@ -293,7 +312,10 @@ export class AnalyticsHeatmap {
             this._selectedDate = null;
             this.render();
             const heading = document.getElementById('topSitesHeading');
-            if (heading) heading.textContent = 'Top Sites Today';
+            if (heading) heading.textContent = chrome.i18n.getMessage('topSitesToday');
+            if (typeof this.onDaySelect === 'function') {
+                this.onDaySelect(formatDateString(new Date()));
+            }
         });
     }
 

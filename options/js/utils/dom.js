@@ -5,7 +5,30 @@
  */
 export function getFaviconUrl(domain) {
     if (!domain) return '';
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    return `https://www.google.com/s2/favicons?domain=https://${domain}&sz=32`;
+}
+
+/**
+ * Replace failed favicon images inside a container with a letter avatar.
+ * Call after setting container.innerHTML with favicon <img> elements.
+ * @param {HTMLElement} container
+ */
+export function attachFaviconFallback(container) {
+    if (!container) return;
+    container.querySelectorAll('img.analytics-site-favicon').forEach((img) => {
+        img.addEventListener(
+            'error',
+            () => {
+                const domain = (img.dataset.domain || '').trim();
+                const letter = (domain.replace(/^www\./, '')[0] || '?').toUpperCase();
+                const span = document.createElement('span');
+                span.className = 'analytics-site-favicon favicon-fallback';
+                span.textContent = letter;
+                img.replaceWith(span);
+            },
+            { once: true }
+        );
+    });
 }
 
 /**

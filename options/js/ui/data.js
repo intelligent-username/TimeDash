@@ -93,7 +93,7 @@ export class DataManager {
                             (d) => `
                         <div class="rule-item" style="padding: 8px; border-bottom: 1px solid var(--border-color);">
                             <span class="rule-domain">${d}</span>
-                            <button class="rule-delete-btn" data-delete-domain="${d}">Delete</button>
+                            <button class="rule-delete-btn" data-delete-domain="${d}">${chrome.i18n.getMessage('delete')}</button>
                         </div>
                     `
                         )
@@ -108,14 +108,14 @@ export class DataManager {
             resultsDiv.addEventListener('click', async (e) => {
                 if (e.target.classList.contains('rule-delete-btn')) {
                     const domain = e.target.dataset.deleteDomain;
-                    if (confirm(`Delete all data for ${domain}?`)) {
+                    if (confirm(chrome.i18n.getMessage('deleteDataForDomainConfirm', [domain]))) {
                         const response = await chrome.runtime.sendMessage({
                             type: 'DELETE_DOMAIN_DATA',
                             domain,
                         });
                         if (response && response.success) {
                             delete this.controller.usage[domain];
-                            this.controller.showSuccess(`Deleted data for ${domain}`);
+                            this.controller.showSuccess(chrome.i18n.getMessage('deletedDataForDomain', [domain]));
                             this.controller.refreshUI();
                             this.updateStorageUsage();
                             searchInput.dispatchEvent(new Event('input')); // Refresh list
@@ -166,7 +166,7 @@ export class DataManager {
         }
 
         const quotaEl = document.getElementById('storageQuotaValue');
-        if (quotaEl) quotaEl.textContent = `${percentStr} of ${limitMB}MB limit`;
+            if (quotaEl) quotaEl.textContent = chrome.i18n.getMessage('storageQuotaOfLimit', [percentStr, limitMB]);
 
         // Show or hide the warning banner
         const warningEl = document.getElementById('storageLimitWarning');
@@ -175,7 +175,10 @@ export class DataManager {
             warningEl.style.display = exceeded ? 'flex' : 'none';
         }
         if (warningDetailEl && exceeded) {
-            warningDetailEl.textContent = `Using ${usageText} of your ${limitMB}MB limit. Consider purging old data or increasing your limit.`;
+            warningDetailEl.textContent = chrome.i18n.getMessage('storageWarningDetail', [
+                usageText,
+                limitMB,
+            ]);
         }
     }
 
@@ -191,8 +194,10 @@ export class DataManager {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
+            const now = new Date();
+            const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             a.href = url;
-            a.download = `TDE_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `TDE_${localDate}.json`;
             a.click();
             URL.revokeObjectURL(url);
 

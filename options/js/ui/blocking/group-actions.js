@@ -12,7 +12,9 @@ export const groupActions = {
             });
             if (response?.success) {
                 await context.loadSiteRules();
-                context.controller.showSuccess(`Created group "${name}"`);
+                context.controller.showSuccess(
+                    chrome.i18n.getMessage('createdGroup', [name])
+                );
             } else {
                 context.controller.showWarning(response?.error || I18n.t('failedCreateGroup'));
             }
@@ -121,13 +123,19 @@ export const groupActions = {
         try {
             if (action.type === 'remove') {
                 await this.removeDomainFromGroup(context, action.groupId, action.domain);
-                context.controller.showSuccess(`Undid: Removed ${action.domain} from group`);
+                context.controller.showSuccess(
+                    chrome.i18n.getMessage('undidRemoveFromGroup', [action.domain])
+                );
             } else if (action.type === 'add') {
                 await this.addDomainToGroup(context, action.groupId, action.domain);
-                context.controller.showSuccess(`Undid: Re-added ${action.domain} to group`);
+                context.controller.showSuccess(
+                    chrome.i18n.getMessage('undidReaddedToGroup', [action.domain])
+                );
             } else if (action.type === 'move') {
                 await this.addDomainToGroup(context, action.fromGroupId, action.domain);
-                context.controller.showSuccess(`Undid: Moved ${action.domain} back to original group`);
+                context.controller.showSuccess(
+                    chrome.i18n.getMessage('undidMovedBack', [action.domain])
+                );
             }
         } catch (error) {
             console.error('Error executing undo:', error);

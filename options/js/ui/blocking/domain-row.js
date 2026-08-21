@@ -14,6 +14,7 @@ import { setupFaviconFallback, createLimitInput } from './blocking-helpers.js';
  * @param {string} [params.deleteTitle]
  * @param {string} [params.groupId]
  * @param {Function} [params.onDragOut]
+ * @param {Function} [params.onDragActive] - Called with true/false on group-row drag start/end
  * @returns {HTMLElement}
  */
 export function createDomainRow({
@@ -26,6 +27,7 @@ export function createDomainRow({
     deleteTitle = 'Remove restriction',
     groupId = null,
     onDragOut = null,
+    onDragActive = null,
 }) {
     const isGroupRow = Boolean(groupId);
     const row = document.createElement(isGroupRow ? 'div' : 'li');
@@ -39,10 +41,12 @@ export function createDomainRow({
         }
         e.dataTransfer.effectAllowed = 'move';
         row.classList.add('dragging');
+        if (isGroupRow && typeof onDragActive === 'function') onDragActive(true);
     });
 
     row.addEventListener('dragend', (e) => {
         row.classList.remove('dragging');
+        if (isGroupRow && typeof onDragActive === 'function') onDragActive(false);
         document
             .querySelectorAll('.drag-over')
             .forEach((el) => el.classList.remove('drag-over'));
@@ -50,6 +54,14 @@ export function createDomainRow({
             onDragOut(domain);
         }
     });
+
+    // Minimal dragover — Chrome needs DEEPEST element to call preventDefault
+    if (isGroupRow) {
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+    }
 
     // Drag handle
     const dragHandle = document.createElement('span');

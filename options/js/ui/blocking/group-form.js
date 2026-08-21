@@ -56,7 +56,7 @@ function createGroupForm(blockingUI) {
         const parsedLimit = parseInt(limitInput.value, 10);
         const limit = isNaN(parsedLimit) || parsedLimit < 0 ? 30 : parsedLimit;
         if (!name) {
-            blockingUI.controller.showWarning('Please enter a group name');
+            blockingUI.controller.showWarning(chrome.i18n.getMessage('pleaseEnterGroupName'));
             return;
         }
         blockingUI.createGroup(name, [], limit);

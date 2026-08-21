@@ -4,7 +4,7 @@
 export const blockingRuleActions = {
     async addSiteRule(context, domain, ruleType, timeLimitMinutes = 30) {
         if (!domain) {
-            context.controller.showWarning('Please enter a domain');
+            context.controller.showWarning(chrome.i18n.getMessage('pleaseEnterDomain'));
             return;
         }
 
@@ -18,7 +18,7 @@ export const blockingRuleActions = {
             .split('/')[0];
 
         if (!domainPattern.test(cleanDomain)) {
-            context.controller.showWarning('Please enter a valid domain (e.g., facebook.com)');
+            context.controller.showWarning(chrome.i18n.getMessage('pleaseEnterValidDomain'));
             return;
         }
 
@@ -30,10 +30,12 @@ export const blockingRuleActions = {
                 timeLimitMinutes: cappedLimit,
             });
             await context.loadSiteRules();
-            context.controller.showSuccess(`Added ${cleanDomain} to ${ruleType.toLowerCase()} list`);
+            context.controller.showSuccess(
+                chrome.i18n.getMessage('addedToList', [cleanDomain, ruleType.toLowerCase()])
+            );
         } catch (error) {
             console.error('Error adding site rule:', error);
-            context.controller.showError('Failed to add site rule');
+            context.controller.showError(chrome.i18n.getMessage('failedAddSiteRule'));
         }
     },
 
@@ -44,10 +46,10 @@ export const blockingRuleActions = {
                 domain,
             });
             await context.loadSiteRules();
-            context.controller.showSuccess(`Removed ${domain}`);
+            context.controller.showSuccess(chrome.i18n.getMessage('removedDomain', [domain]));
         } catch (error) {
             console.error('Error removing site rule:', error);
-            context.controller.showError('Failed to remove site rule');
+            context.controller.showError(chrome.i18n.getMessage('failedRemoveSiteRule'));
         }
     },
 

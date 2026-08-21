@@ -67,7 +67,7 @@ export class SiteSpeedList {
                 this.siteSpeeds[domain] = speed;
                 this.render();
                 domainInput.value = '';
-                showToast(`Speed set for ${domain}`, 'success');
+                showToast(chrome.i18n.getMessage('speedSetForDomain', [domain]), 'success');
             }
         } catch {
             showToast(chrome.i18n.getMessage('failedSetSpeed'), 'error');

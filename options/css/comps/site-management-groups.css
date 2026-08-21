@@ -171,6 +171,12 @@
     background: var(--background);
 }
 
+.group-domain-list.reorder-active {
+    outline: 1px solid var(--primary-color);
+    outline-offset: -2px;
+    border-radius: var(--radius-small);
+}
+
 .group-domain-row {
     display: flex;
     align-items: center;
@@ -249,6 +255,22 @@
 .rule-item.dragging,
 .group-domain-row.dragging {
     opacity: 0.4;
+}
+
+/* Live reorder: dimmed slot left behind by the dragged row */
+.group-domain-row.drag-source {
+    opacity: 0.3;
+    background: var(--primary-fade);
+}
+
+/* Live reorder: floating clone clamped to the list's vertical band */
+.group-domain-row.drag-ghost {
+    background: var(--card-bg);
+    border: 1px solid color-mix(in srgb, var(--primary-color) 50%, var(--border));
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-lg);
+    opacity: 0.95;
+    cursor: grabbing;
 }
 
 .group-container.drag-over {

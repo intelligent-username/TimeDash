@@ -1,15 +1,22 @@
 /**
- * Format milliseconds into readable duration
+ * Format milliseconds into readable duration with locale-aware digits
  * @param {number} ms - Time in milliseconds
  * @param compact
  * @returns {string} Formatted string (e.g., "45m")
  */
 export function formatTime(ms, compact = false) {
-    return TimeUtils.formatMilliseconds(ms, compact);
+    const formatted = TimeUtils.formatMilliseconds(ms, compact);
+    try {
+        const formatter = new Intl.NumberFormat(navigator.language);
+        return formatted.replace(/\d+/g, (d) => formatter.format(Number(d)));
+    } catch {
+        return formatted;
+    }
 }
 
 /**
  * Format date object to YYYY-MM-DD string
+ * NOTE: output is the storage-key format used in usage lookups; do not localize.
  * @param {Date} date
  * @returns {string}
  */

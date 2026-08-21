@@ -3,6 +3,49 @@ import { GROUP_ICONS, createLimitInput } from './blocking-helpers.js';
 import { createDomainRow } from './domain-row.js';
 
 /**
+ * Tracks which group (if any) a drag gesture originated from, so containers can
+ * skip their own highlight/drop logic during same-group reorders.
+ * @type {string | null}
+ */
+let activeDragGroupId = null;
+document.addEventListener('dragstart', (e) => {
+    activeDragGroupId = e.dataTransfer.getData('text/x-group-id') || null;
+});
+document.addEventListener('dragend', () => {
+    activeDragGroupId = null;
+});
+
+/**
+ * Moves an element within a list while animating all siblings from their old
+ * positions to their new ones (FLIP technique) for smooth live reordering.
+ * @param {HTMLElement} list
+ * @param {Function} mutate - DOM mutation that changes row order
+ */
+function flipSwap(list, mutate) {
+    const rows = [...list.children];
+    const firstTop = new Map(rows.map((r) => [r, r.getBoundingClientRect().top]));
+    mutate();
+    rows.forEach((r) => {
+        if (!list.contains(r)) return;
+        const dy = firstTop.get(r) - r.getBoundingClientRect().top;
+        if (!dy) return;
+        r.style.transition = 'none';
+        r.style.transform = `translateY(${dy}px)`;
+        requestAnimationFrame(() => {
+            r.style.transition = 'transform 150ms ease';
+            r.style.transform = '';
+            r.addEventListener(
+                'transitionend',
+                () => {
+                    r.style.transition = '';
+                },
+                { once: true }
+            );
+        });
+    });
+}
+
+/**
  * Renders an entire group rectangle container with drop zones, icon picker, domain rows, and statistics.
  * @param {object} group
  * @param {object} domainLimitMap
@@ -25,6 +68,7 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
         }
     };
     container.addEventListener('dragover', (e) => {
+        if (activeDragGroupId === group.id) return; // same-group reorder, not an incoming drop
         e.preventDefault();
         container.classList.add('drag-over');
     });
@@ -154,8 +198,114 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
             deleteTitle: I18n.t('removeDomainFromGroup'),
             groupId: group.id,
             onDragOut: (d) => context.removeDomainFromGroup(group.id, d),
+            onDragActive: (active) => domainList.classList.toggle('reorder-active', active),
         });
         domainList.appendChild(row);
+    });
+
+    // --- Live vertical-only reorder ---
+    // A custom ghost follows the cursor but is clamped to the list's vertical
+    // band (X is locked to the row's column). The source row is swapped in the
+    // DOM in real time as the ghost crosses sibling midpoints, with FLIP
+    // animation on the displaced rows. Order is persisted on dragend.
+    let reorderState = null; // { row, ghost }
+
+    domainList.addEventListener('dragstart', (e) => {
+        const row = e.target.closest?.('.group-domain-row');
+        if (!row || !domainList.contains(row)) return;
+        if (e.dataTransfer.getData('text/x-group-id') !== group.id) return;
+
+        // Suppress the native drag image — we render our own constrained ghost
+        const hidden = document.createElement('div');
+        hidden.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
+        document.body.appendChild(hidden);
+        e.dataTransfer.setDragImage(hidden, 0, 0);
+        requestAnimationFrame(() => hidden.remove());
+
+        const rect = row.getBoundingClientRect();
+        const ghost = row.cloneNode(true);
+        ghost.classList.remove('dragging');
+        ghost.classList.add('drag-ghost');
+        Object.assign(ghost.style, {
+            position: 'fixed',
+            left: `${rect.left}px`,
+            top: `${rect.top}px`,
+            width: `${rect.width}px`,
+            height: `${rect.height}px`,
+            margin: '0',
+            pointerEvents: 'none',
+            zIndex: '1000',
+        });
+        document.body.appendChild(ghost);
+
+        reorderState = { row, ghost };
+        row.classList.add('drag-source');
+    });
+
+    domainList.addEventListener(
+        'dragover',
+        (e) => {
+            if (!reorderState) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+    );
+
+    domainList.addEventListener('drag', (e) => {
+        if (!reorderState) return;
+        const { ghost, row } = reorderState;
+        const listRect = domainList.getBoundingClientRect();
+        const h = ghost.offsetHeight;
+
+        // Constrain ghost: vertical only, clamped to the list's band
+        const y = Math.max(listRect.top, Math.min(listRect.bottom - h, e.clientY - h / 2));
+        ghost.style.top = `${y}px`;
+
+        // Live swap when the ghost crosses a sibling's vertical midpoint
+        // (only while the cursor is actually over the list)
+        if (e.clientY < listRect.top || e.clientY > listRect.bottom) return;
+        const siblings = [...domainList.querySelectorAll('.group-domain-row:not(.drag-source)')];
+        let target = null;
+        for (const sib of siblings) {
+            const rect = sib.getBoundingClientRect();
+            if (e.clientY < rect.top + rect.height / 2) {
+                target = sib;
+                break;
+            }
+        }
+        if (target && target !== row.nextElementSibling) {
+            flipSwap(domainList, () => domainList.insertBefore(row, target));
+        } else if (!target && siblings.length && row !== domainList.lastElementChild) {
+            flipSwap(domainList, () => domainList.appendChild(row));
+        }
+    });
+
+    // Swallow drops for same-group reorders (persistence happens on dragend)
+    domainList.addEventListener('drop', (e) => {
+        if (reorderState) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
+
+    domainList.addEventListener('dragend', () => {
+        if (!reorderState) return;
+        reorderState.ghost.remove();
+        reorderState.row.classList.remove('drag-source');
+        reorderState = null;
+
+        const newDomains = [...domainList.querySelectorAll('.group-domain-row .rule-domain')].map(
+            (el) => el.textContent
+        );
+        if (newDomains.join('\u0000') === group.domains.join('\u0000')) return;
+        group.domains = newDomains;
+        chrome.runtime.sendMessage({
+            type: 'UPDATE_GROUP',
+            id: group.id,
+            domains: newDomains,
+        })
+            .then(() => context.loadSiteRules())
+            .catch(() => {});
     });
 
     // Add domain input + button

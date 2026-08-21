@@ -46,7 +46,7 @@ export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
                     }
                 }
 
-                const monthLabel = new Date(year, month, 1).toLocaleDateString('en-US', {
+                const monthLabel = new Date(year, month, 1).toLocaleDateString(undefined, {
                     month: 'short',
                     year: 'numeric',
                 });

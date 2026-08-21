@@ -9,7 +9,7 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsTodayTotal">0m</div>
-            <span data-i18n="timeToday">Time Today</span>
+            <span data-i18n="analyticsTimeToday">Time Today</span>
         </div>
     </div>
     <div class="stat-card">
@@ -20,7 +20,7 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsWeekAverage">0m</div>
-            <span data-i18n="dailyAverage">Daily Average</span>
+            <span data-i18n="analyticsDailyAverage">Daily Average</span>
         </div>
     </div>
     <div class="stat-card">
@@ -44,14 +44,14 @@
         </div>
         <div class="stat-info">
             <div class="stat-value" id="analyticsNetChange">0m</div>
-            <span data-i18n="fromLastWeek">from last week to this week</span>
+            <span data-i18n="analyticsFromLastWeek">from last week to this week</span>
         </div>
     </div>
 </div>
 
 <div class="content-card large-card">
     <div class="card-header">
-        <h2 data-i18n="usageTrends">Usage Trends</h2>
+        <h2 data-i18n="analyticsUsageTrends">Usage Trends</h2>
         <div class="chart-controls">
             <div
                 class="chart-options"
@@ -73,13 +73,18 @@
                         id="rollingAverageToggle"
                         style="width: 14px; height: 14px"
                     />
-                    <span data-i18n="rollingAverage">Rolling Average</span>
+                    <span data-i18n="analyticsRollingAverage">Rolling Average</span>
                 </label>
             </div>
-            <div class="chart-period-selector" role="group" aria-label="Chart Range">
-                <button class="period-btn active" data-period="week">Week</button>
-                <button class="period-btn" data-period="month">Month</button>
-                <button class="period-btn" data-period="year">Year</button>
+            <div
+                class="chart-period-selector"
+                role="group"
+                aria-label="Chart Range"
+                data-i18n-aria-label="analyticsChartRangeAria"
+            >
+                <button class="period-btn active" data-period="week" data-i18n="analyticsWeek">Week</button>
+                <button class="period-btn" data-period="month" data-i18n="analyticsMonth">Month</button>
+                <button class="period-btn" data-period="year" data-i18n="analyticsYear">Year</button>
             </div>
             <div class="chart-navigation">
                 <button
@@ -87,6 +92,8 @@
                     id="chartPrev"
                     title="Previous"
                     aria-label="Previous period"
+                    data-i18n-title="analyticsPreviousPeriod"
+                    data-i18n-aria-label="analyticsPreviousPeriod"
                 >
                     <svg
                         width="16"
@@ -98,8 +105,8 @@
                         <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
                     </svg>
                 </button>
-                <span class="chart-period-label" id="chartPeriodLabel">This Week</span>
-                <button class="nav-btn" id="chartNext" title="Next" aria-label="Next period">
+                <span class="chart-period-label" id="chartPeriodLabel" data-i18n="analyticsThisWeek">This Week</span>
+                <button class="nav-btn" id="chartNext" title="Next" aria-label="Next period" data-i18n-title="analyticsNextPeriod" data-i18n-aria-label="analyticsNextPeriod">
                     <svg
                         width="16"
                         height="16"
@@ -115,6 +122,8 @@
                     id="chartToday"
                     title="Return to today"
                     aria-label="Return to today"
+                    data-i18n-title="analyticsReturnToToday"
+                    data-i18n-aria-label="analyticsReturnToToday"
                     style="border-radius: 50%; padding: 4px; margin-left: 8px"
                 >
                     <svg
@@ -139,7 +148,7 @@
             <div class="chart-x-axis" id="chartXAxis"></div>
             <div class="chart-earliest-indicator" id="chartEarliestIndicator" style="display: none">
                 <div class="earliest-line"></div>
-                <span data-i18n="trackingStarted">Tracking started</span>
+                <span data-i18n="analyticsTrackingStarted">Tracking started</span>
             </div>
         </div>
     </div>
@@ -148,7 +157,7 @@
 <div class="content-card">
     <div class="card-header">
         <div style="display: flex; align-items: center; gap: var(--spacing-sm)">
-            <h2 data-i18n="activityHeatmap">Activity Heatmap</h2>
+            <h2 data-i18n="analyticsActivityHeatmap">Activity Heatmap</h2>
             <span class="heatmap-sites-count" id="heatmapSitesCount" data-i18n="zeroSitesTrackedAnalytics">0 Sites Tracked</span>
         </div>
         <div class="heatmap-year-nav" id="heatmapYearNav">
@@ -157,6 +166,8 @@
                 id="heatmapYearPrev"
                 title="Previous year"
                 aria-label="Previous year"
+                data-i18n-title="analyticsPreviousYearTitle"
+                data-i18n-aria-label="analyticsPreviousYearTitle"
             >
                 <svg
                     width="14"
@@ -174,6 +185,8 @@
                 id="heatmapYearNext"
                 title="Next year"
                 aria-label="Next year"
+                data-i18n-title="analyticsNextYearTitle"
+                data-i18n-aria-label="analyticsNextYearTitle"
             >
                 <svg
                     width="14"
@@ -191,9 +204,10 @@
                 id="heatmapFilter"
                 class="modern-select"
                 aria-label="Filter heatmap by site type"
+                data-i18n-aria-label="analyticsHeatmapFilterAria"
             >
-                <option value="all" data-i18n="allSites">All Sites</option>
-                <option value="restricted" data-i18n="restrictedSites">Restricted Sites Only</option>
+                <option value="all" data-i18n="analyticsAllSites">All Sites</option>
+                <option value="restricted" data-i18n="analyticsRestrictedSites">Restricted Sites Only</option>
             </select>
         </div>
     </div>
@@ -202,13 +216,13 @@
             <div class="heatmap-months" id="heatmapMonths"></div>
             <div class="heatmap-grid-wrapper">
                 <div class="heatmap-days">
-                    <span data-i18n="sun">Sun</span>
-                    <span data-i18n="mon">Mon</span>
-                    <span data-i18n="tue">Tue</span>
-                    <span data-i18n="wed">Wed</span>
-                    <span data-i18n="thu">Thu</span>
-                    <span data-i18n="fri">Fri</span>
-                    <span data-i18n="sat">Sat</span>
+                    <span data-i18n="analyticsSun">Sun</span>
+                    <span data-i18n="analyticsMon">Mon</span>
+                    <span data-i18n="analyticsTue">Tue</span>
+                    <span data-i18n="analyticsWed">Wed</span>
+                    <span data-i18n="analyticsThu">Thu</span>
+                    <span data-i18n="analyticsFri">Fri</span>
+                    <span data-i18n="analyticsSat">Sat</span>
                 </div>
                 <div class="heatmap-grid" id="heatmapGrid"></div>
             </div>
@@ -223,16 +237,17 @@
         style="display: flex; justify-content: space-between; align-items: center"
     >
         <div>
-            <h2 data-i18n="restrictedTime">Restricted Time per Day</h2>
-            <p class="card-subheader" data-i18n="restrictedTimeSub">Time spent on non-blocked websites with a daily time limit</p>
+            <h2 data-i18n="analyticsRestrictedTime">Restricted Time per Day</h2>
+            <p class="card-subheader" data-i18n="analyticsRestrictedTimeSub">Time spent on non-blocked websites with a daily time limit</p>
         </div>
         <div
             class="chart-period-selector restriction-chart-controls"
             role="group"
             aria-label="Restricted Chart Range"
+            data-i18n-aria-label="analyticsRestrictedChartRangeAria"
         >
-            <button class="period-btn active" data-restrict-period="week">Week</button>
-            <button class="period-btn" data-restrict-period="month">Month</button>
+            <button class="period-btn active" data-restrict-period="week" data-i18n="analyticsWeek">Week</button>
+            <button class="period-btn" data-restrict-period="month" data-i18n="analyticsMonth">Month</button>
         </div>
     </div>
     <div class="card-body">
@@ -245,7 +260,7 @@
         class="card-header"
         style="display: flex; justify-content: space-between; align-items: center"
     >
-        <h2 data-i18n="topSitesToday">Top Sites Today</h2>
+        <h2 id="topSitesHeading" data-i18n="analyticsTopSitesToday">Top Sites Today</h2>
         <div class="setting-group" style="margin: 0; display: flex; align-items: center; gap: 8px">
             <label
                 for="trackingFrequency"
@@ -258,11 +273,11 @@
                     gap: 4px;
                 "
             >
-                <span data-i18n="trackingInterval">Tracking Interval (s)</span>
+                <span data-i18n="analyticsTrackingInterval">Tracking Interval (s)</span>
                 <span
                     class="info-tooltip"
                     title="How often the extension updates your time logs. Lower values are more accurate but use more resources."
-                    data-i18n-html="trackingIntervalTooltip">?
+                    data-i18n-html="analyticsTrackingIntervalTooltip">?
                 </span>
             </label>
             <input
@@ -279,7 +294,7 @@
     </div>
     <div class="card-body">
         <div class="analytics-sites-list" id="analyticsTopSites">
-            <div class="analytics-empty-state" data-i18n="noActivity">No activity recorded today.</div>
+            <div class="analytics-empty-state" data-i18n="analyticsNoActivity">No activity recorded today.</div>
         </div>
     </div>
 </div>

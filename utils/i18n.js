@@ -64,6 +64,17 @@ class I18n {
     }
 
     /**
+     * Format a count using paired plural keys ($COUNT$ placeholder)
+     * @param {number} count - Count value
+     * @param {string} oneKey - Message key for count === 1
+     * @param {string} manyKey - Message key for other counts
+     * @returns {string} Localized string with $COUNT$ substituted
+     */
+    static plural(count, oneKey, manyKey) {
+        return I18n.t(count === 1 ? oneKey : manyKey, [I18n.formatNumber(count)]);
+    }
+
+    /**
      * Format number using locale-specific formatting
      * @param {number} value - Value to format
      * @param {string} locale - Locale string

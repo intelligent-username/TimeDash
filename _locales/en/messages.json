@@ -431,7 +431,6 @@
     "noMatchesFound": { "message": "No matches found" },
     "importDataPrompt": { "message": "Should the imported data be appended to the currently-existing data or replace it?\n\nClick OK to Append.\nClick Cancel to Replace." },
     "importDataTitle": { "message": "Import Data" },
-    "importDataMessage": { "message": "Should the imported data be appended to the currently-existing data or replace it?" },
     "resetAllConfirm": { "message": "Reset ALL settings and data? This cannot be undone." },
     "settingsResetDefaults": { "message": "Settings reset to defaults" },
     "failedResetSettings": { "message": "Failed to reset settings" },
@@ -460,6 +459,40 @@
     "speedUpdated": { "message": "Speed updated" },
     "noCustomSpeeds": { "message": "No custom speeds." },
     "removeDomainConfirm": { "message": "Remove custom speed for $1?" },
+
+    "analyticsPreviousYearTitle": { "message": "Previous year" },
+    "analyticsNextYearTitle": { "message": "Next year" },
+    "analyticsChartRangeAria": { "message": "Chart Range" },
+    "analyticsRestrictedChartRangeAria": { "message": "Restricted Chart Range" },
+    "analyticsHeatmapFilterAria": { "message": "Filter heatmap by site type" },
+    "analyticsTopSitesOnDate": { "message": "Top Sites on $1" },
+    "analyticsTopSitesInPeriod": { "message": "Top Sites in $1" },
+    "analyticsRestrictedSitesOnDate": { "message": "Restricted Sites on $1" },
+    "analyticsNoActivityOnDate": { "message": "No activity recorded on $1." },
+    "analyticsNoActivityInPeriod": { "message": "No activity recorded in $1." },
+    "analyticsTotalForPeriod": { "message": "Total $1" },
+    "analyticsDailyAverageDays": { "message": "$1d Daily Average" },
+
+    "addedToList": { "message": "Added $1 to $2 list" },
+    "removedDomain": { "message": "Removed $1" },
+    "deletedDataForDomain": { "message": "Deleted data for $1" },
+    "deleteDataForDomainConfirm": { "message": "Delete all data for $1?" },
+    "createdGroup": { "message": "Created group \"$1\"" },
+    "undidRemoveFromGroup": { "message": "Undid: Removed $1 from group" },
+    "undidReaddedToGroup": { "message": "Undid: Re-added $1 to group" },
+    "undidMovedBack": { "message": "Undid: Moved $1 back to original group" },
+    "speedSetForDomain": { "message": "Speed set for $1" },
+    "storageQuotaOfLimit": { "message": "$1% of $2MB limit" },
+    "storageWarningDetail": { "message": "Using $1 of your $2MB limit. Consider purging old data or increasing your limit." },
+
+    "sitesTrackedOne": {
+        "message": "$COUNT$ site tracked",
+        "placeholders": { "count": { "content": "$1" } }
+    },
+    "sitesTrackedMany": {
+        "message": "$COUNT$ sites tracked",
+        "placeholders": { "count": { "content": "$1" } }
+    },
 
     "sinceTracking": { "message": "since you started using the extension" },
     "past7Days": { "message": "Past 7 Days" },

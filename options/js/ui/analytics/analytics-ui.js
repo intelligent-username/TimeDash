@@ -3,6 +3,7 @@ import { AnalyticsHeatmap } from '../analytics-heatmap.js';
 import { applyAnalyticsUISetupMethods } from './analytics-ui/setup.js';
 import { applyAnalyticsUIStatsMethods } from './analytics-ui/stats.js';
 import { applyAnalyticsUITopSitesMethods } from './analytics-ui/top-sites.js';
+import { formatDateString } from '../../utils/formatting.js';
 
 /**
  *
@@ -29,6 +30,12 @@ export class AnalyticsUI {
 
         this.chart.onPointClick = (dateStr, pointData) => {
             this.showTopSitesForDate(dateStr, pointData);
+        };
+
+        this.heatmap.onDaySelect = (dateStr) => {
+            const todayStr = formatDateString(new Date());
+            this._restrictedChartEndDate = dateStr === todayStr ? null : dateStr;
+            this.renderMiniCharts();
         };
     }
 }
