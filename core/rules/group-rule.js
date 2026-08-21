@@ -8,7 +8,7 @@
  */
 class GroupRule {
     /**
-     * @param {object} params
+     * @param {object} [params] - Initialization options.
      * @param {string} [params.id] Unique ID (auto generated if omitted)
      * @param {string} params.name Group name
      * @param {string[]} [params.domains] List of domains
@@ -38,7 +38,7 @@ class GroupRule {
     /**
      * Check if a domain belongs to this group
      * @param {string} domain Target domain to check
-     * @returns {boolean}
+     * @returns {boolean} True if domain is inside this group.
      */
     contains(domain) {
         const normalized = domain.toLowerCase().replace(/^www\./, '');
@@ -49,7 +49,7 @@ class GroupRule {
      * Evaluate collective usage against the group limit
      * @param {number} groupUsageSeconds Total seconds used today
      * @param {number} [maxCap] Optional global max cap in minutes
-     * @returns {{ shouldBlock: boolean, reason: string|null, remainingMinutes: number }}
+     * @returns {{ shouldBlock: boolean, reason: string|null, remainingMinutes: number }} Evaluation decision.
      */
     evaluate(groupUsageSeconds, maxCap = 0) {
         const effectiveLimit =
@@ -79,7 +79,7 @@ class GroupRule {
 
     /**
      * Serialize to plain object for storage
-     * @returns {object}
+     * @returns {object} Serialized group object.
      */
     toJSON() {
         return {
@@ -98,7 +98,7 @@ class GroupRule {
     /**
      * Create GroupRule from serialized data
      * @param {object} data Serialized group data
-     * @returns {GroupRule}
+     * @returns {GroupRule} Instantiated group rule.
      */
     static fromJSON(data) {
         const group = new GroupRule({

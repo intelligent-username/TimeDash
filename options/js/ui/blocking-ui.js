@@ -1,18 +1,17 @@
 import { hydrateFavicon } from '../utils/dom.js';
 import { createDomainRow } from './blocking/domain-row.js';
-import { renderGroupRectangle, beginLiveReorder } from './blocking/group-card.js';
+import { renderGroupRectangle } from './blocking/group-card.js';
 import { buildCircularPicker } from './blocking/circular-picker.js';
 import { blockingRuleActions } from './blocking/rule-actions.js';
 import { groupActions } from './blocking/group-actions.js';
 import { toggleNewGroupForm } from './blocking/group-form.js';
 
 /**
- *
+ * Blocking settings UI controller.
  */
 export class BlockingUI {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;
@@ -87,25 +86,28 @@ export class BlockingUI {
     // ── Rule CRUD Orchestration ──────────────────────────────────────────────
 
     /**
-     *
-     * @param domain
-     * @param ruleType
-     * @param timeLimitMinutes
+     * Add a site rule (BLOCKED or RESTRICTED).
+     * @param {string} domain - Domain string.
+     * @param {'BLOCKED'|'RESTRICTED'} ruleType - Rule type.
+     * @param {number} [timeLimitMinutes] - Daily minute limit.
+     * @returns {Promise<void>}
      */
     async addSiteRule(domain, ruleType, timeLimitMinutes = 30) {
         return blockingRuleActions.addSiteRule(this, domain, ruleType, timeLimitMinutes);
     }
 
     /**
-     *
-     * @param domain
+     * Remove a site rule.
+     * @param {string} domain - Domain string.
+     * @returns {Promise<void>}
      */
     async removeSiteRule(domain) {
         return blockingRuleActions.removeSiteRule(this, domain);
     }
 
     /**
-     *
+     * Load site rules from background and update UI lists.
+     * @returns {Promise<void>}
      */
     async loadSiteRules() {
         return blockingRuleActions.loadSiteRules(this);
@@ -114,61 +116,68 @@ export class BlockingUI {
     // ── Group CRUD Orchestration ─────────────────────────────────────────────
 
     /**
-     *
-     * @param name
-     * @param domains
-     * @param limit
+     * Create a new domain group.
+     * @param {string} name - Group name.
+     * @param {string[]} domains - Member domains.
+     * @param {number} limit - Daily time limit in minutes.
+     * @returns {Promise<void>}
      */
     async createGroup(name, domains, limit) {
         return groupActions.createGroup(this, name, domains, limit);
     }
 
     /**
-     *
-     * @param id
-     * @param limit
+     * Update the time limit for an existing group.
+     * @param {string} id - Group ID.
+     * @param {number} limit - New daily minute limit.
+     * @returns {Promise<void>}
      */
     async updateGroupLimit(id, limit) {
         return groupActions.updateGroupLimit(this, id, limit);
     }
 
     /**
-     *
-     * @param id
-     * @param icon
+     * Update the icon for an existing group.
+     * @param {string} id - Group ID.
+     * @param {string} icon - Icon key.
+     * @returns {Promise<void>}
      */
     async updateGroupIcon(id, icon) {
         return groupActions.updateGroupIcon(this, id, icon);
     }
 
     /**
-     *
-     * @param id
+     * Delete an existing group.
+     * @param {string} id - Group ID.
+     * @returns {Promise<void>}
      */
     async deleteGroup(id) {
         return groupActions.deleteGroup(this, id);
     }
 
     /**
-     *
-     * @param groupId
-     * @param domain
+     * Add a domain to an existing group.
+     * @param {string} groupId - Target group ID.
+     * @param {string} domain - Domain to add.
+     * @returns {Promise<void>}
      */
     async addDomainToGroup(groupId, domain) {
         return groupActions.addDomainToGroup(this, groupId, domain);
     }
 
     /**
-     *
-     * @param groupId
-     * @param domain
+     * Remove a domain from an existing group.
+     * @param {string} groupId - Target group ID.
+     * @param {string} domain - Domain to remove.
+     * @returns {Promise<void>}
      */
     async removeDomainFromGroup(groupId, domain) {
         return groupActions.removeDomainFromGroup(this, groupId, domain);
     }
 
     /**
-     *
+     * Undo the most recent grouping operation.
+     * @returns {Promise<void>}
      */
     async undoLastGroupingChange() {
         return groupActions.undoLastGroupingChange(this);
@@ -177,8 +186,8 @@ export class BlockingUI {
     // ── List Rendering ───────────────────────────────────────────────────────
 
     /**
-     *
-     * @param domains
+     * Render the list of blocked domain items.
+     * @param {string[]} domains - Blocked domain list.
      */
     renderBlockedList(domains) {
         const list = document.getElementById('blockedList');
@@ -226,9 +235,9 @@ export class BlockingUI {
     }
 
     /**
-     *
-     * @param sites
-     * @param groups
+     * Render the restricted rules list and groups.
+     * @param {Array<{domain: string, timeLimitMinutes: number}>} sites - Restricted sites.
+     * @param {object[]} [groups] - Group budget objects.
      */
     renderRestrictedList(sites, groups = []) {
         const list = document.getElementById('restrictedList');

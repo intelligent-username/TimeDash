@@ -2,8 +2,7 @@ import { formatTime, formatDateString } from '../../../utils/formatting.js';
 import { hydrateFavicons } from '../../../utils/dom.js';
 
 /**
- *
- * @param AnalyticsUI
+ * @param {typeof AnalyticsUI} AnalyticsUI - Target class to extend with stats calculation methods.
  */
 export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
     AnalyticsUI.prototype.update = function update() {
@@ -54,7 +53,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
 
     AnalyticsUI.prototype.updatePeriodStats = function updatePeriodStats() {
         const usage = this.controller.usage || {};
-        const { periodTotal, periodDays, periodLabel } = this.calculatePeriodTotal(usage);
+        const { periodTotal, periodLabel } = this.calculatePeriodTotal(usage);
 
         const totalEl = document.getElementById('analyticsTotalTime');
         this.setStatCardValue(totalEl, formatTime(periodTotal), chrome.i18n.getMessage('analyticsTotalForPeriod', [periodLabel]));

@@ -52,7 +52,6 @@ class SiteRule {
      * Evaluate whether access should be blocked
      * Must be implemented by subclasses
      * @param {object} _usageStats - Usage statistics for the domain
-     * @returns {{ shouldBlock: boolean, reason: string }}
      */
     evaluate(_usageStats) {
         throw new Error('evaluate() must be implemented by subclass');

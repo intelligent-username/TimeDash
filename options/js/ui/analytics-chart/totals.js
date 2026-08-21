@@ -1,8 +1,7 @@
 import { formatDateString } from '../../utils/formatting.js';
 
 /**
- *
- * @param AnalyticsChart
+ * @param {typeof AnalyticsChart} AnalyticsChart - AnalyticsChart class to extend with totals calculation methods.
  */
 export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
     AnalyticsChart.prototype.calculateTotals = function calculateTotals(

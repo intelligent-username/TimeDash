@@ -4,12 +4,11 @@ import { applyAnalyticsChartSvgMethods } from './analytics-chart/svg.js';
 import { applyAnalyticsChartRangeMethods } from './analytics-chart/range.js';
 
 /**
- *
+ * Analytics chart renderer and interaction controller.
  */
 export class AnalyticsChart {
     /**
-     *
-     * @param dataContext
+     * @param {object} dataContext - Data manager context instance.
      */
     constructor(dataContext) {
         this.dataContext = dataContext;
@@ -21,8 +20,8 @@ export class AnalyticsChart {
     }
 
     /**
-     *
-     * @param period
+     * Set active time period for the chart.
+     * @param {'week'|'month'|'year'} period - Target range period.
      */
     setPeriod(period) {
         this.period = period;
@@ -31,8 +30,8 @@ export class AnalyticsChart {
     }
 
     /**
-     *
-     * @param direction
+     * Navigate chart period forward or backward.
+     * @param {'prev'|'next'} direction - Step direction.
      */
     navigate(direction) {
         if (direction === 'prev') {

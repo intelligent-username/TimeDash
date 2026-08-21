@@ -1,6 +1,5 @@
 /**
- *
- * @param OptionsController
+ * @param {typeof OptionsController} OptionsController - Target class to extend with appearance methods.
  */
 export function applyOptionsAppearanceMethods(OptionsController) {
     OptionsController.prototype.applyImmediateChanges = function applyImmediateChanges(key, value) {

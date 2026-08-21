@@ -1,6 +1,5 @@
 /**
- *
- * @param AnalyticsUI
+ * @param {typeof AnalyticsUI} AnalyticsUI - Target class to extend with setup methods.
  */
 export function applyAnalyticsUISetupMethods(AnalyticsUI) {
     AnalyticsUI.prototype.setup = function setup() {

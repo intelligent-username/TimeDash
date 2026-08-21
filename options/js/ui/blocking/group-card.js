@@ -117,7 +117,7 @@ export function beginLiveReorder(e, { kind = 'group', group = null, context }) {
  * cards in between (they render before standalone rows anyway).
  * @param {HTMLElement} list - Restricted list container
  * @param {HTMLElement} row - Dragged row
- * @param {number} clientY
+ * @param {number} clientY - Client Y coordinate of cursor.
  */
 function swapStandaloneRow(list, row, clientY) {
     const siblings = [...list.querySelectorAll('.restrict-item:not(.drag-source)')];
@@ -246,6 +246,16 @@ document.addEventListener('dragend', () => {
     }
 
     // Cross-group move: rewrite both groups' domain arrays from the DOM
+    const sourceDomains = readDomains(sourceList);
+    const targetDomains = readDomains(targetList);
+    Promise.all([
+        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: sourceDomains }),
+        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: targetGroupId, domains: targetDomains }),
+    ])
+        .then(() => context.loadSiteRules())
+        .catch(() => {});
+});
+
 /**
  * Moves an element within a list while animating all siblings from their old
  * positions to their new ones (FLIP technique) for smooth live reordering.

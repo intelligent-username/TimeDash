@@ -4,8 +4,7 @@ const LINE_COLOR = '#3b82f6';
 const EARLIEST_COLOR = '#f59e0b';
 
 /**
- *
- * @param AnalyticsChart
+ * @param {typeof AnalyticsChart} AnalyticsChart - AnalyticsChart class to extend with SVG rendering methods.
  */
 export function applyAnalyticsChartSvgMethods(AnalyticsChart) {
     AnalyticsChart.prototype.renderSvgChart = function renderSvgChart(

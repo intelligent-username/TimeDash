@@ -104,9 +104,9 @@ export class OptionsController {
     }
 
     /**
-     *
-     * @param key
-     * @param value
+     * Update a single setting and trigger autosave.
+     * @param {string} key - Settings property key.
+     * @param {*} value - New setting value.
      */
     updateSetting(key, value) {
         if (key === 'theme' || key === 'accentColor' || key === 'animationsEnabled') {
@@ -130,9 +130,9 @@ export class OptionsController {
     }
 
     /**
-     *
-     * @param message
-     * @param type
+     * Show a toast message
+     * @param {string} message - Notification text.
+     * @param {string} [type] - Notification category ('info' | 'success' | 'error' | 'warning').
      */
     showToast(message, type) {
         showToast(message, type);
@@ -160,8 +160,8 @@ export class OptionsController {
 
     /**
      * Resolve a stored theme value to an effective light/dark mode.
-     * @param {string} value
-     * @returns {string}
+     * @param {string} value - Stored theme value ('light' | 'dark' | 'auto').
+     * @returns {string} Resolved theme ('light' or 'dark').
      */
     getEffectiveTheme(value) {
         if (value === 'dark') return 'dark';

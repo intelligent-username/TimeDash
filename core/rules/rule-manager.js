@@ -72,7 +72,7 @@ class RuleManager {
     /**
      * Deserialize rule data to appropriate class instance
      * @param {object} data - Serialized rule data
-     * @returns {SiteRule|null}
+     * @returns {SiteRule|null} Instantiated SiteRule or null.
      */
     deserializeRule(data) {
         switch (data.type) {
@@ -112,7 +112,7 @@ class RuleManager {
      * Get a rule only if its stored domain exactly equals the given host
      * (i.e. the user specifically specified this subdomain)
      * @param {string} domain - Full hostname to look up
-     * @returns {SiteRule|null}
+     * @returns {SiteRule|null} Matching rule or null.
      */
     getExactRule(domain) {
         const normalized = DomainUtils.normalizeDomain(domain);
@@ -139,7 +139,7 @@ class RuleManager {
     /**
      * Get all rules of a specific type
      * @param {string} type - Rule type (BLOCKED or RESTRICTED)
-     * @returns {SiteRule[]}
+     * @returns {SiteRule[]} Array of rules matching type.
      */
     getRulesByType(type) {
         return Array.from(this.rules.values()).filter((rule) => rule.type === type);
@@ -147,7 +147,7 @@ class RuleManager {
 
     /**
      * Get all blocked domains
-     * @returns {string[]}
+     * @returns {string[]} Array of blocked domain strings.
      */
     getBlockedDomains() {
         return this.getRulesByType(SiteRule.TYPES.BLOCKED).map((r) => r.domain);
@@ -155,13 +155,56 @@ class RuleManager {
 
     /**
      * Get all restricted domains with their limits
-     * @returns {Array<{domain: string, timeLimitMinutes: number}>}
+     * @returns {Array<{domain: string, timeLimitMinutes: number}>} List of restricted domains and limits.
      */
     getRestrictedDomains() {
         return this.getRulesByType(SiteRule.TYPES.RESTRICTED).map((r) => ({
             domain: r.domain,
             timeLimitMinutes: r.timeLimitMinutes,
         }));
+    }
+
+    /**
+     * Check if a domain has any active rule
+     * @param {string} domain - Domain to check
+     * @returns {boolean} True if domain has an enabled rule.
+     */
+    hasRule(domain) {
+        const rule = this.getRule(domain);
+        return rule !== undefined && rule.isEnabled;
+    }
+
+    /**
+     * Serialize all rules and groups for storage
+     * @returns {{ rules: object[], groups: object[] }} Serialized rules and groups object.
+     */
+    toJSON() {
+        return {
+            rules: Array.from(this.rules.values()).map((r) => r.toJSON()),
+            groups: this.groups.map((g) => g.toJSON()),
+        };
+    }
+
+    /**
+     * Load rules and groups from serialized data
+     * @param {object} data - Data containing rules and groups arrays
+     */
+    loadFromJSON(data) {
+        this.rules.clear();
+        this.groups = [];
+
+        if (Array.isArray(data.rules)) {
+            data.rules.forEach((ruleData) => {
+                const rule = this.deserializeRule(ruleData);
+                if (rule) {
+                    this.rules.set(rule.domain, rule);
+                }
+            });
+        }
+
+        if (Array.isArray(data.groups)) {
+            this.groups = data.groups.map((gData) => GroupRule.fromJSON(gData));
+        }
     }
 
     /**
@@ -193,7 +236,7 @@ class RuleManager {
     /**
      * Find an active group that contains the given domain
      * @param {string} domain - Domain to look up
-     * @returns {GroupRule|null}
+     * @returns {GroupRule|null} Group containing domain or null.
      */
     getGroupForDomain(domain) {
         const normalized = DomainUtils.normalizeDomain(domain);
@@ -205,7 +248,7 @@ class RuleManager {
     /**
      * Find an active group by name (for duplicate name check)
      * @param {string} name - Group name
-     * @returns {GroupRule|null}
+     * @returns {GroupRule|null} Group with name or null.
      */
     getGroupByName(name) {
         return this.groups.find((g) => !g.deletedAt && g.name === name) || null;
@@ -214,7 +257,7 @@ class RuleManager {
     /**
      * Find an active group containing a domain (for membership validation)
      * @param {string} domain - Domain to check
-     * @returns {GroupRule|null}
+     * @returns {GroupRule|null} Group containing domain or null.
      */
     getGroupContainingDomain(domain) {
         const normalized = DomainUtils.normalizeDomain(domain);
@@ -228,7 +271,7 @@ class RuleManager {
      * @param {object} usageStats - Usage statistics {todayTimeSeconds}
      * @param {object} [groupUsageSecondsMap] - Map of groupId -> total seconds used today
      * @param {object} [settings] - Extension settings object
-     * @returns {{ shouldBlock: boolean, reason: string|null, domain: string, groupName?: string }}
+     * @returns {{ shouldBlock: boolean, reason: string|null, domain: string, groupName?: string }} Decision object.
      */
     evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}, settings = {}) {
         try {

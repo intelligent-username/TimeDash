@@ -20,7 +20,7 @@ class BlockedRule extends SiteRule {
     /**
      * Evaluate access - always blocks when enabled
      * @param {object} _usageStats - Not used for blocked rules
-     * @returns {{ shouldBlock: boolean, reason: string }}
+     * @returns {{ shouldBlock: boolean, reason: string }} Access evaluation result.
      */
     evaluate(_usageStats) {
         if (!this.isEnabled) {
@@ -35,7 +35,7 @@ class BlockedRule extends SiteRule {
     /**
      * Create BlockedRule from serialized data
      * @param {object} data - Serialized rule data
-     * @returns {BlockedRule}
+     * @returns {BlockedRule} Instantiated blocked rule.
      */
     static fromJSON(data) {
         const rule = new BlockedRule(data.domain, data.isEnabled);

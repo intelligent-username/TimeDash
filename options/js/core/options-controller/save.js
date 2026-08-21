@@ -1,8 +1,7 @@
 import { showToast } from '../../utils/dom.js';
 
 /**
- *
- * @param OptionsController
+ * @param {typeof OptionsController} OptionsController - Target class to extend with save methods.
  */
 export function applyOptionsSaveMethods(OptionsController) {
     OptionsController.prototype.setupAutoSave = function setupAutoSave() {

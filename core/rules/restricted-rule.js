@@ -25,7 +25,7 @@ class RestrictedRule extends SiteRule {
      * Evaluate access based on usage time
      * @param {object} usageStats - Must contain { todayTimeSeconds }
      * @param {number} [maxCap] - Optional global max cap in minutes
-     * @returns {{ shouldBlock: boolean, reason: string, remainingMinutes?: number }}
+     * @returns {{ shouldBlock: boolean, reason: string, remainingMinutes?: number }} Evaluation result with block decision.
      */
     evaluate(usageStats, maxCap = 0) {
         if (!this.isEnabled) {
@@ -66,7 +66,7 @@ class RestrictedRule extends SiteRule {
     /**
      * Create RestrictedRule from serialized data
      * @param {object} data - Serialized rule data
-     * @returns {RestrictedRule}
+     * @returns {RestrictedRule} Instantiated restricted rule.
      */
     static fromJSON(data) {
         const rule = new RestrictedRule(data.domain, data.timeLimitMinutes, data.isEnabled);

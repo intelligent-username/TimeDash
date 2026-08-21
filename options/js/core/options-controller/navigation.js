@@ -1,6 +1,5 @@
 /**
- *
- * @param OptionsController
+ * @param {typeof OptionsController} OptionsController - Target class to extend with navigation methods.
  */
 export function applyOptionsNavigationMethods(OptionsController) {
     OptionsController.prototype.setupNavigation = function setupNavigation() {

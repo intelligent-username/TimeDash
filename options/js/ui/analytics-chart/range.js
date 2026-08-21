@@ -1,8 +1,7 @@
 import { formatDateString } from '../../utils/formatting.js';
 
 /**
- *
- * @param AnalyticsChart
+ * @param {typeof AnalyticsChart} AnalyticsChart - AnalyticsChart class to extend with range methods.
  */
 export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
     AnalyticsChart.prototype.getDateRange = function getDateRange() {

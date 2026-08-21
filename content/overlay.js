@@ -54,8 +54,8 @@ class TimeDashOverlayUI {
 
     /**
      * Show Corner Indicator
-     * @param video
-     * @param speed
+     * @param {HTMLVideoElement} video - Target video element.
+     * @param {number} speed - Playback speed multiplier.
      */
     showIndicator(video, speed) {
         // Single persistent element on body. Avoids inheriting parent sizing/layout

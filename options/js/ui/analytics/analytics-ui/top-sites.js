@@ -2,8 +2,7 @@ import { formatTime, escapeHtml, formatDateString } from '../../../utils/formatt
 import { hydrateFavicons } from '../../../utils/dom.js';
 
 /**
- *
- * @param AnalyticsUI
+ * @param {typeof AnalyticsUI} AnalyticsUI - Target class to extend with top sites rendering methods.
  */
 export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
     AnalyticsUI.prototype.renderTopSites = function renderTopSites(sites, maxTime) {

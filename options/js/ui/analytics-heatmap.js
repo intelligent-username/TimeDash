@@ -2,12 +2,11 @@ import { formatTime, formatDateString } from '../utils/formatting.js';
 import { hydrateFavicons } from '../utils/dom.js';
 
 /**
- *
+ * Analytics heatmap visualization component.
  */
 export class AnalyticsHeatmap {
     /**
-     *
-     * @param dataContext
+     * @param {object} dataContext - Data manager context instance.
      */
     constructor(dataContext) {
         this.dataContext = dataContext;
@@ -19,7 +18,8 @@ export class AnalyticsHeatmap {
      * Parse a YYYY-MM-DD string as a LOCAL date (not UTC).
      * new Date('2024-01-15') parses as UTC midnight, which is the previous
      * day in negative-UTC-offset timezones. We split manually instead.
-     * @param dateStr
+     * @param {string} dateStr - Date string in YYYY-MM-DD format.
+     * @returns {Date} Parsed local Date instance.
      */
     _parseLocalDate(dateStr) {
         const [y, m, d] = dateStr.split('-').map(Number);
@@ -27,9 +27,10 @@ export class AnalyticsHeatmap {
     }
 
     /**
-     *
-     * @param date
-     * @param showYear
+     * Format a Date instance for localized display.
+     * @param {Date} date - Date to format.
+     * @param {boolean} [showYear] - Whether to include the year.
+     * @returns {string} Formatted display date.
      */
     _formatDisplayDate(date, showYear = false) {
         const opts = { day: 'numeric', month: 'short' };
@@ -184,10 +185,9 @@ export class AnalyticsHeatmap {
     }
 
     /**
-     *
-     * @param dateStr
-     * @param dailyData
-     * @param _dailyData
+     * Handle cell click event on the heatmap.
+     * @param {string} dateStr - Clicked date string in YYYY-MM-DD format.
+     * @param {object} [_dailyData] - Daily data object for selected date.
      */
     _onCellClick(dateStr, _dailyData) {
         if (typeof this.onDaySelect === 'function') {
@@ -278,8 +278,8 @@ export class AnalyticsHeatmap {
     }
 
     /**
-     *
-     * @param earliestYear
+     * Update navigation UI state based on current and earliest year.
+     * @param {number} earliestYear - Earliest available year from tracked data.
      */
     _updateYearNav(earliestYear) {
         const label = document.getElementById('heatmapYearLabel');
@@ -296,7 +296,7 @@ export class AnalyticsHeatmap {
     }
 
     /**
-     *
+     * Set up year navigation buttons.
      */
     _setupYearNav() {
         const prevBtn = document.getElementById('heatmapYearPrev');
@@ -327,9 +327,10 @@ export class AnalyticsHeatmap {
     }
 
     /**
-     *
-     * @param time
-     * @param maxTime
+     * Compute intensity level for heatmap cell (0-4).
+     * @param {number} time - Duration spent in seconds.
+     * @param {number} maxTime - Maximum duration across all cells in view.
+     * @returns {number} Heatmap intensity level (0-4).
      */
     getLevel(time, maxTime) {
         if (time === 0 || maxTime === 0) return 0;

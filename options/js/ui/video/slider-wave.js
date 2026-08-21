@@ -29,15 +29,11 @@ export function initSliderWave() {
     const EASE_OUT_RATE = 0.03;       // how fast amplitude settles back
 
     /* ── Drag detection ──────────────────────────────────────────────── */
-    let _dragging = false;
-
     function onDragStart() {
-        _dragging = true;
         targetAmplitude = MAX_AMPLITUDE;
     }
 
     function onDragEnd() {
-        _dragging = false;
         targetAmplitude = 0;
     }
 

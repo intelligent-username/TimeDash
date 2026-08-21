@@ -1,6 +1,5 @@
 /**
- *
- * @param OptionsController
+ * @param {typeof OptionsController} OptionsController - Target class to extend with sync methods.
  */
 export function applyOptionsSyncMethods(OptionsController) {
     OptionsController.prototype.setupHelpLinks = function setupHelpLinks() {

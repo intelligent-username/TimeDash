@@ -10,8 +10,7 @@ import { formatDateString } from '../../utils/formatting.js';
  */
 export class AnalyticsUI {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;
