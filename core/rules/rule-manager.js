@@ -175,6 +175,26 @@ class RuleManager {
     }
 
     /**
+     * Check if a domain has an active blocked rule
+     * @param {string} domain - Domain to check
+     * @returns {boolean} True if domain is actively blocked.
+     */
+    isDomainBlocked(domain) {
+        if (!domain) return false;
+        const normalized = DomainUtils.normalizeDomain(domain);
+        const direct = this.getRule(normalized);
+        if (direct && direct.isEnabled && direct.type === SiteRule.TYPES.BLOCKED) {
+            return true;
+        }
+        for (const rule of this.rules.values()) {
+            if (rule.isEnabled && rule.type === SiteRule.TYPES.BLOCKED && rule.isMatch(normalized)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Serialize all rules and groups for storage
      * @returns {{ rules: object[], groups: object[] }} Serialized rules and groups object.
      */

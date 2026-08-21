@@ -250,7 +250,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const isValidDay = (dateStr) => dateStr >= earliestStr && dateStr <= todayStr;
 
         if (this.currentPeriod === 'all') {
-            periodLabel = 'All Time';
+            periodLabel = chrome.i18n.getMessage('allTime');
             for (const domain of domains) periodTotal += (usage[domain].cumulative || 0) * 1000;
             periodDays = this.earliestDate
                 ? Math.ceil(Math.max(0, now - new Date(this.earliestDate)) / 86400000) || 1
@@ -362,9 +362,11 @@ periodLabel = chrome.i18n.getMessage('today');
             const h = Math.floor(v / 3600);
             const m = Math.floor((v % 3600) / 60);
             if (h === 0 && m === 0) return chrome.i18n.getMessage('lessThanOneMin');
-            if (h === 0) return `${m}m`;
-            if (m === 0) return `${h}h`;
-            return `${h}h\u00a0${m}m`;
+            const uM = TimeUtils.getUnit('unitMin', 'm');
+            const uH = TimeUtils.getUnit('unitHour', 'h');
+            if (h === 0) return `${m}${uM}`;
+            if (m === 0) return `${h}${uH}`;
+            return `${h}${uH}\u00a0${m}${uM}`;
         };
 
         const shortLabel = (ds) => {

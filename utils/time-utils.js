@@ -209,9 +209,4 @@ class TimeUtils {
         if (limit === 0) return Infinity; // No limit
         return limit * 60 - used;
     }
-
-    /**
-     * Check if time is within working hours (9 AM - 5 PM)
-     * @returns {boolean} True if within working hours
-     */
 }

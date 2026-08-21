@@ -27,8 +27,6 @@ export function applyAnalyticsUISetupMethods(AnalyticsUI) {
         if (todayBtn) todayBtn.addEventListener('click', () => this.resetChartToToday());
         if (rollingToggle) rollingToggle.addEventListener('change', () => this.chart.render());
         if (heatmapFilter) heatmapFilter.addEventListener('change', () => this.heatmap.render());
-
-        this.addAllTimePeriodOption();
     };
 
     AnalyticsUI.prototype.navigateChart = function navigateChart(direction) {
@@ -41,30 +39,5 @@ export function applyAnalyticsUISetupMethods(AnalyticsUI) {
         this.chart.offset = 0;
         this.chart.render();
         this.updatePeriodStats();
-    };
-
-    AnalyticsUI.prototype.addAllTimePeriodOption = function addAllTimePeriodOption() {
-        const periodSelector = document.querySelector('.chart-period-selector');
-        if (!periodSelector) return;
-
-        const existingAll = periodSelector.querySelector('[data-period="all"]');
-        if (existingAll) return;
-
-        const allBtn = document.createElement('button');
-        allBtn.className = 'period-btn';
-        allBtn.dataset.period = 'all';
-        allBtn.textContent = 'All Time';
-        periodSelector.appendChild(allBtn);
-
-        allBtn.addEventListener('click', (e) => {
-            document
-                .querySelectorAll('.period-btn')
-                .forEach((button) => button.classList.remove('active'));
-            e.target.classList.add('active');
-            this.currentPeriod = 'all';
-            this.chart.setPeriod('all');
-            this.chart.render();
-            this.updatePeriodStats();
-        });
     };
 }

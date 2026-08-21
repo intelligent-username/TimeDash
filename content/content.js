@@ -13,7 +13,6 @@ class TimeDashContent {
         this.videoIdCounter = 1;
         this.videoInteractionTs = new WeakMap();
         this.isOrphaned = false;
-        this.visibilityCheckInterval = null;
 
         this.ui = window.TimeDashOverlayUI
             ? new window.TimeDashOverlayUI({
@@ -50,7 +49,6 @@ class TimeDashContent {
             this.detector.setup();
             this.messageHandler.setupStorageListener();
             this.keyboardHandler.setup();
-            this.startVisibilityCheck();
             this.setupListeners();
 
             this.controller.updateAllVideoSpeeds();
@@ -131,21 +129,7 @@ class TimeDashContent {
         this.isOrphaned = true;
         this.contextValid = false;
         this.detector.cleanup();
-
-        if (this.visibilityCheckInterval) {
-            clearInterval(this.visibilityCheckInterval);
-            this.visibilityCheckInterval = null;
-        }
-
         this.videos.clear();
-    }
-
-    startVisibilityCheck() {
-        this.visibilityCheckInterval = setInterval(() => {
-            if (this.isOrphaned) {
-                clearInterval(this.visibilityCheckInterval);
-            }
-        }, 1000);
     }
 
     setupListeners() {

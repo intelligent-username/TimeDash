@@ -126,10 +126,4 @@ class DomainUtils {
     static getDisplayName(domain) {
         return domain.charAt(0).toUpperCase() + domain.slice(1);
     }
-
-    /**
-     * Group domains by category for analytics
-     * @param {Array<string>} domains - Array of domains
-     * @returns {object} Grouped domains by category
-     */
 }

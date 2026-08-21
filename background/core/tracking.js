@@ -42,7 +42,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 const type = rule && rule.type === 'RESTRICTED' ? 'RESTRICTED' : 'GENERAL';
                 const ok = await this.storage.updateUsage(domain, timeSpent, type);
                 if (!ok) {
-                    console.warn(`[TimeDash] usage write failed for ${domain} (+${timeSpent}ms)`);
+                    console.warn(`[TimeDash] usage write failed for ${domain} (+${timeSpent}s)`);
                 }
             }
 

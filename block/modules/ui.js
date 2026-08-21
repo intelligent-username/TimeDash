@@ -74,10 +74,36 @@ function applyBlockUiMethods(BlockPageController) {
         if (el && el.nextElementSibling) el.nextElementSibling.textContent = label;
     };
 
+    BlockPageController.prototype.getMotivationalQuotes = function getMotivationalQuotes() {
+        return [
+            { quote: I18n.t('quote1'), author: I18n.t('quote1Author') },
+            { quote: I18n.t('quote2'), author: I18n.t('quote2Author') },
+            { quote: I18n.t('quote3'), author: I18n.t('quote3Author') },
+            { quote: I18n.t('quote4'), author: I18n.t('quote4Author') },
+            { quote: I18n.t('quote5'), author: I18n.t('quote5Author') },
+            { quote: I18n.t('quote6'), author: I18n.t('quote6Author') },
+            { quote: I18n.t('quote7'), author: I18n.t('quote7Author') },
+            { quote: I18n.t('quote8'), author: I18n.t('quote8Author') },
+        ];
+    };
+
+    BlockPageController.prototype.getProductivityTips = function getProductivityTips() {
+        return [
+            I18n.t('tip1'),
+            I18n.t('tip2'),
+            I18n.t('tip3'),
+            I18n.t('tip4'),
+            I18n.t('tip5'),
+            I18n.t('tip6'),
+            I18n.t('tip7'),
+        ];
+    };
+
     BlockPageController.prototype.updateMotivationalContent = function updateMotivationalContent() {
-        const quote =
-            this.motivationalQuotes[Math.floor(Math.random() * this.motivationalQuotes.length)];
-        const tip = this.productivityTips[Math.floor(Math.random() * this.productivityTips.length)];
+        const quotes = this.getMotivationalQuotes();
+        const tips = this.getProductivityTips();
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        const tip = tips[Math.floor(Math.random() * tips.length)];
 
         const quoteEl = document.querySelector('.motivation-quote blockquote');
         const citeEl = document.querySelector('.motivation-quote cite');
@@ -89,10 +115,6 @@ function applyBlockUiMethods(BlockPageController) {
     };
 
     BlockPageController.prototype.formatTime = function formatTime(seconds) {
-        if (!seconds) return '0m';
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        if (hours > 0) return `${hours}h ${minutes}m`;
-        return `${minutes}m`;
+        return TimeUtils.formatTime(seconds);
     };
 }

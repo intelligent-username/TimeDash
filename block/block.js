@@ -11,43 +11,6 @@ class BlockPageController {
             todayTime: 0,
         };
         this.usedFromUrl = null;
-
-        this.motivationalQuotes = [
-            {
-                quote: I18n.t('quote1'),
-                author: I18n.t('quote1Author'),
-            },
-            { quote: I18n.t('quote2'), author: I18n.t('quote2Author') },
-            {
-                quote: I18n.t('quote3'),
-                author: I18n.t('quote3Author'),
-            },
-            { quote: I18n.t('quote4'), author: I18n.t('quote4Author') },
-            {
-                quote: I18n.t('quote5'),
-                author: I18n.t('quote5Author'),
-            },
-            {
-                quote: I18n.t('quote6'),
-                author: I18n.t('quote6Author'),
-            },
-            {
-                quote: I18n.t('quote7'),
-                author: I18n.t('quote7Author'),
-            },
-            { quote: I18n.t('quote8'), author: I18n.t('quote8Author') },
-        ];
-
-        this.productivityTips = [
-            I18n.t('tip1'),
-            I18n.t('tip2'),
-            I18n.t('tip3'),
-            I18n.t('tip4'),
-            I18n.t('tip5'),
-            I18n.t('tip6'),
-            I18n.t('tip7'),
-        ];
-
         this.init();
     }
 

@@ -4,6 +4,7 @@ function applyAlarmSchedulingMethods(AlarmManager) {
     AlarmManager.prototype.setupAlarms = async function setupAlarms() {
         await this.createDailyResetAlarm();
         await this.createQuotaCheckAlarm();
+        await this.createCleanupAlarm();
         await this.createBackupAlarm();
     };
 

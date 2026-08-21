@@ -13,7 +13,7 @@ class GroupRule {
      * @param {string} params.name Group name
      * @param {string[]} [params.domains] List of domains
      * @param {number} [params.timeLimitMinutes] Daily limit in minutes
-     * @param {string} [params.isEnabled] Group active status
+     * @param {boolean} [params.isEnabled] Group active status
      * @param {string} [params.icon] Category icon key
      */
     constructor({
