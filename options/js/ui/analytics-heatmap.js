@@ -1,5 +1,5 @@
 import { formatTime, formatDateString } from '../utils/formatting.js';
-import { attachFaviconFallback } from '../utils/dom.js';
+import { hydrateFavicons } from '../utils/dom.js';
 
 /**
  *
@@ -245,14 +245,13 @@ export class AnalyticsHeatmap {
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
                 const escaped = site.domain
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
                 return `
                 <div class="analytics-site-item">
-                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escaped}">
+                    <img class="analytics-site-favicon" alt="" data-domain="${escaped}">
                     <div class="analytics-site-info">
                         <div class="analytics-site-name">${escaped}</div>
                         <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
@@ -264,7 +263,7 @@ export class AnalyticsHeatmap {
             `;
             })
             .join('');
-        attachFaviconFallback(container);
+        hydrateFavicons(container);
 
         const grid = document.getElementById('heatmapGrid');
         if (grid) {

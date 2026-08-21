@@ -1,5 +1,5 @@
 import { formatTime, formatDateString } from '../../../utils/formatting.js';
-import { attachFaviconFallback } from '../../../utils/dom.js';
+import { hydrateFavicons } from '../../../utils/dom.js';
 
 /**
  *
@@ -473,21 +473,17 @@ periodLabel = chrome.i18n.getMessage('today');
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
                 const escaped = site.domain
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
-                const time = (() => {
-                    const s = Math.floor(site.todayTime / 1000);
-                    const h = Math.floor(s / 3600);
-                    const m = Math.floor((s % 3600) / 60);
-                    if (h === 0) return `${m}m`;
-                    if (m === 0) return `${h}h`;
-                    return `${h}h\u00a0${m}m`;
-                })();
+                const s = Math.floor(site.todayTime / 1000);
+                const h = Math.floor(s / 3600);
+                const m = Math.floor((s % 3600) / 60);
+                const time =
+                    h === 0 ? `${m}m` : m === 0 ? `${h}h` : `${h}h\u00a0${m}m`;
                 return `<div class="analytics-site-item">
-                <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escaped}">
+                <img class="analytics-site-favicon" alt="" data-domain="${escaped}">
                 <div class="analytics-site-info">
                     <div class="analytics-site-name">${escaped}</div>
                     <div class="analytics-site-time">${time}</div>
@@ -498,7 +494,7 @@ periodLabel = chrome.i18n.getMessage('today');
             </div>`;
             })
             .join('');
-        attachFaviconFallback(container);
+        hydrateFavicons(container);
 
         // Highlight selected bar
         const chart = document.getElementById('restrictedTimeChart');

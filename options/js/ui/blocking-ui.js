@@ -1,5 +1,4 @@
-import { getFaviconUrl } from '../utils/dom.js';
-import { setupFaviconFallback } from './blocking/blocking-helpers.js';
+import { hydrateFavicon } from '../utils/dom.js';
 import { createDomainRow } from './blocking/domain-row.js';
 import { renderGroupRectangle, beginLiveReorder } from './blocking/group-card.js';
 import { buildCircularPicker } from './blocking/circular-picker.js';
@@ -7,7 +6,14 @@ import { blockingRuleActions } from './blocking/rule-actions.js';
 import { groupActions } from './blocking/group-actions.js';
 import { toggleNewGroupForm } from './blocking/group-form.js';
 
+/**
+ *
+ */
 export class BlockingUI {
+    /**
+     *
+     * @param controller
+     */
     constructor(controller) {
         this.controller = controller;
         this.limitUpdateTimers = new Map();
@@ -16,6 +22,9 @@ export class BlockingUI {
         this.isUndoing = false;
     }
 
+    /**
+     *
+     */
     setup() {
         const addBlockedBtn = document.getElementById('addBlockedBtn');
         const blockedDomainInput = document.getElementById('blockedDomainInput');
@@ -77,50 +86,100 @@ export class BlockingUI {
 
     // ── Rule CRUD Orchestration ──────────────────────────────────────────────
 
+    /**
+     *
+     * @param domain
+     * @param ruleType
+     * @param timeLimitMinutes
+     */
     async addSiteRule(domain, ruleType, timeLimitMinutes = 30) {
         return blockingRuleActions.addSiteRule(this, domain, ruleType, timeLimitMinutes);
     }
 
+    /**
+     *
+     * @param domain
+     */
     async removeSiteRule(domain) {
         return blockingRuleActions.removeSiteRule(this, domain);
     }
 
+    /**
+     *
+     */
     async loadSiteRules() {
         return blockingRuleActions.loadSiteRules(this);
     }
 
     // ── Group CRUD Orchestration ─────────────────────────────────────────────
 
+    /**
+     *
+     * @param name
+     * @param domains
+     * @param limit
+     */
     async createGroup(name, domains, limit) {
         return groupActions.createGroup(this, name, domains, limit);
     }
 
+    /**
+     *
+     * @param id
+     * @param limit
+     */
     async updateGroupLimit(id, limit) {
         return groupActions.updateGroupLimit(this, id, limit);
     }
 
+    /**
+     *
+     * @param id
+     * @param icon
+     */
     async updateGroupIcon(id, icon) {
         return groupActions.updateGroupIcon(this, id, icon);
     }
 
+    /**
+     *
+     * @param id
+     */
     async deleteGroup(id) {
         return groupActions.deleteGroup(this, id);
     }
 
+    /**
+     *
+     * @param groupId
+     * @param domain
+     */
     async addDomainToGroup(groupId, domain) {
         return groupActions.addDomainToGroup(this, groupId, domain);
     }
 
+    /**
+     *
+     * @param groupId
+     * @param domain
+     */
     async removeDomainFromGroup(groupId, domain) {
         return groupActions.removeDomainFromGroup(this, groupId, domain);
     }
 
+    /**
+     *
+     */
     async undoLastGroupingChange() {
         return groupActions.undoLastGroupingChange(this);
     }
 
     // ── List Rendering ───────────────────────────────────────────────────────
 
+    /**
+     *
+     * @param domains
+     */
     renderBlockedList(domains) {
         const list = document.getElementById('blockedList');
         if (!list) return;
@@ -144,7 +203,7 @@ export class BlockingUI {
             li.className = 'rule-item';
             li.innerHTML = `
                 <div class="rule-item-info">
-                    <img class="rule-favicon" src="${getFaviconUrl(domain)}" alt="">
+                    <img class="rule-favicon" data-domain="${domain}" alt="">
                     <span class="rule-domain">${domain}</span>
                 </div>
                 <button class="rule-delete-btn icon-btn" title="Remove block">
@@ -157,8 +216,7 @@ export class BlockingUI {
                     <span class="sr-only">Remove</span>
                 </button>
             `;
-            const img = li.querySelector('.rule-favicon');
-            setupFaviconFallback(img, domain);
+            hydrateFavicon(li.querySelector('.rule-favicon'));
 
             li.querySelector('.rule-delete-btn').addEventListener('click', () => {
                 this.removeSiteRule(domain);
@@ -167,6 +225,11 @@ export class BlockingUI {
         });
     }
 
+    /**
+     *
+     * @param sites
+     * @param groups
+     */
     renderRestrictedList(sites, groups = []) {
         const list = document.getElementById('restrictedList');
         if (!list) return;

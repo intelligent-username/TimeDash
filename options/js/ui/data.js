@@ -61,11 +61,14 @@ function validateImportData(data) {
  */
 export class DataManager {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;
+        this.storageManager = controller.storageManager;
+        this.pendingDeletion = null;
+        this.pendingDeletionType = null;
+        this.confirmResolver = null;
     }
 
     /**
@@ -267,8 +270,8 @@ export class DataManager {
     }
 
     /**
-     *
-     * @param event
+     * Display import mode modal and resolve chosen action.
+     * @returns {Promise<'merge'|'overwrite'|null>} User selection.
      */
     promptImportMode() {
         return new Promise((resolve) => {
@@ -322,8 +325,9 @@ export class DataManager {
     }
 
     /**
-     *
-     * @param event
+     * Import JSON backup data from file input change event.
+     * @param {Event} event - File change input event.
+     * @returns {Promise<void>}
      */
     async importData(event) {
         const file = event.target.files[0];

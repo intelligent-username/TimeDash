@@ -1,5 +1,6 @@
 /**
  * Inline group creation form builder and toggle.
+ * @param {object} blockingUI - BlockingUI instance.
  */
 export function toggleNewGroupForm(blockingUI) {
     const existing = document.getElementById('newGroupForm');
@@ -22,16 +23,20 @@ function createGroupForm(blockingUI) {
 
     const nameInput = document.createElement('input');
     nameInput.type = 'text';
+    nameInput.id = 'newGroupNameInput';
+    nameInput.name = 'newGroupName';
     nameInput.className = 'modern-input new-group-name-input';
-    nameInput.placeholder = 'Group name...';
+    nameInput.placeholder = I18n.t('groupNamePlaceholder');
     nameInput.setAttribute('autocomplete', 'off');
 
     const limitInput = document.createElement('input');
     limitInput.type = 'number';
+    limitInput.id = 'newGroupLimitInput';
+    limitInput.name = 'newGroupLimit';
     limitInput.className = 'rule-limit-input-edit';
     limitInput.value = '30';
     limitInput.min = 0;
-    limitInput.title = 'Daily limit (minutes)';
+    limitInput.title = I18n.t('dailyLimitMinutes');
     limitInput.addEventListener('keydown', (e) => {
         if (['-', '+', 'e', 'E'].includes(e.key)) {
             e.preventDefault();

@@ -45,7 +45,11 @@ const LOG_PATH = join(ROOT, 'logs', 'i18n-output.txt');
 // Accumulate all output lines, then write once at the end if --logs.
 const outputLines = [];
 
-/** Write a line to console and optionally buffer for log file. */
+/**
+ * Write a line to console and optionally buffer for log file.
+ * @param {string} [line] - Text to output.
+ * @returns {void}
+ */
 function logOutput(line = '') {
 	console.log(line);
 	if (LOG_FILE) outputLines.push(line);
@@ -55,7 +59,13 @@ function logOutput(line = '') {
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-/** Recursively collect files with a given extension under a directory. */
+/**
+ * Recursively collect files with a given extension under a directory.
+ * @param {string} dir - Directory to scan.
+ * @param {string} ext - File extension to match.
+ * @param {string[]} [out] - Output array accumulating matches.
+ * @returns {string[]} Matching file paths.
+ */
 function collectFiles(dir, ext, out = []) {
 	let entries;
 	try {
@@ -75,7 +85,11 @@ function collectFiles(dir, ext, out = []) {
 	return out;
 }
 
-/** Load a messages.json file, returning a Map of key -> message or null on error. */
+/**
+ * Load a messages.json file, returning a Map of key -> message or null on error.
+ * @param {string} file - Path to messages.json file.
+ * @returns {Map<string, string> | null} Key to message map or null.
+ */
 function loadMessages(file) {
 	try {
 		const data = JSON.parse(readFileSync(file, 'utf8'));
@@ -86,7 +100,11 @@ function loadMessages(file) {
 	}
 }
 
-/** Normalize a string for value comparison (trim + collapse whitespace). */
+/**
+ * Normalize a string for value comparison (trim + collapse whitespace).
+ * @param {string} s - Input string.
+ * @returns {string} Normalized string.
+ */
 function normalize(s) {
 	return s.replace(/\s+/g, ' ').trim();
 }
@@ -97,6 +115,8 @@ function normalize(s) {
 
 /**
  * Check if a string contains HTML/SVG markup.
+ * @param {string} s - String to check.
+ * @returns {boolean} True if HTML/SVG markup is present.
  */
 function containsMarkup(s) {
 	return /<[a-zA-Z][^>]*>/.test(s);
@@ -105,6 +125,8 @@ function containsMarkup(s) {
 /**
  * Extract only visible text content from an HTML/SVG string,
  * stripping all tags and their attributes.
+ * @param {string} html - HTML string.
+ * @returns {string} Extracted text.
  */
 function extractTextFromMarkup(html) {
 	// Remove <script> and <style> blocks
@@ -182,6 +204,8 @@ const DEV_LINE_PATTERNS = [
 /**
  * Check if a string is non-user-facing content (code, CSS, SVG, identifiers, etc.).
  * This checks the string VALUE, not the source context.
+ * @param {string} s - Input string.
+ * @returns {boolean} True if string is not user-facing.
  */
 function isNonUserFacingString(s) {
 	// 'use strict' directive
@@ -237,7 +261,7 @@ function isNonUserFacingString(s) {
 	if (/^[a-zA-Z_$][a-zA-Z0-9_$]*(\.[a-zA-Z_$][a-zA-Z0-9_$]*)+$/.test(s)) return true;
 
 	// CSS selectors (start with ., #, [, :, or contain attribute selectors/pseudo-classes)
-	if (/^[\.#\[:]/ || /\[[^\]]*\]/.test(s) || /:[a-z-]+\(/.test(s)) return true;
+	if (/^[.#[:]/.test(s) || /\[[^\]]*\]/.test(s) || /:[a-z-]+\(/.test(s)) return true;
 
 	// File paths and URLs
 	if (/^(https?:|\/|\.\/|\.\.\/)/.test(s)) return true;
@@ -260,6 +284,8 @@ function isNonUserFacingString(s) {
 
 /**
  * Does this string look like a CSS value? (e.g. "2px solid #f3f3f3", "opacity 0.3s ease")
+ * @param {string} s - Input string.
+ * @returns {boolean} True if string matches CSS value patterns.
  */
 function looksLikeCssValue(s) {
 	const tokens = s.split(/\s+/);
@@ -286,6 +312,8 @@ function looksLikeCssValue(s) {
 /**
  * Does this string look like a CSS class list? (space-separated CSS class names)
  * e.g. "btn btn-primary btn-small", "rule-delete-btn icon-btn"
+ * @param {string} s - Input string.
+ * @returns {boolean} True if string matches CSS class list pattern.
  */
 function looksLikeCssClassList(s) {
 	const tokens = s.split(/\s+/);
@@ -296,6 +324,8 @@ function looksLikeCssClassList(s) {
 
 /**
  * Check if a source line is developer-only context (logging, API calls, etc.).
+ * @param {string} line - Source code line.
+ * @returns {boolean} True if line is developer context.
  */
 function isDevOnlyLine(line) {
 	for (const pattern of DEV_LINE_PATTERNS) {
@@ -308,6 +338,8 @@ function isDevOnlyLine(line) {
  * Extract user-facing string candidates from JS source.
  * Uses line-level context to skip strings inside console.log, chrome.*, etc.
  * For strings that contain HTML/SVG markup, extracts only visible text content.
+ * @param {string} content - JavaScript source content.
+ * @returns {string[]} Candidate user-facing strings.
  */
 function extractJsUserStrings(content) {
 	const strings = [];
@@ -357,7 +389,11 @@ function extractJsUserStrings(content) {
 	return strings;
 }
 
-/** Extract visible text nodes from HTML (ignoring script/style/SVG/data-i18n elements). */
+/**
+ * Extract visible text nodes from HTML (ignoring script/style/SVG/data-i18n elements).
+ * @param {string} content - HTML content.
+ * @returns {string[]} Extracted text strings.
+ */
 function extractHtmlText(content) {
     // Remove script, style, and SVG blocks entirely
     let cleaned = content
@@ -380,7 +416,13 @@ function extractHtmlText(content) {
     return texts;
 }
 
-/** Find hardcoded strings in a file whose text is not a known message value. */
+/**
+ * Find hardcoded strings in a file whose text is not a known message value.
+ * @param {string} content - File content.
+ * @param {Set<string>} knownValues - Set of known translated message values.
+ * @param {boolean} isHtml - Whether content is HTML.
+ * @returns {string[]} Array of unique hardcoded strings.
+ */
 function findHardcoded(content, knownValues, isHtml) {
 	const candidates = isHtml
 		? extractHtmlText(content)
@@ -400,7 +442,11 @@ function findHardcoded(content, knownValues, isHtml) {
 /* 2) Locale coverage                                                  */
 /* ------------------------------------------------------------------ */
 
-/** Render a coverage progress bar (0–100%). */
+/**
+ * Render a coverage progress bar (0–100%).
+ * @param {number} pct - Percentage coverage (0-100).
+ * @returns {string} Colored progress bar string.
+ */
 function coverageBar(pct) {
 	const w = 20;
 	const filled = Math.round((w * pct) / 100);
@@ -410,7 +456,12 @@ function coverageBar(pct) {
 	return `${colorCode}${bar}${resetCode} ${String(pct).padStart(3)}%`;
 }
 
-/** Compare one locale against the en key list. */
+/**
+ * Compare one locale against the en key list.
+ * @param {string} locale - Locale code (e.g. 'es', 'fr').
+ * @param {string[]} enKeys - Array of english keys to compare against.
+ * @returns {{ locale: string, missing: string[], pct: number, covered: number, total: number, status: string }} Comparison result object.
+ */
 function checkLocale(locale, enKeys) {
 	const file = join(LOCALES_DIR, locale, 'messages.json');
 	const msgs = loadMessages(file);

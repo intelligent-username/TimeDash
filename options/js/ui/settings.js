@@ -9,8 +9,7 @@ import { initSliderWave } from './video/slider-wave.js';
  */
 export class SettingsManager {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;

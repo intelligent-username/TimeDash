@@ -1,8 +1,7 @@
 import { showToast } from '../../../utils/dom.js';
 
 /**
- *
- * @param CurrentlyPlayingUI
+ * @param {typeof CurrentlyPlayingUI} CurrentlyPlayingUI - Target class to extend with lifecycle methods.
  */
 export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.setup = function setup() {

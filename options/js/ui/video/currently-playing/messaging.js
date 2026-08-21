@@ -1,6 +1,5 @@
 /**
- *
- * @param CurrentlyPlayingUI
+ * @param {typeof CurrentlyPlayingUI} CurrentlyPlayingUI - Target class to extend with messaging methods.
  */
 export function applyCurrentlyPlayingMessagingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.sendMessageWithTimeout = async function sendMessageWithTimeout(

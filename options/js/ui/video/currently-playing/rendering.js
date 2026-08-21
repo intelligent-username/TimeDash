@@ -1,6 +1,5 @@
 /**
- *
- * @param CurrentlyPlayingUI
+ * @param {typeof CurrentlyPlayingUI} CurrentlyPlayingUI - Target class to extend with rendering methods.
  */
 export function applyCurrentlyPlayingRenderingMethods(CurrentlyPlayingUI) {
     CurrentlyPlayingUI.prototype.render = function render(sessions) {

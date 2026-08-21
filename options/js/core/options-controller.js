@@ -160,7 +160,6 @@ export class OptionsController {
 
     /**
      * Resolve a stored theme value to an effective light/dark mode.
-     *
      * @param {string} value
      * @returns {string}
      */

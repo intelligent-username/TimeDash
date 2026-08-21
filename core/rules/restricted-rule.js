@@ -24,7 +24,7 @@ class RestrictedRule extends SiteRule {
     /**
      * Evaluate access based on usage time
      * @param {object} usageStats - Must contain { todayTimeSeconds }
-     * @param {number} [maxCap=0] - Optional global max cap in minutes
+     * @param {number} [maxCap] - Optional global max cap in minutes
      * @returns {{ shouldBlock: boolean, reason: string, remainingMinutes?: number }}
      */
     evaluate(usageStats, maxCap = 0) {

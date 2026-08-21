@@ -1,5 +1,3 @@
-import { handleFaviconError } from '../../utils/dom.js';
-
 export const GROUP_ICONS = {
     folder: `<svg class="icon-folder" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`,
     briefcase: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
@@ -16,28 +14,17 @@ export const GROUP_ICONS = {
 };
 
 /**
- * Set up favicon loading with progressive fallbacks:
- * Google's service → the site's own /favicon.ico → letter avatar.
- * @param {HTMLImageElement} img
- * @param {string} domain
- */
-export function setupFaviconFallback(img, domain) {
-    if (!img || !domain) return;
-    img.dataset.domain = domain;
-    img.addEventListener('error', () => handleFaviconError(img));
-}
-
-/**
  * Create a standardized number input for time limits with validation & arrow controls.
- * @param {number} initialValue
- * @param {number} maxCap
- * @param {Function} onSave - async (newLimit) => void
- * @param {string} title
- * @returns {HTMLInputElement}
+ * @param {number} initialValue - Initial limit value in minutes.
+ * @param {number} maxCap - Maximum allowable minute limit.
+ * @param {Function} onSave - Async callback invoked with new limit: (newLimit) => Promise<void>.
+ * @param {string} [title] - Input title tooltip.
+ * @returns {HTMLInputElement} Configured number input element.
  */
 export function createLimitInput(initialValue, maxCap, onSave, title = 'Edit daily limit') {
     const input = document.createElement('input');
     input.type = 'number';
+    input.name = 'rule-limit-minutes';
     input.className = 'rule-limit-input-edit';
     input.value = Math.min(initialValue, maxCap);
     input.min = 0;

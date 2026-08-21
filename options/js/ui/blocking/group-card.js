@@ -29,8 +29,8 @@ let reorderState = null;
  * Finds the drop target under the cursor for the active gesture.
  * Group rows target group domain lists (falling back to containers for empty
  * lists); standalone rows target the restricted list itself.
- * @param {DragEvent} e
- * @returns {{ list: HTMLElement } | null}
+ * @param {DragEvent} e - Drag event.
+ * @returns {{ list: HTMLElement } | null} Drop target list or null.
  */
 function findDropTarget(e) {
     if (reorderState?.kind === 'standalone') {
@@ -60,8 +60,8 @@ function findDropTarget(e) {
 
 /**
  * Arms a live reorder gesture on dragstart of a reorderable row.
- * @param {DragEvent} e
- * @param {object} options
+ * @param {DragEvent} e - Drag start event.
+ * @param {object} options - Gesture configuration options.
  * @param {'group'|'standalone'} [options.kind] - Row kind being dragged
  * @param {object} [options.group] - Source group (group rows only)
  * @param {object} options.context - BlockingUI instance
@@ -246,19 +246,10 @@ document.addEventListener('dragend', () => {
     }
 
     // Cross-group move: rewrite both groups' domain arrays from the DOM
-    const sourceDomains = readDomains(sourceList);
-    const targetDomains = readDomains(targetList);
-    Promise.all([
-        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: sourceDomains }),
-        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: targetGroupId, domains: targetDomains }),
-    ])
-        .then(() => context.loadSiteRules())
-        .catch(() => {});
-});
 /**
  * Moves an element within a list while animating all siblings from their old
  * positions to their new ones (FLIP technique) for smooth live reordering.
- * @param {HTMLElement} list
+ * @param {HTMLElement} list - List element containing animated rows.
  * @param {Function} mutate - DOM mutation that changes row order
  */
 function flipSwap(list, mutate) {
@@ -287,10 +278,10 @@ function flipSwap(list, mutate) {
 
 /**
  * Renders an entire group rectangle container with drop zones, icon picker, domain rows, and statistics.
- * @param {object} group
- * @param {object} domainLimitMap
+ * @param {object} group - Group entity object.
+ * @param {object} domainLimitMap - Map of domain to limit values.
  * @param {object} context - BlockingUI instance providing action methods
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Group list container element.
  */
 export function renderGroupRectangle(group, domainLimitMap, context) {
     const container = document.createElement('li');
@@ -466,6 +457,7 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
 
     const addInput = document.createElement('input');
     addInput.type = 'text';
+    addInput.name = 'group-add-domain';
     addInput.className = 'modern-input';
     addInput.placeholder = I18n.t('addDomainToGroup');
     addInput.style.flex = '1';

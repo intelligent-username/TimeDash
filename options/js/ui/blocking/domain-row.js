@@ -1,21 +1,21 @@
 /* global TimeUtils */
-import { getFaviconUrl } from '../../utils/dom.js';
-import { setupFaviconFallback, createLimitInput } from './blocking-helpers.js';
+import { hydrateFavicon } from '../../utils/dom.js';
+import { createLimitInput } from './blocking-helpers.js';
 
 /**
  * Builds a standardized domain row element for both standalone restricted rules and group member rows.
- * @param {object} params
- * @param {string} params.domain
- * @param {number} params.timeLimitMinutes
- * @param {number} params.maxCap
- * @param {object} params.controller
- * @param {Function} params.onSaveLimit
- * @param {Function} params.onDelete
- * @param {string} [params.deleteTitle]
- * @param {string} [params.groupId]
- * @param {Function} [params.onDragOut]
- * @param {Function} [params.onDragActive] - Called with true/false on group-row drag start/end
- * @returns {HTMLElement}
+ * @param {object} params - Configuration object.
+ * @param {string} params.domain - Website domain name.
+ * @param {number} params.timeLimitMinutes - Minute limit for domain.
+ * @param {number} params.maxCap - Maximum allowed limit in minutes.
+ * @param {object} params.controller - Options controller instance.
+ * @param {Function} params.onSaveLimit - Callback on saving changed limit.
+ * @param {Function} params.onDelete - Callback on deleting domain row.
+ * @param {string} [params.deleteTitle] - Tooltip for delete action.
+ * @param {string} [params.groupId] - Parent group ID if inside a group.
+ * @param {Function} [params.onDragOut] - Callback on dragging domain out of group.
+ * @param {Function} [params.onDragActive] - Called with true/false on group-row drag start/end.
+ * @returns {HTMLElement} List item element representing the domain row.
  */
 export function createDomainRow({
     domain,
@@ -68,11 +68,12 @@ export function createDomainRow({
     dragHandle.className = 'drag-handle-indicator';
     dragHandle.innerHTML = '⋮⋮';
 
-    // Favicon
+    // Favicon (served from the 30-day cache; fetched from Google or the site itself on miss)
     const favicon = document.createElement('img');
     favicon.className = 'rule-favicon';
-    favicon.src = getFaviconUrl(domain);
-    setupFaviconFallback(favicon, domain);
+    favicon.alt = '';
+    favicon.dataset.domain = domain;
+    hydrateFavicon(favicon);
 
     // Domain name & today's usage text
     const domainWrapper = document.createElement('div');

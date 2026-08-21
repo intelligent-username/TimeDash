@@ -1,5 +1,5 @@
 import { formatTime, escapeHtml, formatDateString } from '../../../utils/formatting.js';
-import { attachFaviconFallback } from '../../../utils/dom.js';
+import { hydrateFavicons } from '../../../utils/dom.js';
 
 /**
  *
@@ -19,11 +19,10 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             .slice(0, 10)
             .map((site) => {
                 const barWidth = maxTime > 0 ? Math.round((site.todayTime / maxTime) * 100) : 0;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=https://${site.domain}&sz=32`;
 
                 return `
                 <div class="analytics-site-item">
-                    <img class="analytics-site-favicon" src="${faviconUrl}" alt="" data-domain="${escapeHtml(site.domain)}">
+                    <img class="analytics-site-favicon" alt="" data-domain="${escapeHtml(site.domain)}">
                     <div class="analytics-site-info">
                         <div class="analytics-site-name">${escapeHtml(site.domain)}</div>
                         <div class="analytics-site-time">${formatTime(site.todayTime, true)}</div>
@@ -35,7 +34,7 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             `;
             })
             .join('');
-        attachFaviconFallback(container);
+        hydrateFavicons(container);
     };
 
     AnalyticsUI.prototype.showTopSitesForDate = function showTopSitesForDate(dateStr, pointData) {

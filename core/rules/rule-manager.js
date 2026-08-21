@@ -227,7 +227,7 @@ class RuleManager {
      * @param {string} url - URL to evaluate
      * @param {object} usageStats - Usage statistics {todayTimeSeconds}
      * @param {object} [groupUsageSecondsMap] - Map of groupId -> total seconds used today
-     * @param {object} [settings={}] - Extension settings object
+     * @param {object} [settings] - Extension settings object
      * @returns {{ shouldBlock: boolean, reason: string|null, domain: string, groupName?: string }}
      */
     evaluateAccess(url, usageStats = {}, groupUsageSecondsMap = {}, settings = {}) {

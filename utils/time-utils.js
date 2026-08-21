@@ -50,7 +50,7 @@ class TimeUtils {
     /**
      * Format milliseconds into compact duration
      * @param {number} ms - Time in milliseconds
-     * @param compact
+     * @param {boolean} [compact] - Whether to use compact formatting.
      * @returns {string} Formatted duration
      */
     static formatMilliseconds(ms, compact = false) {

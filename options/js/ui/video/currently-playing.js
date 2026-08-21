@@ -7,8 +7,7 @@ import { applyCurrentlyPlayingRenderingMethods } from './currently-playing/rende
  */
 export class CurrentlyPlayingUI {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;

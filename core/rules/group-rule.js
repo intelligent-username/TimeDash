@@ -48,7 +48,7 @@ class GroupRule {
     /**
      * Evaluate collective usage against the group limit
      * @param {number} groupUsageSeconds Total seconds used today
-     * @param {number} [maxCap=0] Optional global max cap in minutes
+     * @param {number} [maxCap] Optional global max cap in minutes
      * @returns {{ shouldBlock: boolean, reason: string|null, remainingMinutes: number }}
      */
     evaluate(groupUsageSeconds, maxCap = 0) {

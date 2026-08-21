@@ -1,12 +1,11 @@
-import { getFaviconUrl, showToast } from '../../utils/dom.js';
+import { showToast, hydrateFavicons } from '../../utils/dom.js';
 
 /**
  *
  */
 export class SiteSpeedList {
     /**
-     *
-     * @param controller
+     * @param {object} controller - Options controller instance.
      */
     constructor(controller) {
         this.controller = controller;
@@ -14,7 +13,8 @@ export class SiteSpeedList {
     }
 
     /**
-     *
+     * Set up event listeners and fetch initial speeds.
+     * @returns {Promise<void>}
      */
     async setup() {
         try {
@@ -44,7 +44,8 @@ export class SiteSpeedList {
     }
 
     /**
-     *
+     * Add a site speed entry.
+     * @returns {Promise<void>}
      */
     async addSiteSpeed() {
         const domainInput = document.getElementById('newSiteDomain');
@@ -75,8 +76,9 @@ export class SiteSpeedList {
     }
 
     /**
-     *
-     * @param e
+     * Handle remove speed click action.
+     * @param {MouseEvent} e - Click event.
+     * @returns {Promise<void>}
      */
     async handleAction(e) {
         if (e.target.closest('.remove-speed')) {
@@ -91,8 +93,9 @@ export class SiteSpeedList {
     }
 
     /**
-     *
-     * @param e
+     * Handle speed dropdown change.
+     * @param {Event} e - Change event.
+     * @returns {Promise<void>}
      */
     async handleChange(e) {
         if (e.target.classList.contains('site-speed-select')) {
@@ -122,7 +125,7 @@ export class SiteSpeedList {
                 ([domain, speed]) => `
             <div class="site-item" data-domain="${domain}">
                 <div class="site-item-info">
-                    <img class="site-favicon" src="${getFaviconUrl(domain)}" alt="">
+                    <img class="site-favicon" data-domain="${domain}" alt="">
                     <span class="site-name">${domain}</span>
                 </div>
                 <div class="site-actions">
@@ -135,5 +138,6 @@ export class SiteSpeedList {
         `
             )
             .join('');
+        hydrateFavicons(container);
     }
 }

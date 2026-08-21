@@ -1,4 +1,4 @@
-/* global BlockedRule, RestrictedRule, GroupRule, TimeUtils, DomainUtils */
+/* global BlockedRule, RestrictedRule, GroupRule, DomainUtils */
 function applyBackgroundMessagingMethods(TimeDashBackground) {
     TimeDashBackground.prototype.setupMessageHandling = function setupMessageHandling() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

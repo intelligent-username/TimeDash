@@ -29,15 +29,15 @@ export function initSliderWave() {
     const EASE_OUT_RATE = 0.03;       // how fast amplitude settles back
 
     /* ── Drag detection ──────────────────────────────────────────────── */
-    let dragging = false;
+    let _dragging = false;
 
     function onDragStart() {
-        dragging = true;
+        _dragging = true;
         targetAmplitude = MAX_AMPLITUDE;
     }
 
     function onDragEnd() {
-        dragging = false;
+        _dragging = false;
         targetAmplitude = 0;
     }
 
@@ -71,7 +71,11 @@ export function initSliderWave() {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    /** Wave Y offset at pixel position x — composite of 3 harmonics */
+    /**
+     * Wave Y offset at pixel position x — composite of 3 harmonics
+     * @param {number} x - Pixel X position.
+     * @returns {number} Wave Y offset.
+     */
     function waveY(x) {
         return (
             Math.sin(x * FREQUENCY + phase) * 0.55 +
