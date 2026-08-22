@@ -89,7 +89,9 @@
                 "utils/storage/usage.js",
                 "utils/storage/blocking.js",
                 "utils/storage/misc.js",
-                "utils/storage.js"
+                "utils/storage.js",
+                "utils/time-utils.js",
+                "utils/i18n.js"
             ],
             "matches": ["<all_urls>"]
         }

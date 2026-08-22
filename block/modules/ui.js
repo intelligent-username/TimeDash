@@ -1,4 +1,5 @@
 'use strict';
+/* global I18n, TimeUtils */
 
 function applyBlockUiMethods(BlockPageController) {
     BlockPageController.prototype.loadBlockData = async function loadBlockData() {
