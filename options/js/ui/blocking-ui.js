@@ -4,6 +4,7 @@ import { renderGroupRectangle } from './blocking/group-card.js';
 import { buildCircularPicker } from './blocking/circular-picker.js';
 import { blockingRuleActions } from './blocking/rule-actions.js';
 import { groupActions } from './blocking/group-actions.js';
+import { presetActions } from './blocking/preset-actions.js';
 import { toggleNewGroupForm } from './blocking/group-form.js';
 
 /**
@@ -62,6 +63,23 @@ export class BlockingUI {
         const newGroupBtn = document.getElementById('newGroupBtn');
         if (newGroupBtn) {
             newGroupBtn.addEventListener('click', () => toggleNewGroupForm(this));
+        }
+
+        const populatePresetsBtn = document.getElementById('populatePresetsBtn');
+        if (populatePresetsBtn) {
+            populatePresetsBtn.addEventListener('click', (e) => {
+                if (populatePresetsBtn.classList.contains('presets-added')) return;
+                this.populatePresets(this);
+                e.preventDefault();
+            });
+            const undoLink = document.getElementById('populatePresetsUndo');
+            if (undoLink) {
+                undoLink.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.undoPresets(this);
+                });
+            }
+            this.restorePopulateState(this);
         }
 
         document.addEventListener('keydown', (e) => {
@@ -181,6 +199,32 @@ export class BlockingUI {
      */
     async undoLastGroupingChange() {
         return groupActions.undoLastGroupingChange(this);
+    }
+
+    // ── Preset Population ────────────────────────────────────────────────────
+
+    /**
+     * Create all common preset groups.
+     * @returns {Promise<void>}
+     */
+    async populatePresets() {
+        return presetActions.populatePresets(this);
+    }
+
+    /**
+     * Undo a recent preset population.
+     * @returns {Promise<void>}
+     */
+    async undoPresets() {
+        return presetActions.undoPresets(this);
+    }
+
+    /**
+     * Restore the populate button state from storage on page load.
+     * @returns {Promise<void>}
+     */
+    async restorePopulateState() {
+        return presetActions.restorePopulateState(this);
     }
 
     // ── List Rendering ───────────────────────────────────────────────────────

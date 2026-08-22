@@ -245,6 +245,43 @@
     background: var(--primary-fade);
 }
 
+.btn-populate-presets {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 400;
+    white-space: nowrap;
+    line-height: 1.4;
+    opacity: 0.75;
+    transition:
+        opacity var(--transition),
+        color var(--transition);
+}
+
+.btn-populate-presets:hover {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.btn-populate-presets.presets-added {
+    cursor: default;
+    opacity: 0.75;
+}
+
+.btn-populate-presets.presets-added:hover {
+    color: var(--text-secondary);
+}
+
+.populate-undo-link {
+    margin-left: 6px;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .new-group-form {
     display: flex;
     gap: 8px;

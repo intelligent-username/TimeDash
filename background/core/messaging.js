@@ -228,6 +228,120 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     break;
                 }
 
+                case 'POPULATE_PRESET_GROUPS': {
+                    const presets = Array.isArray(message.presets) ? message.presets : [];
+                    const settings = await this.storage.getSettings();
+                    const maxCap = Number(settings.restrictedSliderMax || 120);
+                    const created = [];
+                    const appended = [];
+                    const createdRules = [];
+                    for (const preset of presets) {
+                        if (!preset || !preset.name || !Array.isArray(preset.domains)) continue;
+                        const existing = this.ruleManager.getGroupByName(preset.name);
+                        if (existing) {
+                            // Naming conflict: append only genuinely new domains.
+                            const ownedElsewhere = new Set();
+                            for (const g of this.ruleManager.groups) {
+                                if (g.deletedAt || g.id === existing.id) continue;
+                                g.domains.forEach((d) => ownedElsewhere.add(d));
+                            }
+                            const fresh = [
+                                ...new Set(
+                                    preset.domains
+                                        .map((d) =>
+                                            String(d).toLowerCase().replace(/^www\./, '').trim()
+                                        )
+                                        .filter(
+                                            (d) =>
+                                                d &&
+                                                !existing.domains.includes(d) &&
+                                                !ownedElsewhere.has(d)
+                                        )
+                                ),
+                            ];
+                            if (fresh.length > 0) {
+                                existing.domains.push(...fresh);
+                                existing.updatedAt = Date.now();
+                                appended.push({ groupId: existing.id, domains: fresh });
+                            }
+                        } else {
+                            const group = new GroupRule({
+                                name: preset.name,
+                                domains: preset.domains,
+                                timeLimitMinutes: Math.max(
+                                    0,
+                                    Math.min(preset.timeLimitMinutes ?? 60, maxCap)
+                                ),
+                                icon: preset.icon,
+                            });
+                            this.ruleManager.groups.push(group);
+                            created.push(group.id);
+                        }
+                        // Individual per-site restricted rules (only where the
+                        // user has no rule yet, so their config is respected).
+                        const domainLimit = Math.max(
+                            0,
+                            Math.min(preset.domainLimitMinutes ?? 30, maxCap)
+                        );
+                        for (const d of preset.domains) {
+                            const clean = String(d).toLowerCase().replace(/^www\./, '').trim();
+                            if (!clean) continue;
+                            const normalized = DomainUtils.normalizeDomain(clean);
+                            if (!this.ruleManager.rules.has(normalized)) {
+                                this.ruleManager.addRule(new RestrictedRule(clean, domainLimit));
+                                createdRules.push(normalized);
+                            }
+                        }
+                    }
+                    await this.ruleManager.saveGroupsToStorage();
+                    await this.ruleManager.saveToStorage();
+                    await chrome.storage.local.set({
+                        presetUndo: { created, appended, createdRules, createdAt: Date.now() },
+                    });
+                    sendResponse({
+                        success: true,
+                        createdCount: created.length,
+                        appendedCount: appended.length,
+                    });
+                    break;
+                }
+
+                case 'UNDO_PRESET_GROUPS': {
+                    const { presetUndo } = await chrome.storage.local.get('presetUndo');
+                    if (!presetUndo) {
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgPresetNothingToUndo'),
+                        });
+                        break;
+                    }
+                    for (const id of presetUndo.created || []) {
+                        const g = this.ruleManager.groups.find((x) => x.id === id && !x.deletedAt);
+                        if (g) {
+                            g.deletedAt = Date.now();
+                            g.updatedAt = Date.now();
+                        }
+                    }
+                    for (const entry of presetUndo.appended || []) {
+                        const g = this.ruleManager.groups.find(
+                            (x) => x.id === entry.groupId && !x.deletedAt
+                        );
+                        if (g) {
+                            const remove = new Set(entry.domains);
+                            g.domains = g.domains.filter((d) => !remove.has(d));
+                            g.updatedAt = Date.now();
+                        }
+                    }
+                    for (const domain of presetUndo.createdRules || []) {
+                        this.ruleManager.removeRule(domain);
+                    }
+                    await this.ruleManager.saveGroupsToStorage();
+                    await this.ruleManager.saveToStorage();
+                    await chrome.storage.local.remove('presetUndo');
+                    sendResponse({ success: true });
+                    break;
+                }
+
                 case 'ADD_DOMAIN_TO_GROUP': {
                     const addGroup = this.ruleManager.groups.find(
                         (g) => g.id === message.groupId && !g.deletedAt
