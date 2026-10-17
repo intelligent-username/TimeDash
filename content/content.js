@@ -95,6 +95,10 @@ class TimeDashContent {
         this.controller.setupVideo(video);
     }
 
+    cleanupVideo(video) {
+        this.controller.cleanupVideo(video);
+    }
+
     async saveCurrentSpeed() {
         if (this.isOrphaned) return;
 

@@ -89,7 +89,7 @@ class VideoController {
             mutations.forEach((mutation) => {
                 mutation.removedNodes.forEach((node) => {
                     if (node === video || (node.contains && node.contains(video))) {
-                        this.instance.videos.delete(video);
+                        this.cleanupVideo(video);
                         cleanupObserver.disconnect();
                     }
                 });
@@ -98,6 +98,14 @@ class VideoController {
 
         if (video.parentNode) {
             cleanupObserver.observe(video.parentNode, { childList: true, subtree: true });
+        }
+    }
+
+    cleanupVideo(video) {
+        if (!video) return;
+        this.instance.videos.delete(video);
+        if (this.instance.ui && typeof this.instance.ui.hideIndicator === 'function') {
+            this.instance.ui.hideIndicator(video);
         }
     }
 
@@ -114,7 +122,7 @@ class VideoController {
                 this.instance.markVideoInteraction(video);
             }
         });
-        staleVideos.forEach((video) => this.instance.videos.delete(video));
+        staleVideos.forEach((video) => this.cleanupVideo(video));
         this.instance._settingSpeed = false;
     }
 

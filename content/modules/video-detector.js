@@ -20,6 +20,7 @@ class VideoDetector {
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((node) => this.scanNodeForVideos(node));
+                mutation.removedNodes.forEach((node) => this.scanNodeForRemovedVideos(node));
             });
         });
 
@@ -35,6 +36,11 @@ class VideoDetector {
             if (this.instance.isOrphaned) return;
             this.findAndSetupVideos(document);
             this.scanOpenShadowRoots(document);
+            this.instance.videos.forEach((video) => {
+                if (!video || !video.isConnected) {
+                    this.instance.controller.cleanupVideo(video);
+                }
+            });
         }, 2000);
     }
 
@@ -63,6 +69,19 @@ class VideoDetector {
         }
     }
 
+    scanNodeForRemovedVideos(node) {
+        if (!node || node.nodeType !== Node.ELEMENT_NODE) return;
+
+        if (node.tagName === 'VIDEO') {
+            this.instance.controller.cleanupVideo(node);
+        }
+
+        if (node.querySelectorAll) {
+            const videos = node.querySelectorAll('video');
+            videos.forEach((video) => this.instance.controller.cleanupVideo(video));
+        }
+    }
+
     scanOpenShadowRoots(root = document) {
         if (!root || !root.querySelectorAll) return;
         const hosts = root.querySelectorAll('*');
@@ -80,6 +99,7 @@ class VideoDetector {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((node) => this.scanNodeForVideos(node));
+                mutation.removedNodes.forEach((node) => this.scanNodeForRemovedVideos(node));
             });
         });
 

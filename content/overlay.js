@@ -68,6 +68,8 @@ class TimeDashOverlayUI {
             document.body.appendChild(indicator);
         }
 
+        indicator._targetVideo = video;
+
         // Position in top-right corner of the video using fixed viewport coords
         const rect = video.getBoundingClientRect();
         indicator.style.top = rect.top + 10 + 'px';
@@ -77,15 +79,68 @@ class TimeDashOverlayUI {
         indicator.textContent = `${speed}x`;
         indicator.style.opacity = '1';
 
-        // Cancel any pending hide timers
+        // Cancel any pending timers
         clearTimeout(indicator._hideTimer);
         clearTimeout(indicator._removeTimer);
+        if (indicator._checkTimer) {
+            clearInterval(indicator._checkTimer);
+            indicator._checkTimer = null;
+        }
 
         // Auto hide after 2 s
         indicator._hideTimer = setTimeout(() => {
+            if (indicator._checkTimer) {
+                clearInterval(indicator._checkTimer);
+                indicator._checkTimer = null;
+            }
             indicator.style.opacity = '0';
-            indicator._removeTimer = setTimeout(() => indicator.remove(), 300);
+            indicator._removeTimer = setTimeout(() => {
+                indicator._targetVideo = null;
+                indicator.remove();
+            }, 300);
         }, 2000);
+
+        // Actively dismiss if the video is detached or hidden while indicator is showing
+        indicator._checkTimer = setInterval(() => {
+            if (!video || !video.isConnected) {
+                this.hideIndicator(video);
+                return;
+            }
+
+            if (typeof video.checkVisibility === 'function') {
+                if (!video.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) {
+                    this.hideIndicator(video);
+                }
+            } else if (
+                video.offsetWidth === 0 &&
+                video.offsetHeight === 0 &&
+                !video.getClientRects().length
+            ) {
+                this.hideIndicator(video);
+            }
+        }, 100);
+    }
+
+    /**
+     * Hide Corner Indicator
+     * @param {HTMLVideoElement} [video=null] - Optional specific video to hide indicator for.
+     */
+    hideIndicator(video = null) {
+        const indicator = document.getElementById('timedash-speed-indicator');
+        if (!indicator) return;
+
+        if (video && indicator._targetVideo && indicator._targetVideo !== video) {
+            return;
+        }
+
+        clearTimeout(indicator._hideTimer);
+        clearTimeout(indicator._removeTimer);
+        if (indicator._checkTimer) {
+            clearInterval(indicator._checkTimer);
+            indicator._checkTimer = null;
+        }
+        indicator._targetVideo = null;
+        indicator.remove();
     }
 
     updateSettings(settings) {
