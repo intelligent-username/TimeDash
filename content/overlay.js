@@ -52,20 +52,30 @@ class TimeDashOverlayUI {
         document.head.appendChild(style);
     }
 
+    getContainer() {
+        const fs = document.fullscreenElement;
+        if (fs && fs.tagName !== 'VIDEO') {
+            return fs;
+        }
+        return document.body;
+    }
+
     /**
      * Show Corner Indicator
      * @param {HTMLVideoElement} video - Target video element.
      * @param {number} speed - Playback speed multiplier.
      */
     showIndicator(video, speed) {
-        // Single persistent element on body. Avoids inheriting parent sizing/layout
+        const container = this.getContainer();
         let indicator = document.getElementById('timedash-speed-indicator');
 
         if (!indicator) {
             indicator = document.createElement('div');
             indicator.id = 'timedash-speed-indicator';
             indicator.className = 'timedash-speed-indicator';
-            document.body.appendChild(indicator);
+            container.appendChild(indicator);
+        } else if (indicator.parentElement !== container) {
+            container.appendChild(indicator);
         }
 
         indicator._targetVideo = video;

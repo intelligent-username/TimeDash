@@ -133,11 +133,13 @@ class TimeDashContent {
         this.isOrphaned = true;
         this.contextValid = false;
         this.detector.cleanup();
+        this.videos.forEach((video) => this.controller.cleanupVideo(video));
         this.videos.clear();
     }
 
     setupListeners() {
         document.addEventListener('fullscreenchange', () => {
+            if (this.ui) this.ui.hideIndicator();
             setTimeout(() => {
                 if (!this.isOrphaned) this.controller.updateAllVideoSpeeds();
             }, 100);

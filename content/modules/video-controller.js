@@ -7,6 +7,7 @@
 class VideoController {
     constructor(instance) {
         this.instance = instance;
+        this.videoCleanups = new WeakMap();
     }
 
     applyNativePlaybackRate(video, rate) {
@@ -25,11 +26,22 @@ class VideoController {
 
     setupVideo(video) {
         if (this.instance.videos.has(video)) return;
+
+        // Clean up previous listeners if video element is being recycled
+        const prevCleanup = this.videoCleanups.get(video);
+        if (prevCleanup) {
+            prevCleanup();
+            this.videoCleanups.delete(video);
+        }
+
         this.instance.videos.add(video);
 
         if (!this.instance.videoIdMap.has(video)) {
             this.instance.videoIdMap.set(video, `v${this.instance.videoIdCounter++}`);
         }
+
+        const abortController = new AbortController();
+        const { signal } = abortController;
 
         const setupSpeed = () => {
             if (this.instance.currentSpeed !== null && this.instance.initialized) {
@@ -51,9 +63,9 @@ class VideoController {
             setupSpeed();
         }
 
-        video.addEventListener('loadedmetadata', setupSpeed);
-        video.addEventListener('loadeddata', setupSpeed);
-        video.addEventListener('canplay', setupSpeed);
+        video.addEventListener('loadedmetadata', setupSpeed, { signal });
+        video.addEventListener('loadeddata', setupSpeed, { signal });
+        video.addEventListener('canplay', setupSpeed, { signal });
 
         // Listen for internal rate changes
         video.addEventListener('ratechange', () => {
@@ -73,37 +85,49 @@ class VideoController {
                     this.showSpeedOverlayIndicator(true);
                 }
             }
-        });
+        }, { signal });
 
         video.addEventListener('play', () => {
             setupSpeed();
             this.instance.markVideoInteraction(video);
-        });
+        }, { signal });
         video.addEventListener('playing', () => {
             setupSpeed();
             this.instance.markVideoInteraction(video);
-        });
-        video.addEventListener('seeking', () => this.instance.markVideoInteraction(video));
+        }, { signal });
+        video.addEventListener('seeking', () => this.instance.markVideoInteraction(video), { signal });
 
-        const cleanupObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.removedNodes.forEach((node) => {
-                    if (node === video || (node.contains && node.contains(video))) {
-                        this.cleanupVideo(video);
-                        cleanupObserver.disconnect();
-                    }
+        let cleanupObserver = null;
+        if (video.parentNode) {
+            cleanupObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.removedNodes.forEach((node) => {
+                        if (node === video || (node.contains && node.contains(video))) {
+                            this.cleanupVideo(video);
+                        }
+                    });
                 });
             });
-        });
-
-        if (video.parentNode) {
             cleanupObserver.observe(video.parentNode, { childList: true, subtree: true });
         }
+
+        this.videoCleanups.set(video, () => {
+            abortController.abort();
+            if (cleanupObserver) {
+                cleanupObserver.disconnect();
+                cleanupObserver = null;
+            }
+        });
     }
 
     cleanupVideo(video) {
         if (!video) return;
         this.instance.videos.delete(video);
+        const cleanup = this.videoCleanups.get(video);
+        if (cleanup) {
+            cleanup();
+            this.videoCleanups.delete(video);
+        }
         if (this.instance.ui && typeof this.instance.ui.hideIndicator === 'function') {
             this.instance.ui.hideIndicator(video);
         }
