@@ -40,6 +40,12 @@ export function applyOptionsAppearanceMethods(OptionsController) {
                 }
             })();
         }
+
+        if (key === 'restrictedSliderMax') {
+            if (this.blockingUI) {
+                this.blockingUI.loadSiteRules();
+            }
+        }
     };
 
     OptionsController.prototype.applyThemeMode = function applyThemeMode(value) {

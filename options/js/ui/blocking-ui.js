@@ -295,21 +295,25 @@ export class BlockingUI {
         const newList = oldList.cloneNode(false);
         oldList.parentNode.replaceChild(newList, oldList);
 
+        const maxCap = this.controller?.settings?.restrictedSliderMax || 120;
         const domainLimitMap = {};
         sites.forEach((s) => {
-            domainLimitMap[s.domain] = s.timeLimitMinutes;
+            domainLimitMap[s.domain] = Math.min(s.timeLimitMinutes, maxCap);
         });
 
         groups.forEach((group) => {
-            const el = renderGroupRectangle(group, domainLimitMap, this);
+            const cappedGroup = {
+                ...group,
+                timeLimitMinutes: Math.min(group.timeLimitMinutes, maxCap),
+            };
+            const el = renderGroupRectangle(cappedGroup, domainLimitMap, this);
             newList.appendChild(el);
         });
 
-        const maxCap = this.controller?.settings?.restrictedSliderMax || 120;
         standalone.forEach(({ domain, timeLimitMinutes }) => {
             const el = createDomainRow({
                 domain,
-                timeLimitMinutes,
+                timeLimitMinutes: Math.min(timeLimitMinutes, maxCap),
                 maxCap,
                 controller: this.controller,
                 onSaveLimit: async (newLimit) => this.addSiteRule(domain, 'RESTRICTED', newLimit),

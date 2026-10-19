@@ -17,6 +17,9 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
         sendResponse
     ) {
         try {
+            if (this.initPromise) {
+                await this.initPromise;
+            }
             switch (message.type) {
                 case 'GET_TAB_INFO':
                     sendResponse(await this.getTabInfo(sender.tab ? sender.tab.id : undefined));
@@ -24,9 +27,14 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'GET_SETTINGS':
                     sendResponse(await this.storage.getSettings());
                     break;
-                case 'UPDATE_SETTINGS':
-                    sendResponse({ success: await this.storage.setSettings(message.settings) });
+                case 'UPDATE_SETTINGS': {
+                    const success = await this.storage.setSettings(message.settings);
+                    if (message.settings?.restrictedSliderMax !== undefined) {
+                        await this.ruleManager.enforceRestrictedCap(message.settings.restrictedSliderMax);
+                    }
+                    sendResponse({ success });
                     break;
+                }
                 case 'FLUSH_PENDING_UPDATES':
                     if (typeof this.processPendingUpdates === 'function')
                         await this.processPendingUpdates();

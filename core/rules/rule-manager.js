@@ -25,6 +25,44 @@ class RuleManager {
     async init() {
         await this.loadFromStorage();
         await this.loadGroupsFromStorage();
+        const result = await chrome.storage.local.get('settings');
+        const maxCap = Number(result?.settings?.restrictedSliderMax || 120);
+        await this.enforceRestrictedCap(maxCap);
+    }
+
+    /**
+     * Enforce maximum restricted cap across all restricted rules and groups.
+     * Crops limits that exceed maxCap down to maxCap and saves if changed.
+     * @param {number} maxCap - Maximum allowed limit in minutes.
+     * @returns {Promise<boolean>} True if any limits were updated.
+     */
+    async enforceRestrictedCap(maxCap) {
+        const cap = Number(maxCap);
+        if (!cap || cap <= 0) return false;
+
+        let rulesModified = false;
+        for (const rule of this.rules.values()) {
+            if (rule.type === SiteRule.TYPES.RESTRICTED && rule.timeLimitMinutes > cap) {
+                rule.timeLimitMinutes = cap;
+                rulesModified = true;
+            }
+        }
+        if (rulesModified) {
+            await this.saveToStorage();
+        }
+
+        let groupsModified = false;
+        for (const group of this.groups) {
+            if (!group.deletedAt && group.timeLimitMinutes > cap) {
+                group.timeLimitMinutes = cap;
+                groupsModified = true;
+            }
+        }
+        if (groupsModified) {
+            await this.saveGroupsToStorage();
+        }
+
+        return rulesModified || groupsModified;
     }
 
     /**

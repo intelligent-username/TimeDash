@@ -9,6 +9,7 @@ class AlarmManager {
             BACKUP: 'backup',
         };
 
+        this.setupAlarmListeners();
         this.init();
     }
 
@@ -21,7 +22,6 @@ class AlarmManager {
 
     async init() {
         await this.setupAlarms();
-        this.setupAlarmListeners();
         console.log('Alarm Manager initialized');
     }
 

@@ -32,16 +32,24 @@ export const lifecycleMethods = {
         }
     },
 
+    async sendWithRetry(message, maxAttempts = 3) {
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                return await chrome.runtime.sendMessage(message);
+            } catch (err) {
+                if (attempt === maxAttempts) throw err;
+                await new Promise((resolve) => setTimeout(resolve, 150 * attempt));
+            }
+        }
+    },
+
     async loadData() {
         try {
-            const usageResponse = await chrome.runtime.sendMessage({ type: 'GET_USAGE_DATA' });
-            this.usageData = usageResponse;
-
-            const settingsResponse = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
-            this.settings = settingsResponse;
+            this.usageData = await this.sendWithRetry({ type: 'GET_USAGE_DATA' });
+            this.settings = await this.sendWithRetry({ type: 'GET_SETTINGS' });
 
             try {
-                const rulesResponse = await chrome.runtime.sendMessage({ type: 'GET_SITE_RULES' });
+                const rulesResponse = await this.sendWithRetry({ type: 'GET_SITE_RULES' });
                 this.siteRules = rulesResponse || { blocked: [], restricted: [] };
             } catch {
                 this.siteRules = { blocked: [], restricted: [] };

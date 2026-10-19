@@ -64,6 +64,7 @@ class TabTracker {
 
     async handleTabActivated(tabId) {
         try {
+            if (this.instance.initPromise) await this.instance.initPromise;
             this.stopTrackingAllTabs();
 
             const tab = await chrome.tabs.get(tabId);
@@ -89,6 +90,7 @@ class TabTracker {
 
     async handleTabUpdated(tabId, url) {
         try {
+            if (this.instance.initPromise) await this.instance.initPromise;
             const isExtUrl = url && (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://'));
             if (isExtUrl && (url.includes('domain=') || url.includes('url='))) {
                 this.stopTrackingTab(tabId);
@@ -164,6 +166,9 @@ class TabTracker {
 
     async handleSettingsChanged(newSettings) {
         try {
+            if (newSettings && newSettings.restrictedSliderMax !== undefined) {
+                await this.instance.ruleManager.enforceRestrictedCap(newSettings.restrictedSliderMax);
+            }
             const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
             if (!tabs || tabs.length === 0) return;
             const currentActiveTab = tabs[0];

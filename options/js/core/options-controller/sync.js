@@ -15,11 +15,18 @@ export function applyOptionsSyncMethods(OptionsController) {
 
     OptionsController.prototype.setupExternalSettingsSync = function setupExternalSettingsSync() {
         chrome.storage.local.onChanged.addListener((changes, areaName) => {
-            if (areaName !== 'local' || !changes.settings || !changes.settings.newValue) return;
+            if (areaName !== 'local') return;
+
+            if (changes.siteRules || changes.siteGroups) {
+                if (this.blockingUI) this.blockingUI.loadSiteRules();
+            }
+
+            if (!changes.settings || !changes.settings.newValue) return;
 
             const previousTheme = this.settings.theme;
             const previousAccent = this.settings.accentColor;
             const previousLanguage = this.settings.language;
+            const previousRestrictedMax = this.settings.restrictedSliderMax;
             const incoming = changes.settings.newValue;
 
             this.settings = { ...this.settings, ...incoming };
@@ -34,6 +41,13 @@ export function applyOptionsSyncMethods(OptionsController) {
 
             if (incoming.language !== undefined && incoming.language !== previousLanguage) {
                 this.applyImmediateChanges('language', incoming.language);
+            }
+
+            if (
+                incoming.restrictedSliderMax !== undefined &&
+                incoming.restrictedSliderMax !== previousRestrictedMax
+            ) {
+                if (this.blockingUI) this.blockingUI.loadSiteRules();
             }
 
             this.syncCurrentPlaybackSpeedUI();

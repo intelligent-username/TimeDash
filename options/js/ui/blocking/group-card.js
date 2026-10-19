@@ -392,9 +392,10 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
     nameSpan.textContent = group.name;
     groupTitleSection.appendChild(nameSpan);
 
+    const maxCap = context.controller?.settings?.restrictedSliderMax || 120;
     const limitInput = createLimitInput(
         group.timeLimitMinutes,
-        1440,
+        maxCap,
         async (newLimit) => context.updateGroupLimit(group.id, newLimit),
         'Edit daily limit (minutes)'
     );
@@ -443,7 +444,7 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
         const row = createDomainRow({
             domain,
             timeLimitMinutes: individualLimit,
-            maxCap: 1440,
+            maxCap,
             controller: context.controller,
             onSaveLimit: async (newLimit) => context.addSiteRule(domain, 'RESTRICTED', newLimit),
             onDelete: (d) => context.removeDomainFromGroup(group.id, d),

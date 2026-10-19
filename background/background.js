@@ -43,7 +43,10 @@ class TimeDashBackground {
 
         this.tabTracker = new TabTracker(this);
         this.videoService = new VideoService(this);
-        this.init();
+
+        this.setupMessageHandling();
+        this.tabTracker.setupEventListeners();
+        this.initPromise = this.init();
     }
 
     async init() {
@@ -53,8 +56,6 @@ class TimeDashBackground {
         await this.storage.init();
         await this.ruleManager.init();
 
-        this.tabTracker.setupEventListeners();
-        this.setupMessageHandling();
         this.startTrackingLoop();
         this.logBootDiagnostics();
     }

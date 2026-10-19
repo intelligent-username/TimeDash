@@ -29,13 +29,15 @@ function createGroupForm(blockingUI) {
     nameInput.placeholder = I18n.t('groupNamePlaceholder');
     nameInput.setAttribute('autocomplete', 'off');
 
+    const maxCap = blockingUI.controller?.settings?.restrictedSliderMax || 120;
     const limitInput = document.createElement('input');
     limitInput.type = 'number';
     limitInput.id = 'newGroupLimitInput';
     limitInput.name = 'newGroupLimit';
     limitInput.className = 'rule-limit-input-edit';
-    limitInput.value = '30';
+    limitInput.value = Math.min(30, maxCap);
     limitInput.min = 0;
+    limitInput.max = maxCap;
     limitInput.title = I18n.t('dailyLimitMinutes');
     limitInput.addEventListener('keydown', (e) => {
         if (['-', '+', 'e', 'E'].includes(e.key)) {
@@ -59,7 +61,7 @@ function createGroupForm(blockingUI) {
     const doCreate = () => {
         const name = nameInput.value.trim();
         const parsedLimit = parseInt(limitInput.value, 10);
-        const limit = isNaN(parsedLimit) || parsedLimit < 0 ? 30 : parsedLimit;
+        const limit = Math.max(0, Math.min(isNaN(parsedLimit) || parsedLimit < 0 ? 30 : parsedLimit, maxCap));
         if (!name) {
             blockingUI.controller.showWarning(chrome.i18n.getMessage('pleaseEnterGroupName'));
             return;
