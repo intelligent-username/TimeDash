@@ -1,17 +1,17 @@
 # TimeDash
 
-[![Chrome WebStore Banner](imgs/ws_banner.png)](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb)
+[![TimeDash on the Chrome Web Store](imgs/ws_banner.png)](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb)
 
-[![FireFox Store Banner](imgs/ff_banner.png)](https://addons.mozilla.org/en-US/firefox/addon/timedash/)
+[![TimeDash on Firefox Add-ons](imgs/ff_banner.png)](https://addons.mozilla.org/en-US/firefox/addon/timedash/)
 
-Boost your productivity with strict time tracking, site blocking, analytics, and advanced video playback controls.
+Boost your productivity with strict time tracking, site blocking, analytics, and advanced video playback controls. TimeDash is a free, open-source time tracker and website blocker extension for Chrome and Firefox that helps you limit distracting sites, build productive browsing habits, and take control of your screen time. Enjoy complete privacy, with your data never leaving your device.
 
 ## Features
 
 |                                |                                |
 | :----------------------------: | :----------------------------: |
-| ![Screenshot 1](imgs/ss/1.png) | ![Screenshot 2](imgs/ss/2.png) |
-| ![Screenshot 3](imgs/ss/3.png) | ![Screenshot 4](imgs/ss/4.png) |
+| ![Dashboard overview of general settings](imgs/ss/1.png) | ![Heatmap and usage charts](imgs/ss/2.png) |
+| ![Video Playback speed controls](imgs/ss/3.png) | ![Site blocking and time limit rules](imgs/ss/4.png) |
 
 - **Strict Time Tracking:** Accurately logs your time only on active, focused tabs. Idle, minimized, or background tabs won't skew your productivity data.
 - **Activity Heatmap & Analytics:** Visualize your browsing habits with a GitHub-style heatmap, rolling 7-day usage charts, top sites lists, and daily averages.
