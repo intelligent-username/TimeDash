@@ -169,6 +169,9 @@ class TabTracker {
 
     handleTabRemoved(tabId) {
         this.stopTrackingTab(tabId);
+        if (this.instance.visibilityByTab) {
+            this.instance.visibilityByTab.delete(tabId);
+        }
     }
 
     async handleWindowActivationChanged(windowId) {

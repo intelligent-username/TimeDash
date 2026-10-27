@@ -50,6 +50,7 @@ class TimeDashContent {
             this.messageHandler.setupStorageListener();
             this.keyboardHandler.setup();
             this.setupListeners();
+            this.reportVisibility();
 
             this.controller.updateAllVideoSpeeds();
         } catch (error) {
@@ -137,6 +138,17 @@ class TimeDashContent {
         this.videos.clear();
     }
 
+    reportVisibility() {
+        if (this.isOrphaned || !chrome.runtime?.id) return;
+        try {
+            chrome.runtime
+                .sendMessage({ type: 'REPORT_VISIBILITY', visible: !document.hidden })
+                .catch(() => {});
+        } catch {
+            // Context invalidated mid-send
+        }
+    }
+
     setupListeners() {
         document.addEventListener('fullscreenchange', () => {
             if (this.ui) this.ui.hideIndicator();
@@ -146,6 +158,7 @@ class TimeDashContent {
         });
 
         document.addEventListener('visibilitychange', () => {
+            this.reportVisibility();
             if (!document.hidden && !this.isOrphaned) {
                 setTimeout(() => this.controller.updateAllVideoSpeeds(), 100);
             }

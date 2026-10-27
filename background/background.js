@@ -38,6 +38,7 @@ class TimeDashBackground {
         this.TRACKING_INTERVAL = 1000;
         this.BATCH_UPDATE_INTERVAL = 10000;
         this.pendingUpdates = new Map();
+        this.visibilityByTab = new Map();
         this.restorePendingUpdates();
         this.alarmManager = new AlarmManager();
 

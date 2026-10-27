@@ -54,7 +54,8 @@ function applyAlarmNotificationMethods(AlarmManager) {
 
         await chrome.notifications.create({
             type: 'basic',
-            iconUrl: 'imgs/Logo.png',
+            // Full URL required — Firefox can't resolve relative paths here.
+            iconUrl: chrome.runtime.getURL('imgs/Logo.png'),
             title,
             message,
         });
@@ -91,7 +92,8 @@ function applyAlarmNotificationMethods(AlarmManager) {
                     ]);
                     await chrome.notifications.create({
                         type: 'basic',
-                        iconUrl: 'imgs/Logo.png',
+                        // Full URL required — Firefox can't resolve relative paths here.
+                        iconUrl: chrome.runtime.getURL('imgs/Logo.png'),
                         title: chrome.i18n.getMessage('notifDailySummary'),
                         message,
                     });

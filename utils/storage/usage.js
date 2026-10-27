@@ -5,8 +5,8 @@
 function applyStorageUsageMethods(StorageManager) {
     StorageManager.prototype.getDomainUsage = async function getDomainUsage(domain) {
         try {
-            const result = await chrome.storage.local.get('usage');
-            return (result.usage && result.usage[domain]) || {};
+            const usage = await this.getAllUsage();
+            return usage[domain] || {};
         } catch (error) {
             console.error('Failed to get domain usage:', error);
             return {};
@@ -14,9 +14,11 @@ function applyStorageUsageMethods(StorageManager) {
     };
 
     StorageManager.prototype.getAllUsage = async function getAllUsage() {
+        if (this.usageCache) return this.usageCache;
         try {
             const result = await chrome.storage.local.get('usage');
-            return result.usage || {};
+            this.usageCache = result.usage || {};
+            return this.usageCache;
         } catch (error) {
             console.error('Failed to get all usage:', error);
             return {};
@@ -58,6 +60,10 @@ function applyStorageUsageMethods(StorageManager) {
                 }
 
                 await chrome.storage.local.set({ usage });
+                // Mutation paths run under withUsageLock and mutate the live
+                // cache object; assign after a successful write to keep the
+                // cache authoritative.
+                this.usageCache = usage;
                 return true;
             } catch (error) {
                 console.error('Failed to update usage:', error);
@@ -88,6 +94,7 @@ function applyStorageUsageMethods(StorageManager) {
 
                 if (changed) {
                     await chrome.storage.local.set({ usage });
+                    this.usageCache = usage;
                 }
 
                 return true;
@@ -166,6 +173,7 @@ function applyStorageUsageMethods(StorageManager) {
                         ? importedUsage || {}
                         : this.mergeUsageData(existing, importedUsage);
                 await chrome.storage.local.set({ usage: merged });
+                this.usageCache = merged;
                 return true;
             } catch (error) {
                 console.error('Failed to import usage:', error);
@@ -181,6 +189,7 @@ function applyStorageUsageMethods(StorageManager) {
                 if (usage[domain]) {
                     delete usage[domain];
                     await chrome.storage.local.set({ usage });
+                    this.usageCache = usage;
                 }
                 return true;
             } catch (error) {

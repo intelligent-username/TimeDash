@@ -9,13 +9,26 @@ class VideoDetector {
         this.instance = instance;
         this.mutationObserver = null;
         this.rootObservers = new Set();
+        this.scannedShadowHosts = new WeakSet();
         this._deepScanTimer = null;
+        this._onVisibilityChange = null;
     }
 
     setup() {
         this.setupShadowDomHook();
         this.findAndSetupVideos(document);
         this.scanOpenShadowRoots(document);
+
+        // While the tab is hidden, MutationObservers and the attachShadow
+        // patch still catch every DOM change; the polling deep scan is the
+        // only thing paused. A full force rescan runs on visibility restore.
+        this._onVisibilityChange = () => {
+            if (!document.hidden && !this.instance.isOrphaned) {
+                this.findAndSetupVideos(document);
+                this.scanOpenShadowRoots(document, true);
+            }
+        };
+        document.addEventListener('visibilitychange', this._onVisibilityChange);
 
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -34,6 +47,7 @@ class VideoDetector {
 
         this._deepScanTimer = setInterval(() => {
             if (this.instance.isOrphaned) return;
+            if (document.hidden) return;
             this.findAndSetupVideos(document);
             this.scanOpenShadowRoots(document);
             this.instance.videos.forEach((video) => {
@@ -82,14 +96,23 @@ class VideoDetector {
         }
     }
 
-    scanOpenShadowRoots(root = document) {
+    /**
+     * Enumerate elements looking for open shadow roots. Hosts already scanned
+     * are skipped (their shadow content is covered by per-root observers),
+     * unless `force` is set (visibility-restore catch-up). Hosts without a
+     * shadowRoot are re-checked each tick so late-attached roots are found.
+     * @param {Element|Document} [root] - Root to scan.
+     * @param {boolean} [force] - Rescan already-scanned hosts.
+     */
+    scanOpenShadowRoots(root = document, force = false) {
         if (!root || !root.querySelectorAll) return;
         const hosts = root.querySelectorAll('*');
         hosts.forEach((el) => {
-            if (el.shadowRoot) {
-                this.findAndSetupVideos(el.shadowRoot);
-                this.observeRoot(el.shadowRoot);
-            }
+            if (!el.shadowRoot) return;
+            if (!force && this.scannedShadowHosts.has(el)) return;
+            this.scannedShadowHosts.add(el);
+            this.findAndSetupVideos(el.shadowRoot);
+            this.observeRoot(el.shadowRoot);
         });
     }
 
@@ -130,6 +153,11 @@ class VideoDetector {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
             this.mutationObserver = null;
+        }
+
+        if (this._onVisibilityChange) {
+            document.removeEventListener('visibilitychange', this._onVisibilityChange);
+            this._onVisibilityChange = null;
         }
 
         if (this.rootObservers.size > 0) {

@@ -5,6 +5,13 @@ function applyStorageSettingsMethods(StorageManager) {
         try {
             const result = await chrome.storage.local.get(['settings', 'usage', 'blockList']);
 
+            // Prime the in-memory caches from this read; later writes in this
+            // file keep them updated directly.
+            this.usageCache = result.usage || {};
+            this.settingsCache = result.settings
+                ? { ...this.DEFAULT_SETTINGS, ...result.settings }
+                : null;
+
             if (!result.settings) {
                 await this.setSettings(this.DEFAULT_SETTINGS);
             } else {
@@ -38,9 +45,13 @@ function applyStorageSettingsMethods(StorageManager) {
     };
 
     StorageManager.prototype.getSettings = async function getSettings() {
+        if (this.settingsCache) {
+            return { ...this.settingsCache };
+        }
         try {
             const result = await chrome.storage.local.get('settings');
-            return { ...this.DEFAULT_SETTINGS, ...result.settings };
+            this.settingsCache = { ...this.DEFAULT_SETTINGS, ...result.settings };
+            return { ...this.settingsCache };
         } catch (error) {
             console.error('Failed to get settings:', error);
             return this.DEFAULT_SETTINGS;
@@ -52,6 +63,7 @@ function applyStorageSettingsMethods(StorageManager) {
             const currentSettings = await this.getSettings();
             const updatedSettings = { ...currentSettings, ...newSettings };
             await chrome.storage.local.set({ settings: updatedSettings });
+            this.settingsCache = updatedSettings;
             return true;
         } catch (error) {
             console.error('Failed to set settings:', error);

@@ -1,7 +1,24 @@
 export const lifecycleMethods = {
     async init() {
+        let loadingFallback = null;
         try {
-            PopupHelpers.showBanner(I18n.t('loading'), 'info');
+            // Fail-safe: popup renders instantly; loading UI only appears if data load stalls past 1s
+            loadingFallback = setTimeout(() => {
+                const siteName = document.getElementById('siteName');
+                const siteTime = document.getElementById('siteTime');
+                const sitesLoading = document.getElementById('sitesLoading');
+                if (siteName && !siteName.textContent.trim()) {
+                    siteName.textContent = I18n.t('loadingSite');
+                }
+                if (siteTime && !siteTime.textContent.trim()) {
+                    siteTime.textContent = I18n.t('calculatingSite');
+                }
+                if (sitesLoading && !sitesLoading.textContent.trim()) {
+                    sitesLoading.textContent = I18n.t('loadingSites');
+                }
+                PopupHelpers.showBanner(I18n.t('loading'), 'info');
+            }, 1000);
+
             await this.loadCurrentTab();
             await this.loadData();
 
@@ -20,6 +37,8 @@ export const lifecycleMethods = {
         } catch (error) {
             console.error('Popup init failed:', error);
             PopupHelpers.showBanner(I18n.t('errorGeneric'), 'error');
+        } finally {
+            clearTimeout(loadingFallback);
         }
     },
 
@@ -27,6 +46,14 @@ export const lifecycleMethods = {
         try {
             const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
             this.currentTab = tabs[0];
+
+            // Paint the site name immediately from the tab URL — don't wait for data/messaging
+            const siteName = document.getElementById('siteName');
+            if (siteName && this.currentTab?.url && PopupHelpers.shouldTrackUrl(this.currentTab.url)) {
+                siteName.textContent = PopupHelpers.capitalize(
+                    PopupHelpers.extractDomain(this.currentTab.url)
+                );
+            }
         } catch (error) {
             console.error('Error loading current tab:', error);
         }
@@ -63,12 +90,19 @@ export const lifecycleMethods = {
     startAutoUpdate() {
         this.stopAutoUpdate();
         this.autoUpdateInterval = setInterval(async () => {
+            // Extension context gone (reload/update) — stop ticking instead of
+            // hammering a dead message port.
+            if (!chrome.runtime?.id) {
+                this.stopAutoUpdate();
+                return;
+            }
             try {
-                const usageResponse = await chrome.runtime.sendMessage({ type: 'GET_USAGE_DATA' });
+                const usageResponse = await this.sendWithRetry({ type: 'GET_USAGE_DATA' });
                 this.usageData = usageResponse;
                 this.updateUI();
             } catch (error) {
-                console.error('Auto-update failed:', error);
+                // SW briefly unavailable (idle wake-up race) — retry next tick.
+                console.warn('Auto-update skipped:', error?.message || error);
             }
         }, 10000);
     },

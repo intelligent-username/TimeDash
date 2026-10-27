@@ -64,6 +64,8 @@ function applyStorageBlockingMethods(StorageManager) {
             try {
                 const result = await chrome.storage.local.get('usage');
                 const usage = result.usage || {};
+                // Reconcile the cache with the object about to be mutated.
+                this.usageCache = usage;
                 const domainUsage = usage[domain] || { cumulative: 0, lastVisit: Date.now() };
 
                 const today = new Date().toDateString();

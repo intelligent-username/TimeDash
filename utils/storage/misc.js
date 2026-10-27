@@ -38,6 +38,8 @@ function applyStorageMiscMethods(StorageManager) {
     StorageManager.prototype.clearAllData = async function clearAllData() {
         try {
             await chrome.storage.local.clear();
+            this.usageCache = {};
+            this.settingsCache = null;
             await this.init();
             return true;
         } catch (error) {
@@ -82,6 +84,11 @@ function applyStorageMiscMethods(StorageManager) {
                 // Replace storage with purely clean dataset (removes transient alarm flags, temp keys)
                 await chrome.storage.local.clear();
                 await chrome.storage.local.set(cleanStorage);
+                // Re-sync caches with what was actually written back.
+                this.usageCache = cleanStorage.usage || {};
+                this.settingsCache = cleanStorage.settings
+                    ? { ...this.DEFAULT_SETTINGS, ...cleanStorage.settings }
+                    : null;
                 return true;
             } catch (error) {
                 console.error('Failed to compact storage:', error);

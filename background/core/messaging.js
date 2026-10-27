@@ -465,6 +465,14 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     sendResponse(result);
                     break;
                 }
+                case 'REPORT_VISIBILITY': {
+                    const tabId = sender.tab ? sender.tab.id : undefined;
+                    if (tabId !== undefined) {
+                        this.visibilityByTab.set(tabId, !!message.visible);
+                    }
+                    sendResponse({ success: true });
+                    break;
+                }
                 default:
                     sendResponse({ error: chrome.i18n.getMessage('msgUnknownMessageType') });
             }

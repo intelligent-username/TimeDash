@@ -32,7 +32,11 @@ export const domUtils = {
             className: 'site-item-favicon',
             src: this.getFaviconUrl(domain),
             alt: domain,
-            onerror: "this.style.display='none'",
+        });
+        // CSP-safe equivalent of an onerror attribute (inline handlers are
+        // blocked by the extension pages policy).
+        favicon.addEventListener('error', () => {
+            favicon.style.display = 'none';
         });
 
         const details = this.createElement('div', { className: 'site-item-details' });

@@ -97,10 +97,23 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
                 return;
             }
 
-            const response = await chrome.tabs.sendMessage(track.tabId, {
-                type: 'CHECK_VISIBILITY',
-            });
-            if (!response || !response.visible) {
+            // Visibility is pushed by the content script on visibilitychange
+            // (event-driven). Fall back to a one-shot poll only when the state
+            // is unknown (e.g. right after a service worker restart).
+            let visible = this.visibilityByTab.get(track.tabId);
+            if (visible === undefined) {
+                try {
+                    const response = await chrome.tabs.sendMessage(track.tabId, {
+                        type: 'CHECK_VISIBILITY',
+                    });
+                    visible = response ? !!response.visible : false;
+                    this.visibilityByTab.set(track.tabId, visible);
+                } catch {
+                    this.tabTracker.stopTrackingTab(track.tabId);
+                    return;
+                }
+            }
+            if (!visible) {
                 this.tabTracker.stopTrackingTab(track.tabId);
                 return;
             }
