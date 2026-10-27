@@ -42,9 +42,10 @@ class I18n {
         }
 
         try {
-            const url = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL
-                ? chrome.runtime.getURL(`_locales/${locale}/messages.json`)
-                : `/_locales/${locale}/messages.json`;
+            const url =
+                typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL
+                    ? chrome.runtime.getURL(`_locales/${locale}/messages.json`)
+                    : `/_locales/${locale}/messages.json`;
             const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
@@ -117,7 +118,9 @@ class I18n {
         const nodes = root.querySelectorAll('[data-i18n], [data-i18n-html]');
         nodes.forEach((node) => {
             const isHtml = node.hasAttribute('data-i18n-html');
-            const key = isHtml ? node.getAttribute('data-i18n-html') : node.getAttribute('data-i18n');
+            const key = isHtml
+                ? node.getAttribute('data-i18n-html')
+                : node.getAttribute('data-i18n');
             const subs = key === 'helpAboutBody' ? [manifestVersion] : [];
             const text = I18n.t(key, subs);
             if (text) {

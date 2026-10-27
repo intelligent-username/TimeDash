@@ -85,7 +85,9 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
             const month = pointData.month;
 
             if (month !== undefined) {
-                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [dateStr]);
+                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [
+                    dateStr,
+                ]);
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
                 for (const domain of Object.keys(usage)) {
@@ -100,7 +102,9 @@ export function applyAnalyticsUITopSitesMethods(AnalyticsUI) {
                     }
                 }
             } else {
-                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [dateStr]);
+                heading.textContent = chrome.i18n.getMessage('analyticsTopSitesInPeriod', [
+                    dateStr,
+                ]);
 
                 for (const domain of Object.keys(usage)) {
                     const domainData = usage[domain];

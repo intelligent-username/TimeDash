@@ -14,10 +14,7 @@ export const privacySettingsMethods = {
                 if (!isNaN(val) && val > 0) {
                     this.controller.settings.storageLimitMB = val;
                 }
-                if (
-                    this.controller.dataManager &&
-                    this.controller.dataManager.updateStorageUsage
-                ) {
+                if (this.controller.dataManager && this.controller.dataManager.updateStorageUsage) {
                     this.controller.dataManager.updateStorageUsage();
                 }
             });

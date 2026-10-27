@@ -140,7 +140,13 @@ export function applyAnalyticsChartRangeMethods(AnalyticsChart) {
         }
 
         const xLabels = this.buildAllTimeLabels(dates);
-        return { dates, label: chrome.i18n.getMessage('allTime'), xLabels, isYearly: false, isAllTime: false };
+        return {
+            dates,
+            label: chrome.i18n.getMessage('allTime'),
+            xLabels,
+            isYearly: false,
+            isAllTime: false,
+        };
     };
 
     AnalyticsChart.prototype.buildAllTimeLabels = function buildAllTimeLabels(dates) {

@@ -47,9 +47,7 @@ export function createDomainRow({
     row.addEventListener('dragend', (e) => {
         row.classList.remove('dragging');
         if (isGroupRow && typeof onDragActive === 'function') onDragActive(false);
-        document
-            .querySelectorAll('.drag-over')
-            .forEach((el) => el.classList.remove('drag-over'));
+        document.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
         if (isGroupRow && e.dataTransfer.dropEffect === 'none' && typeof onDragOut === 'function') {
             onDragOut(domain);
         }
@@ -87,7 +85,8 @@ export function createDomainRow({
     const usageSpan = document.createElement('span');
     usageSpan.className = 'rule-usage-today';
     const domainUsage = controller?.usage?.[domain] || {};
-    const todaySeconds = typeof TimeUtils !== 'undefined' ? TimeUtils.calculateTodayTime(domainUsage) : 0;
+    const todaySeconds =
+        typeof TimeUtils !== 'undefined' ? TimeUtils.calculateTodayTime(domainUsage) : 0;
     const todayLabel = typeof I18n !== 'undefined' ? I18n.t('today').toLowerCase() : 'today';
     const zeroSec = typeof I18n !== 'undefined' ? `0${I18n.t('unitSec')}` : '0s';
     usageSpan.textContent =

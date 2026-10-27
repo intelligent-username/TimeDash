@@ -30,7 +30,9 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'UPDATE_SETTINGS': {
                     const success = await this.storage.setSettings(message.settings);
                     if (message.settings?.restrictedSliderMax !== undefined) {
-                        await this.ruleManager.enforceRestrictedCap(message.settings.restrictedSliderMax);
+                        await this.ruleManager.enforceRestrictedCap(
+                            message.settings.restrictedSliderMax
+                        );
                     }
                     sendResponse({ success });
                     break;
@@ -81,7 +83,9 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     sendResponse({ success: await this.storage.deleteDomainUsage(message.domain) });
                     break;
                 case 'IMPORT_USAGE':
-                    sendResponse({ success: await this.storage.importUsage(message.usage, message.mode) });
+                    sendResponse({
+                        success: await this.storage.importUsage(message.usage, message.mode),
+                    });
                     break;
                 case 'GET_SITE_RULES':
                     sendResponse({
@@ -96,9 +100,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         const settings = await this.storage.getSettings();
                         const maxCap = Number(settings.restrictedSliderMax || 120);
                         const cappedLimit = Math.max(0, Math.min(timeLimitMinutes ?? 30, maxCap));
-                        this.ruleManager.addRule(
-                            new RestrictedRule(domain, cappedLimit)
-                        );
+                        this.ruleManager.addRule(new RestrictedRule(domain, cappedLimit));
                     }
                     await this.ruleManager.saveToStorage();
                     sendResponse({ success: true });
@@ -113,9 +115,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     const order = Array.isArray(message.domains) ? message.domains : [];
                     const entries = Array.from(this.ruleManager.rules.entries());
                     const restricted = new Map(
-                        entries
-                            .filter(([, r]) => r.type === 'RESTRICTED')
-                            .map(([d, r]) => [d, r])
+                        entries.filter(([, r]) => r.type === 'RESTRICTED').map(([d, r]) => [d, r])
                     );
                     const reordered = new Map();
                     // Blocked rules keep their relative position first
@@ -124,7 +124,9 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     });
                     // Restricted rules follow the requested order
                     order.forEach((domain) => {
-                        const key = String(domain).toLowerCase().replace(/^www\./, '');
+                        const key = String(domain)
+                            .toLowerCase()
+                            .replace(/^www\./, '');
                         const rule = restricted.get(key);
                         if (rule) {
                             reordered.set(key, rule);
@@ -147,12 +149,18 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                 case 'CREATE_GROUP': {
                     const { name, domains = [], timeLimitMinutes } = message;
                     if (!name) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameRequired') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNameRequired'),
+                        });
                         break;
                     }
                     const existing = this.ruleManager.getGroupByName(name);
                     if (existing) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameExists') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNameExists'),
+                        });
                         break;
                     }
                     let conflict = null;
@@ -191,7 +199,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.id && !g.deletedAt
                     );
                     if (!target) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNotFound'),
+                        });
                         break;
                     }
                     if (message.name !== undefined) {
@@ -199,7 +210,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                             (g) => g.id !== message.id && !g.deletedAt && g.name === message.name
                         );
                         if (nameConflict) {
-                            sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNameExists') });
+                            sendResponse({
+                                success: false,
+                                error: chrome.i18n.getMessage('msgGroupNameExists'),
+                            });
                             break;
                         }
                         target.name = message.name;
@@ -207,7 +221,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                     if (message.timeLimitMinutes !== undefined) {
                         const settings = await this.storage.getSettings();
                         const maxCap = Number(settings.restrictedSliderMax || 120);
-                        target.timeLimitMinutes = Math.max(0, Math.min(message.timeLimitMinutes, maxCap));
+                        target.timeLimitMinutes = Math.max(
+                            0,
+                            Math.min(message.timeLimitMinutes, maxCap)
+                        );
                     }
                     if (message.isEnabled !== undefined) target.isEnabled = message.isEnabled;
                     if (message.icon !== undefined) target.icon = message.icon;
@@ -226,7 +243,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.id && !g.deletedAt
                     );
                     if (!delGroup) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNotFound'),
+                        });
                         break;
                     }
                     delGroup.deletedAt = Date.now();
@@ -257,7 +277,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                                 ...new Set(
                                     preset.domains
                                         .map((d) =>
-                                            String(d).toLowerCase().replace(/^www\./, '').trim()
+                                            String(d)
+                                                .toLowerCase()
+                                                .replace(/^www\./, '')
+                                                .trim()
                                         )
                                         .filter(
                                             (d) =>
@@ -292,7 +315,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                             Math.min(preset.domainLimitMinutes ?? 30, maxCap)
                         );
                         for (const d of preset.domains) {
-                            const clean = String(d).toLowerCase().replace(/^www\./, '').trim();
+                            const clean = String(d)
+                                .toLowerCase()
+                                .replace(/^www\./, '')
+                                .trim();
                             if (!clean) continue;
                             const normalized = DomainUtils.normalizeDomain(clean);
                             if (!this.ruleManager.rules.has(normalized)) {
@@ -355,7 +381,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.groupId && !g.deletedAt
                     );
                     if (!addGroup) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNotFound'),
+                        });
                         break;
                     }
                     const cleanDomain = message.domain
@@ -363,14 +392,20 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         .replace(/^www\./, '')
                         .trim();
                     if (!cleanDomain) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgInvalidDomain') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgInvalidDomain'),
+                        });
                         break;
                     }
                     const conflict = this.ruleManager.getGroupContainingDomain(cleanDomain);
                     let previousGroupId = null;
                     if (conflict) {
                         if (conflict.id === addGroup.id) {
-                            sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainAlreadyInGroup') });
+                            sendResponse({
+                                success: false,
+                                error: chrome.i18n.getMessage('msgDomainAlreadyInGroup'),
+                            });
                             break;
                         }
                         previousGroupId = conflict.id;
@@ -382,7 +417,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         }
                     }
                     if (addGroup.domains.includes(cleanDomain)) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainAlreadyInGroup') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgDomainAlreadyInGroup'),
+                        });
                         break;
                     }
                     addGroup.domains.push(cleanDomain);
@@ -397,7 +435,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         (g) => g.id === message.groupId && !g.deletedAt
                     );
                     if (!remGroup) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgGroupNotFound') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgGroupNotFound'),
+                        });
                         break;
                     }
                     const clean = message.domain
@@ -406,7 +447,10 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                         .trim();
                     const idx = remGroup.domains.indexOf(clean);
                     if (idx === -1) {
-                        sendResponse({ success: false, error: chrome.i18n.getMessage('msgDomainNotInGroup') });
+                        sendResponse({
+                            success: false,
+                            error: chrome.i18n.getMessage('msgDomainNotInGroup'),
+                        });
                         break;
                     }
                     remGroup.domains.splice(idx, 1);
@@ -434,7 +478,7 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
         try {
             const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
             if (tabs.length === 0 || !tabs[0].url) return;
-            
+
             const activeUrl = tabs[0].url;
             if (command === 'toggle-tracking') {
                 await this.toggleTracking();
@@ -443,7 +487,9 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
 
             if (command === 'toggle-block') {
                 let targetDomain = '';
-                const isExtensionPage = activeUrl.startsWith('chrome-extension://') || activeUrl.startsWith('moz-extension://');
+                const isExtensionPage =
+                    activeUrl.startsWith('chrome-extension://') ||
+                    activeUrl.startsWith('moz-extension://');
 
                 if (isExtensionPage) {
                     try {
@@ -473,7 +519,8 @@ function applyBackgroundMessagingMethods(TimeDashBackground) {
                             const origDomain = urlObj.searchParams.get('domain');
                             const isStillBlocked = this.ruleManager.isDomainBlocked(targetDomain);
                             if (!isStillBlocked) {
-                                const destination = origUrl || `https://${origDomain || targetDomain}`;
+                                const destination =
+                                    origUrl || `https://${origDomain || targetDomain}`;
                                 await chrome.tabs.update(tabs[0].id, { url: destination });
                             }
                         } catch {

@@ -1,6 +1,8 @@
 {
     "appName": { "message": "TimeDash" },
-    "appDescription": { "message": "Track time, block distractions, and control video speed. Private, local-only productivity analytics." },
+    "appDescription": {
+        "message": "Track time, block distractions, and control video speed. Private, local-only productivity analytics."
+    },
     "appTitle": { "message": "TimeDash - Productivity Monitor" },
     "tagline": { "message": "Use the dashboard for details" },
     "settings": { "message": "Settings" },
@@ -8,9 +10,15 @@
     "currentSite": { "message": "Current Site" },
     "setupTitle": { "message": "Welcome to TimeDash!" },
     "setupBody": { "message": "Your all-in-one productivity companion:" },
-    "setupFeatureTracking": { "message": "⏱️ <strong>Time Tracking:</strong> Monitor your browsing habits." },
-    "setupFeatureVideo": { "message": "⏩ <strong>Video Speed:</strong> Control speed on any site." },
-    "setupFeatureBlocking": { "message": "🛡️ <strong>Site Blocking:</strong> Stay on track with limits." },
+    "setupFeatureTracking": {
+        "message": "⏱️ <strong>Time Tracking:</strong> Monitor your browsing habits."
+    },
+    "setupFeatureVideo": {
+        "message": "⏩ <strong>Video Speed:</strong> Control speed on any site."
+    },
+    "setupFeatureBlocking": {
+        "message": "🛡️ <strong>Site Blocking:</strong> Stay on track with limits."
+    },
     "setupConfigure": { "message": "Let's configure your initial settings." },
     "setupComplete": { "message": "Setup completed successfully!" },
     "setupFailed": { "message": "Failed to save settings" },
@@ -35,11 +43,15 @@
     "timeSpentOnSite": { "message": "Time spent on this site" },
     "manageBlockedSites": { "message": "Manage Blocked Sites" },
     "dailyLimitReached": { "message": "Daily Limit Reached" },
-    "restrictedReason": { "message": "You've used all your allotted time for $1 today. Access will reset at midnight." },
+    "restrictedReason": {
+        "message": "You've used all your allotted time for $1 today. Access will reset at midnight."
+    },
     "limitReachedTitle": { "message": "$1 - Limit Reached" },
     "timeUsedToday": { "message": "Time used today" },
     "groupLimitReached": { "message": "Group Limit Reached" },
-    "groupLimitReason": { "message": "Your budget group has used all its allotted time today. Access will reset at midnight." },
+    "groupLimitReason": {
+        "message": "Your budget group has used all its allotted time today. Access will reset at midnight."
+    },
     "groupLimitReachedTitle": { "message": "Group Limit Reached" },
     "quote1": { "message": "The way to get started is to quit talking and begin doing." },
     "quote1Author": { "message": "Walt Disney" },
@@ -57,7 +69,9 @@
     "quote7Author": { "message": "Steve Jobs" },
     "quote8": { "message": "Believe you can and you're halfway there." },
     "quote8Author": { "message": "Theodore Roosevelt" },
-    "tip1": { "message": "Try the Pomodoro Technique: Work for 25 minutes, then take a 5-minute break." },
+    "tip1": {
+        "message": "Try the Pomodoro Technique: Work for 25 minutes, then take a 5-minute break."
+    },
     "tip2": { "message": "Create a distraction-free workspace to improve concentration." },
     "tip3": { "message": "Use the 2-minute rule: If it takes less than 2 minutes, do it now." },
     "tip4": { "message": "Block time in your calendar for important tasks." },
@@ -81,12 +95,15 @@
     "trackingDisabledPage": { "message": "Time tracking disabled for this page" },
     "noTimeToday": { "message": "No time recorded today" },
     "noSitesTracked": { "message": "No sites tracked yet.\nStart browsing to see your usage!" },
-    "noActivityToday": { "message": "No activity today yet.\nYour tracked sites will appear here." },
+    "noActivityToday": {
+        "message": "No activity today yet.\nYour tracked sites will appear here."
+    },
     "progressOfLimit": { "message": "$1% of $2m" },
     "trackingActive": { "message": "● Tracking Active" },
     "trackingPaused": { "message": "● Tracking Paused" },
     "trackingEnabled": { "message": "● Tracking Enabled" },
     "sitesTracked": { "message": "$1 sites tracked" },
+    "zeroSitesTracked": { "message": "0 sites tracked" },
     "dashboard": { "message": "Dashboard" },
     "pauseTracking": { "message": "Pause Tracking" },
     "resumeTracking": { "message": "Resume Tracking" },
@@ -100,11 +117,15 @@
     "featuresSupport": { "message": "Features & support" },
     "tracking": { "message": "Tracking" },
     "enableTimeTracking": { "message": "Enable Time Tracking" },
-    "enableTimeTrackingDesc": { "message": "Monitor time spent on websites. Without this, Site Blocking settings become useless." },
+    "enableTimeTrackingDesc": {
+        "message": "Monitor time spent on websites. Without this, Site Blocking settings become useless."
+    },
     "generalDailyLimit": { "message": "General Daily Limit" },
     "noLimit": { "message": "Set 0 for no limit" },
     "restrictedSiteMaxLimit": { "message": "Restricted Site Max Limit" },
-    "restrictedSiteMaxLimitDesc": { "message": "Hard cap (in minutes) for restricted site rules & dial scale" },
+    "restrictedSiteMaxLimitDesc": {
+        "message": "Hard cap (in minutes) for restricted site rules & dial scale"
+    },
     "notificationsBadge": { "message": "Notifications & Badge" },
     "enableNotifications": { "message": "Enable Notifications" },
     "enableNotificationsDesc": { "message": "Get alerts for limits and milestones" },
@@ -173,7 +194,9 @@
     "videoControls": { "message": "Video Controls" },
     "speedConfiguration": { "message": "Speed Configuration" },
     "currentPlaybackSpeedLabel": { "message": "Current Playback Speed" },
-    "currentPlaybackSpeedDesc": { "message": "Universal active speed applied to all video elements" },
+    "currentPlaybackSpeedDesc": {
+        "message": "Universal active speed applied to all video elements"
+    },
     "currentPlaybackSpeedAria": { "message": "Current Playback Speed" },
     "currentPlaybackSpeedSliderAria": { "message": "Current Playback Speed Slider" },
     "resetSpeed": { "message": "Reset Speed" },
@@ -196,7 +219,9 @@
     "confirmProceedMessage": { "message": "Are you sure you want to proceed?" },
     "confirm": { "message": "Confirm" },
     "importData": { "message": "Import Data" },
-    "importDataMessage": { "message": "Should the imported data be appended to the currently-existing data or replace it?" },
+    "importDataMessage": {
+        "message": "Should the imported data be appended to the currently-existing data or replace it?"
+    },
     "appendData": { "message": "Append Data" },
     "replaceData": { "message": "Replace Data" },
     "dataExport": { "message": "Data & Export" },
@@ -218,11 +243,15 @@
     "incognitoTrackingDesc": { "message": "Track time spent in incognito tabs" },
     "dataManagement": { "message": "Data Management" },
     "autoPurgeOldData": { "message": "Auto-purge Old Data" },
-    "autoPurgeOldDataDesc": { "message": "Automatically delete records older than a set number of days" },
+    "autoPurgeOldDataDesc": {
+        "message": "Automatically delete records older than a set number of days"
+    },
     "keepDataForDays": { "message": "Keep data for" },
     "days": { "message": "days" },
     "storageLimitReached": { "message": "Storage limit reached" },
-    "storageLimitReachedDetail": { "message": "You have reached your custom storage limit. Delete old data or increase your limit." },
+    "storageLimitReachedDetail": {
+        "message": "You have reached your custom storage limit. Delete old data or increase your limit."
+    },
     "storageUsage": { "message": "Storage Usage" },
     "checking": { "message": "Checking…" },
     "limitLabel": { "message": "Limit:" },
@@ -231,49 +260,95 @@
     "searchDomainToDeletePlaceholder": { "message": "Search domain to delete data…" },
     "dataActions": { "message": "Data Actions" },
     "compactStorage": { "message": "Compact Storage" },
-    "compactStorageTitle": { "message": "Purge database logs and compact storage without losing any data" },
+    "compactStorageTitle": {
+        "message": "Purge database logs and compact storage without losing any data"
+    },
     "deleteAllData": { "message": "Delete All Data" },
     "privacyPolicy": { "message": "Privacy Policy" },
     "lastUpdated": { "message": "Last updated: April 2026" },
     "readFullPolicy": { "message": "Read Full Policy" },
     "privacyOverview": { "message": "Overview" },
-    "privacyOverviewBody": { "message": "TimeDash runs entirely in your browser. It has no analytics, telemetry, ads, or remote tracking. There are no accounts or servers logging your browsing history. Your data stays on your device and is processed using built-in browser storage APIs." },
+    "privacyOverviewBody": {
+        "message": "TimeDash runs entirely in your browser. It has no analytics, telemetry, ads, or remote tracking. There are no accounts or servers logging your browsing history. Your data stays on your device and is processed using built-in browser storage APIs."
+    },
     "privacyDataStorage": { "message": "Data Storage" },
-    "privacyDataStorageBody1": { "message": "TimeDash saves your preferences and history in the browser's local storage API (<code>chrome.storage.local</code>). Nothing is written outside your browser profile. The extension stores:" },
+    "privacyDataStorageBody1": {
+        "message": "TimeDash saves your preferences and history in the browser's local storage API (<code>chrome.storage.local</code>). Nothing is written outside your browser profile. The extension stores:"
+    },
     "privacyDataStorageItem1": { "message": "Time tracking logs and per-domain history" },
     "privacyDataStorageItem2": { "message": "Playback speed preferences per site" },
     "privacyDataStorageItem3": { "message": "Site blocking and daily restriction rules" },
     "privacyDataStorageItem4": { "message": "Theme and UI customization options" },
-    "privacyDataStorageBody2": { "message": "This data is used only to display your usage stats and enforce your rules. No part of it is sent to external servers." },
+    "privacyDataStorageBody2": {
+        "message": "This data is used only to display your usage stats and enforce your rules. No part of it is sent to external servers."
+    },
     "privacyNetworkActivity": { "message": "Network Activity" },
-    "privacyNetworkActivityBody": { "message": "TimeDash makes no outgoing network calls. Any network requests seen in DevTools come from your browser resolving site favicons or loading extension resources locally." },
+    "privacyNetworkActivityBody": {
+        "message": "TimeDash makes no outgoing network calls. Any network requests seen in DevTools come from your browser resolving site favicons or loading extension resources locally."
+    },
     "privacyPermissions": { "message": "Permissions" },
-    "privacyPermissionsBody": { "message": "TimeDash requests only the permissions needed to track time and enforce your rules:" },
-    "privacyPermissionStorage": { "message": "<code>storage</code>: Saves settings and history locally." },
-    "privacyPermissionTabs": { "message": "<code>tabs</code>: Reads active tab URLs to record time and apply site rules." },
-    "privacyPermissionScripting": { "message": "<code>scripting</code>: Injects video speed controls into web video players." },
-    "privacyPermissionWebNavigation": { "message": "<code>webNavigation</code>: Follows URL navigation across frames." },
-    "privacyPermissionHost": { "message": "<code>host_permissions</code>: Lets content scripts run on visited sites to track time and manage video playback." },
-    "privacyPermissionAlarms": { "message": "<code>alarms</code>: Runs daily resets and optional data purges." },
-    "privacyPermissionNotifications": { "message": "<code>notifications</code>: (Optional) Alerts you when daily time limits are reached." },
+    "privacyPermissionsBody": {
+        "message": "TimeDash requests only the permissions needed to track time and enforce your rules:"
+    },
+    "privacyPermissionStorage": {
+        "message": "<code>storage</code>: Saves settings and history locally."
+    },
+    "privacyPermissionTabs": {
+        "message": "<code>tabs</code>: Reads active tab URLs to record time and apply site rules."
+    },
+    "privacyPermissionScripting": {
+        "message": "<code>scripting</code>: Injects video speed controls into web video players."
+    },
+    "privacyPermissionWebNavigation": {
+        "message": "<code>webNavigation</code>: Follows URL navigation across frames."
+    },
+    "privacyPermissionHost": {
+        "message": "<code>host_permissions</code>: Lets content scripts run on visited sites to track time and manage video playback."
+    },
+    "privacyPermissionAlarms": {
+        "message": "<code>alarms</code>: Runs daily resets and optional data purges."
+    },
+    "privacyPermissionNotifications": {
+        "message": "<code>notifications</code>: (Optional) Alerts you when daily time limits are reached."
+    },
     "privacyDataDeletion": { "message": "Data Deletion" },
-    "privacyDataDeletionBody": { "message": "You own your data. You can delete single domain records or wipe all data using the controls in Data Management above. Uninstalling TimeDash removes all stored extension data from your browser automatically." },
-    "privacyDataDeletionItem1": { "message": "Click <strong>Delete All Data</strong> to wipe every record right away." },
-    "privacyDataDeletionItem2": { "message": "Turn on <strong>Auto-purge Old Data</strong> to clear older records automatically." },
-    "privacyDataDeletionItem3": { "message": "Use <strong>Delete Specific Data</strong> to search and delete records for a single domain." },
+    "privacyDataDeletionBody": {
+        "message": "You own your data. You can delete single domain records or wipe all data using the controls in Data Management above. Uninstalling TimeDash removes all stored extension data from your browser automatically."
+    },
+    "privacyDataDeletionItem1": {
+        "message": "Click <strong>Delete All Data</strong> to wipe every record right away."
+    },
+    "privacyDataDeletionItem2": {
+        "message": "Turn on <strong>Auto-purge Old Data</strong> to clear older records automatically."
+    },
+    "privacyDataDeletionItem3": {
+        "message": "Use <strong>Delete Specific Data</strong> to search and delete records for a single domain."
+    },
     "privacyNoAccount": { "message": "No Account Required" },
-    "privacyNoAccountBody": { "message": "TimeDash requires no account, email, or cloud sync. All data lives on your device under your control." },
+    "privacyNoAccountBody": {
+        "message": "TimeDash requires no account, email, or cloud sync. All data lives on your device under your control."
+    },
     "privacyThirdParty": { "message": "Third-Party Code" },
-    "privacyThirdPartyBody": { "message": "TimeDash uses open-source libraries for development tooling only. The distributed extension contains no third-party tracking, analytics, or external SDKs." },
+    "privacyThirdPartyBody": {
+        "message": "TimeDash uses open-source libraries for development tooling only. The distributed extension contains no third-party tracking, analytics, or external SDKs."
+    },
     "privacyLicense": { "message": "License" },
-    "privacyLicenseBody": { "message": "TimeDash is released under the <strong>MIT License</strong>. You can use, modify, and share it freely under license terms. View the source on <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a>." },
+    "privacyLicenseBody": {
+        "message": "TimeDash is released under the <strong>MIT License</strong>. You can use, modify, and share it freely under license terms. View the source on <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a>."
+    },
     "privacyContact": { "message": "Contact & Questions" },
-    "privacyContactBody": { "message": "If you find a bug or have a privacy question, open an issue on <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub</a> with a description and any relevant screenshots." },
+    "privacyContactBody": {
+        "message": "If you find a bug or have a privacy question, open an issue on <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub</a> with a description and any relevant screenshots."
+    },
     "restrictedAccess": { "message": "Restricted Access" },
-    "restrictedAccessSubtitle": { "message": "Sites allowed for specific amounts of time per day." },
+    "restrictedAccessSubtitle": {
+        "message": "Sites allowed for specific amounts of time per day."
+    },
     "newGroup": { "message": "+ New Group" },
     "populatePresets": { "message": "Populate with Common Presets" },
-    "populatePresetsTitle": { "message": "Create ready-made budget groups for common distracting categories" },
+    "populatePresetsTitle": {
+        "message": "Create ready-made budget groups for common distracting categories"
+    },
     "presetsAdded": { "message": "Presets added" },
     "undoPresets": { "message": "Undo?" },
     "presetsPopulatedToast": { "message": "Preset groups added" },
@@ -312,46 +387,88 @@
     "helpPrivacyDataSub": { "message": "Export, import, manage data" },
     "helpHowDoI": { "message": "How Do I…" },
     "helpTrackTime": { "message": "…track my time?" },
-    "helpTrackTimeBody": { "message": "Time tracking runs automatically once enabled in <button class=\"quick-link inline-link\" data-tab=\"general\">General Settings</button>. Open the popup to see today's totals or visit <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analytics</button> for charts and your activity heatmap." },
+    "helpTrackTimeBody": {
+        "message": "Time tracking runs automatically once enabled in <button class=\"quick-link inline-link\" data-tab=\"general\">General Settings</button>. Open the popup to see today's totals or visit <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analytics</button> for charts and your activity heatmap."
+    },
     "helpBlockSite": { "message": "…block a site completely?" },
-    "helpBlockSiteBody": { "message": "Go to <button class=\"quick-link inline-link\" data-tab=\"blocking\">Site Blocking</button>, type the domain, and add it as a <strong>Blocked</strong> rule. The extension will redirect you to a block page whenever you visit that domain." },
+    "helpBlockSiteBody": {
+        "message": "Go to <button class=\"quick-link inline-link\" data-tab=\"blocking\">Site Blocking</button>, type the domain, and add it as a <strong>Blocked</strong> rule. The extension will redirect you to a block page whenever you visit that domain."
+    },
     "helpSetLimit": { "message": "…set a daily time limit for a site?" },
-    "helpSetLimitBody": { "message": "Add the domain as a <strong>Restricted</strong> rule in <button class=\"quick-link inline-link\" data-tab=\"blocking\">Site Blocking</button>. Set a time limit in minutes. Once exceeded for the day, the site will be blocked until the next day." },
+    "helpSetLimitBody": {
+        "message": "Add the domain as a <strong>Restricted</strong> rule in <button class=\"quick-link inline-link\" data-tab=\"blocking\">Site Blocking</button>. Set a time limit in minutes. Once exceeded for the day, the site will be blocked until the next day."
+    },
     "helpChangeSpeed": { "message": "…change video playback speed?" },
-    "helpChangeSpeedBody": { "message": "You can change the playback speed using one of the following ways:" },
-    "helpChangeSpeedItem1": { "message": "Use the keyboard shortcuts you've set up in the video controls tab. (Current: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code>, and <code>.</code></span>)" },
-    "helpChangeSpeedItem2": { "message": "Click on the extension icon to bring up the popup and use the <code>+</code> / <code>-</code>, and <code>.</code> buttons there." },
+    "helpChangeSpeedBody": {
+        "message": "You can change the playback speed using one of the following ways:"
+    },
+    "helpChangeSpeedItem1": {
+        "message": "Use the keyboard shortcuts you've set up in the video controls tab. (Current: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code>, and <code>.</code></span>)"
+    },
+    "helpChangeSpeedItem2": {
+        "message": "Click on the extension icon to bring up the popup and use the <code>+</code> / <code>-</code>, and <code>.</code> buttons there."
+    },
     "helpChangeSpeedItem3": { "message": "Change the speed from the video controls tab directly." },
     "helpChangeTheme": { "message": "…change the theme or accent color?" },
-    "helpChangeThemeBody": { "message": "Under <button class=\"quick-link inline-link\" data-tab=\"general\">General Settings</button>, find the <strong>Appearance</strong> section. Pick light, dark, or auto theme and choose an accent color that fits your setup." },
+    "helpChangeThemeBody": {
+        "message": "Under <button class=\"quick-link inline-link\" data-tab=\"general\">General Settings</button>, find the <strong>Appearance</strong> section. Pick light, dark, or auto theme and choose an accent color that fits your setup."
+    },
     "helpExportData": { "message": "…export or back up my data?" },
-    "helpExportDataBody": { "message": "Go to <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button> and use the <strong>Export Data</strong> button to save your usage and settings as a JSON file. Import that file later to restore your data on another profile or after a reinstall." },
+    "helpExportDataBody": {
+        "message": "Go to <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button> and use the <strong>Export Data</strong> button to save your usage and settings as a JSON file. Import that file later to restore your data on another profile or after a reinstall."
+    },
     "helpWhitelistDomain": { "message": "…whitelist a domain from tracking?" },
-    "helpWhitelistDomainBody": { "message": "Add the domain to the whitelist in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button>. Time spent on whitelisted sites will not be recorded." },
+    "helpWhitelistDomainBody": {
+        "message": "Add the domain to the whitelist in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button>. Time spent on whitelisted sites will not be recorded."
+    },
     "helpPauseTracking": { "message": "…pause tracking temporarily?" },
-    "helpPauseTrackingBody": { "message": "Toggle <strong>Pause Tracking</strong> in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button>. No data will be collected while paused." },
+    "helpPauseTrackingBody": {
+        "message": "Toggle <strong>Pause Tracking</strong> in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button>. No data will be collected while paused."
+    },
     "helpDeleteSpecific": { "message": "…delete data for a specific site?" },
-    "helpDeleteSpecificBody": { "message": "Use the <strong>Search domain to delete data</strong> field in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button> to find and remove records for individual domains." },
+    "helpDeleteSpecificBody": {
+        "message": "Use the <strong>Search domain to delete data</strong> field in <button class=\"quick-link inline-link\" data-tab=\"privacy\">Privacy & Data</button> to find and remove records for individual domains."
+    },
     "helpMinutiae": { "message": "Minutiae" },
     "helpPopupQuickActions": { "message": "Popup quick actions" },
-    "helpPopupQuickActionsBody": { "message": "Open the popup to see today's time and top sites. <kbd>Alt+T</kbd> toggles tracking on/off from any page. <kbd>Alt+B</kbd> blocks the current site immediately." },
+    "helpPopupQuickActionsBody": {
+        "message": "Open the popup to see today's time and top sites. <kbd>Alt+T</kbd> toggles tracking on/off from any page. <kbd>Alt+B</kbd> blocks the current site immediately."
+    },
     "helpHeatmapDay": { "message": "Click any heatmap day" },
-    "helpHeatmapDayBody": { "message": "Click a day cell to see a breakdown of which sites you visited and for how long. Click again or press \"Top Sites Today\" to reset." },
+    "helpHeatmapDayBody": {
+        "message": "Click a day cell to see a breakdown of which sites you visited and for how long. Click again or press \"Top Sites Today\" to reset."
+    },
     "helpCustomAccent": { "message": "Custom accent color" },
-    "helpCustomAccentBody": { "message": "In General Settings, click the <strong>+</strong> in the color picker to add any hex color." },
+    "helpCustomAccentBody": {
+        "message": "In General Settings, click the <strong>+</strong> in the color picker to add any hex color."
+    },
     "helpWatchStorage": { "message": "Watch your storage" },
-    "helpWatchStorageBody": { "message": "The Privacy tab has a storage meter and auto-purge settings to keep old data from piling up." },
+    "helpWatchStorageBody": {
+        "message": "The Privacy tab has a storage meter and auto-purge settings to keep old data from piling up."
+    },
     "helpGettingHelp": { "message": "Getting Help" },
     "helpReportIssues": { "message": "Report Issues & Suggest Features" },
-    "helpReportIssuesBody1": { "message": "Bug reports and feature requests go to the <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues page</a>." },
-    "helpReportIssuesBody2": { "message": "When reporting a bug, include: the site URL, steps to reproduce, expected vs actual behavior, and your browser version. Screenshots help when the UI looks wrong. For video problems, mention whether the player is embedded in an iframe and paste any console errors you see." },
-    "helpReportIssuesBody3": { "message": "For feature requests, a short description of what you want and why is enough to get things started." },
+    "helpReportIssuesBody1": {
+        "message": "Bug reports and feature requests go to the <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues page</a>."
+    },
+    "helpReportIssuesBody2": {
+        "message": "When reporting a bug, include: the site URL, steps to reproduce, expected vs actual behavior, and your browser version. Screenshots help when the UI looks wrong. For video problems, mention whether the player is embedded in an iframe and paste any console errors you see."
+    },
+    "helpReportIssuesBody3": {
+        "message": "For feature requests, a short description of what you want and why is enough to get things started."
+    },
     "helpSourceCode": { "message": "Source Code" },
-    "helpSourceCodeBody": { "message": "The full source is at <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. If you want to audit what the extension can access, start with <code>manifest.json</code>, then read the background scripts and content scripts." },
+    "helpSourceCodeBody": {
+        "message": "The full source is at <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. If you want to audit what the extension can access, start with <code>manifest.json</code>, then read the background scripts and content scripts."
+    },
     "helpPrivacyQuestions": { "message": "Privacy Questions" },
-    "helpPrivacyQuestionsBody": { "message": "Read the <a href=\"#\" id=\"privacyPolicyLink\">full Privacy Policy</a> on the Privacy & Data tab. If something doesn't match what you see in the browser, open an issue with details." },
+    "helpPrivacyQuestionsBody": {
+        "message": "Read the <a href=\"#\" id=\"privacyPolicyLink\">full Privacy Policy</a> on the Privacy & Data tab. If something doesn't match what you see in the browser, open an issue with details."
+    },
     "helpAbout": { "message": "About TimeDash" },
-    "helpAboutBody": { "message": "Version $1. Built as a vanilla JS extension with no frameworks and no external dependencies. All data stays on your device." },
+    "helpAboutBody": {
+        "message": "Version $1. Built as a vanilla JS extension with no frameworks and no external dependencies. All data stays on your device."
+    },
     "analyticsTimeToday": { "message": "Time Today" },
     "analyticsDailyAverage": { "message": "Daily Average" },
     "analyticsAllTime": { "message": "All Time" },
@@ -370,7 +487,9 @@
     "analyticsAllSites": { "message": "All Sites" },
     "analyticsRestrictedSites": { "message": "Restricted Sites Only" },
     "analyticsRestrictedTime": { "message": "Restricted Time per Day" },
-    "analyticsRestrictedTimeSub": { "message": "Time spent on non-blocked websites with a daily time limit" },
+    "analyticsRestrictedTimeSub": {
+        "message": "Time spent on non-blocked websites with a daily time limit"
+    },
     "analyticsTrackingStarted": { "message": "Tracking started" },
     "analyticsSun": { "message": "Sun" },
     "analyticsMon": { "message": "Mon" },
@@ -381,7 +500,9 @@
     "analyticsSat": { "message": "Sat" },
     "analyticsTopSitesToday": { "message": "Top Sites Today" },
     "analyticsTrackingInterval": { "message": "Tracking Interval (s)" },
-    "analyticsTrackingIntervalTooltip": { "message": "How often the extension updates your time logs. Lower values are more accurate but use more resources." },
+    "analyticsTrackingIntervalTooltip": {
+        "message": "How often the extension updates your time logs. Lower values are more accurate but use more resources."
+    },
     "analyticsNoActivity": { "message": "No activity recorded today." },
     "lessThanOneMin": { "message": "< 1m" },
     "zeroSitesTrackedAnalytics": { "message": "0 Sites Tracked" },
@@ -465,19 +586,29 @@
     "storageCompacted": { "message": "Storage compacted successfully" },
     "failedCompactStorage": { "message": "Failed to compact storage" },
     "noMatchesFound": { "message": "No matches found" },
-    "importDataPrompt": { "message": "Should the imported data be appended to the currently-existing data or replace it?\n\nClick OK to Append.\nClick Cancel to Replace." },
+    "importDataPrompt": {
+        "message": "Should the imported data be appended to the currently-existing data or replace it?\n\nClick OK to Append.\nClick Cancel to Replace."
+    },
     "importDataTitle": { "message": "Import Data" },
     "resetAllConfirm": { "message": "Reset ALL settings and data? This cannot be undone." },
     "settingsResetDefaults": { "message": "Settings reset to defaults" },
     "failedResetSettings": { "message": "Failed to reset settings" },
     "failedImportData": { "message": "Failed to import data" },
     "importErrorNotObject": { "message": "Import failed: the file must contain a JSON object." },
-    "importErrorEmpty": { "message": "Import failed: no usage, settings, block list, rules, or groups found in the file." },
+    "importErrorEmpty": {
+        "message": "Import failed: no usage, settings, block list, rules, or groups found in the file."
+    },
     "importErrorUsage": { "message": "Import failed: the usage section is malformed." },
-    "importErrorTooLarge": { "message": "Import failed: the usage section contains too many domains (max 50,000)." },
-    "importErrorNumbers": { "message": "Import failed: the usage section contains invalid (negative or non-finite) numbers." },
+    "importErrorTooLarge": {
+        "message": "Import failed: the usage section contains too many domains (max 50,000)."
+    },
+    "importErrorNumbers": {
+        "message": "Import failed: the usage section contains invalid (negative or non-finite) numbers."
+    },
     "importErrorSettings": { "message": "Import failed: the settings section is malformed." },
-    "importErrorBlockList": { "message": "Import failed: the block list section must be an array." },
+    "importErrorBlockList": {
+        "message": "Import failed: the block list section must be an array."
+    },
     "importErrorRules": { "message": "Import failed: the site rules section is malformed." },
     "importErrorGroups": { "message": "Import failed: the site groups section is malformed." },
     "dataAppended": { "message": "Data appended successfully" },
@@ -528,7 +659,9 @@
     "undidMovedBack": { "message": "Undid: Moved $1 back to original group" },
     "speedSetForDomain": { "message": "Speed set for $1" },
     "storageQuotaOfLimit": { "message": "$1% of $2MB limit" },
-    "storageWarningDetail": { "message": "Using $1 of your $2MB limit. Consider purging old data or increasing your limit." },
+    "storageWarningDetail": {
+        "message": "Using $1 of your $2MB limit. Consider purging old data or increasing your limit."
+    },
 
     "sitesTrackedOne": {
         "message": "$COUNT$ site tracked",
@@ -558,7 +691,9 @@
     "exactHostBadge": { "message": "exact" },
     "noDataForPeriod": { "message": "No data for this period" },
     "noRulesYet": { "message": "No rules yet.\nAdd a site above to get started." },
-    "noGroupsYet": { "message": "No groups yet.\nCreate a group to share a daily limit across sites." },
+    "noGroupsYet": {
+        "message": "No groups yet.\nCreate a group to share a daily limit across sites."
+    },
     "checkingAccess": { "message": "Checking access…" },
     "exactHostTooltip": {
         "message": "Subdomain specified exactly — time on it is tracked separately from its parent domain."

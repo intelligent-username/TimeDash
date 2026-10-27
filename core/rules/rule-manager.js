@@ -225,7 +225,11 @@ class RuleManager {
             return true;
         }
         for (const rule of this.rules.values()) {
-            if (rule.isEnabled && rule.type === SiteRule.TYPES.BLOCKED && rule.isMatch(normalized)) {
+            if (
+                rule.isEnabled &&
+                rule.type === SiteRule.TYPES.BLOCKED &&
+                rule.isMatch(normalized)
+            ) {
                 return true;
             }
         }
@@ -356,8 +360,7 @@ class RuleManager {
             }
 
             // 2. Group budget check (contains() already matches hierarchically)
-            const group =
-                this.getGroupForDomain(hostname) || this.getGroupForDomain(registrable);
+            const group = this.getGroupForDomain(hostname) || this.getGroupForDomain(registrable);
             if (group) {
                 const groupSeconds = groupUsageSecondsMap[group.id];
                 if (groupSeconds !== undefined) {

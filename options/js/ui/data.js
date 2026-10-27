@@ -26,7 +26,9 @@ function validateImportData(data) {
     }
     if (
         data.settings !== undefined &&
-        (typeof data.settings !== 'object' || data.settings === null || Array.isArray(data.settings))
+        (typeof data.settings !== 'object' ||
+            data.settings === null ||
+            Array.isArray(data.settings))
     ) {
         return 'importErrorSettings';
     }
@@ -34,7 +36,8 @@ function validateImportData(data) {
         return 'importErrorBlockList';
     }
     if (data.siteRules !== undefined) {
-        if (typeof data.siteRules !== 'object' || data.siteRules === null) return 'importErrorRules';
+        if (typeof data.siteRules !== 'object' || data.siteRules === null)
+            return 'importErrorRules';
         for (const kind of ['blocked', 'restricted']) {
             const list = data.siteRules[kind];
             if (list === undefined) continue;
@@ -48,7 +51,12 @@ function validateImportData(data) {
     if (data.siteGroups !== undefined) {
         if (!Array.isArray(data.siteGroups)) return 'importErrorGroups';
         for (const g of data.siteGroups) {
-            if (!g || typeof g.id !== 'string' || typeof g.name !== 'string' || !Array.isArray(g.domains)) {
+            if (
+                !g ||
+                typeof g.id !== 'string' ||
+                typeof g.name !== 'string' ||
+                !Array.isArray(g.domains)
+            ) {
                 return 'importErrorGroups';
             }
         }
@@ -161,8 +169,7 @@ export class DataManager {
                         .join('');
                 } else {
                     resultsDiv.style.display = 'block';
-                    resultsDiv.innerHTML =
-                        `<div style="padding: 8px; color: var(--text-secondary);">${chrome.i18n.getMessage('noMatchesFound')}</div>`;
+                    resultsDiv.innerHTML = `<div style="padding: 8px; color: var(--text-secondary);">${chrome.i18n.getMessage('noMatchesFound')}</div>`;
                 }
             });
 
@@ -176,7 +183,9 @@ export class DataManager {
                         });
                         if (response && response.success) {
                             delete this.controller.usage[domain];
-                            this.controller.showSuccess(chrome.i18n.getMessage('deletedDataForDomain', [domain]));
+                            this.controller.showSuccess(
+                                chrome.i18n.getMessage('deletedDataForDomain', [domain])
+                            );
                             this.controller.refreshUI();
                             this.updateStorageUsage();
                             searchInput.dispatchEvent(new Event('input')); // Refresh list
@@ -193,7 +202,7 @@ export class DataManager {
     async updateStorageUsage() {
         if (!this.controller.storageManager.getStorageUsage) return;
         const bytes = await this.controller.storageManager.getStorageUsage();
-        
+
         let usageText = '0 KB';
         if (bytes >= 1024 * 1024) {
             usageText = `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
@@ -211,7 +220,7 @@ export class DataManager {
         const limitMB = Number(settings.storageLimitMB) || 10;
         const limitBytes = limitMB * 1024 * 1024;
         const rawPercent = (bytes / limitBytes) * 100;
-        
+
         let percentStr;
         if (rawPercent === 0) percentStr = '0%';
         else if (rawPercent < 0.01) percentStr = '<0.01%';
@@ -227,7 +236,11 @@ export class DataManager {
         }
 
         const quotaEl = document.getElementById('storageQuotaValue');
-            if (quotaEl) quotaEl.textContent = chrome.i18n.getMessage('storageQuotaOfLimit', [percentStr, limitMB]);
+        if (quotaEl)
+            quotaEl.textContent = chrome.i18n.getMessage('storageQuotaOfLimit', [
+                percentStr,
+                limitMB,
+            ]);
 
         // Show or hide the warning banner
         const warningEl = document.getElementById('storageLimitWarning');
@@ -283,16 +296,13 @@ export class DataManager {
             const cancelBtn = document.getElementById('importCancelBtn');
 
             if (!modal || !title || !msg || !appendBtn || !replaceBtn || !cancelBtn) {
-                const choice = confirm(
-                    chrome.i18n.getMessage('importDataPrompt')
-                );
+                const choice = confirm(chrome.i18n.getMessage('importDataPrompt'));
                 resolve(choice ? 'merge' : 'overwrite');
                 return;
             }
 
             title.textContent = chrome.i18n.getMessage('importData');
-            msg.textContent =
-                chrome.i18n.getMessage('importDataMessage');
+            msg.textContent = chrome.i18n.getMessage('importDataMessage');
 
             modal.classList.add('show');
 
@@ -363,7 +373,8 @@ export class DataManager {
 
                 if (data.settings) {
                     const existingSettings = await this.controller.storageManager.getSettings();
-                    const currentLimit = this.controller.settings?.storageLimitMB || existingSettings.storageLimitMB;
+                    const currentLimit =
+                        this.controller.settings?.storageLimitMB || existingSettings.storageLimitMB;
                     const mergedSettings = { ...existingSettings, ...data.settings };
                     // Preserve the user's actively configured storage limit
                     if (currentLimit !== undefined) {

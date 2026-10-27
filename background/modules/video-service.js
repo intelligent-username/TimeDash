@@ -129,9 +129,17 @@ class VideoService {
                 );
             }
 
-            return response || { success: false, error: chrome.i18n.getMessage('noContentScriptResponse') };
+            return (
+                response || {
+                    success: false,
+                    error: chrome.i18n.getMessage('noContentScriptResponse'),
+                }
+            );
         } catch (error) {
-            return { success: false, error: error.message || chrome.i18n.getMessage('failedToControlVideo') };
+            return {
+                success: false,
+                error: error.message || chrome.i18n.getMessage('failedToControlVideo'),
+            };
         }
     }
 

@@ -1,13 +1,15 @@
 'use strict';
+/* global I18n */
 
 /**
  * Time utility functions for formatting and calculating durations
  */
 class TimeUtils {
     /**
-     * Format seconds into human-readable time string
-     * @param {number} seconds - Time in seconds
-     * @returns {string} Formatted time string
+     * Resolve a localized unit label (falls back to provided default)
+     * @param {string} key - i18n message key for the unit
+     * @param {string} fallback - Literal fallback when no translation exists
+     * @returns {string} Localized unit label
      */
     static getUnit(key, fallback) {
         try {

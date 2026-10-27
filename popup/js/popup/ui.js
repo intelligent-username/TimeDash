@@ -71,8 +71,7 @@ export const uiMethods = {
         const sitesList = document.getElementById('sitesList');
 
         if (!this.usageData || !this.usageData.domains || this.usageData.domains.length === 0) {
-            sitesList.innerHTML =
-                `<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>${I18n.t('noSitesTracked').replace(/\n/g, '<br>')}</p></div>`;
+            sitesList.innerHTML = `<div class="popup-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/></svg><p>${I18n.t('noSitesTracked').replace(/\n/g, '<br>')}</p></div>`;
             return;
         }
 
@@ -100,8 +99,7 @@ export const uiMethods = {
         }
 
         if (topSites.length === 0) {
-            sitesList.innerHTML =
-                `<div class="popup-empty-state"><p>${I18n.t('noActivityToday').replace(/\n/g, '<br>')}</p></div>`;
+            sitesList.innerHTML = `<div class="popup-empty-state"><p>${I18n.t('noActivityToday').replace(/\n/g, '<br>')}</p></div>`;
             return;
         }
 

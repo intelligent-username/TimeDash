@@ -7,7 +7,11 @@
         "format": "prettier --write .",
         "lint:fix": "eslint . --fix",
         "jsdoc": "jsdoc -c jsdoc.json",
-        "i18n": "node scripts/i18n-coverage.js"
+        "i18n": "node scripts/i18n-coverage.js",
+        "check:manifest": "node scripts/validate-manifest.js",
+        "check:perms": "node scripts/unused-permissions.js",
+        "check": "npm run check:manifest && npm run check:perms",
+        "test": "node --test tests/"
     },
     "devDependencies": {
         "eslint": "^9.9.0",

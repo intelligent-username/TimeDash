@@ -56,7 +56,11 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         const { periodTotal, periodLabel } = this.calculatePeriodTotal(usage);
 
         const totalEl = document.getElementById('analyticsTotalTime');
-        this.setStatCardValue(totalEl, formatTime(periodTotal), chrome.i18n.getMessage('analyticsTotalForPeriod', [periodLabel]));
+        this.setStatCardValue(
+            totalEl,
+            formatTime(periodTotal),
+            chrome.i18n.getMessage('analyticsTotalForPeriod', [periodLabel])
+        );
     };
 
     AnalyticsUI.prototype.setStatCardValue = function setStatCardValue(valueEl, value, label) {
@@ -263,7 +267,10 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             endDate.setDate(now.getDate() + this.chart.offset * 7);
             const startDate = new Date(endDate);
             startDate.setDate(endDate.getDate() - 6);
-            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('past7Days') : chrome.i18n.getMessage('selectedWeek');
+            periodLabel =
+                this.chart.offset === 0
+                    ? chrome.i18n.getMessage('past7Days')
+                    : chrome.i18n.getMessage('selectedWeek');
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
@@ -278,7 +285,10 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
                 now.getMonth() + this.chart.offset + 1,
                 0
             ).getDate();
-            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('thisMonth') : chrome.i18n.getMessage('selectedMonth');
+            periodLabel =
+                this.chart.offset === 0
+                    ? chrome.i18n.getMessage('thisMonth')
+                    : chrome.i18n.getMessage('selectedMonth');
             for (let i = 1; i <= daysInMonth; i++) {
                 const date = new Date(startOfMonth);
                 date.setDate(i);
@@ -288,7 +298,8 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
             }
         } else if (this.currentPeriod === 'year') {
             const year = now.getFullYear() + this.chart.offset;
-            periodLabel = this.chart.offset === 0 ? chrome.i18n.getMessage('thisYear') : year.toString();
+            periodLabel =
+                this.chart.offset === 0 ? chrome.i18n.getMessage('thisYear') : year.toString();
             for (let month = 0; month < 12; month++) {
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 for (let day = 1; day <= daysInMonth; day++) {
@@ -301,7 +312,7 @@ export function applyAnalyticsUIStatsMethods(AnalyticsUI) {
         } else {
             const today = formatDateString(now);
             periodDays = 1;
-periodLabel = chrome.i18n.getMessage('today');
+            periodLabel = chrome.i18n.getMessage('today');
             for (const domain of domains) periodTotal += (usage[domain][today] || 0) * 1000;
         }
 
@@ -351,7 +362,10 @@ periodLabel = chrome.i18n.getMessage('today');
                 const restrictedTime = domainUsage[`${dateStr}_restricted`];
                 const totalDayTime = domainUsage[dateStr] || 0;
                 // Use explicit restricted time, or fallback to total time on that day for this newly restricted site
-                dayTotal += (restrictedTime !== undefined && restrictedTime > 0) ? restrictedTime : totalDayTime;
+                dayTotal +=
+                    restrictedTime !== undefined && restrictedTime > 0
+                        ? restrictedTime
+                        : totalDayTime;
             }
             values.push(dayTotal);
         }
@@ -371,8 +385,7 @@ periodLabel = chrome.i18n.getMessage('today');
 
         const shortLabel = (ds) => {
             const d = new Date(ds + 'T00:00:00');
-            if (days <= 7)
-                return d.toLocaleDateString(undefined, { weekday: 'short' });
+            if (days <= 7) return d.toLocaleDateString(undefined, { weekday: 'short' });
             return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         };
 
@@ -421,9 +434,9 @@ periodLabel = chrome.i18n.getMessage('today');
         const lineChart = this.chart;
         if (lineChart.period !== 'week') {
             lineChart.setPeriod('week');
-            document.querySelectorAll('.period-btn').forEach((b) =>
-                b.classList.toggle('active', b.dataset.period === 'week')
-            );
+            document
+                .querySelectorAll('.period-btn')
+                .forEach((b) => b.classList.toggle('active', b.dataset.period === 'week'));
             this.currentPeriod = 'week';
         }
         const todayMidnight = new Date();
@@ -454,7 +467,8 @@ periodLabel = chrome.i18n.getMessage('today');
             const domainUsage = usage[domain] || {};
             const restrictedSecs = domainUsage[`${dateStr}_restricted`];
             const totalSecs = domainUsage[dateStr] || 0;
-            const seconds = (restrictedSecs !== undefined && restrictedSecs > 0) ? restrictedSecs : totalSecs;
+            const seconds =
+                restrictedSecs !== undefined && restrictedSecs > 0 ? restrictedSecs : totalSecs;
             if (seconds > 0) sitesWithTime.push({ domain, todayTime: seconds * 1000 });
         }
 

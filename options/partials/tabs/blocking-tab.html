@@ -3,11 +3,25 @@
         <div class="card-header">
             <div class="card-title-group">
                 <h2 data-i18n="restrictedAccess">Restricted Access</h2>
-                <span class="card-subtitle" data-i18n="restrictedAccessSubtitle">Sites allowed for specific amounts of time per day.</span>
+                <span class="card-subtitle" data-i18n="restrictedAccessSubtitle"
+                    >Sites allowed for specific amounts of time per day.</span
+                >
             </div>
-            <button id="populatePresetsBtn" class="btn-populate-presets" data-i18n-title="populatePresetsTitle">
-                <span id="populatePresetsLabel" data-i18n="populatePresets">Populate with Common Presets</span>
-                <span id="populatePresetsUndo" class="populate-undo-link" data-i18n="undoPresets" hidden>Undo?</span>
+            <button
+                id="populatePresetsBtn"
+                class="btn-populate-presets"
+                data-i18n-title="populatePresetsTitle"
+            >
+                <span id="populatePresetsLabel" data-i18n="populatePresets"
+                    >Populate with Common Presets</span
+                >
+                <span
+                    id="populatePresetsUndo"
+                    class="populate-undo-link"
+                    data-i18n="undoPresets"
+                    hidden
+                    >Undo?</span
+                >
             </button>
             <button id="newGroupBtn" class="btn-new-group" data-i18n="newGroup">+ New Group</button>
         </div>
@@ -19,7 +33,10 @@
                             class="restricted-form-group"
                             style="height: 100%; display: flex; flex-direction: column"
                         >
-                            <label for="restrictedDomainInput" class="restricted-form-label" data-i18n="websiteDomain"
+                            <label
+                                for="restrictedDomainInput"
+                                class="restricted-form-label"
+                                data-i18n="websiteDomain"
                                 >Website Domain</label
                             >
                             <input
@@ -37,7 +54,7 @@
                                     id="addRestrictedBtn"
                                     class="btn btn-primary"
                                     style="width: 100%; max-width: 300px"
-                                data-i18n="addRestriction"
+                                    data-i18n="addRestriction"
                                 >
                                     Add Restriction
                                 </button>
@@ -45,7 +62,9 @@
                         </div>
 
                         <div class="restricted-form-group">
-                            <label class="restricted-form-label" data-i18n="timeAllowedPerDay">Time Allowed Per Day</label>
+                            <label class="restricted-form-label" data-i18n="timeAllowedPerDay"
+                                >Time Allowed Per Day</label
+                            >
                             <div class="circ-picker-wrap">
                                 <div
                                     id="restrictedPickerMount"
@@ -67,13 +86,17 @@
             <div class="card-header">
                 <div class="card-title-group">
                     <h2 data-i18n="whitelistedDomains">Whitelisted Domains</h2>
-                    <span class="card-subtitle" data-i18n="whitelistedDomainsSubtitle">These sites will never be tracked.</span>
+                    <span class="card-subtitle" data-i18n="whitelistedDomainsSubtitle"
+                        >These sites will never be tracked.</span
+                    >
                 </div>
             </div>
             <div class="card-body">
                 <div class="rule-manager" id="whitelistManager">
                     <div class="rule-input-group modern-input-group">
-                        <label for="whitelistInput" class="sr-only" data-i18n="domainToWhitelist">Domain to whitelist</label>
+                        <label for="whitelistInput" class="sr-only" data-i18n="domainToWhitelist"
+                            >Domain to whitelist</label
+                        >
                         <input
                             type="text"
                             id="whitelistInput"
@@ -84,7 +107,9 @@
                             name="whitelist-domain"
                             spellcheck="false"
                         />
-                        <button id="addWhitelistBtn" class="btn btn-primary" data-i18n="add">Add</button>
+                        <button id="addWhitelistBtn" class="btn btn-primary" data-i18n="add">
+                            Add
+                        </button>
                     </div>
                     <ul class="rule-list modern-list" id="whitelistList"></ul>
                 </div>
@@ -95,13 +120,17 @@
             <div class="card-header">
                 <div class="card-title-group">
                     <h2 data-i18n="hardBlockedSites">Hard-Blocked Sites</h2>
-                    <span class="card-subtitle" data-i18n="hardBlockedSitesSubtitle">These sites are completely inaccessible.</span>
+                    <span class="card-subtitle" data-i18n="hardBlockedSitesSubtitle"
+                        >These sites are completely inaccessible.</span
+                    >
                 </div>
             </div>
             <div class="card-body">
                 <div class="rule-manager" id="blockedManager">
                     <div class="rule-input-group modern-input-group">
-                        <label for="blockedDomainInput" class="sr-only" data-i18n="domainToBlock">Domain to block</label>
+                        <label for="blockedDomainInput" class="sr-only" data-i18n="domainToBlock"
+                            >Domain to block</label
+                        >
                         <input
                             type="text"
                             id="blockedDomainInput"
@@ -112,7 +141,9 @@
                             name="blocked-domain"
                             spellcheck="false"
                         />
-                        <button id="addBlockedBtn" class="btn btn-primary" data-i18n="add">Add</button>
+                        <button id="addBlockedBtn" class="btn btn-primary" data-i18n="add">
+                            Add
+                        </button>
                     </div>
                     <ul class="rule-list modern-list" id="blockedList"></ul>
                 </div>

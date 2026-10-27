@@ -34,7 +34,8 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                         type: 'FOCUS_VIDEO_TAB',
                         tabId,
                     });
-                    if (!focusRes || !focusRes.success) showToast(I18n.t('couldNotFocusTab'), 'error');
+                    if (!focusRes || !focusRes.success)
+                        showToast(I18n.t('couldNotFocusTab'), 'error');
                     return;
                 }
 
@@ -154,16 +155,14 @@ export function applyCurrentlyPlayingLifecycleMethods(CurrentlyPlayingUI) {
                 8000
             );
             if (!response || response.error) {
-                list.innerHTML =
-                    `<div class="analytics-empty-state">${I18n.t('failedLoadVideos')}</div>`;
+                list.innerHTML = `<div class="analytics-empty-state">${I18n.t('failedLoadVideos')}</div>`;
                 return;
             }
 
             const sessions = Array.isArray(response.sessions) ? response.sessions : [];
             this.render(sessions);
         } catch {
-            list.innerHTML =
-                `<div class="analytics-empty-state">${I18n.t('unableLoadVideos')}</div>`;
+            list.innerHTML = `<div class="analytics-empty-state">${I18n.t('unableLoadVideos')}</div>`;
         }
     };
 }

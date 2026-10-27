@@ -27,7 +27,11 @@ export function applyAnalyticsChartTotalsMethods(AnalyticsChart) {
                     }
                 }
 
-                dailyTotals.push({ date: currentYear.toString(), time: yearTotal, year: currentYear });
+                dailyTotals.push({
+                    date: currentYear.toString(),
+                    time: yearTotal,
+                    year: currentYear,
+                });
             }
 
             return dailyTotals;

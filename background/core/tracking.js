@@ -187,9 +187,7 @@ function applyBackgroundTrackingMethods(TimeDashBackground) {
 
         // Pre-calculate group usage if groups exist
         let groupUsageSecondsMap = {};
-        const activeGroups = this.ruleManager.groups.filter(
-            (g) => g.isEnabled && !g.deletedAt
-        );
+        const activeGroups = this.ruleManager.groups.filter((g) => g.isEnabled && !g.deletedAt);
         if (activeGroups.length > 0) {
             if (!allUsage) allUsage = await this.storage.getAllUsage();
             for (const g of activeGroups) {

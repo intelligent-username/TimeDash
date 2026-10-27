@@ -1,6 +1,8 @@
 {
     "appName": { "message": "TimeDash" },
-    "appDescription": { "message": "追踪时间、屏蔽干扰、控制视频速度。私密、仅限本地的生产力分析。" },
+    "appDescription": {
+        "message": "追踪时间、屏蔽干扰、控制视频速度。私密、仅限本地的生产力分析。"
+    },
     "appTitle": { "message": "TimeDash - 生产力监控器" },
     "tagline": { "message": "使用仪表板查看详细信息" },
     "settings": { "message": "设置" },
@@ -100,7 +102,9 @@
     "featuresSupport": { "message": "功能和支持" },
     "tracking": { "message": "追踪" },
     "enableTimeTracking": { "message": "启用时间追踪" },
-    "enableTimeTrackingDesc": { "message": "监控在网站上花费的时间。没有此功能，网站屏蔽设置将无效。" },
+    "enableTimeTrackingDesc": {
+        "message": "监控在网站上花费的时间。没有此功能，网站屏蔽设置将无效。"
+    },
     "generalDailyLimit": { "message": "通用每日限制" },
     "noLimit": { "message": "设置为0表示无限制" },
     "restrictedSiteMaxLimit": { "message": "限制网站最大限制" },
@@ -222,7 +226,9 @@
     "keepDataForDays": { "message": "保留数据" },
     "days": { "message": "天" },
     "storageLimitReached": { "message": "存储限制已达到" },
-    "storageLimitReachedDetail": { "message": "您已达到自定义存储限制。删除旧数据或增加您的限制。" },
+    "storageLimitReachedDetail": {
+        "message": "您已达到自定义存储限制。删除旧数据或增加您的限制。"
+    },
     "storageUsage": { "message": "存储使用情况" },
     "checking": { "message": "检查中…" },
     "limitLabel": { "message": "限制：" },
@@ -237,38 +243,72 @@
     "lastUpdated": { "message": "最后更新：2026年4月" },
     "readFullPolicy": { "message": "阅读完整政策" },
     "privacyOverview": { "message": "概述" },
-    "privacyOverviewBody": { "message": "TimeDash 完全在您的浏览器中运行。它没有分析、遥测、广告或远程追踪。没有账户或服务器记录您的浏览历史。您的数据保留在您的设备上，并使用内置的浏览器存储 API 进行处理。" },
+    "privacyOverviewBody": {
+        "message": "TimeDash 完全在您的浏览器中运行。它没有分析、遥测、广告或远程追踪。没有账户或服务器记录您的浏览历史。您的数据保留在您的设备上，并使用内置的浏览器存储 API 进行处理。"
+    },
     "privacyDataStorage": { "message": "数据存储" },
-    "privacyDataStorageBody1": { "message": "TimeDash 将您的偏好设置和历史记录保存在浏览器的本地存储 API（<code>chrome.storage.local</code>）中。不会在您的浏览器配置文件之外写入任何内容。该扩展程序存储：" },
+    "privacyDataStorageBody1": {
+        "message": "TimeDash 将您的偏好设置和历史记录保存在浏览器的本地存储 API（<code>chrome.storage.local</code>）中。不会在您的浏览器配置文件之外写入任何内容。该扩展程序存储："
+    },
     "privacyDataStorageItem1": { "message": "时间追踪日志及各域名历史记录" },
     "privacyDataStorageItem2": { "message": "每个网站的播放速度偏好设置" },
     "privacyDataStorageItem3": { "message": "网站屏蔽和每日限制规则" },
     "privacyDataStorageItem4": { "message": "主题和 UI 自定义选项" },
-    "privacyDataStorageBody2": { "message": "这些数据仅用于显示您的使用统计和执行您的规则。没有任何部分发送到外部服务器。" },
+    "privacyDataStorageBody2": {
+        "message": "这些数据仅用于显示您的使用统计和执行您的规则。没有任何部分发送到外部服务器。"
+    },
     "privacyNetworkActivity": { "message": "网络活动" },
-    "privacyNetworkActivityBody": { "message": "TimeDash 不进行任何出站网络调用。在开发者工具中看到的任何网络请求都来自您的浏览器解析网站图标或本地加载扩展资源。" },
+    "privacyNetworkActivityBody": {
+        "message": "TimeDash 不进行任何出站网络调用。在开发者工具中看到的任何网络请求都来自您的浏览器解析网站图标或本地加载扩展资源。"
+    },
     "privacyPermissions": { "message": "权限" },
     "privacyPermissionsBody": { "message": "TimeDash 仅请求追踪时间和执行规则所需的权限：" },
     "privacyPermissionStorage": { "message": "<code>storage</code>：在本地保存设置和历史记录。" },
-    "privacyPermissionTabs": { "message": "<code>tabs</code>：读取活动标签页 URL 以记录时间和应用网站规则。" },
-    "privacyPermissionScripting": { "message": "<code>scripting</code>：将视频速度控制注入到网页视频播放器中。" },
-    "privacyPermissionWebNavigation": { "message": "<code>webNavigation</code>：跨框架跟踪 URL 导航。" },
-    "privacyPermissionHost": { "message": "<code>host_permissions</code>：允许内容脚本在访问的网站上运行以追踪时间和管理视频播放。" },
+    "privacyPermissionTabs": {
+        "message": "<code>tabs</code>：读取活动标签页 URL 以记录时间和应用网站规则。"
+    },
+    "privacyPermissionScripting": {
+        "message": "<code>scripting</code>：将视频速度控制注入到网页视频播放器中。"
+    },
+    "privacyPermissionWebNavigation": {
+        "message": "<code>webNavigation</code>：跨框架跟踪 URL 导航。"
+    },
+    "privacyPermissionHost": {
+        "message": "<code>host_permissions</code>：允许内容脚本在访问的网站上运行以追踪时间和管理视频播放。"
+    },
     "privacyPermissionAlarms": { "message": "<code>alarms</code>：运行每日重置和可选的数据清除。" },
-    "privacyPermissionNotifications": { "message": "<code>notifications</code>：（可选）当每日时间限制达到时提醒您。" },
+    "privacyPermissionNotifications": {
+        "message": "<code>notifications</code>：（可选）当每日时间限制达到时提醒您。"
+    },
     "privacyDataDeletion": { "message": "数据删除" },
-    "privacyDataDeletionBody": { "message": "您拥有您的数据。您可以使用上面数据管理中的控件删除单个域名记录或清除所有数据。卸载 TimeDash 会自动从您的浏览器中删除所有存储的扩展数据。" },
-    "privacyDataDeletionItem1": { "message": "点击<strong>删除所有数据</strong>立即清除每条记录。" },
-    "privacyDataDeletionItem2": { "message": "开启<strong>自动清除旧数据</strong>自动清除较旧的记录。" },
-    "privacyDataDeletionItem3": { "message": "使用<strong>删除特定数据</strong>搜索并删除单个域名的记录。" },
+    "privacyDataDeletionBody": {
+        "message": "您拥有您的数据。您可以使用上面数据管理中的控件删除单个域名记录或清除所有数据。卸载 TimeDash 会自动从您的浏览器中删除所有存储的扩展数据。"
+    },
+    "privacyDataDeletionItem1": {
+        "message": "点击<strong>删除所有数据</strong>立即清除每条记录。"
+    },
+    "privacyDataDeletionItem2": {
+        "message": "开启<strong>自动清除旧数据</strong>自动清除较旧的记录。"
+    },
+    "privacyDataDeletionItem3": {
+        "message": "使用<strong>删除特定数据</strong>搜索并删除单个域名的记录。"
+    },
     "privacyNoAccount": { "message": "无需账户" },
-    "privacyNoAccountBody": { "message": "TimeDash 不需要账户、电子邮件或云同步。所有数据都在您的设备上，由您控制。" },
+    "privacyNoAccountBody": {
+        "message": "TimeDash 不需要账户、电子邮件或云同步。所有数据都在您的设备上，由您控制。"
+    },
     "privacyThirdParty": { "message": "第三方代码" },
-    "privacyThirdPartyBody": { "message": "TimeDash 仅对开发工具使用开源库。分发的扩展程序不包含第三方追踪、分析或外部 SDK。" },
+    "privacyThirdPartyBody": {
+        "message": "TimeDash 仅对开发工具使用开源库。分发的扩展程序不包含第三方追踪、分析或外部 SDK。"
+    },
     "privacyLicense": { "message": "许可证" },
-    "privacyLicenseBody": { "message": "TimeDash 在<strong>MIT 许可证</strong>下发布。您可以在许可条款下自由使用、修改和分享它。在 <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a> 上查看源代码。" },
+    "privacyLicenseBody": {
+        "message": "TimeDash 在<strong>MIT 许可证</strong>下发布。您可以在许可条款下自由使用、修改和分享它。在 <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a> 上查看源代码。"
+    },
     "privacyContact": { "message": "联系和问题" },
-    "privacyContactBody": { "message": "如果您发现错误或有隐私问题，请在 <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub 问题页面</a>上打开问题，并提供描述和相关截图。" },
+    "privacyContactBody": {
+        "message": "如果您发现错误或有隐私问题，请在 <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub 问题页面</a>上打开问题，并提供描述和相关截图。"
+    },
     "restrictedAccess": { "message": "限制访问" },
     "restrictedAccessSubtitle": { "message": "每天允许访问特定时间的网站。" },
     "newGroup": { "message": "+ 新建组" },
@@ -312,46 +352,86 @@
     "helpPrivacyDataSub": { "message": "导出、导入、管理数据" },
     "helpHowDoI": { "message": "如何…" },
     "helpTrackTime": { "message": "…追踪我的时间？" },
-    "helpTrackTimeBody": { "message": "时间追踪在 <button class=\"quick-link inline-link\" data-tab=\"general\">通用设置</button> 中启用后自动运行。打开弹出窗口查看今天的总计，或访问 <button class=\"quick-link inline-link\" data-tab=\"analytics\">分析</button> 查看图表和您的活动热图。" },
+    "helpTrackTimeBody": {
+        "message": "时间追踪在 <button class=\"quick-link inline-link\" data-tab=\"general\">通用设置</button> 中启用后自动运行。打开弹出窗口查看今天的总计，或访问 <button class=\"quick-link inline-link\" data-tab=\"analytics\">分析</button> 查看图表和您的活动热图。"
+    },
     "helpBlockSite": { "message": "…完全屏蔽一个网站？" },
-    "helpBlockSiteBody": { "message": "转到 <button class=\"quick-link inline-link\" data-tab=\"blocking\">网站屏蔽</button>，输入域名，并将其添加为<strong>已屏蔽</strong>规则。每当您访问该域名时，扩展程序会将您重定向到屏蔽页面。" },
+    "helpBlockSiteBody": {
+        "message": "转到 <button class=\"quick-link inline-link\" data-tab=\"blocking\">网站屏蔽</button>，输入域名，并将其添加为<strong>已屏蔽</strong>规则。每当您访问该域名时，扩展程序会将您重定向到屏蔽页面。"
+    },
     "helpSetLimit": { "message": "…为网站设置每日时间限制？" },
-    "helpSetLimitBody": { "message": "在 <button class=\"quick-link inline-link\" data-tab=\"blocking\">网站屏蔽</button> 中将域名添加为<strong>限制</strong>规则。设置以分钟为单位的时间限制。一旦当天超过限制，该网站将被屏蔽直到第二天。" },
+    "helpSetLimitBody": {
+        "message": "在 <button class=\"quick-link inline-link\" data-tab=\"blocking\">网站屏蔽</button> 中将域名添加为<strong>限制</strong>规则。设置以分钟为单位的时间限制。一旦当天超过限制，该网站将被屏蔽直到第二天。"
+    },
     "helpChangeSpeed": { "message": "…更改视频播放速度？" },
     "helpChangeSpeedBody": { "message": "您可以通过以下方式之一更改播放速度：" },
-    "helpChangeSpeedItem1": { "message": "使用您在视频控制选项卡中设置的键盘快捷键。（当前：<span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code>，和 <code>.</code></span>）" },
-    "helpChangeSpeedItem2": { "message": "点击扩展图标调出弹出窗口，在那里使用 <code>+</code> / <code>-</code>，和 <code>.</code> 按钮。" },
+    "helpChangeSpeedItem1": {
+        "message": "使用您在视频控制选项卡中设置的键盘快捷键。（当前：<span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code>，和 <code>.</code></span>）"
+    },
+    "helpChangeSpeedItem2": {
+        "message": "点击扩展图标调出弹出窗口，在那里使用 <code>+</code> / <code>-</code>，和 <code>.</code> 按钮。"
+    },
     "helpChangeSpeedItem3": { "message": "直接从视频控制选项卡更改速度。" },
     "helpChangeTheme": { "message": "…更改主题或强调色？" },
-    "helpChangeThemeBody": { "message": "在 <button class=\"quick-link inline-link\" data-tab=\"general\">通用设置</button> 下，找到<strong>外观</strong>部分。选择浅色、深色或自动主题，并选择适合您设置的强调色。" },
+    "helpChangeThemeBody": {
+        "message": "在 <button class=\"quick-link inline-link\" data-tab=\"general\">通用设置</button> 下，找到<strong>外观</strong>部分。选择浅色、深色或自动主题，并选择适合您设置的强调色。"
+    },
     "helpExportData": { "message": "…导出或备份我的数据？" },
-    "helpExportDataBody": { "message": "转到 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button>，使用<strong>导出数据</strong>按钮将您的使用情况和设置保存为 JSON 文件。稍后导入该文件以在其他配置文件上恢复您的数据，或在重新安装后恢复。" },
+    "helpExportDataBody": {
+        "message": "转到 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button>，使用<strong>导出数据</strong>按钮将您的使用情况和设置保存为 JSON 文件。稍后导入该文件以在其他配置文件上恢复您的数据，或在重新安装后恢复。"
+    },
     "helpWhitelistDomain": { "message": "…将域名从追踪中移出白名单？" },
-    "helpWhitelistDomainBody": { "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中将域名添加到白名单。在白名单网站上花费的时间不会被记录。" },
+    "helpWhitelistDomainBody": {
+        "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中将域名添加到白名单。在白名单网站上花费的时间不会被记录。"
+    },
     "helpPauseTracking": { "message": "…暂时暂停追踪？" },
-    "helpPauseTrackingBody": { "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中切换<strong>暂停追踪</strong>。暂停期间不会收集任何数据。" },
+    "helpPauseTrackingBody": {
+        "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中切换<strong>暂停追踪</strong>。暂停期间不会收集任何数据。"
+    },
     "helpDeleteSpecific": { "message": "…删除特定网站的数据？" },
-    "helpDeleteSpecificBody": { "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中使用<strong>搜索要删除数据的域名</strong>字段来查找和删除单个域名的记录。" },
+    "helpDeleteSpecificBody": {
+        "message": "在 <button class=\"quick-link inline-link\" data-tab=\"privacy\">隐私和数据</button> 中使用<strong>搜索要删除数据的域名</strong>字段来查找和删除单个域名的记录。"
+    },
     "helpMinutiae": { "message": "细节" },
     "helpPopupQuickActions": { "message": "弹出窗口快速操作" },
-    "helpPopupQuickActionsBody": { "message": "打开弹出窗口查看今天的时间和热门网站。<kbd>Alt+T</kbd> 从任何页面切换追踪开关。<kbd>Alt+B</kbd> 立即屏蔽当前网站。" },
+    "helpPopupQuickActionsBody": {
+        "message": "打开弹出窗口查看今天的时间和热门网站。<kbd>Alt+T</kbd> 从任何页面切换追踪开关。<kbd>Alt+B</kbd> 立即屏蔽当前网站。"
+    },
     "helpHeatmapDay": { "message": "点击任何热图日期" },
-    "helpHeatmapDayBody": { "message": "点击日期单元格查看您访问了哪些网站以及多长时间。再次点击或按\"热门网站今天\"重置。" },
+    "helpHeatmapDayBody": {
+        "message": "点击日期单元格查看您访问了哪些网站以及多长时间。再次点击或按\"热门网站今天\"重置。"
+    },
     "helpCustomAccent": { "message": "自定义强调色" },
-    "helpCustomAccentBody": { "message": "在通用设置中，点击颜色选择器中的 <strong>+</strong> 添加任何十六进制颜色。" },
+    "helpCustomAccentBody": {
+        "message": "在通用设置中，点击颜色选择器中的 <strong>+</strong> 添加任何十六进制颜色。"
+    },
     "helpWatchStorage": { "message": "监控您的存储" },
-    "helpWatchStorageBody": { "message": "隐私选项卡有存储计量器和自动清除设置，以防止旧数据堆积。" },
+    "helpWatchStorageBody": {
+        "message": "隐私选项卡有存储计量器和自动清除设置，以防止旧数据堆积。"
+    },
     "helpGettingHelp": { "message": "获取帮助" },
     "helpReportIssues": { "message": "报告问题和建议功能" },
-    "helpReportIssuesBody1": { "message": "错误报告和功能请求转到 <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub 问题页面</a>。" },
-    "helpReportIssuesBody2": { "message": "报告错误时，包括：网站 URL、重现步骤、预期与实际行为，以及您的浏览器版本。当 UI 出现问题时，截图很有帮助。对于视频问题，请提及播放器是否嵌入在 iframe 中，并粘贴您在控制台中看到的任何错误。" },
-    "helpReportIssuesBody3": { "message": "对于功能请求，您想要什么的简短描述以及原因就足以开始。" },
+    "helpReportIssuesBody1": {
+        "message": "错误报告和功能请求转到 <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub 问题页面</a>。"
+    },
+    "helpReportIssuesBody2": {
+        "message": "报告错误时，包括：网站 URL、重现步骤、预期与实际行为，以及您的浏览器版本。当 UI 出现问题时，截图很有帮助。对于视频问题，请提及播放器是否嵌入在 iframe 中，并粘贴您在控制台中看到的任何错误。"
+    },
+    "helpReportIssuesBody3": {
+        "message": "对于功能请求，您想要什么的简短描述以及原因就足以开始。"
+    },
     "helpSourceCode": { "message": "源代码" },
-    "helpSourceCodeBody": { "message": "完整源代码在 <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>。如果您想审核扩展可以访问的内容，从 <code>manifest.json</code> 开始，然后读取后台脚本和内容脚本。" },
+    "helpSourceCodeBody": {
+        "message": "完整源代码在 <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>。如果您想审核扩展可以访问的内容，从 <code>manifest.json</code> 开始，然后读取后台脚本和内容脚本。"
+    },
     "helpPrivacyQuestions": { "message": "隐私问题" },
-    "helpPrivacyQuestionsBody": { "message": "在隐私和数据选项卡上阅读<a href=\"#\" id=\"privacyPolicyLink\">完整隐私政策</a>。如果某些内容与您在浏览器中看到的不匹配，请打开问题并提供详细信息。" },
+    "helpPrivacyQuestionsBody": {
+        "message": "在隐私和数据选项卡上阅读<a href=\"#\" id=\"privacyPolicyLink\">完整隐私政策</a>。如果某些内容与您在浏览器中看到的不匹配，请打开问题并提供详细信息。"
+    },
     "helpAbout": { "message": "关于 TimeDash" },
-    "helpAboutBody": { "message": "版本 $1。基于原生 JS 开发的浏览器扩展，无框架且无外部依赖。所有数据均保留在您的设备上。" },
+    "helpAboutBody": {
+        "message": "版本 $1。基于原生 JS 开发的浏览器扩展，无框架且无外部依赖。所有数据均保留在您的设备上。"
+    },
     "analyticsTimeToday": { "message": "今日时间" },
     "analyticsDailyAverage": { "message": "日平均" },
     "analyticsAllTime": { "message": "总时间" },
@@ -381,7 +461,9 @@
     "analyticsSat": { "message": "六" },
     "analyticsTopSitesToday": { "message": "今日热门网站" },
     "analyticsTrackingInterval": { "message": "追踪间隔（秒）" },
-    "analyticsTrackingIntervalTooltip": { "message": "扩展程序多久更新一次您的时间日志。值越低越准确，但使用更多资源。" },
+    "analyticsTrackingIntervalTooltip": {
+        "message": "扩展程序多久更新一次您的时间日志。值越低越准确，但使用更多资源。"
+    },
     "analyticsNoActivity": { "message": "今日未记录活动。" },
     "lessThanOneMin": { "message": "< 1分钟" },
     "zeroSitesTrackedAnalytics": { "message": "0 个网站被追踪" },
@@ -452,7 +534,9 @@
     "storageCompacted": { "message": "存储压缩成功" },
     "failedCompactStorage": { "message": "无法压缩存储" },
     "noMatchesFound": { "message": "未找到匹配项" },
-    "importDataPrompt": { "message": "导入的数据应该附加到现有数据还是替换它？\n\n点击确定附加。\n点击取消替换。" },
+    "importDataPrompt": {
+        "message": "导入的数据应该附加到现有数据还是替换它？\n\n点击确定附加。\n点击取消替换。"
+    },
     "importDataTitle": { "message": "导入数据" },
     "resetAllConfirm": { "message": "重置所有设置和数据？此操作无法撤销。" },
     "settingsResetDefaults": { "message": "设置已重置为默认值" },

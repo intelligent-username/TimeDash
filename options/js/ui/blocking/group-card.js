@@ -37,20 +37,35 @@ function findDropTarget(e) {
         const list = document.getElementById('restrictedList');
         if (!list) return null;
         const r = list.getBoundingClientRect();
-        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        if (
+            e.clientX >= r.left &&
+            e.clientX <= r.right &&
+            e.clientY >= r.top &&
+            e.clientY <= r.bottom
+        ) {
             return { list };
         }
         return null;
     }
     for (const list of document.querySelectorAll('.group-domain-list')) {
         const r = list.getBoundingClientRect();
-        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        if (
+            e.clientX >= r.left &&
+            e.clientX <= r.right &&
+            e.clientY >= r.top &&
+            e.clientY <= r.bottom
+        ) {
             return { list };
         }
     }
     for (const c of document.querySelectorAll('.group-container')) {
         const r = c.getBoundingClientRect();
-        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        if (
+            e.clientX >= r.left &&
+            e.clientX <= r.right &&
+            e.clientY >= r.top &&
+            e.clientY <= r.bottom
+        ) {
             const list = c.querySelector('.group-domain-list');
             if (list && !list.querySelector('.group-domain-row')) return { list };
         }
@@ -223,7 +238,8 @@ document.addEventListener('dragend', () => {
             (el) => el.textContent
         );
         if (newOrder.join('\u0000') === sourceOrder.join('\u0000')) return;
-        chrome.runtime.sendMessage({ type: 'REORDER_RESTRICTED_RULES', domains: newOrder })
+        chrome.runtime
+            .sendMessage({ type: 'REORDER_RESTRICTED_RULES', domains: newOrder })
             .then(() => context.loadSiteRules())
             .catch(() => {});
         return;
@@ -239,7 +255,8 @@ document.addEventListener('dragend', () => {
     if (targetGroupId === sourceGroupId) {
         const newDomains = readDomains(targetList);
         if (newDomains.join('\u0000') === reorderState.sourceOrder.join('\u0000')) return;
-        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: newDomains })
+        chrome.runtime
+            .sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: newDomains })
             .then(() => context.loadSiteRules())
             .catch(() => {});
         return;
@@ -249,8 +266,16 @@ document.addEventListener('dragend', () => {
     const sourceDomains = readDomains(sourceList);
     const targetDomains = readDomains(targetList);
     Promise.all([
-        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: sourceGroupId, domains: sourceDomains }),
-        chrome.runtime.sendMessage({ type: 'UPDATE_GROUP', id: targetGroupId, domains: targetDomains }),
+        chrome.runtime.sendMessage({
+            type: 'UPDATE_GROUP',
+            id: sourceGroupId,
+            domains: sourceDomains,
+        }),
+        chrome.runtime.sendMessage({
+            type: 'UPDATE_GROUP',
+            id: targetGroupId,
+            domains: targetDomains,
+        }),
     ])
         .then(() => context.loadSiteRules())
         .catch(() => {});
@@ -315,7 +340,11 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
             e.dataTransfer.dropEffect = 'move';
             if (reorderState && group.id !== reorderState.sourceGroupId) {
                 const list = container.querySelector('.group-domain-list');
-                if (list && !list.contains(reorderState.row) && !list.querySelector('.group-domain-row')) {
+                if (
+                    list &&
+                    !list.contains(reorderState.row) &&
+                    !list.querySelector('.group-domain-row')
+                ) {
                     flipSwap(list, () => list.appendChild(reorderState.row));
                 }
             }
@@ -495,12 +524,14 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
     let totalGroupUsageSeconds = 0;
     group.domains.forEach((d) => {
         const domainUsage = context.controller?.usage?.[d] || {};
-        totalGroupUsageSeconds += typeof TimeUtils !== 'undefined' ? TimeUtils.calculateTodayTime(domainUsage) : 0;
+        totalGroupUsageSeconds +=
+            typeof TimeUtils !== 'undefined' ? TimeUtils.calculateTodayTime(domainUsage) : 0;
     });
 
     const limitMinutes = group.timeLimitMinutes;
     const limitSeconds = limitMinutes * 60;
-    const usedPercent = limitSeconds > 0 ? Math.min(100, (totalGroupUsageSeconds / limitSeconds) * 100) : 0;
+    const usedPercent =
+        limitSeconds > 0 ? Math.min(100, (totalGroupUsageSeconds / limitSeconds) * 100) : 0;
 
     const statsBar = document.createElement('div');
     statsBar.className = 'group-stats-bar';
@@ -521,7 +552,10 @@ export function renderGroupRectangle(group, domainLimitMap, context) {
     const statsText = document.createElement('div');
     statsText.className = 'group-stats-text';
     const minUnit = typeof I18n !== 'undefined' ? I18n.t('unitMin') : 'm';
-    const usedFormatted = typeof TimeUtils !== 'undefined' ? TimeUtils.formatTime(totalGroupUsageSeconds) : `${Math.floor(totalGroupUsageSeconds / 60)}${minUnit}`;
+    const usedFormatted =
+        typeof TimeUtils !== 'undefined'
+            ? TimeUtils.formatTime(totalGroupUsageSeconds)
+            : `${Math.floor(totalGroupUsageSeconds / 60)}${minUnit}`;
     const limitFormatted = `${limitMinutes}${minUnit}`;
 
     statsText.innerHTML = `<span><strong>${usedFormatted}</strong> / ${limitFormatted}</span>`;

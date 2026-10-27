@@ -30,10 +30,26 @@ class TabTracker {
             this.handleWindowActivationChanged(windowId);
         });
 
+        chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
+            if (details.frameId !== 0) return;
+            if (!DomainUtils.shouldTrackUrl(details.url)) return;
+            try {
+                const tab = await chrome.tabs.get(details.tabId);
+                if (!tab || !tab.id) return;
+                const domain = this.instance.ruleManager.resolveTrackingDomain(details.url);
+                await this.checkAndHandleBlocking(tab, domain);
+            } catch {
+                // Tab may have been closed between event and lookup
+            }
+        });
+
         chrome.webNavigation.onCommitted.addListener(async (details) => {
             if (details.frameId !== 0) return;
 
-            const isExtUrl = details.url && (details.url.startsWith('chrome-extension://') || details.url.startsWith('moz-extension://'));
+            const isExtUrl =
+                details.url &&
+                (details.url.startsWith('chrome-extension://') ||
+                    details.url.startsWith('moz-extension://'));
             if (isExtUrl && (details.url.includes('domain=') || details.url.includes('url='))) {
                 try {
                     const tab = await chrome.tabs.get(details.tabId);
@@ -70,7 +86,8 @@ class TabTracker {
             const tab = await chrome.tabs.get(tabId);
             if (!tab || !tab.url) return;
 
-            const isExtUrl = tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://');
+            const isExtUrl =
+                tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://');
             if (isExtUrl && (tab.url.includes('domain=') || tab.url.includes('url='))) {
                 await this.checkAndRedirectUnblockedPage(tab);
                 return;
@@ -91,7 +108,9 @@ class TabTracker {
     async handleTabUpdated(tabId, url) {
         try {
             if (this.instance.initPromise) await this.instance.initPromise;
-            const isExtUrl = url && (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://'));
+            const isExtUrl =
+                url &&
+                (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://'));
             if (isExtUrl && (url.includes('domain=') || url.includes('url='))) {
                 this.stopTrackingTab(tabId);
                 const tab = await chrome.tabs.get(tabId);
@@ -135,7 +154,10 @@ class TabTracker {
                 : origDomain || '';
             if (!domain) return;
 
-            const accessResult = await this.instance.evaluateAccessForDomain(origUrl || `https://${domain}`, domain);
+            const accessResult = await this.instance.evaluateAccessForDomain(
+                origUrl || `https://${domain}`,
+                domain
+            );
             if (!accessResult.shouldBlock) {
                 const destination = origUrl || `https://${domain}`;
                 await chrome.tabs.update(tab.id, { url: destination });
@@ -167,7 +189,9 @@ class TabTracker {
     async handleSettingsChanged(newSettings) {
         try {
             if (newSettings && newSettings.restrictedSliderMax !== undefined) {
-                await this.instance.ruleManager.enforceRestrictedCap(newSettings.restrictedSliderMax);
+                await this.instance.ruleManager.enforceRestrictedCap(
+                    newSettings.restrictedSliderMax
+                );
             }
             const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
             if (!tabs || tabs.length === 0) return;
@@ -179,13 +203,17 @@ class TabTracker {
             }
 
             const domain = this.instance.ruleManager.resolveTrackingDomain(currentActiveTab.url);
-            const isIncognitoDisallowed = currentActiveTab.incognito && !newSettings.incognitoTracking;
+            const isIncognitoDisallowed =
+                currentActiveTab.incognito && !newSettings.incognitoTracking;
             const isWhitelisted = newSettings.whitelist && newSettings.whitelist.includes(domain);
             const isTrackingDisabled = newSettings.trackingEnabled === false;
 
             if (isIncognitoDisallowed || isWhitelisted || isTrackingDisabled) {
                 this.stopTracking();
-            } else if (!this.instance.currentTrack || this.instance.currentTrack.tabId !== currentActiveTab.id) {
+            } else if (
+                !this.instance.currentTrack ||
+                this.instance.currentTrack.tabId !== currentActiveTab.id
+            ) {
                 await this.handleTabActivated(currentActiveTab.id);
             }
         } catch (error) {
@@ -273,7 +301,6 @@ class TabTracker {
                 (accessResult.todayTimeSeconds != null
                     ? `&used=${Math.round(accessResult.todayTimeSeconds)}`
                     : '');
-            await new Promise((resolve) => setTimeout(resolve, 50));
             await chrome.tabs.update(tab.id, { url: blockPageUrl });
             return true;
         }

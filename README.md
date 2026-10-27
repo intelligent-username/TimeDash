@@ -4,13 +4,12 @@
 
 [![FireFox Store Banner](imgs/ff_banner.png)](https://addons.mozilla.org/en-US/firefox/addon/timedash/)
 
-
-Boost your productivity with strict time tracking, site blocking, analytics, advanced video playback controls.
+Boost your productivity with strict time tracking, site blocking, analytics, and advanced video playback controls.
 
 ## Features
 
 |                                |                                |
-|:------------------------------:|:------------------------------:|
+| :----------------------------: | :----------------------------: |
 | ![Screenshot 1](imgs/ss/1.png) | ![Screenshot 2](imgs/ss/2.png) |
 | ![Screenshot 3](imgs/ss/3.png) | ![Screenshot 4](imgs/ss/4.png) |
 
@@ -18,8 +17,8 @@ Boost your productivity with strict time tracking, site blocking, analytics, adv
 - **Activity Heatmap & Analytics:** Visualize your browsing habits with a GitHub-style heatmap, rolling 7-day usage charts, top sites lists, and daily averages.
 - **Site Blocking & Restrictions:** Block distracting sites entirely, or set daily time limits (e.g., 30 minutes of YouTube per day) that automatically lock you out once exceeded.
 - **Budget Groups (Site Groups):** Bundle multiple sites (e.g., social media) under a shared daily time budget. Supports custom icon selection and full drag-and-drop management:
-  - Drag domains into groups or between groups.
-  - Reorder domains within a group with live position markers.
+    - Drag domains into groups or between groups.
+    - Reorder domains within a group with live position markers.
 - **Video Speed Controller:** Easily control HTML5 video playback speed across the web using customizable keyboard shortcuts or the extension popup.
 - **Data Privacy:** Everything is stored locally in your browser. No external servers, no cloud sync, completely private.
 
@@ -27,9 +26,9 @@ Boost your productivity with strict time tracking, site blocking, analytics, adv
 
 ### Quickly
 
-1) Download from the [Google Extension Store](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb).
-2) Do the initial setup (setting default speed, colors, whatever else).
-3) Enjoy :)
+1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/timedash/fjlmkflcggcdndmchnmggldjdmmmpdgb) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/timedash/).
+2. Do the initial setup (setting default speed, colors, whatever else).
+3. Enjoy :)
 
 ### As a Developer
 
@@ -37,23 +36,23 @@ If you'd like to modify the extension and then run it:
 
 1. **Clone the repository:**
 
-   ```bash
-   git clone https://github.com/intelligent-username/TimeDash.git
-   cd TimeDash
-   ```
+    ```bash
+    git clone https://github.com/intelligent-username/TimeDash.git
+    cd TimeDash
+    ```
 
 2. **Install dependencies:**
-   *(Not even necessary, it's just for linting and formatting)*
-   ```bash
-   npm install
-   ```
+   _(Not even necessary, it's just for linting and formatting)_
+
+    ```bash
+    npm install
+    ```
 
 3. **Load the extension into Chrome:**
-
-   - Open your Chromium-based browser and navigate to `chrome://extensions/` (or other //extensions address).
-   - Enable **"Developer mode"** in the top right corner.
-   - Click **"Load unpacked"** in the top left corner.
-   - Select the `TimeDash` project folder.
+    - Open your Chromium-based browser and navigate to `chrome://extensions/` (or other //extensions address).
+    - Enable **"Developer mode"** in the top right corner.
+    - Click **"Load unpacked"** in the top left corner.
+    - Select the `TimeDash` project folder.
 
 The extension will now be installed and active in your browser. Any changes you make to the code can be applied by clicking the "Refresh" icon on the extension card in `chrome://extensions/`.
 

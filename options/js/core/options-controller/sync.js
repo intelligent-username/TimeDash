@@ -67,7 +67,10 @@ export function applyOptionsSyncMethods(OptionsController) {
                 if (latestSettings.theme && latestSettings.theme !== this.settings.theme) {
                     this.applyImmediateChanges('theme', latestSettings.theme);
                 }
-                if (latestSettings.accentColor && latestSettings.accentColor !== this.settings.accentColor) {
+                if (
+                    latestSettings.accentColor &&
+                    latestSettings.accentColor !== this.settings.accentColor
+                ) {
                     this.applyImmediateChanges('accentColor', latestSettings.accentColor);
                 }
                 this.settings = { ...this.settings, ...latestSettings };

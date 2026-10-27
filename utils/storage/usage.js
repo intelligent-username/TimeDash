@@ -98,7 +98,10 @@ function applyStorageUsageMethods(StorageManager) {
         });
     };
 
-    StorageManager.prototype.mergeUsageData = function mergeUsageData(existingUsage, importedUsage) {
+    StorageManager.prototype.mergeUsageData = function mergeUsageData(
+        existingUsage,
+        importedUsage
+    ) {
         const merged = JSON.parse(JSON.stringify(existingUsage || {}));
         if (!importedUsage) return merged;
 

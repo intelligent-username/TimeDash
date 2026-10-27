@@ -82,9 +82,15 @@
                 aria-label="Chart Range"
                 data-i18n-aria-label="analyticsChartRangeAria"
             >
-                <button class="period-btn active" data-period="week" data-i18n="analyticsWeek">Week</button>
-                <button class="period-btn" data-period="month" data-i18n="analyticsMonth">Month</button>
-                <button class="period-btn" data-period="year" data-i18n="analyticsYear">Year</button>
+                <button class="period-btn active" data-period="week" data-i18n="analyticsWeek">
+                    Week
+                </button>
+                <button class="period-btn" data-period="month" data-i18n="analyticsMonth">
+                    Month
+                </button>
+                <button class="period-btn" data-period="year" data-i18n="analyticsYear">
+                    Year
+                </button>
                 <button class="period-btn" data-period="all" data-i18n="allTime">All Time</button>
             </div>
             <div class="chart-navigation">
@@ -106,8 +112,17 @@
                         <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
                     </svg>
                 </button>
-                <span class="chart-period-label" id="chartPeriodLabel" data-i18n="analyticsThisWeek">This Week</span>
-                <button class="nav-btn" id="chartNext" title="Next" aria-label="Next period" data-i18n-title="analyticsNextPeriod" data-i18n-aria-label="analyticsNextPeriod">
+                <span class="chart-period-label" id="chartPeriodLabel" data-i18n="analyticsThisWeek"
+                    >This Week</span
+                >
+                <button
+                    class="nav-btn"
+                    id="chartNext"
+                    title="Next"
+                    aria-label="Next period"
+                    data-i18n-title="analyticsNextPeriod"
+                    data-i18n-aria-label="analyticsNextPeriod"
+                >
                     <svg
                         width="16"
                         height="16"
@@ -159,7 +174,12 @@
     <div class="card-header">
         <div style="display: flex; align-items: center; gap: var(--spacing-sm)">
             <h2 data-i18n="analyticsActivityHeatmap">Activity Heatmap</h2>
-            <span class="heatmap-sites-count" id="heatmapSitesCount" data-i18n="zeroSitesTrackedAnalytics">0 Sites Tracked</span>
+            <span
+                class="heatmap-sites-count"
+                id="heatmapSitesCount"
+                data-i18n="zeroSitesTrackedAnalytics"
+                >0 Sites Tracked</span
+            >
         </div>
         <div class="heatmap-year-nav" id="heatmapYearNav">
             <button
@@ -208,7 +228,9 @@
                 data-i18n-aria-label="analyticsHeatmapFilterAria"
             >
                 <option value="all" data-i18n="analyticsAllSites">All Sites</option>
-                <option value="restricted" data-i18n="analyticsRestrictedSites">Restricted Sites Only</option>
+                <option value="restricted" data-i18n="analyticsRestrictedSites">
+                    Restricted Sites Only
+                </option>
             </select>
         </div>
     </div>
@@ -239,7 +261,9 @@
     >
         <div>
             <h2 data-i18n="analyticsRestrictedTime">Restricted Time per Day</h2>
-            <p class="card-subheader" data-i18n="analyticsRestrictedTimeSub">Time spent on non-blocked websites with a daily time limit</p>
+            <p class="card-subheader" data-i18n="analyticsRestrictedTimeSub">
+                Time spent on non-blocked websites with a daily time limit
+            </p>
         </div>
         <div
             class="chart-period-selector restriction-chart-controls"
@@ -247,8 +271,12 @@
             aria-label="Restricted Chart Range"
             data-i18n-aria-label="analyticsRestrictedChartRangeAria"
         >
-            <button class="period-btn active" data-restrict-period="week" data-i18n="analyticsWeek">Week</button>
-            <button class="period-btn" data-restrict-period="month" data-i18n="analyticsMonth">Month</button>
+            <button class="period-btn active" data-restrict-period="week" data-i18n="analyticsWeek">
+                Week
+            </button>
+            <button class="period-btn" data-restrict-period="month" data-i18n="analyticsMonth">
+                Month
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -278,7 +306,8 @@
                 <span
                     class="info-tooltip"
                     title="How often the extension updates your time logs. Lower values are more accurate but use more resources."
-                    data-i18n-html="analyticsTrackingIntervalTooltip">?
+                    data-i18n-html="analyticsTrackingIntervalTooltip"
+                    >?
                 </span>
             </label>
             <input
@@ -295,7 +324,9 @@
     </div>
     <div class="card-body">
         <div class="analytics-sites-list" id="analyticsTopSites">
-            <div class="analytics-empty-state" data-i18n="analyticsNoActivity">No activity recorded today.</div>
+            <div class="analytics-empty-state" data-i18n="analyticsNoActivity">
+                No activity recorded today.
+            </div>
         </div>
     </div>
 </div>

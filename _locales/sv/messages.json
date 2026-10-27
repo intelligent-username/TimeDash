@@ -1,6 +1,8 @@
 {
     "appName": { "message": "TimeDash" },
-    "appDescription": { "message": "Spåra tid, blockera distraktioner och kontrollera videohastighet. Privat produktivitetsanalys som endast lagras lokalt." },
+    "appDescription": {
+        "message": "Spåra tid, blockera distraktioner och kontrollera videohastighet. Privat produktivitetsanalys som endast lagras lokalt."
+    },
     "appTitle": { "message": "TimeDash - Produktivitetsbevakare" },
     "tagline": { "message": "Använd instrumentpanelen för detaljer" },
     "settings": { "message": "Inställningar" },
@@ -8,9 +10,15 @@
     "currentSite": { "message": "Nuvarande sida" },
     "setupTitle": { "message": "Välkommen till TimeDash!" },
     "setupBody": { "message": "Din allt-i-ett produktivitetsföljeslagare:" },
-    "setupFeatureTracking": { "message": "⏱️ <strong>Tidsspårning:</strong> Övervaka dina surfvanor." },
-    "setupFeatureVideo": { "message": "⏩ <strong>Videohastighet:</strong> Styr hastigheten på vilken webbplats som helst." },
-    "setupFeatureBlocking": { "message": "🛡️ <strong>Webbplatsblockering:</strong> Håll fokus med tidsgränser." },
+    "setupFeatureTracking": {
+        "message": "⏱️ <strong>Tidsspårning:</strong> Övervaka dina surfvanor."
+    },
+    "setupFeatureVideo": {
+        "message": "⏩ <strong>Videohastighet:</strong> Styr hastigheten på vilken webbplats som helst."
+    },
+    "setupFeatureBlocking": {
+        "message": "🛡️ <strong>Webbplatsblockering:</strong> Håll fokus med tidsgränser."
+    },
     "setupConfigure": { "message": "Låt oss konfigurera dina grundinställningar." },
     "setupComplete": { "message": "Konfigurationen slutfördes framgångsrikt!" },
     "setupFailed": { "message": "Misslyckades med att spara inställningar" },
@@ -30,45 +38,61 @@
     "blockedSite": { "message": "Denna webbplats är blockerad" },
     "blockedTitle": { "message": "Webbplats blockerad - TimeDash" },
     "blockedTitleDomain": { "message": "$1 är blockerad" },
-    "blockReasonDefault": { "message": "Denna webbplats finns på din blockeringslista för att minska distraktioner." },
+    "blockReasonDefault": {
+        "message": "Denna webbplats finns på din blockeringslista för att minska distraktioner."
+    },
     "timesBlockedToday": { "message": "Gånger blockerad idag" },
     "timeSpentOnSite": { "message": "Tid tillbringad på denna webbplats" },
     "manageBlockedSites": { "message": "Hantera blockerade webbplatser" },
     "dailyLimitReached": { "message": "Daglig gräns nådd" },
-    "restrictedReason": { "message": "Du har använt all din tilldelade tid för $1 idag. Åtkomsten återställs vid midnatt." },
+    "restrictedReason": {
+        "message": "Du har använt all din tilldelade tid för $1 idag. Åtkomsten återställs vid midnatt."
+    },
     "limitReachedTitle": { "message": "$1 - Gräns nådd" },
     "timeUsedToday": { "message": "Tid använd idag" },
     "groupLimitReached": { "message": "Gruppgräns nådd" },
-    "groupLimitReason": { "message": "Din budgetgrupp har använt all sin tilldelade tid idag. Åtkomsten återställs vid midnatt." },
+    "groupLimitReason": {
+        "message": "Din budgetgrupp har använt all sin tilldelade tid idag. Åtkomsten återställs vid midnatt."
+    },
     "groupLimitReachedTitle": { "message": "Gruppgräns nådd" },
     "quote1": { "message": "Sättet att komma igång är att sluta prata och börja göra." },
     "quote1Author": { "message": "Walt Disney" },
     "quote2": { "message": "Var produktiv istället för att bara vara upptagen." },
     "quote2Author": { "message": "Tim Ferriss" },
-    "quote3": { "message": "Du är aldrig för gammal för att sätta ett nytt mål eller drömma en ny dröm." },
+    "quote3": {
+        "message": "Du är aldrig för gammal för att sätta ett nytt mål eller drömma en ny dröm."
+    },
     "quote3Author": { "message": "C.S. Lewis" },
     "quote4": { "message": "Framtiden beror på vad du gör idag." },
     "quote4Author": { "message": "Mahatma Gandhi" },
     "quote5": { "message": "Titta inte på klockan; gör som den gör. Fortsätt framåt." },
     "quote5Author": { "message": "Sam Levenson" },
-    "quote6": { "message": "Framgång är summan av små ansträngningar, upprepade dag ut och dag in." },
+    "quote6": {
+        "message": "Framgång är summan av små ansträngningar, upprepade dag ut och dag in."
+    },
     "quote6Author": { "message": "Robert Collier" },
     "quote7": { "message": "Det enda sättet att göra ett bra jobb är att älska det du gör." },
     "quote7Author": { "message": "Steve Jobs" },
     "quote8": { "message": "Tro att du kan, så är du halvvägs där." },
     "quote8Author": { "message": "Theodore Roosevelt" },
-    "tip1": { "message": "Prova Pomodoro-tekniken: Arbeta i 25 minuter och ta sedan en 5-minuters paus." },
+    "tip1": {
+        "message": "Prova Pomodoro-tekniken: Arbeta i 25 minuter och ta sedan en 5-minuters paus."
+    },
     "tip2": { "message": "Skapa en distraktionsfri arbetsyta för att förbättra koncentrationen." },
     "tip3": { "message": "Använd 2-minutersregeln: Om det tar mindre än 2 minuter, gör det nu." },
     "tip4": { "message": "Boka tid i din kalender för viktiga uppgifter." },
     "tip5": { "message": "Ta regelbundna pauser för att upprätthålla hög produktivitetsnivå." },
     "tip6": { "message": "Sätt specifika, mätbara mål för varje arbetspass." },
-    "tip7": { "message": "Ha ett anteckningsblock nära till hands för att skriva ner tankar som dyker upp." },
+    "tip7": {
+        "message": "Ha ett anteckningsblock nära till hands för att skriva ner tankar som dyker upp."
+    },
     "tempAccess": { "message": "Tillfällig åtkomst" },
     "unblock": { "message": "Avblockera" },
     "unblockSite": { "message": "Avblockera webbplats" },
     "blockSite": { "message": "Blockera webbplats" },
-    "blockReason": { "message": "Denna webbplats har blockerats för att hjälpa dig att hålla fokus." },
+    "blockReason": {
+        "message": "Denna webbplats har blockerats för att hjälpa dig att hålla fokus."
+    },
     "requestAccess": { "message": "Begär tillfällig åtkomst" },
     "backToWork": { "message": "Tillbaka till arbetet" },
     "decreaseSpeed": { "message": "Minska hastighet" },
@@ -80,8 +104,12 @@
     "nonTrackablePage": { "message": "Icke-spårbar sida" },
     "trackingDisabledPage": { "message": "Tidsspårning är inaktiverad för denna sida" },
     "noTimeToday": { "message": "Ingen tid registrerad idag" },
-    "noSitesTracked": { "message": "Inga webbplatser spårade ännu.\nBörja surfa för att se din användning!" },
-    "noActivityToday": { "message": "Ingen aktivitet idag ännu.\nDina spårade webbplatser kommer att visas här." },
+    "noSitesTracked": {
+        "message": "Inga webbplatser spårade ännu.\nBörja surfa för att se din användning!"
+    },
+    "noActivityToday": {
+        "message": "Ingen aktivitet idag ännu.\nDina spårade webbplatser kommer att visas här."
+    },
     "progressOfLimit": { "message": "$1% av $2m" },
     "trackingActive": { "message": "● Spårning aktiv" },
     "trackingPaused": { "message": "● Spårning pausad" },
@@ -100,11 +128,15 @@
     "featuresSupport": { "message": "Funktioner och support" },
     "tracking": { "message": "Spårning" },
     "enableTimeTracking": { "message": "Aktivera tidsspårning" },
-    "enableTimeTrackingDesc": { "message": "Övervaka tiden som spenderas på webbplatser. Utan detta fungerar inte webbplatsblockering." },
+    "enableTimeTrackingDesc": {
+        "message": "Övervaka tiden som spenderas på webbplatser. Utan detta fungerar inte webbplatsblockering."
+    },
     "generalDailyLimit": { "message": "Allmän daglig gräns" },
     "noLimit": { "message": "Sätt 0 för ingen gräns" },
     "restrictedSiteMaxLimit": { "message": "Maxgräns för begränsade webbplatser" },
-    "restrictedSiteMaxLimitDesc": { "message": "Strikt tak (i minuter) för begränsade webbplatsregler och skalan på reglaget" },
+    "restrictedSiteMaxLimitDesc": {
+        "message": "Strikt tak (i minuter) för begränsade webbplatsregler och skalan på reglaget"
+    },
     "notificationsBadge": { "message": "Aviseringar och märke" },
     "enableNotifications": { "message": "Aktivera aviseringar" },
     "enableNotificationsDesc": { "message": "Få varningar för gränser och milstolpar" },
@@ -173,7 +205,9 @@
     "videoControls": { "message": "Videoreglage" },
     "speedConfiguration": { "message": "Hastighetskonfiguration" },
     "currentPlaybackSpeedLabel": { "message": "Aktuell uppspelningshastighet" },
-    "currentPlaybackSpeedDesc": { "message": "Universell aktiv hastighet som tillämpas på alla videoelement" },
+    "currentPlaybackSpeedDesc": {
+        "message": "Universell aktiv hastighet som tillämpas på alla videoelement"
+    },
     "currentPlaybackSpeedAria": { "message": "Aktuell uppspelningshastighet" },
     "currentPlaybackSpeedSliderAria": { "message": "Reglage för aktuell uppspelningshastighet" },
     "resetSpeed": { "message": "Återställ hastighet" },
@@ -196,7 +230,9 @@
     "confirmProceedMessage": { "message": "Är du säker på att du vill fortsätta?" },
     "confirm": { "message": "Bekräfta" },
     "importData": { "message": "Importera data" },
-    "importDataMessage": { "message": "Ska den importerade datan läggas till i befintlig data eller ersätta den?" },
+    "importDataMessage": {
+        "message": "Ska den importerade datan läggas till i befintlig data eller ersätta den?"
+    },
     "appendData": { "message": "Lägg till data" },
     "replaceData": { "message": "Ersätt data" },
     "dataExport": { "message": "Data och export" },
@@ -218,11 +254,15 @@
     "incognitoTrackingDesc": { "message": "Spåra tid tillbringad i inkognitoflikar" },
     "dataManagement": { "message": "Datahantering" },
     "autoPurgeOldData": { "message": "Rensa automatiskt gammal data" },
-    "autoPurgeOldDataDesc": { "message": "Ta automatiskt bort poster äldre än ett visst antal dagar" },
+    "autoPurgeOldDataDesc": {
+        "message": "Ta automatiskt bort poster äldre än ett visst antal dagar"
+    },
     "keepDataForDays": { "message": "Behåll data i" },
     "days": { "message": "dagar" },
     "storageLimitReached": { "message": "Lagringsgräns nådd" },
-    "storageLimitReachedDetail": { "message": "Du har nått din anpassade lagringsgräns. Ta bort gammal data eller höj gränsen." },
+    "storageLimitReachedDetail": {
+        "message": "Du har nått din anpassade lagringsgräns. Ta bort gammal data eller höj gränsen."
+    },
     "storageUsage": { "message": "Lagringsanvändning" },
     "checking": { "message": "Kontrollerar…" },
     "limitLabel": { "message": "Gräns:" },
@@ -231,49 +271,99 @@
     "searchDomainToDeletePlaceholder": { "message": "Sök en domän för att ta bort data…" },
     "dataActions": { "message": "Dataåtgärder" },
     "compactStorage": { "message": "Komprimera lagring" },
-    "compactStorageTitle": { "message": "Rensa databasloggar och komprimera lagring utan dataförlust" },
+    "compactStorageTitle": {
+        "message": "Rensa databasloggar och komprimera lagring utan dataförlust"
+    },
     "deleteAllData": { "message": "Ta bort all data" },
     "privacyPolicy": { "message": "Integritetspolicy" },
     "lastUpdated": { "message": "Senast uppdaterad: april 2026" },
     "readFullPolicy": { "message": "Läs hela policyn" },
     "privacyOverview": { "message": "Översikt" },
-    "privacyOverviewBody": { "message": "TimeDash körs helt i din webbläsare. Den innehåller ingen analys, telemetri, reklam eller fjärrspårning. Inga konton eller servrar registrerar din surfhistorik. Din data stannar på din enhet och bearbetas med webbläsarens inbyggda lagrings-API:er." },
+    "privacyOverviewBody": {
+        "message": "TimeDash körs helt i din webbläsare. Den innehåller ingen analys, telemetri, reklam eller fjärrspårning. Inga konton eller servrar registrerar din surfhistorik. Din data stannar på din enhet och bearbetas med webbläsarens inbyggda lagrings-API:er."
+    },
     "privacyDataStorage": { "message": "Datalagring" },
-    "privacyDataStorageBody1": { "message": "TimeDash sparar dina inställningar och historik i webbläsarens lokala lagrings-API (<code>chrome.storage.local</code>). Inget skrivs utanför din webbläsarprofil. Tillägget sparar:" },
+    "privacyDataStorageBody1": {
+        "message": "TimeDash sparar dina inställningar och historik i webbläsarens lokala lagrings-API (<code>chrome.storage.local</code>). Inget skrivs utanför din webbläsarprofil. Tillägget sparar:"
+    },
     "privacyDataStorageItem1": { "message": "Tidsspårningsloggar och historik per domän" },
-    "privacyDataStorageItem2": { "message": "Inställningar för uppspelningshastighet per webbplats" },
-    "privacyDataStorageItem3": { "message": "Regler för webbplatsblockering och dagliga begränsningar" },
+    "privacyDataStorageItem2": {
+        "message": "Inställningar för uppspelningshastighet per webbplats"
+    },
+    "privacyDataStorageItem3": {
+        "message": "Regler för webbplatsblockering och dagliga begränsningar"
+    },
     "privacyDataStorageItem4": { "message": "Alternativ för tema- och gränssnittsanpassning" },
-    "privacyDataStorageBody2": { "message": "Dessa data används uteslutande för att visa användningsstatistik och tillämpa dina regler. Inget skickas någonsin till externa servrar." },
+    "privacyDataStorageBody2": {
+        "message": "Dessa data används uteslutande för att visa användningsstatistik och tillämpa dina regler. Inget skickas någonsin till externa servrar."
+    },
     "privacyNetworkActivity": { "message": "Nätverksaktivitet" },
-    "privacyNetworkActivityBody": { "message": "TimeDash gör inga utgående nätverksanslutningar. Eventuella nätverksförfrågningar som syns i DevTools härrör från att din webbläsare hämtar webbplatsikoner eller läser in tilläggsresurser lokalt." },
+    "privacyNetworkActivityBody": {
+        "message": "TimeDash gör inga utgående nätverksanslutningar. Eventuella nätverksförfrågningar som syns i DevTools härrör från att din webbläsare hämtar webbplatsikoner eller läser in tilläggsresurser lokalt."
+    },
     "privacyPermissions": { "message": "Behörigheter" },
-    "privacyPermissionsBody": { "message": "TimeDash begär endast nödvändiga behörigheter för att spåra tid och verkställa dina regler:" },
-    "privacyPermissionStorage": { "message": "<code>storage</code>: Sparar inställningar och historik lokalt." },
-    "privacyPermissionTabs": { "message": "<code>tabs</code>: Läser aktiva flik-URL:er för att registrera tid och tillämpa regler." },
-    "privacyPermissionScripting": { "message": "<code>scripting</code>: Injicerar hastighetskontroller i webbvideospelare." },
-    "privacyPermissionWebNavigation": { "message": "<code>webNavigation</code>: Spårar URL-navigering över ramar." },
-    "privacyPermissionHost": { "message": "<code>host_permissions</code>: Låter innehållsskript köras på besökta webbplatser för att mäta tid och hantera videouppspelning." },
-    "privacyPermissionAlarms": { "message": "<code>alarms</code>: Kör dagliga återställningar och valfri automatisk datarensning." },
-    "privacyPermissionNotifications": { "message": "<code>notifications</code>: (Valfritt) Varnar dig när dagliga tidsgränser uppnås." },
+    "privacyPermissionsBody": {
+        "message": "TimeDash begär endast nödvändiga behörigheter för att spåra tid och verkställa dina regler:"
+    },
+    "privacyPermissionStorage": {
+        "message": "<code>storage</code>: Sparar inställningar och historik lokalt."
+    },
+    "privacyPermissionTabs": {
+        "message": "<code>tabs</code>: Läser aktiva flik-URL:er för att registrera tid och tillämpa regler."
+    },
+    "privacyPermissionScripting": {
+        "message": "<code>scripting</code>: Injicerar hastighetskontroller i webbvideospelare."
+    },
+    "privacyPermissionWebNavigation": {
+        "message": "<code>webNavigation</code>: Spårar URL-navigering över ramar."
+    },
+    "privacyPermissionHost": {
+        "message": "<code>host_permissions</code>: Låter innehållsskript köras på besökta webbplatser för att mäta tid och hantera videouppspelning."
+    },
+    "privacyPermissionAlarms": {
+        "message": "<code>alarms</code>: Kör dagliga återställningar och valfri automatisk datarensning."
+    },
+    "privacyPermissionNotifications": {
+        "message": "<code>notifications</code>: (Valfritt) Varnar dig när dagliga tidsgränser uppnås."
+    },
     "privacyDataDeletion": { "message": "Dataradering" },
-    "privacyDataDeletionBody": { "message": "Din data tillhör dig. Du kan ta bort poster för en enskild domän eller rensa all data med hjälp av kontrollerna för datahantering ovan. Avinstallation av TimeDash tar automatiskt bort alla tilläggets lagrade data från din webbläsare." },
-    "privacyDataDeletionItem1": { "message": "Klicka på <strong>Ta bort all data</strong> för att omedelbart rensa alla poster." },
-    "privacyDataDeletionItem2": { "message": "Aktivera <strong>Rensa automatiskt gammal data</strong> för att automatiskt rensa äldre poster." },
-    "privacyDataDeletionItem3": { "message": "Använd <strong>Ta bort specifik data</strong> för att söka efter och ta bort poster för en enskild domän." },
+    "privacyDataDeletionBody": {
+        "message": "Din data tillhör dig. Du kan ta bort poster för en enskild domän eller rensa all data med hjälp av kontrollerna för datahantering ovan. Avinstallation av TimeDash tar automatiskt bort alla tilläggets lagrade data från din webbläsare."
+    },
+    "privacyDataDeletionItem1": {
+        "message": "Klicka på <strong>Ta bort all data</strong> för att omedelbart rensa alla poster."
+    },
+    "privacyDataDeletionItem2": {
+        "message": "Aktivera <strong>Rensa automatiskt gammal data</strong> för att automatiskt rensa äldre poster."
+    },
+    "privacyDataDeletionItem3": {
+        "message": "Använd <strong>Ta bort specifik data</strong> för att söka efter och ta bort poster för en enskild domän."
+    },
     "privacyNoAccount": { "message": "Inget konto krävs" },
-    "privacyNoAccountBody": { "message": "TimeDash kräver inget konto, ingen e-postadress eller molnsynkronisering. All data finns på din enhet under din fulla kontroll." },
+    "privacyNoAccountBody": {
+        "message": "TimeDash kräver inget konto, ingen e-postadress eller molnsynkronisering. All data finns på din enhet under din fulla kontroll."
+    },
     "privacyThirdParty": { "message": "Tredjepartskod" },
-    "privacyThirdPartyBody": { "message": "TimeDash använder endast öppen källkodsbibliotek för utvecklingsverktyg. Det distribuerade tillägget innehåller inga tredjepartsspårare, analysverktyg eller externa SDK:er." },
+    "privacyThirdPartyBody": {
+        "message": "TimeDash använder endast öppen källkodsbibliotek för utvecklingsverktyg. Det distribuerade tillägget innehåller inga tredjepartsspårare, analysverktyg eller externa SDK:er."
+    },
     "privacyLicense": { "message": "Licens" },
-    "privacyLicenseBody": { "message": "TimeDash släpps under <strong>MIT-licensen</strong>. Du är fri att använda, modifiera och dela det enligt licensvillkoren. Se källkoden på <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a>." },
+    "privacyLicenseBody": {
+        "message": "TimeDash släpps under <strong>MIT-licensen</strong>. Du är fri att använda, modifiera och dela det enligt licensvillkoren. Se källkoden på <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHub</a>."
+    },
     "privacyContact": { "message": "Kontakt och frågor" },
-    "privacyContactBody": { "message": "Om du hittar en bugg eller har en integritetsfråga, öppna ett ärende på <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub</a> med en beskrivning och relevanta skärmdumpar." },
+    "privacyContactBody": {
+        "message": "Om du hittar en bugg eller har en integritetsfråga, öppna ett ärende på <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub</a> med en beskrivning och relevanta skärmdumpar."
+    },
     "restrictedAccess": { "message": "Begränsad åtkomst" },
-    "restrictedAccessSubtitle": { "message": "Webbplatser tillåtna under specifika tidsperioder varje dag." },
+    "restrictedAccessSubtitle": {
+        "message": "Webbplatser tillåtna under specifika tidsperioder varje dag."
+    },
     "newGroup": { "message": "+ Ny grupp" },
     "populatePresets": { "message": "Fyll med vanliga förinställningar" },
-    "populatePresetsTitle": { "message": "Skapa färdiga budgetgrupper för vanliga distraktionskategorier" },
+    "populatePresetsTitle": {
+        "message": "Skapa färdiga budgetgrupper för vanliga distraktionskategorier"
+    },
     "presetsAdded": { "message": "Förinställningar tillagda" },
     "undoPresets": { "message": "Ångra?" },
     "presetsPopulatedToast": { "message": "Förinställda grupper tillagda" },
@@ -312,46 +402,90 @@
     "helpPrivacyDataSub": { "message": "Exportera, importera, hantera data" },
     "helpHowDoI": { "message": "Hur gör jag för att…" },
     "helpTrackTime": { "message": "…spåra min tid?" },
-    "helpTrackTimeBody": { "message": "Tidsspårning körs automatiskt när den är aktiverad i <button class=\"quick-link inline-link\" data-tab=\"general\">Allmänna inställningar</button>. Öppna popupen för att se dagens sammanlagda tid eller besök <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analys</button> för diagram och en värmekarta över din aktivitet." },
+    "helpTrackTimeBody": {
+        "message": "Tidsspårning körs automatiskt när den är aktiverad i <button class=\"quick-link inline-link\" data-tab=\"general\">Allmänna inställningar</button>. Öppna popupen för att se dagens sammanlagda tid eller besök <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analys</button> för diagram och en värmekarta över din aktivitet."
+    },
     "helpBlockSite": { "message": "…blockera en webbplats helt?" },
-    "helpBlockSiteBody": { "message": "Gå till <button class=\"quick-link inline-link\" data-tab=\"blocking\">Webbplatsblockering</button>, skriv in domänen och lägg till den som en <strong>Blockerad</strong> regel. Tillägget omdirigerar dig till en blockeringssida när du besöker den domänen." },
+    "helpBlockSiteBody": {
+        "message": "Gå till <button class=\"quick-link inline-link\" data-tab=\"blocking\">Webbplatsblockering</button>, skriv in domänen och lägg till den som en <strong>Blockerad</strong> regel. Tillägget omdirigerar dig till en blockeringssida när du besöker den domänen."
+    },
     "helpSetLimit": { "message": "…sätta en daglig tidsgräns för en webbplats?" },
-    "helpSetLimitBody": { "message": "Lägg till domänen som en <strong>Begränsad</strong> regel i <button class=\"quick-link inline-link\" data-tab=\"blocking\">Webbplatsblockering</button>. Ställ in en tidsgräns i minuter. När den överskrids för dagen blockeras webbplatsen fram till nästa dag." },
+    "helpSetLimitBody": {
+        "message": "Lägg till domänen som en <strong>Begränsad</strong> regel i <button class=\"quick-link inline-link\" data-tab=\"blocking\">Webbplatsblockering</button>. Ställ in en tidsgräns i minuter. När den överskrids för dagen blockeras webbplatsen fram till nästa dag."
+    },
     "helpChangeSpeed": { "message": "…ändra videouppspelningshastighet?" },
-    "helpChangeSpeedBody": { "message": "Du kan ändra uppspelningshastigheten på något av följande sätt:" },
-    "helpChangeSpeedItem1": { "message": "Använd kortkommandona som konfigurerats i fliken för videokontroller. (Nuvarande: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code> och <code>.</code></span>)" },
-    "helpChangeSpeedItem2": { "message": "Klicka på tilläggsikonen för att öppna popupen och använd knapparna <code>+</code> / <code>-</code> och <code>.</code> där." },
-    "helpChangeSpeedItem3": { "message": "Ändra hastigheten direkt från fliken för videokontroller." },
+    "helpChangeSpeedBody": {
+        "message": "Du kan ändra uppspelningshastigheten på något av följande sätt:"
+    },
+    "helpChangeSpeedItem1": {
+        "message": "Använd kortkommandona som konfigurerats i fliken för videokontroller. (Nuvarande: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code> och <code>.</code></span>)"
+    },
+    "helpChangeSpeedItem2": {
+        "message": "Klicka på tilläggsikonen för att öppna popupen och använd knapparna <code>+</code> / <code>-</code> och <code>.</code> där."
+    },
+    "helpChangeSpeedItem3": {
+        "message": "Ändra hastigheten direkt från fliken för videokontroller."
+    },
     "helpChangeTheme": { "message": "…ändra tema eller accentfärg?" },
-    "helpChangeThemeBody": { "message": "I <button class=\"quick-link inline-link\" data-tab=\"general\">Allmänna inställningar</button>, hitta avsnittet <strong>Utseende</strong>. Välj ljust, mörkt eller automatiskt tema och välj en accentfärg som passar dig." },
+    "helpChangeThemeBody": {
+        "message": "I <button class=\"quick-link inline-link\" data-tab=\"general\">Allmänna inställningar</button>, hitta avsnittet <strong>Utseende</strong>. Välj ljust, mörkt eller automatiskt tema och välj en accentfärg som passar dig."
+    },
     "helpExportData": { "message": "…exportera eller säkerhetskopiera min data?" },
-    "helpExportDataBody": { "message": "Gå till <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button> och använd knappen <strong>Exportera data</strong> för att spara din användning och dina inställningar som en JSON-fil. Importera denna fil senare för att återställa din data på en annan profil eller efter en ominstallation." },
+    "helpExportDataBody": {
+        "message": "Gå till <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button> och använd knappen <strong>Exportera data</strong> för att spara din användning och dina inställningar som en JSON-fil. Importera denna fil senare för att återställa din data på en annan profil eller efter en ominstallation."
+    },
     "helpWhitelistDomain": { "message": "…utesluta en domän från spårning (vitlista)?" },
-    "helpWhitelistDomainBody": { "message": "Lägg till domänen på vitlistan i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button>. Tid som spenderas på vitlistade webbplatser kommer inte att registreras." },
+    "helpWhitelistDomainBody": {
+        "message": "Lägg till domänen på vitlistan i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button>. Tid som spenderas på vitlistade webbplatser kommer inte att registreras."
+    },
     "helpPauseTracking": { "message": "…tillfälligt pausa spårning?" },
-    "helpPauseTrackingBody": { "message": "Aktivera <strong>Pausa spårning</strong> i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button>. Ingen data kommer att samlas in medan den är pausad." },
+    "helpPauseTrackingBody": {
+        "message": "Aktivera <strong>Pausa spårning</strong> i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button>. Ingen data kommer att samlas in medan den är pausad."
+    },
     "helpDeleteSpecific": { "message": "…ta bort data för en viss webbplats?" },
-    "helpDeleteSpecificBody": { "message": "Använd fältet <strong>Sök domän för att ta bort data</strong> i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button> för att hitta och rensa poster för enskilda domäner." },
+    "helpDeleteSpecificBody": {
+        "message": "Använd fältet <strong>Sök domän för att ta bort data</strong> i <button class=\"quick-link inline-link\" data-tab=\"privacy\">Integritet och data</button> för att hitta och rensa poster för enskilda domäner."
+    },
     "helpMinutiae": { "message": "Detaljer och tips" },
     "helpPopupQuickActions": { "message": "Popup-snabbåtgärder" },
-    "helpPopupQuickActionsBody": { "message": "Öppna popupen för att se dagens tid och mest besökta webbplatser. <kbd>Alt+T</kbd> slår på/av spårning från valfri sida. <kbd>Alt+B</kbd> blockerar omedelbart den aktuella webbplatsen." },
+    "helpPopupQuickActionsBody": {
+        "message": "Öppna popupen för att se dagens tid och mest besökta webbplatser. <kbd>Alt+T</kbd> slår på/av spårning från valfri sida. <kbd>Alt+B</kbd> blockerar omedelbart den aktuella webbplatsen."
+    },
     "helpHeatmapDay": { "message": "Klicka på valfri dag i värmekartan" },
-    "helpHeatmapDayBody": { "message": "Klicka på en dagscell för att se en uppdelning av vilka webbplatser du besökte och hur länge. Klicka igen eller tryck på \"Mest besökta sidor idag\" för att återställa." },
+    "helpHeatmapDayBody": {
+        "message": "Klicka på en dagscell för att se en uppdelning av vilka webbplatser du besökte och hur länge. Klicka igen eller tryck på \"Mest besökta sidor idag\" för att återställa."
+    },
     "helpCustomAccent": { "message": "Anpassad accentfärg" },
-    "helpCustomAccentBody": { "message": "I Allmänna inställningar klickar du på <strong>+</strong> i färgväljaren för att lägga till valfri hexadecimal färg." },
+    "helpCustomAccentBody": {
+        "message": "I Allmänna inställningar klickar du på <strong>+</strong> i färgväljaren för att lägga till valfri hexadecimal färg."
+    },
     "helpWatchStorage": { "message": "Övervaka din lagring" },
-    "helpWatchStorageBody": { "message": "Integritetsfliken har en lagringsmätare och inställningar för automatisk rensning för att förhindra att gammal data hopar sig." },
+    "helpWatchStorageBody": {
+        "message": "Integritetsfliken har en lagringsmätare och inställningar för automatisk rensning för att förhindra att gammal data hopar sig."
+    },
     "helpGettingHelp": { "message": "Få hjälp" },
     "helpReportIssues": { "message": "Rapportera problem och föreslå funktioner" },
-    "helpReportIssuesBody1": { "message": "Felrapporter och funktionsförfrågningar hanteras på <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues-sidan</a>." },
-    "helpReportIssuesBody2": { "message": "När du rapporterar ett fel, inkludera: webbplatsens URL, steg för att återskapa, förväntat kontra faktiskt beteende och din webbläsarversion. Skärmdumpar är till stor hjälp vid gränssnittsproblem. För videoproblem, ange om spelaren är inbäddad i en iframe och klistra in eventuella konsolfel." },
-    "helpReportIssuesBody3": { "message": "För funktionsförfrågningar räcker det med en kort beskrivning av vad du vill ha och varför." },
+    "helpReportIssuesBody1": {
+        "message": "Felrapporter och funktionsförfrågningar hanteras på <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues-sidan</a>."
+    },
+    "helpReportIssuesBody2": {
+        "message": "När du rapporterar ett fel, inkludera: webbplatsens URL, steg för att återskapa, förväntat kontra faktiskt beteende och din webbläsarversion. Skärmdumpar är till stor hjälp vid gränssnittsproblem. För videoproblem, ange om spelaren är inbäddad i en iframe och klistra in eventuella konsolfel."
+    },
+    "helpReportIssuesBody3": {
+        "message": "För funktionsförfrågningar räcker det med en kort beskrivning av vad du vill ha och varför."
+    },
     "helpSourceCode": { "message": "Källkod" },
-    "helpSourceCodeBody": { "message": "Den fullständiga källkoden finns på <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. Om du vill granska vad tillägget har tillgång till, börja med <code>manifest.json</code> och läs sedan bakgrunds- och innehållsskripten." },
+    "helpSourceCodeBody": {
+        "message": "Den fullständiga källkoden finns på <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. Om du vill granska vad tillägget har tillgång till, börja med <code>manifest.json</code> och läs sedan bakgrunds- och innehållsskripten."
+    },
     "helpPrivacyQuestions": { "message": "Integritetsfrågor" },
-    "helpPrivacyQuestionsBody": { "message": "Läs hela <a href=\"#\" id=\"privacyPolicyLink\">integritetspolicyn</a> i fliken Integritet och data. Om något inte stämmer överens med vad du ser i webbläsaren, öppna ett ärende med detaljer." },
+    "helpPrivacyQuestionsBody": {
+        "message": "Läs hela <a href=\"#\" id=\"privacyPolicyLink\">integritetspolicyn</a> i fliken Integritet och data. Om något inte stämmer överens med vad du ser i webbläsaren, öppna ett ärende med detaljer."
+    },
     "helpAbout": { "message": "Om TimeDash" },
-    "helpAboutBody": { "message": "Version $1. Byggt som ett tillägg i ren JavaScript utan ramverk och utan externa beroenden. All data stannar på din enhet." },
+    "helpAboutBody": {
+        "message": "Version $1. Byggt som ett tillägg i ren JavaScript utan ramverk och utan externa beroenden. All data stannar på din enhet."
+    },
     "analyticsTimeToday": { "message": "Tid idag" },
     "analyticsDailyAverage": { "message": "Dagligt snitt" },
     "analyticsAllTime": { "message": "All tid" },
@@ -370,7 +504,9 @@
     "analyticsAllSites": { "message": "Alla webbplatser" },
     "analyticsRestrictedSites": { "message": "Endast begränsade webbplatser" },
     "analyticsRestrictedTime": { "message": "Begränsad tid per dag" },
-    "analyticsRestrictedTimeSub": { "message": "Tid tillbringad på icke-blockerade webbplatser med en daglig tidsgräns" },
+    "analyticsRestrictedTimeSub": {
+        "message": "Tid tillbringad på icke-blockerade webbplatser med en daglig tidsgräns"
+    },
     "analyticsTrackingStarted": { "message": "Spårning startade" },
     "analyticsSun": { "message": "Sön" },
     "analyticsMon": { "message": "Mån" },
@@ -381,7 +517,9 @@
     "analyticsSat": { "message": "Lör" },
     "analyticsTopSitesToday": { "message": "Mest besökta sidor idag" },
     "analyticsTrackingInterval": { "message": "Spårningsintervall (sekunder)" },
-    "analyticsTrackingIntervalTooltip": { "message": "Hur ofta tillägget uppdaterar tidsloggar. Lägre värden är mer exakta men förbrukar mer resurser." },
+    "analyticsTrackingIntervalTooltip": {
+        "message": "Hur ofta tillägget uppdaterar tidsloggar. Lägre värden är mer exakta men förbrukar mer resurser."
+    },
     "analyticsNoActivity": { "message": "Ingen aktivitet registrerad idag." },
     "lessThanOneMin": { "message": "< 1m" },
     "zeroSitesTrackedAnalytics": { "message": "0 spårade webbplatser" },
@@ -465,19 +603,33 @@
     "storageCompacted": { "message": "Lagring komprimerades framgångsrikt" },
     "failedCompactStorage": { "message": "Misslyckades med att komprimera lagring" },
     "noMatchesFound": { "message": "Inga matchningar hittades" },
-    "importDataPrompt": { "message": "Ska den importerade datan läggas till i befintlig data eller ersätta den?\n\nKlicka på OK för att lägga till.\nKlicka på Avbryt för att ersätta." },
+    "importDataPrompt": {
+        "message": "Ska den importerade datan läggas till i befintlig data eller ersätta den?\n\nKlicka på OK för att lägga till.\nKlicka på Avbryt för att ersätta."
+    },
     "importDataTitle": { "message": "Importera data" },
-    "resetAllConfirm": { "message": "Återställa ALLA inställningar och all data? Detta kan inte ångras." },
+    "resetAllConfirm": {
+        "message": "Återställa ALLA inställningar och all data? Detta kan inte ångras."
+    },
     "settingsResetDefaults": { "message": "Inställningar återställda till standardvärden" },
     "failedResetSettings": { "message": "Misslyckades med att återställa inställningar" },
     "failedImportData": { "message": "Misslyckades med att importera data" },
-    "importErrorNotObject": { "message": "Import misslyckades: Filen måste innehålla ett JSON-objekt." },
-    "importErrorEmpty": { "message": "Import misslyckades: Ingen användning, inställningar, blockeringslista, regler eller grupper hittades i filen." },
+    "importErrorNotObject": {
+        "message": "Import misslyckades: Filen måste innehålla ett JSON-objekt."
+    },
+    "importErrorEmpty": {
+        "message": "Import misslyckades: Ingen användning, inställningar, blockeringslista, regler eller grupper hittades i filen."
+    },
     "importErrorUsage": { "message": "Import misslyckades: Användningssektionen är felaktig." },
-    "importErrorTooLarge": { "message": "Import misslyckades: Användningssektionen innehåller för många domäner (max 50 000)." },
-    "importErrorNumbers": { "message": "Import misslyckades: Användningssektionen innehåller ogiltiga (negativa eller oändliga) nummer." },
+    "importErrorTooLarge": {
+        "message": "Import misslyckades: Användningssektionen innehåller för många domäner (max 50 000)."
+    },
+    "importErrorNumbers": {
+        "message": "Import misslyckades: Användningssektionen innehåller ogiltiga (negativa eller oändliga) nummer."
+    },
     "importErrorSettings": { "message": "Import misslyckades: Inställningssektionen är felaktig." },
-    "importErrorBlockList": { "message": "Import misslyckades: Blockeringslistan måste vara en array." },
+    "importErrorBlockList": {
+        "message": "Import misslyckades: Blockeringslistan måste vara en array."
+    },
     "importErrorRules": { "message": "Import misslyckades: Webbplatsregelsektionen är felaktig." },
     "importErrorGroups": { "message": "Import misslyckades: Webbplatsgruppsektionen är felaktig." },
     "dataAppended": { "message": "Data lades till framgångsrikt" },
@@ -508,7 +660,9 @@
     "analyticsPreviousYearTitle": { "message": "Föregående år" },
     "analyticsNextYearTitle": { "message": "Nästa år" },
     "analyticsChartRangeAria": { "message": "Diagramintervall" },
-    "analyticsRestrictedChartRangeAria": { "message": "Diagramintervall för begränsade webbplatser" },
+    "analyticsRestrictedChartRangeAria": {
+        "message": "Diagramintervall för begränsade webbplatser"
+    },
     "analyticsHeatmapFilterAria": { "message": "Filtrera värmekartan efter webbplatstyp" },
     "analyticsTopSitesOnDate": { "message": "Mest besökta sidor den $1" },
     "analyticsTopSitesInPeriod": { "message": "Mest besökta sidor under $1" },
@@ -528,7 +682,9 @@
     "undidMovedBack": { "message": "Ångrade: Flyttade tillbaka $1 till ursprungsgruppen" },
     "speedSetForDomain": { "message": "Hastighet inställd för $1" },
     "storageQuotaOfLimit": { "message": "$1% av $2MB-gränsen" },
-    "storageWarningDetail": { "message": "Du använder $1 av den tillåtna gränsen på $2MB. Överväg att rensa gammal data eller höja gränsen." },
+    "storageWarningDetail": {
+        "message": "Du använder $1 av den tillåtna gränsen på $2MB. Överväg att rensa gammal data eller höja gränsen."
+    },
 
     "sitesTrackedOne": {
         "message": "$COUNT$ spårad webbplats",
@@ -548,7 +704,9 @@
     "lastYear": { "message": "Förra året" },
     "lastMonth": { "message": "Förra månaden" },
     "restrictedTimePerDay": { "message": "Begränsad tid per dag" },
-    "noRestrictedActivity": { "message": "Ingen aktivitet på begränsade webbplatser ännu under denna period" },
+    "noRestrictedActivity": {
+        "message": "Ingen aktivitet på begränsade webbplatser ännu under denna period"
+    },
 
     "editDailyLimit": { "message": "Redigera daglig gräns" },
     "timeUsed": { "message": "tid använd idag" },
@@ -557,8 +715,12 @@
 
     "exactHostBadge": { "message": "exakt" },
     "noDataForPeriod": { "message": "Ingen data för denna period" },
-    "noRulesYet": { "message": "Inga regler ännu.\nLägg till en webbplats ovan för att komma igång." },
-    "noGroupsYet": { "message": "Inga grupper ännu.\nSkapa en grupp för att dela en daglig gräns över flera webbplatser." },
+    "noRulesYet": {
+        "message": "Inga regler ännu.\nLägg till en webbplats ovan för att komma igång."
+    },
+    "noGroupsYet": {
+        "message": "Inga grupper ännu.\nSkapa en grupp för att dela en daglig gräns över flera webbplatser."
+    },
     "checkingAccess": { "message": "Kontrollerar åtkomst…" },
     "exactHostTooltip": {
         "message": "Exakt underdomän specificerad — tid på den spåras separat från dess föräldradomän."

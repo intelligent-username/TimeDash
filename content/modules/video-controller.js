@@ -13,7 +13,10 @@ class VideoController {
     applyNativePlaybackRate(video, rate) {
         if (!video) return;
         try {
-            const descriptor = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'playbackRate');
+            const descriptor = Object.getOwnPropertyDescriptor(
+                HTMLMediaElement.prototype,
+                'playbackRate'
+            );
             if (descriptor && typeof descriptor.set === 'function') {
                 descriptor.set.call(video, rate);
             } else {
@@ -68,34 +71,48 @@ class VideoController {
         video.addEventListener('canplay', setupSpeed, { signal });
 
         // Listen for internal rate changes
-        video.addEventListener('ratechange', () => {
-            if (this.instance._settingSpeed) return;
+        video.addEventListener(
+            'ratechange',
+            () => {
+                if (this.instance._settingSpeed) return;
 
-            this.instance.markVideoInteraction(video);
-            if (this.instance.ui) {
-                this.showSpeedOverlayIndicator(true);
-            }
-
-            const externalSpeed = video.playbackRate;
-            if (Math.abs(externalSpeed - this.instance.currentSpeed) > 0.05) {
-                this.instance._settingSpeed = true;
-                this.applyNativePlaybackRate(video, this.instance.currentSpeed);
-                this.instance._settingSpeed = false;
+                this.instance.markVideoInteraction(video);
                 if (this.instance.ui) {
                     this.showSpeedOverlayIndicator(true);
                 }
-            }
-        }, { signal });
 
-        video.addEventListener('play', () => {
-            setupSpeed();
-            this.instance.markVideoInteraction(video);
-        }, { signal });
-        video.addEventListener('playing', () => {
-            setupSpeed();
-            this.instance.markVideoInteraction(video);
-        }, { signal });
-        video.addEventListener('seeking', () => this.instance.markVideoInteraction(video), { signal });
+                const externalSpeed = video.playbackRate;
+                if (Math.abs(externalSpeed - this.instance.currentSpeed) > 0.05) {
+                    this.instance._settingSpeed = true;
+                    this.applyNativePlaybackRate(video, this.instance.currentSpeed);
+                    this.instance._settingSpeed = false;
+                    if (this.instance.ui) {
+                        this.showSpeedOverlayIndicator(true);
+                    }
+                }
+            },
+            { signal }
+        );
+
+        video.addEventListener(
+            'play',
+            () => {
+                setupSpeed();
+                this.instance.markVideoInteraction(video);
+            },
+            { signal }
+        );
+        video.addEventListener(
+            'playing',
+            () => {
+                setupSpeed();
+                this.instance.markVideoInteraction(video);
+            },
+            { signal }
+        );
+        video.addEventListener('seeking', () => this.instance.markVideoInteraction(video), {
+            signal,
+        });
 
         let cleanupObserver = null;
         if (video.parentNode) {
@@ -266,7 +283,10 @@ class VideoController {
                 case 'seek': {
                     const target = Number(value);
                     if (!Number.isFinite(target)) {
-                        return { success: false, error: chrome.i18n.getMessage('invalidSeekValue') };
+                        return {
+                            success: false,
+                            error: chrome.i18n.getMessage('invalidSeekValue'),
+                        };
                     }
                     const maxSeek = Number.isFinite(video.duration) ? video.duration : target;
                     video.currentTime = Math.max(0, Math.min(maxSeek, target));
@@ -277,7 +297,10 @@ class VideoController {
             }
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.message || chrome.i18n.getMessage('playbackControlFailed') };
+            return {
+                success: false,
+                error: error.message || chrome.i18n.getMessage('playbackControlFailed'),
+            };
         }
     }
 

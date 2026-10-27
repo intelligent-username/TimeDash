@@ -125,7 +125,9 @@ export const actionMethods = {
             this.settings = newSettings;
             this.updateFooter();
             PopupHelpers.showToast(
-                chrome.i18n.getMessage(newSettings.trackingEnabled ? 'trackingEnabled' : 'trackingPaused'),
+                chrome.i18n.getMessage(
+                    newSettings.trackingEnabled ? 'trackingEnabled' : 'trackingPaused'
+                ),
                 'success'
             );
         } catch (error) {

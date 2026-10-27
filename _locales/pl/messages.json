@@ -1,6 +1,8 @@
 {
     "appName": { "message": "TimeDash" },
-    "appDescription": { "message": "Śledź czas, blokuj rozpraszacze i kontroluj prędkość wideo. Prywatna, w pełni lokalna analityka produktywności." },
+    "appDescription": {
+        "message": "Śledź czas, blokuj rozpraszacze i kontroluj prędkość wideo. Prywatna, w pełni lokalna analityka produktywności."
+    },
     "appTitle": { "message": "TimeDash - Monitor produktywności" },
     "tagline": { "message": "Użyj panelu, aby zobaczyć szczegóły" },
     "settings": { "message": "Ustawienia" },
@@ -8,9 +10,15 @@
     "currentSite": { "message": "Bieżąca witryna" },
     "setupTitle": { "message": "Witaj w TimeDash!" },
     "setupBody": { "message": "Twój wszechstronny asystent produktywności:" },
-    "setupFeatureTracking": { "message": "⏱️ <strong>Śledzenie czasu:</strong> Monitoruj swoje nawyki przeglądania." },
-    "setupFeatureVideo": { "message": "⏩ <strong>Prędkość wideo:</strong> Kontroluj prędkość na dowolnej stronie." },
-    "setupFeatureBlocking": { "message": "🛡️ <strong>Blokowanie stron:</strong> Utrzymuj skupienie dzięki limitom." },
+    "setupFeatureTracking": {
+        "message": "⏱️ <strong>Śledzenie czasu:</strong> Monitoruj swoje nawyki przeglądania."
+    },
+    "setupFeatureVideo": {
+        "message": "⏩ <strong>Prędkość wideo:</strong> Kontroluj prędkość na dowolnej stronie."
+    },
+    "setupFeatureBlocking": {
+        "message": "🛡️ <strong>Blokowanie stron:</strong> Utrzymuj skupienie dzięki limitom."
+    },
     "setupConfigure": { "message": "Skonfigurujmy Twoje początkowe ustawienia." },
     "setupComplete": { "message": "Konfiguracja zakończona sukcesem!" },
     "setupFailed": { "message": "Nie udało się zapisać ustawień" },
@@ -30,22 +38,32 @@
     "blockedSite": { "message": "Ta strona jest zablokowana" },
     "blockedTitle": { "message": "Strona zablokowana - TimeDash" },
     "blockedTitleDomain": { "message": "$1 jest zablokowana" },
-    "blockReasonDefault": { "message": "Ta strona znajduje się na liście blokowanych, aby ograniczyć rozpraszacze." },
+    "blockReasonDefault": {
+        "message": "Ta strona znajduje się na liście blokowanych, aby ograniczyć rozpraszacze."
+    },
     "timesBlockedToday": { "message": "Zablokowano dzisiaj" },
     "timeSpentOnSite": { "message": "Czas spędzony na tej stronie" },
     "manageBlockedSites": { "message": "Zarządzaj zablokowanymi stronami" },
     "dailyLimitReached": { "message": "Osiągnięto dzienny limit" },
-    "restrictedReason": { "message": "Wykorzystano cały przydzielony czas dla $1 na dzisiaj. Dostęp zostanie zresetowany o północy." },
+    "restrictedReason": {
+        "message": "Wykorzystano cały przydzielony czas dla $1 na dzisiaj. Dostęp zostanie zresetowany o północy."
+    },
     "limitReachedTitle": { "message": "$1 - Osiągnięto limit" },
     "timeUsedToday": { "message": "Czas wykorzystany dzisiaj" },
     "groupLimitReached": { "message": "Osiągnięto limit grupy" },
-    "groupLimitReason": { "message": "Twoja grupa budżetowa wykorzystała cały przydzielony czas na dzisiaj. Dostęp zostanie zresetowany o północy." },
+    "groupLimitReason": {
+        "message": "Twoja grupa budżetowa wykorzystała cały przydzielony czas na dzisiaj. Dostęp zostanie zresetowany o północy."
+    },
     "groupLimitReachedTitle": { "message": "Osiągnięto limit grupy" },
-    "quote1": { "message": "Sposobem na rozpoczęcie jest skończenie z mówieniem i przejście do działania." },
+    "quote1": {
+        "message": "Sposobem na rozpoczęcie jest skończenie z mówieniem i przejście do działania."
+    },
     "quote1Author": { "message": "Walt Disney" },
     "quote2": { "message": "Bądź produktywny, a nie tylko zajęty." },
     "quote2Author": { "message": "Tim Ferriss" },
-    "quote3": { "message": "Nigdy nie jesteś za stary, aby wyznaczyć sobie nowy cel lub mieć nowe marzenie." },
+    "quote3": {
+        "message": "Nigdy nie jesteś za stary, aby wyznaczyć sobie nowy cel lub mieć nowe marzenie."
+    },
     "quote3Author": { "message": "C.S. Lewis" },
     "quote4": { "message": "Przyszłość zależy od tego, co robisz dzisiaj." },
     "quote4Author": { "message": "Mahatma Gandhi" },
@@ -53,13 +71,19 @@
     "quote5Author": { "message": "Sam Levenson" },
     "quote6": { "message": "Sukces to suma małych wysiłków powtarzanych dzień po dniu." },
     "quote6Author": { "message": "Robert Collier" },
-    "quote7": { "message": "Jedynym sposobem na tworzenie wspaniałych rzeczy jest miłość do tego, co robisz." },
+    "quote7": {
+        "message": "Jedynym sposobem na tworzenie wspaniałych rzeczy jest miłość do tego, co robisz."
+    },
     "quote7Author": { "message": "Steve Jobs" },
     "quote8": { "message": "Uwierz, że potrafisz, a będziesz już w połowie drogi." },
     "quote8Author": { "message": "Theodore Roosevelt" },
-    "tip1": { "message": "Wypróbuj technikę Pomodoro: pracuj przez 25 minut, a następnie zrób 5-minutową przerwę." },
+    "tip1": {
+        "message": "Wypróbuj technikę Pomodoro: pracuj przez 25 minut, a następnie zrób 5-minutową przerwę."
+    },
     "tip2": { "message": "Stwórz wolne od rozpraszaczy miejsce pracy, aby poprawić koncentrację." },
-    "tip3": { "message": "Stosuj zasadę 2 minut: jeśli coś zajmuje mniej niż 2 minuty, zrób to od razu." },
+    "tip3": {
+        "message": "Stosuj zasadę 2 minut: jeśli coś zajmuje mniej niż 2 minuty, zrób to od razu."
+    },
     "tip4": { "message": "Zarezerwuj czas w kalendarzu na ważne zadania." },
     "tip5": { "message": "Rób regularne przerwy, aby utrzymać wysoki poziom produktywności." },
     "tip6": { "message": "Wyznaczaj konkretne, mierzalne cele na każdą sesję pracy." },
@@ -80,8 +104,12 @@
     "nonTrackablePage": { "message": "Strona niemonitorowana" },
     "trackingDisabledPage": { "message": "Śledzenie czasu wyłączone dla tej strony" },
     "noTimeToday": { "message": "Brak zarejestrowanego czasu dzisiaj" },
-    "noSitesTracked": { "message": "Nie śledzono jeszcze żadnych stron.\nZacznij przeglądać, aby zobaczyć zużycie czasu!" },
-    "noActivityToday": { "message": "Brak aktywności dzisiaj.\nTwoje śledzone strony pojawią się tutaj." },
+    "noSitesTracked": {
+        "message": "Nie śledzono jeszcze żadnych stron.\nZacznij przeglądać, aby zobaczyć zużycie czasu!"
+    },
+    "noActivityToday": {
+        "message": "Brak aktywności dzisiaj.\nTwoje śledzone strony pojawią się tutaj."
+    },
     "progressOfLimit": { "message": "$1% z $2m" },
     "trackingActive": { "message": "● Śledzenie aktywne" },
     "trackingPaused": { "message": "● Śledzenie wstrzymane" },
@@ -100,11 +128,15 @@
     "featuresSupport": { "message": "Funkcje i pomoc" },
     "tracking": { "message": "Śledzenie" },
     "enableTimeTracking": { "message": "Włącz śledzenie czasu" },
-    "enableTimeTrackingDesc": { "message": "Monitoruj czas spędzany na stronach. Bez tego blokowanie stron nie będzie działać." },
+    "enableTimeTrackingDesc": {
+        "message": "Monitoruj czas spędzany na stronach. Bez tego blokowanie stron nie będzie działać."
+    },
     "generalDailyLimit": { "message": "Ogólny limit dzienny" },
     "noLimit": { "message": "Ustaw 0 dla braku limitu" },
     "restrictedSiteMaxLimit": { "message": "Maksymalny limit stron ograniczonych" },
-    "restrictedSiteMaxLimitDesc": { "message": "Sztywny limit (w minutach) dla reguł stron ograniczonych i skali pokrętła" },
+    "restrictedSiteMaxLimitDesc": {
+        "message": "Sztywny limit (w minutach) dla reguł stron ograniczonych i skali pokrętła"
+    },
     "notificationsBadge": { "message": "Powiadomienia i odznaka" },
     "enableNotifications": { "message": "Włącz powiadomienia" },
     "enableNotificationsDesc": { "message": "Otrzymuj alerty o limitach i kamieniach milowych" },
@@ -173,7 +205,9 @@
     "videoControls": { "message": "Sterowanie wideo" },
     "speedConfiguration": { "message": "Konfiguracja prędkości" },
     "currentPlaybackSpeedLabel": { "message": "Bieżąca prędkość odtwarzania" },
-    "currentPlaybackSpeedDesc": { "message": "Uniwersalna prędkość stosowana do wszystkich elementów wideo" },
+    "currentPlaybackSpeedDesc": {
+        "message": "Uniwersalna prędkość stosowana do wszystkich elementów wideo"
+    },
     "currentPlaybackSpeedAria": { "message": "Bieżąca prędkość odtwarzania" },
     "currentPlaybackSpeedSliderAria": { "message": "Suwak bieżącej prędkości odtwarzania" },
     "resetSpeed": { "message": "Zresetuj prędkość" },
@@ -196,7 +230,9 @@
     "confirmProceedMessage": { "message": "Czy na pewno chcesz kontynuować?" },
     "confirm": { "message": "Potwierdź" },
     "importData": { "message": "Importuj dane" },
-    "importDataMessage": { "message": "Czy zaimportowane dane powinny zostać dopisane do istniejących, czy je zastąpić?" },
+    "importDataMessage": {
+        "message": "Czy zaimportowane dane powinny zostać dopisane do istniejących, czy je zastąpić?"
+    },
     "appendData": { "message": "Dołącz dane" },
     "replaceData": { "message": "Zastąp dane" },
     "dataExport": { "message": "Dane i eksport" },
@@ -218,11 +254,15 @@
     "incognitoTrackingDesc": { "message": "Śledź czas spędzony w kartach incognito" },
     "dataManagement": { "message": "Zarządzanie danymi" },
     "autoPurgeOldData": { "message": "Automatyczne czyszczenie starych danych" },
-    "autoPurgeOldDataDesc": { "message": "Automatycznie usuwaj rekordy starsze niż określona liczba dni" },
+    "autoPurgeOldDataDesc": {
+        "message": "Automatycznie usuwaj rekordy starsze niż określona liczba dni"
+    },
     "keepDataForDays": { "message": "Przechowuj dane przez" },
     "days": { "message": "dni" },
     "storageLimitReached": { "message": "Osiągnięto limit pamięci" },
-    "storageLimitReachedDetail": { "message": "Osiągnięto niestandardowy limit pamięci. Usuń stare dane lub zwiększ limit." },
+    "storageLimitReachedDetail": {
+        "message": "Osiągnięto niestandardowy limit pamięci. Usuń stare dane lub zwiększ limit."
+    },
     "storageUsage": { "message": "Zużycie pamięci" },
     "checking": { "message": "Sprawdzanie…" },
     "limitLabel": { "message": "Limit:" },
@@ -231,49 +271,97 @@
     "searchDomainToDeletePlaceholder": { "message": "Szukaj domeny, aby usunąć dane…" },
     "dataActions": { "message": "Działania na danych" },
     "compactStorage": { "message": "Kompaktuj pamięć" },
-    "compactStorageTitle": { "message": "Wyczyść dzienniki bazy danych i skompaktuj pamięć bez utraty danych" },
+    "compactStorageTitle": {
+        "message": "Wyczyść dzienniki bazy danych i skompaktuj pamięć bez utraty danych"
+    },
     "deleteAllData": { "message": "Usuń wszystkie dane" },
     "privacyPolicy": { "message": "Polityka prywatności" },
     "lastUpdated": { "message": "Ostatnia aktualizacja: kwiecień 2026" },
     "readFullPolicy": { "message": "Przeczytaj pełną politykę" },
     "privacyOverview": { "message": "Przegląd" },
-    "privacyOverviewBody": { "message": "TimeDash działa całkowicie w Twojej przeglądarce. Nie zawiera analityki, telemetrii, reklam ani zdalnego śledzenia. Żadne konta ani serwery nie rejestrują Twojej historii przeglądania. Twoje dane pozostają na Twoim urządzeniu i są przetwarzane za pomocą wbudowanych interfejsów API pamięci przeglądarki." },
+    "privacyOverviewBody": {
+        "message": "TimeDash działa całkowicie w Twojej przeglądarce. Nie zawiera analityki, telemetrii, reklam ani zdalnego śledzenia. Żadne konta ani serwery nie rejestrują Twojej historii przeglądania. Twoje dane pozostają na Twoim urządzeniu i są przetwarzane za pomocą wbudowanych interfejsów API pamięci przeglądarki."
+    },
     "privacyDataStorage": { "message": "Przechowywanie danych" },
-    "privacyDataStorageBody1": { "message": "TimeDash zapisuje Twoje preferencje i historię w lokalnym interfejsie API pamięci masowej przeglądarki (<code>chrome.storage.local</code>). Nic nie jest zapisywane poza profilem przeglądarki. Rozszerzenie przechowuje:" },
-    "privacyDataStorageItem1": { "message": "Dzienniki śledzenia czasu i historię dla poszczególnych domen" },
-    "privacyDataStorageItem2": { "message": "Preferencje prędkości odtwarzania dla poszczególnych stron" },
+    "privacyDataStorageBody1": {
+        "message": "TimeDash zapisuje Twoje preferencje i historię w lokalnym interfejsie API pamięci masowej przeglądarki (<code>chrome.storage.local</code>). Nic nie jest zapisywane poza profilem przeglądarki. Rozszerzenie przechowuje:"
+    },
+    "privacyDataStorageItem1": {
+        "message": "Dzienniki śledzenia czasu i historię dla poszczególnych domen"
+    },
+    "privacyDataStorageItem2": {
+        "message": "Preferencje prędkości odtwarzania dla poszczególnych stron"
+    },
     "privacyDataStorageItem3": { "message": "Reguły blokowania stron i ograniczeń dziennych" },
     "privacyDataStorageItem4": { "message": "Opcje personalizacji motywu i interfejsu" },
-    "privacyDataStorageBody2": { "message": "Dane te są wykorzystywane wyłącznie do wyświetlania statystyk użycia i egzekwowania reguł. Żadna ich część nie jest wysyłana na zewnętrzne serwery." },
+    "privacyDataStorageBody2": {
+        "message": "Dane te są wykorzystywane wyłącznie do wyświetlania statystyk użycia i egzekwowania reguł. Żadna ich część nie jest wysyłana na zewnętrzne serwery."
+    },
     "privacyNetworkActivity": { "message": "Aktywność sieciowa" },
-    "privacyNetworkActivityBody": { "message": "TimeDash nie wykonuje żadnych wychodzących połączeń sieciowych. Wszelkie żądania sieciowe widoczne w DevTools pochodzą z pobierania ikon witryn przez przeglądarkę lub lokalnego ładowania zasobów rozszerzenia." },
+    "privacyNetworkActivityBody": {
+        "message": "TimeDash nie wykonuje żadnych wychodzących połączeń sieciowych. Wszelkie żądania sieciowe widoczne w DevTools pochodzą z pobierania ikon witryn przez przeglądarkę lub lokalnego ładowania zasobów rozszerzenia."
+    },
     "privacyPermissions": { "message": "Uprawnienia" },
-    "privacyPermissionsBody": { "message": "TimeDash wymaga tylko uprawnień niezbędnych do śledzenia czasu i egzekwowania reguł:" },
-    "privacyPermissionStorage": { "message": "<code>storage</code>: Zapisuje ustawienia i historię lokalnie." },
-    "privacyPermissionTabs": { "message": "<code>tabs</code>: Odczytuje adresy URL aktywnych kart, aby rejestrować czas i stosować reguły stron." },
-    "privacyPermissionScripting": { "message": "<code>scripting</code>: Wstrzykuje sterowanie prędkością do internetowych odtwarzaczy wideo." },
-    "privacyPermissionWebNavigation": { "message": "<code>webNavigation</code>: Śledzi nawigację adresów URL między ramkami." },
-    "privacyPermissionHost": { "message": "<code>host_permissions</code>: Umożliwia skryptom zawartości działanie na odwiedzanych stronach w celu rejestrowania czasu i zarządzania wideo." },
-    "privacyPermissionAlarms": { "message": "<code>alarms</code>: Uruchamia codzienne resetowanie i opcjonalne czyszczenie danych." },
-    "privacyPermissionNotifications": { "message": "<code>notifications</code>: (Opcjonalnie) Ostrzega o osiągnięciu dziennych limitów czasu." },
+    "privacyPermissionsBody": {
+        "message": "TimeDash wymaga tylko uprawnień niezbędnych do śledzenia czasu i egzekwowania reguł:"
+    },
+    "privacyPermissionStorage": {
+        "message": "<code>storage</code>: Zapisuje ustawienia i historię lokalnie."
+    },
+    "privacyPermissionTabs": {
+        "message": "<code>tabs</code>: Odczytuje adresy URL aktywnych kart, aby rejestrować czas i stosować reguły stron."
+    },
+    "privacyPermissionScripting": {
+        "message": "<code>scripting</code>: Wstrzykuje sterowanie prędkością do internetowych odtwarzaczy wideo."
+    },
+    "privacyPermissionWebNavigation": {
+        "message": "<code>webNavigation</code>: Śledzi nawigację adresów URL między ramkami."
+    },
+    "privacyPermissionHost": {
+        "message": "<code>host_permissions</code>: Umożliwia skryptom zawartości działanie na odwiedzanych stronach w celu rejestrowania czasu i zarządzania wideo."
+    },
+    "privacyPermissionAlarms": {
+        "message": "<code>alarms</code>: Uruchamia codzienne resetowanie i opcjonalne czyszczenie danych."
+    },
+    "privacyPermissionNotifications": {
+        "message": "<code>notifications</code>: (Opcjonalnie) Ostrzega o osiągnięciu dziennych limitów czasu."
+    },
     "privacyDataDeletion": { "message": "Usuwanie danych" },
-    "privacyDataDeletionBody": { "message": "Twoje dane należą do Ciebie. Możesz usunąć rekordy pojedynczej domeny lub wyczyścić wszystkie dane za pomocą powyższego panelu Zarządzania danymi. Odinstalowanie TimeDash automatycznie usuwa wszystkie zapisane dane rozszerzenia z przeglądarki." },
-    "privacyDataDeletionItem1": { "message": "Kliknij <strong>Usuń wszystkie dane</strong>, aby natychmiast wyczyścić każdy rekord." },
-    "privacyDataDeletionItem2": { "message": "Włącz <strong>Automatyczne czyszczenie starych danych</strong>, aby automatycznie usuwać starsze rekordy." },
-    "privacyDataDeletionItem3": { "message": "Użyj <strong>Usuń wybrane dane</strong>, aby wyszukać i usunąć rekordy pojedynczej domeny." },
+    "privacyDataDeletionBody": {
+        "message": "Twoje dane należą do Ciebie. Możesz usunąć rekordy pojedynczej domeny lub wyczyścić wszystkie dane za pomocą powyższego panelu Zarządzania danymi. Odinstalowanie TimeDash automatycznie usuwa wszystkie zapisane dane rozszerzenia z przeglądarki."
+    },
+    "privacyDataDeletionItem1": {
+        "message": "Kliknij <strong>Usuń wszystkie dane</strong>, aby natychmiast wyczyścić każdy rekord."
+    },
+    "privacyDataDeletionItem2": {
+        "message": "Włącz <strong>Automatyczne czyszczenie starych danych</strong>, aby automatycznie usuwać starsze rekordy."
+    },
+    "privacyDataDeletionItem3": {
+        "message": "Użyj <strong>Usuń wybrane dane</strong>, aby wyszukać i usunąć rekordy pojedynczej domeny."
+    },
     "privacyNoAccount": { "message": "Brak wymogu posiadania konta" },
-    "privacyNoAccountBody": { "message": "TimeDash nie wymaga konta, adresu e-mail ani synchronizacji z chmurą. Wszystkie dane znajdują się na Twoim urządzeniu pod Twoją kontrolą." },
+    "privacyNoAccountBody": {
+        "message": "TimeDash nie wymaga konta, adresu e-mail ani synchronizacji z chmurą. Wszystkie dane znajdują się na Twoim urządzeniu pod Twoją kontrolą."
+    },
     "privacyThirdParty": { "message": "Kod stron trzecich" },
-    "privacyThirdPartyBody": { "message": "TimeDash korzysta z bibliotek open-source wyłącznie jako narzędzi programistycznych. Rozpowszechniane rozszerzenie nie zawiera żadnych zewnętrznych narzędzi śledzących, analitycznych ani zewnętrznych bibliotek SDK." },
+    "privacyThirdPartyBody": {
+        "message": "TimeDash korzysta z bibliotek open-source wyłącznie jako narzędzi programistycznych. Rozpowszechniane rozszerzenie nie zawiera żadnych zewnętrznych narzędzi śledzących, analitycznych ani zewnętrznych bibliotek SDK."
+    },
     "privacyLicense": { "message": "Licencja" },
-    "privacyLicenseBody": { "message": "TimeDash jest udostępniany na warunkach <strong>Licencji MIT</strong>. Możesz z niego korzystać, modyfikować go i rozpowszechniać zgodnie z warunkami licencji. Zobacz kod źródłowy na <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHubie</a>." },
+    "privacyLicenseBody": {
+        "message": "TimeDash jest udostępniany na warunkach <strong>Licencji MIT</strong>. Możesz z niego korzystać, modyfikować go i rozpowszechniać zgodnie z warunkami licencji. Zobacz kod źródłowy na <a href=\"https://github.com/intelligent-username/TimeDash/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">GitHubie</a>."
+    },
     "privacyContact": { "message": "Kontakt i pytania" },
-    "privacyContactBody": { "message": "Jeśli znajdziesz błąd lub masz pytanie dotyczące prywatności, zgłoś problem na <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHubie</a> z opisem i ewentualnymi zrzutami ekranu." },
+    "privacyContactBody": {
+        "message": "Jeśli znajdziesz błąd lub masz pytanie dotyczące prywatności, zgłoś problem na <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHubie</a> z opisem i ewentualnymi zrzutami ekranu."
+    },
     "restrictedAccess": { "message": "Ograniczony dostęp" },
     "restrictedAccessSubtitle": { "message": "Strony dozwolone przez określony czas dziennie." },
     "newGroup": { "message": "+ Nowa grupa" },
     "populatePresets": { "message": "Wypełnij popularnymi szablonami" },
-    "populatePresetsTitle": { "message": "Twórz gotowe grupy budżetowe dla popularnych kategorii rozpraszaczy" },
+    "populatePresetsTitle": {
+        "message": "Twórz gotowe grupy budżetowe dla popularnych kategorii rozpraszaczy"
+    },
     "presetsAdded": { "message": "Szablony dodane" },
     "undoPresets": { "message": "Cofnąć?" },
     "presetsPopulatedToast": { "message": "Grupy szablonów dodane" },
@@ -312,46 +400,90 @@
     "helpPrivacyDataSub": { "message": "Eksport, import, zarządzanie danymi" },
     "helpHowDoI": { "message": "Jak mogę…" },
     "helpTrackTime": { "message": "…śledzić swój czas?" },
-    "helpTrackTimeBody": { "message": "Śledzenie czasu działa automatycznie po włączeniu w <button class=\"quick-link inline-link\" data-tab=\"general\">Ustawieniach ogólnych</button>. Otwórz wyskakujące okienko, aby zobaczyć sumy z dzisiejszego dnia lub przejdź do <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analityki</button>, aby zobaczyć wykresy i mapę cieplną aktywności." },
+    "helpTrackTimeBody": {
+        "message": "Śledzenie czasu działa automatycznie po włączeniu w <button class=\"quick-link inline-link\" data-tab=\"general\">Ustawieniach ogólnych</button>. Otwórz wyskakujące okienko, aby zobaczyć sumy z dzisiejszego dnia lub przejdź do <button class=\"quick-link inline-link\" data-tab=\"analytics\">Analityki</button>, aby zobaczyć wykresy i mapę cieplną aktywności."
+    },
     "helpBlockSite": { "message": "…całkowicie zablokować stronę?" },
-    "helpBlockSiteBody": { "message": "Przejdź do <button class=\"quick-link inline-link\" data-tab=\"blocking\">Blokowania stron</button>, wpisz domenę i dodaj ją jako regułę <strong>Zablokowana</strong>. Rozszerzenie przekieruje Cię na stronę blokady przy każdej próbie wejścia na tę domenę." },
+    "helpBlockSiteBody": {
+        "message": "Przejdź do <button class=\"quick-link inline-link\" data-tab=\"blocking\">Blokowania stron</button>, wpisz domenę i dodaj ją jako regułę <strong>Zablokowana</strong>. Rozszerzenie przekieruje Cię na stronę blokady przy każdej próbie wejścia na tę domenę."
+    },
     "helpSetLimit": { "message": "…ustawić dzienny limit czasu dla strony?" },
-    "helpSetLimitBody": { "message": "Dodaj domenę jako regułę <strong>Ograniczona</strong> w <button class=\"quick-link inline-link\" data-tab=\"blocking\">Blokowaniu stron</button>. Ustaw limit czasu w minutach. Po jego przekroczeniu danego dnia strona zostanie zablokowana do następnego dnia." },
+    "helpSetLimitBody": {
+        "message": "Dodaj domenę jako regułę <strong>Ograniczona</strong> w <button class=\"quick-link inline-link\" data-tab=\"blocking\">Blokowaniu stron</button>. Ustaw limit czasu w minutach. Po jego przekroczeniu danego dnia strona zostanie zablokowana do następnego dnia."
+    },
     "helpChangeSpeed": { "message": "…zmienić prędkość odtwarzania wideo?" },
-    "helpChangeSpeedBody": { "message": "Możesz zmienić prędkość odtwarzania na jeden z następujących sposobów:" },
-    "helpChangeSpeedItem1": { "message": "Użyj skrótów klawiszowych skonfigurowanych w zakładce sterowania wideo. (Aktualne: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code> oraz <code>.</code></span>)" },
-    "helpChangeSpeedItem2": { "message": "Kliknij ikonę rozszerzenia, aby otworzyć okienko podręczne i użyj przycisków <code>+</code> / <code>-</code> oraz <code>.</code>." },
-    "helpChangeSpeedItem3": { "message": "Zmień prędkość bezpośrednio w zakładce sterowania wideo." },
+    "helpChangeSpeedBody": {
+        "message": "Możesz zmienić prędkość odtwarzania na jeden z następujących sposobów:"
+    },
+    "helpChangeSpeedItem1": {
+        "message": "Użyj skrótów klawiszowych skonfigurowanych w zakładce sterowania wideo. (Aktualne: <span id=\"helpCurrentShortcuts\"><code>+</code> / <code>-</code> oraz <code>.</code></span>)"
+    },
+    "helpChangeSpeedItem2": {
+        "message": "Kliknij ikonę rozszerzenia, aby otworzyć okienko podręczne i użyj przycisków <code>+</code> / <code>-</code> oraz <code>.</code>."
+    },
+    "helpChangeSpeedItem3": {
+        "message": "Zmień prędkość bezpośrednio w zakładce sterowania wideo."
+    },
     "helpChangeTheme": { "message": "…zmienić motyw lub kolor akcentu?" },
-    "helpChangeThemeBody": { "message": "W <button class=\"quick-link inline-link\" data-tab=\"general\">Ustawieniach ogólnych</button> znajdź sekcję <strong>Wygląd</strong>. Wybierz motyw jasny, ciemny lub automatyczny oraz wybierz kolor akcentu." },
+    "helpChangeThemeBody": {
+        "message": "W <button class=\"quick-link inline-link\" data-tab=\"general\">Ustawieniach ogólnych</button> znajdź sekcję <strong>Wygląd</strong>. Wybierz motyw jasny, ciemny lub automatyczny oraz wybierz kolor akcentu."
+    },
     "helpExportData": { "message": "…wyeksportować lub utworzyć kopię zapasową danych?" },
-    "helpExportDataBody": { "message": "Przejdź do <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button> i użyj przycisku <strong>Eksportuj dane</strong>, aby zapisać użycie i ustawienia w pliku JSON. Zaimportuj ten plik później, aby przywrócić dane na innym profilu lub po ponownej instalacji." },
+    "helpExportDataBody": {
+        "message": "Przejdź do <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button> i użyj przycisku <strong>Eksportuj dane</strong>, aby zapisać użycie i ustawienia w pliku JSON. Zaimportuj ten plik później, aby przywrócić dane na innym profilu lub po ponownej instalacji."
+    },
     "helpWhitelistDomain": { "message": "…wykluczyć domenę ze śledzenia (biała lista)?" },
-    "helpWhitelistDomainBody": { "message": "Dodaj domenę do białej listy w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>. Czas spędzony na stronach z białej listy nie będzie rejestrowany." },
+    "helpWhitelistDomainBody": {
+        "message": "Dodaj domenę do białej listy w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>. Czas spędzony na stronach z białej listy nie będzie rejestrowany."
+    },
     "helpPauseTracking": { "message": "…tymczasowo wstrzymać śledzenie?" },
-    "helpPauseTrackingBody": { "message": "Przełącz <strong>Wstrzymaj śledzenie</strong> w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>. Podczas pauzy dane nie będą zbierane." },
+    "helpPauseTrackingBody": {
+        "message": "Przełącz <strong>Wstrzymaj śledzenie</strong> w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>. Podczas pauzy dane nie będą zbierane."
+    },
     "helpDeleteSpecific": { "message": "…usunąć dane dla określonej strony?" },
-    "helpDeleteSpecificBody": { "message": "Użyj pola <strong>Szukaj domeny, aby usunąć dane</strong> w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>, aby znaleźć i usunąć rekordy pojedynczych domen." },
+    "helpDeleteSpecificBody": {
+        "message": "Użyj pola <strong>Szukaj domeny, aby usunąć dane</strong> w <button class=\"quick-link inline-link\" data-tab=\"privacy\">Prywatności i danych</button>, aby znaleźć i usunąć rekordy pojedynczych domen."
+    },
     "helpMinutiae": { "message": "Szczegóły i wskazówki" },
     "helpPopupQuickActions": { "message": "Szybkie akcje w okienku" },
-    "helpPopupQuickActionsBody": { "message": "Otwórz okienko, aby zobaczyć dzisiejszy czas i najczęstsze strony. <kbd>Alt+T</kbd> włącza/wyłącza śledzenie na dowolnej stronie. <kbd>Alt+B</kbd> natychmiast blokuje bieżącą stronę." },
+    "helpPopupQuickActionsBody": {
+        "message": "Otwórz okienko, aby zobaczyć dzisiejszy czas i najczęstsze strony. <kbd>Alt+T</kbd> włącza/wyłącza śledzenie na dowolnej stronie. <kbd>Alt+B</kbd> natychmiast blokuje bieżącą stronę."
+    },
     "helpHeatmapDay": { "message": "Kliknij dowolny dzień na mapie cieplnej" },
-    "helpHeatmapDayBody": { "message": "Kliknij komórkę dnia, aby zobaczyć podsumowanie odwiedzonych stron i czasu trwania. Kliknij ponownie lub naciśnij „Najczęstsze strony dzisiaj”, aby zresetować." },
+    "helpHeatmapDayBody": {
+        "message": "Kliknij komórkę dnia, aby zobaczyć podsumowanie odwiedzonych stron i czasu trwania. Kliknij ponownie lub naciśnij „Najczęstsze strony dzisiaj”, aby zresetować."
+    },
     "helpCustomAccent": { "message": "Własny kolor akcentu" },
-    "helpCustomAccentBody": { "message": "W Ustawieniach ogólnych kliknij <strong>+</strong> w próbniku kolorów, aby dodać dowolny kolor szesnastkowy." },
+    "helpCustomAccentBody": {
+        "message": "W Ustawieniach ogólnych kliknij <strong>+</strong> w próbniku kolorów, aby dodać dowolny kolor szesnastkowy."
+    },
     "helpWatchStorage": { "message": "Kontroluj pamięć" },
-    "helpWatchStorageBody": { "message": "Zakładka Prywatność zawiera wskaźnik pamięci i ustawienia automatycznego czyszczenia, aby zapobiec gromadzeniu się starych danych." },
+    "helpWatchStorageBody": {
+        "message": "Zakładka Prywatność zawiera wskaźnik pamięci i ustawienia automatycznego czyszczenia, aby zapobiec gromadzeniu się starych danych."
+    },
     "helpGettingHelp": { "message": "Uzyskiwanie pomocy" },
     "helpReportIssues": { "message": "Zgłaszaj błędy i sugeruj funkcje" },
-    "helpReportIssuesBody1": { "message": "Zgłoszenia błędów i prośby o funkcje prosimy kierować na stronę <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>." },
-    "helpReportIssuesBody2": { "message": "Zgłaszając błąd, podaj: adres URL witryny, kroki do odtworzenia, oczekiwane a rzeczywiste zachowanie oraz wersję przeglądarki. Zrzuty ekranu są pomocne przy problemach z interfejsem. W przypadku problemów z wideo podaj, czy odtwarzacz jest osadzony w ramce iframe i wklej ewentualne błędy z konsoli." },
-    "helpReportIssuesBody3": { "message": "W przypadku próśb o funkcje wystarczy krótki opis tego, co chcesz i dlaczego." },
+    "helpReportIssuesBody1": {
+        "message": "Zgłoszenia błędów i prośby o funkcje prosimy kierować na stronę <a href=\"https://github.com/intelligent-username/TimeDash/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>."
+    },
+    "helpReportIssuesBody2": {
+        "message": "Zgłaszając błąd, podaj: adres URL witryny, kroki do odtworzenia, oczekiwane a rzeczywiste zachowanie oraz wersję przeglądarki. Zrzuty ekranu są pomocne przy problemach z interfejsem. W przypadku problemów z wideo podaj, czy odtwarzacz jest osadzony w ramce iframe i wklej ewentualne błędy z konsoli."
+    },
+    "helpReportIssuesBody3": {
+        "message": "W przypadku próśb o funkcje wystarczy krótki opis tego, co chcesz i dlaczego."
+    },
     "helpSourceCode": { "message": "Kod źródłowy" },
-    "helpSourceCodeBody": { "message": "Pełny kod źródłowy znajduje się pod adresem <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. Jeśli chcesz sprawdzić, do czego rozszerzenie ma dostęp, zacznij od <code>manifest.json</code>, a następnie przejrzyj skrypty tła i zawartości." },
+    "helpSourceCodeBody": {
+        "message": "Pełny kod źródłowy znajduje się pod adresem <a href=\"https://github.com/intelligent-username/TimeDash\" target=\"_blank\" rel=\"noopener\">github.com/intelligent-username/TimeDash</a>. Jeśli chcesz sprawdzić, do czego rozszerzenie ma dostęp, zacznij od <code>manifest.json</code>, a następnie przejrzyj skrypty tła i zawartości."
+    },
     "helpPrivacyQuestions": { "message": "Pytania o prywatność" },
-    "helpPrivacyQuestionsBody": { "message": "Przeczytaj <a href=\"#\" id=\"privacyPolicyLink\">pełną Politykę prywatności</a> w zakładce Prywatność i dane. Jeśli coś nie zgadza się z tym, co widzisz w przeglądarce, zgłoś problem ze szczegółami." },
+    "helpPrivacyQuestionsBody": {
+        "message": "Przeczytaj <a href=\"#\" id=\"privacyPolicyLink\">pełną Politykę prywatności</a> w zakładce Prywatność i dane. Jeśli coś nie zgadza się z tym, co widzisz w przeglądarce, zgłoś problem ze szczegółami."
+    },
     "helpAbout": { "message": "O TimeDash" },
-    "helpAboutBody": { "message": "Wersja $1. Zbudowane jako rozszerzenie w czystym JavaScript (vanilla JS) bez frameworków i zewnętrznych zależności. Wszystkie dane pozostają na Twoim urządzeniu." },
+    "helpAboutBody": {
+        "message": "Wersja $1. Zbudowane jako rozszerzenie w czystym JavaScript (vanilla JS) bez frameworków i zewnętrznych zależności. Wszystkie dane pozostają na Twoim urządzeniu."
+    },
     "analyticsTimeToday": { "message": "Czas dzisiaj" },
     "analyticsDailyAverage": { "message": "Średnia dzienna" },
     "analyticsAllTime": { "message": "Cały czas" },
@@ -370,7 +502,9 @@
     "analyticsAllSites": { "message": "Wszystkie strony" },
     "analyticsRestrictedSites": { "message": "Tylko strony ograniczone" },
     "analyticsRestrictedTime": { "message": "Czas na stronach ograniczonych dziennie" },
-    "analyticsRestrictedTimeSub": { "message": "Czas spędzony na niezablokowanych stronach z dziennym limitem czasu" },
+    "analyticsRestrictedTimeSub": {
+        "message": "Czas spędzony na niezablokowanych stronach z dziennym limitem czasu"
+    },
     "analyticsTrackingStarted": { "message": "Rozpoczęto śledzenie" },
     "analyticsSun": { "message": "Nd" },
     "analyticsMon": { "message": "Pn" },
@@ -381,7 +515,9 @@
     "analyticsSat": { "message": "Sob" },
     "analyticsTopSitesToday": { "message": "Najczęstsze strony dzisiaj" },
     "analyticsTrackingInterval": { "message": "Interwał śledzenia (s)" },
-    "analyticsTrackingIntervalTooltip": { "message": "Jak często rozszerzenie aktualizuje dzienniki czasu. Mniejsze wartości są dokładniejsze, ale zużywają więcej zasobów." },
+    "analyticsTrackingIntervalTooltip": {
+        "message": "Jak często rozszerzenie aktualizuje dzienniki czasu. Mniejsze wartości są dokładniejsze, ale zużywają więcej zasobów."
+    },
     "analyticsNoActivity": { "message": "Brak zarejestrowanej aktywności dzisiaj." },
     "lessThanOneMin": { "message": "< 1m" },
     "zeroSitesTrackedAnalytics": { "message": "0 śledzonych stron" },
@@ -389,7 +525,9 @@
     "notifDailyLimitExceeded": { "message": "Przekroczono dzienny limit!" },
     "notifDailyLimitWarning": { "message": "Ostrzeżenie o dziennym limicie" },
     "notifDailySummary": { "message": "Dzienny raport TimeDash" },
-    "notifDailySummaryMsg": { "message": "Wczoraj: łącznie $1 min. Najczęstsza strona: $2 ($3 min)" },
+    "notifDailySummaryMsg": {
+        "message": "Wczoraj: łącznie $1 min. Najczęstsza strona: $2 ($3 min)"
+    },
     "notifQuotaExceeded": { "message": "Przekroczono dzienny limit wynoszący $1 min." },
     "notifQuotaUsed": { "message": "Wykorzystano $1% dziennego limitu ($2/$3 min)." },
 
@@ -465,21 +603,43 @@
     "storageCompacted": { "message": "Pamięć została pomyślnie skompaktowana" },
     "failedCompactStorage": { "message": "Nie udało się skompaktować pamięci" },
     "noMatchesFound": { "message": "Nie znaleziono pasujących wyników" },
-    "importDataPrompt": { "message": "Czy zaimportowane dane powinny zostać dopisane do istniejących, czy je zastąpić?\n\nKliknij OK, aby dopisać.\nKliknij Anuluj, aby zastąpić." },
+    "importDataPrompt": {
+        "message": "Czy zaimportowane dane powinny zostać dopisane do istniejących, czy je zastąpić?\n\nKliknij OK, aby dopisać.\nKliknij Anuluj, aby zastąpić."
+    },
     "importDataTitle": { "message": "Importuj dane" },
-    "resetAllConfirm": { "message": "Zresetować WSZYSTKIE ustawienia i dane? Tej operacji nie można cofnąć." },
+    "resetAllConfirm": {
+        "message": "Zresetować WSZYSTKIE ustawienia i dane? Tej operacji nie można cofnąć."
+    },
     "settingsResetDefaults": { "message": "Przywrócono domyślne ustawienia" },
     "failedResetSettings": { "message": "Nie udało się zresetować ustawień" },
     "failedImportData": { "message": "Nie udało się zaimportować danych" },
-    "importErrorNotObject": { "message": "Import nie powiódł się: plik musi zawierać obiekt JSON." },
-    "importErrorEmpty": { "message": "Import nie powiódł się: w pliku nie znaleziono danych użycia, ustawień, listy blokowanych, reguł ani grup." },
-    "importErrorUsage": { "message": "Import nie powiódł się: sekcja użycia jest nieprawidłowo sformatowana." },
-    "importErrorTooLarge": { "message": "Import nie powiódł się: sekcja użycia zawiera zbyt wiele domen (maksymalnie 50 000)." },
-    "importErrorNumbers": { "message": "Import nie powiódł się: sekcja użycia zawiera nieprawidłowe (ujemne lub nieskończone) liczby." },
-    "importErrorSettings": { "message": "Import nie powiódł się: sekcja ustawień jest nieprawidłowo sformatowana." },
-    "importErrorBlockList": { "message": "Import nie powiódł się: sekcja listy blokowanych musi być tablicą." },
-    "importErrorRules": { "message": "Import nie powiódł się: sekcja reguł witryn jest nieprawidłowo sformatowana." },
-    "importErrorGroups": { "message": "Import nie powiódł się: sekcja grup witryn jest nieprawidłowo sformatowana." },
+    "importErrorNotObject": {
+        "message": "Import nie powiódł się: plik musi zawierać obiekt JSON."
+    },
+    "importErrorEmpty": {
+        "message": "Import nie powiódł się: w pliku nie znaleziono danych użycia, ustawień, listy blokowanych, reguł ani grup."
+    },
+    "importErrorUsage": {
+        "message": "Import nie powiódł się: sekcja użycia jest nieprawidłowo sformatowana."
+    },
+    "importErrorTooLarge": {
+        "message": "Import nie powiódł się: sekcja użycia zawiera zbyt wiele domen (maksymalnie 50 000)."
+    },
+    "importErrorNumbers": {
+        "message": "Import nie powiódł się: sekcja użycia zawiera nieprawidłowe (ujemne lub nieskończone) liczby."
+    },
+    "importErrorSettings": {
+        "message": "Import nie powiódł się: sekcja ustawień jest nieprawidłowo sformatowana."
+    },
+    "importErrorBlockList": {
+        "message": "Import nie powiódł się: sekcja listy blokowanych musi być tablicą."
+    },
+    "importErrorRules": {
+        "message": "Import nie powiódł się: sekcja reguł witryn jest nieprawidłowo sformatowana."
+    },
+    "importErrorGroups": {
+        "message": "Import nie powiódł się: sekcja grup witryn jest nieprawidłowo sformatowana."
+    },
     "dataAppended": { "message": "Dane zostały pomyślnie dołączone" },
     "dataReplaced": { "message": "Dane zostały pomyślnie zastąpione" },
 
@@ -528,7 +688,9 @@
     "undidMovedBack": { "message": "Cofnięto: Przeniesiono $1 z powrotem do pierwotnej grupy" },
     "speedSetForDomain": { "message": "Ustawiono prędkość dla $1" },
     "storageQuotaOfLimit": { "message": "$1% z limitu $2MB" },
-    "storageWarningDetail": { "message": "Wykorzystujesz $1 z limitu $2MB. Rozważ wyczyszczenie starych danych lub zwiększenie limitu." },
+    "storageWarningDetail": {
+        "message": "Wykorzystujesz $1 z limitu $2MB. Rozważ wyczyszczenie starych danych lub zwiększenie limitu."
+    },
 
     "sitesTrackedOne": {
         "message": "$COUNT$ śledzona strona",
@@ -548,7 +710,9 @@
     "lastYear": { "message": "W zeszłym roku" },
     "lastMonth": { "message": "W zeszłym miesiącu" },
     "restrictedTimePerDay": { "message": "Ograniczony czas dziennie" },
-    "noRestrictedActivity": { "message": "Brak aktywności na stronach ograniczonych w tym okresie" },
+    "noRestrictedActivity": {
+        "message": "Brak aktywności na stronach ograniczonych w tym okresie"
+    },
 
     "editDailyLimit": { "message": "Edytuj dzienny limit" },
     "timeUsed": { "message": "czas wykorzystany dzisiaj" },
@@ -558,7 +722,9 @@
     "exactHostBadge": { "message": "dokładna" },
     "noDataForPeriod": { "message": "Brak danych dla tego okresu" },
     "noRulesYet": { "message": "Brak reguł.\nDodaj stronę powyżej, aby rozpocząć." },
-    "noGroupsYet": { "message": "Brak grup.\nUtwórz grupę, aby współdzielić dzienny limit między stronami." },
+    "noGroupsYet": {
+        "message": "Brak grup.\nUtwórz grupę, aby współdzielić dzienny limit między stronami."
+    },
     "checkingAccess": { "message": "Sprawdzanie dostępu…" },
     "exactHostTooltip": {
         "message": "Poddomena określona dokładnie — czas spędzony na niej jest liczony oddzielnie od domeny nadrzędnej."

@@ -37,12 +37,20 @@ function applyAlarmNotificationMethods(AlarmManager) {
         totalUsage,
         dailyLimit
     ) {
-        const title = percentage >= 100
-            ? chrome.i18n.getMessage('notifDailyLimitExceeded')
-            : chrome.i18n.getMessage('notifDailyLimitWarning');
-        const message = percentage >= 100
-            ? chrome.i18n.getMessage('notifQuotaExceeded', [String(Math.floor(dailyLimit / 60))])
-            : chrome.i18n.getMessage('notifQuotaUsed', [String(percentage), String(Math.floor(totalUsage / 60)), String(Math.floor(dailyLimit / 60))]);
+        const title =
+            percentage >= 100
+                ? chrome.i18n.getMessage('notifDailyLimitExceeded')
+                : chrome.i18n.getMessage('notifDailyLimitWarning');
+        const message =
+            percentage >= 100
+                ? chrome.i18n.getMessage('notifQuotaExceeded', [
+                      String(Math.floor(dailyLimit / 60)),
+                  ])
+                : chrome.i18n.getMessage('notifQuotaUsed', [
+                      String(percentage),
+                      String(Math.floor(totalUsage / 60)),
+                      String(Math.floor(dailyLimit / 60)),
+                  ]);
 
         await chrome.notifications.create({
             type: 'basic',
@@ -76,7 +84,11 @@ function applyAlarmNotificationMethods(AlarmManager) {
                 }
 
                 if (totalYesterdayUsage > 0) {
-                    const message = chrome.i18n.getMessage('notifDailySummaryMsg', [String(Math.floor(totalYesterdayUsage / 60)), topDomain, String(Math.floor(topDomainTime / 60))]);
+                    const message = chrome.i18n.getMessage('notifDailySummaryMsg', [
+                        String(Math.floor(totalYesterdayUsage / 60)),
+                        topDomain,
+                        String(Math.floor(topDomainTime / 60)),
+                    ]);
                     await chrome.notifications.create({
                         type: 'basic',
                         iconUrl: 'imgs/Logo.png',

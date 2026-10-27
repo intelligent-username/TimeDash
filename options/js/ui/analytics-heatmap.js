@@ -206,10 +206,9 @@ export class AnalyticsHeatmap {
             this._selectedDate = null;
         } else {
             const showYear = this.yearOffset !== 0;
-            heading.textContent = chrome.i18n.getMessage(
-                'analyticsTopSitesOnDate',
-                [this._formatDisplayDate(localDate, showYear)]
-            );
+            heading.textContent = chrome.i18n.getMessage('analyticsTopSitesOnDate', [
+                this._formatDisplayDate(localDate, showYear),
+            ]);
             this._selectedDate = dateStr;
         }
 
@@ -232,10 +231,9 @@ export class AnalyticsHeatmap {
             container.innerHTML = `<div class="analytics-empty-state">${
                 isToday
                     ? chrome.i18n.getMessage('analyticsNoActivity')
-                    : chrome.i18n.getMessage(
-                          'analyticsNoActivityOnDate',
-                          [this._formatDisplayDate(localDate, showYear)]
-                      )
+                    : chrome.i18n.getMessage('analyticsNoActivityOnDate', [
+                          this._formatDisplayDate(localDate, showYear),
+                      ])
             }</div>`;
             return;
         }

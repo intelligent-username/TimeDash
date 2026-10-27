@@ -40,8 +40,7 @@ function applyBlockUiMethods(BlockPageController) {
 
         if (this.blockReason === 'restricted') {
             if (headingEl) headingEl.textContent = I18n.t('dailyLimitReached');
-            if (reasonEl)
-                reasonEl.textContent = I18n.t('restrictedReason', [this.blockedDomain]);
+            if (reasonEl) reasonEl.textContent = I18n.t('restrictedReason', [this.blockedDomain]);
             document.title = I18n.t('limitReachedTitle', [this.blockedDomain]);
             this.updateStat('blockCount', this.formatTime(this.blockStats.todayTime || 0));
             this.updateStatLabel('blockCount', I18n.t('timeUsedToday'));

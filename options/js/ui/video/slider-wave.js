@@ -18,15 +18,15 @@ export function initSliderWave() {
     let running = false;
 
     const TRACK_H = 14;
-    const BAR_THICKNESS = 7;          // constant visual thickness of the bar
-    const MAX_AMPLITUDE = 3.5;        // peak wave displacement
+    const BAR_THICKNESS = 7; // constant visual thickness of the bar
+    const MAX_AMPLITUDE = 3.5; // peak wave displacement
     const FREQUENCY = 0.04;
-    const SPEED = 0.025;              // phase shift per frame (faster during drag)
+    const SPEED = 0.025; // phase shift per frame (faster during drag)
 
-    let amplitude = 0;                // current animated amplitude
-    let targetAmplitude = 0;          // 0 = flat, MAX_AMPLITUDE = wavy
-    const EASE_IN_RATE = 0.08;        // how fast amplitude ramps up
-    const EASE_OUT_RATE = 0.03;       // how fast amplitude settles back
+    let amplitude = 0; // current animated amplitude
+    let targetAmplitude = 0; // 0 = flat, MAX_AMPLITUDE = wavy
+    const EASE_IN_RATE = 0.08; // how fast amplitude ramps up
+    const EASE_OUT_RATE = 0.03; // how fast amplitude settles back
 
     /* ── Drag detection ──────────────────────────────────────────────── */
     function onDragStart() {
@@ -45,9 +45,8 @@ export function initSliderWave() {
     /* ── Theme colour ────────────────────────────────────────────────── */
     function getTrackColor() {
         return (
-            getComputedStyle(document.documentElement)
-                .getPropertyValue('--border')
-                .trim() || '#3a3a3c'
+            getComputedStyle(document.documentElement).getPropertyValue('--border').trim() ||
+            '#3a3a3c'
         );
     }
 
@@ -74,10 +73,11 @@ export function initSliderWave() {
      */
     function waveY(x) {
         return (
-            Math.sin(x * FREQUENCY + phase) * 0.55 +
-            Math.sin(x * FREQUENCY * 2.3 + phase * 1.4 + 0.8) * 0.28 +
-            Math.sin(x * FREQUENCY * 0.6 - phase * 0.7 + 2.1) * 0.17
-        ) * amplitude;
+            (Math.sin(x * FREQUENCY + phase) * 0.55 +
+                Math.sin(x * FREQUENCY * 2.3 + phase * 1.4 + 0.8) * 0.28 +
+                Math.sin(x * FREQUENCY * 0.6 - phase * 0.7 + 2.1) * 0.17) *
+            amplitude
+        );
     }
 
     function draw() {

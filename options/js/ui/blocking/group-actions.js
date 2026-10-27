@@ -12,9 +12,7 @@ export const groupActions = {
             });
             if (response?.success) {
                 await context.loadSiteRules();
-                context.controller.showSuccess(
-                    chrome.i18n.getMessage('createdGroup', [name])
-                );
+                context.controller.showSuccess(chrome.i18n.getMessage('createdGroup', [name]));
             } else {
                 context.controller.showWarning(response?.error || I18n.t('failedCreateGroup'));
             }

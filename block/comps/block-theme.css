@@ -55,11 +55,27 @@ html[data-theme='light'] {
     }
 }
 
-html[data-accent='blue'] { --accent-color: #0168bd; }
-html[data-accent='purple'] { --accent-color: #9c27b0; }
-html[data-accent='green'] { --accent-color: #4caf50; }
-html[data-accent='orange'] { --accent-color: #ff9800; }
-html[data-accent='red'] { --accent-color: #f44336; }
-html[data-accent='teal'] { --accent-color: #009688; }
-html[data-accent='pink'] { --accent-color: #e91e63; }
-html[data-accent='cyan'] { --accent-color: #00bcd4; }
+html[data-accent='blue'] {
+    --accent-color: #0168bd;
+}
+html[data-accent='purple'] {
+    --accent-color: #9c27b0;
+}
+html[data-accent='green'] {
+    --accent-color: #4caf50;
+}
+html[data-accent='orange'] {
+    --accent-color: #ff9800;
+}
+html[data-accent='red'] {
+    --accent-color: #f44336;
+}
+html[data-accent='teal'] {
+    --accent-color: #009688;
+}
+html[data-accent='pink'] {
+    --accent-color: #e91e63;
+}
+html[data-accent='cyan'] {
+    --accent-color: #00bcd4;
+}
