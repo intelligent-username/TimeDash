@@ -245,7 +245,7 @@ logOutput('── Job 3: structure ───────────────
 // Version sanity (Chrome accepts 1–4 dot-separated integers).
 if (typeof manifest.version !== 'string' || !/^\d+(\.\d+){1,3}$/.test(manifest.version)) {
     logOutput(
-        `  ✗ invalid version value: ${JSON.stringify(manifest.version)} (expected 1–4 dot-separated integers, e.g. "1.3.8")`
+        `  ✗ invalid version value: ${JSON.stringify(manifest.version)} (expected 1–4 dot-separated integers, e.g. "1.3.9")`
     );
     failures++;
 } else if (VERBOSE) {

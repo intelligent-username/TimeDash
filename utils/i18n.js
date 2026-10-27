@@ -112,8 +112,8 @@ class I18n {
     static init(root = document) {
         const manifestVersion =
             typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest
-                ? chrome.runtime.getManifest()?.version || '1.3.7'
-                : '1.3.7';
+                ? chrome.runtime.getManifest()?.version || '1.3.9'
+                : '1.3.9';
 
         const nodes = root.querySelectorAll('[data-i18n], [data-i18n-html]');
         nodes.forEach((node) => {
