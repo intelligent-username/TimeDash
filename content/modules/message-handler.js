@@ -72,7 +72,7 @@ class MessageHandlerContent {
                     ) {
                         this.instance.currentSpeed = newSettings.currentPlaybackSpeed;
                         this.instance.controller.updateAllVideoSpeeds();
-                        this.instance.controller.showSpeedOverlayIndicator(true);
+                        if (!document.hidden) this.instance.controller.showSpeedOverlayIndicator();
                     }
                 }
             });

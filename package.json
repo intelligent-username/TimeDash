@@ -11,7 +11,7 @@
         "check:manifest": "node scripts/validate-manifest.js",
         "check:perms": "node scripts/unused-permissions.js",
         "check": "npm run check:manifest && npm run check:perms",
-        "test": "node --test tests/"
+        "test": "node --test"
     },
     "devDependencies": {
         "eslint": "^9.9.0",

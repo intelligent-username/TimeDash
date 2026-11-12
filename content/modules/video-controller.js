@@ -8,10 +8,12 @@ class VideoController {
     constructor(instance) {
         this.instance = instance;
         this.videoCleanups = new WeakMap();
+        this.rateCorrections = new WeakMap();
     }
 
     applyNativePlaybackRate(video, rate) {
         if (!video) return;
+        if (Math.abs(video.playbackRate - rate) < 0.0001) return;
         try {
             const descriptor = Object.getOwnPropertyDescriptor(
                 HTMLMediaElement.prototype,
@@ -22,8 +24,8 @@ class VideoController {
             } else {
                 video.playbackRate = rate;
             }
-        } catch {
-            video.playbackRate = rate;
+        } catch (error) {
+            console.warn('Unable to apply video playback speed:', error);
         }
     }
 
@@ -51,14 +53,6 @@ class VideoController {
                 this.instance._settingSpeed = true;
                 this.applyNativePlaybackRate(video, this.instance.currentSpeed);
                 this.instance._settingSpeed = false;
-                this.instance.markVideoInteraction(video);
-                if (
-                    this.instance.ui &&
-                    this.instance.settings.showSpeedOverlay &&
-                    !this.instance._suppressIndicator
-                ) {
-                    this.instance.ui.showIndicator(video, this.instance.currentSpeed);
-                }
             }
         };
 
@@ -74,21 +68,24 @@ class VideoController {
         video.addEventListener(
             'ratechange',
             () => {
-                if (this.instance._settingSpeed) return;
-
-                this.instance.markVideoInteraction(video);
-                if (this.instance.ui) {
-                    this.showSpeedOverlayIndicator(true);
-                }
-
                 const externalSpeed = video.playbackRate;
-                if (Math.abs(externalSpeed - this.instance.currentSpeed) > 0.05) {
-                    this.instance._settingSpeed = true;
-                    this.applyNativePlaybackRate(video, this.instance.currentSpeed);
-                    this.instance._settingSpeed = false;
-                    if (this.instance.ui) {
-                        this.showSpeedOverlayIndicator(true);
+                if (Math.abs(externalSpeed - this.instance.currentSpeed) > 0.0001) {
+                    const now = Date.now();
+                    const correction = this.rateCorrections.get(video) || { last: 0, timer: null };
+                    this.rateCorrections.set(video, correction);
+                    if (now - correction.last < 500) {
+                        if (!correction.timer) {
+                            correction.timer = setTimeout(() => {
+                                correction.timer = null;
+                                if (!video.isConnected || this.instance.isOrphaned) return;
+                                correction.last = Date.now();
+                                this.applyNativePlaybackRate(video, this.instance.currentSpeed);
+                            }, 500 - (now - correction.last));
+                        }
+                        return;
                     }
+                    correction.last = now;
+                    this.applyNativePlaybackRate(video, this.instance.currentSpeed);
                 }
             },
             { signal }
@@ -139,6 +136,9 @@ class VideoController {
 
     cleanupVideo(video) {
         if (!video) return;
+        const correction = this.rateCorrections.get(video);
+        if (correction?.timer) clearTimeout(correction.timer);
+        this.rateCorrections.delete(video);
         this.instance.videos.delete(video);
         const cleanup = this.videoCleanups.get(video);
         if (cleanup) {
@@ -160,7 +160,6 @@ class VideoController {
             }
             if (video) {
                 this.applyNativePlaybackRate(video, this.instance.currentSpeed);
-                this.instance.markVideoInteraction(video);
             }
         });
         staleVideos.forEach((video) => this.cleanupVideo(video));
@@ -170,16 +169,6 @@ class VideoController {
     showSpeedOverlayIndicator(force = false) {
         if (!this.instance.ui || this.instance.videos.size === 0) return;
         if (!force && !this.instance.settings.showSpeedOverlay) return;
-
-        const detector = this.instance.detector;
-
-        this.instance._suppressIndicator = true;
-        try {
-            detector.findAndSetupVideos(document);
-            detector.scanOpenShadowRoots(document);
-        } finally {
-            this.instance._suppressIndicator = false;
-        }
 
         const connectedVideos = [...this.instance.videos].filter(
             (video) => video && video.isConnected
@@ -193,14 +182,15 @@ class VideoController {
         for (const video of connectedVideos) {
             const ts = this.instance.videoInteractionTs.get(video) || 0;
             const isPlaying = !video.paused && !video.ended;
-            const score = (isPlaying ? 1e15 : 0) + ts;
+            const fullscreen = document.fullscreenElement;
+            const score = (fullscreen && (fullscreen === video || fullscreen.contains(video)) ? 1e16 : 0) + (isPlaying ? 1e15 : 0) + ts;
             if (score > bestScore) {
                 bestScore = score;
                 activeVideo = video;
             }
         }
 
-        this.instance.ui.showIndicator(activeVideo, this.instance.currentSpeed);
+        this.instance.ui.showIndicator(activeVideo, activeVideo.playbackRate);
     }
 
     increaseSpeed() {
@@ -218,8 +208,8 @@ class VideoController {
         let newSpeed = this.instance.currentSpeed - step;
         newSpeed = Math.round(newSpeed * 100) / 100;
 
-        if (newSpeed >= 0.25) this.setSpeed(newSpeed);
-        else this.setSpeed(0.25);
+        if (newSpeed >= 0.05) this.setSpeed(newSpeed);
+        else this.setSpeed(0.05);
     }
 
     resetSpeed() {
@@ -229,11 +219,11 @@ class VideoController {
 
     setSpeed(speed) {
         const maxSpeed = this.instance.settings.maxPlaybackSpeed || 16.0;
-        const clampedSpeed = Math.max(0.25, Math.min(maxSpeed, speed));
+        const clampedSpeed = Math.max(0.05, Math.min(maxSpeed, speed));
         this.instance.currentSpeed = Math.round(clampedSpeed * 100) / 100;
 
         this.updateAllVideoSpeeds();
-        this.showSpeedOverlayIndicator(true);
+        this.showSpeedOverlayIndicator();
         this.instance.saveCurrentSpeed();
     }
 

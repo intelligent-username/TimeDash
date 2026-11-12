@@ -38,13 +38,18 @@ class TimeDashOverlayUI {
             
             /* --- Corner Indicator --- */
             .timedash-speed-indicator {
-                position: fixed;
-                background: var(--tsd-overlay-color); color: white;
-                padding: 4px 8px; border-radius: 4px;
-                font-size: 12px; font-family: sans-serif; line-height: 1;
-                width: fit-content; white-space: nowrap;
-                z-index: 2147483647; pointer-events: none;
-                transition: opacity 0.3s ease;
+                all: initial !important;
+                position: fixed !important;
+                left: auto !important; bottom: auto !important;
+                display: block !important; box-sizing: border-box !important;
+                width: max-content !important; height: auto !important;
+                max-width: none !important; max-height: none !important;
+                writing-mode: horizontal-tb !important;
+                background: var(--tsd-overlay-color, #2196F3) !important; color: white !important;
+                padding: 4px 8px !important; border-radius: 4px !important;
+                font: 12px/1 sans-serif !important; white-space: nowrap !important;
+                z-index: 2147483647 !important; pointer-events: none !important;
+                transition: opacity 0.3s ease !important;
             }
 
 
@@ -82,12 +87,12 @@ class TimeDashOverlayUI {
 
         // Position in top-right corner of the video using fixed viewport coords
         const rect = video.getBoundingClientRect();
-        indicator.style.top = rect.top + 10 + 'px';
-        indicator.style.right = window.innerWidth - rect.right + 10 + 'px';
+        indicator.style.setProperty('top', rect.top + 10 + 'px', 'important');
+        indicator.style.setProperty('right', window.innerWidth - rect.right + 10 + 'px', 'important');
 
         // Immediately update text and ensure fully visible
         indicator.textContent = `${speed}x`;
-        indicator.style.opacity = '1';
+        indicator.style.setProperty('opacity', '1', 'important');
 
         // Cancel any pending timers
         clearTimeout(indicator._hideTimer);
@@ -103,7 +108,7 @@ class TimeDashOverlayUI {
                 clearInterval(indicator._checkTimer);
                 indicator._checkTimer = null;
             }
-            indicator.style.opacity = '0';
+            indicator.style.setProperty('opacity', '0', 'important');
             indicator._removeTimer = setTimeout(() => {
                 indicator._targetVideo = null;
                 indicator.remove();

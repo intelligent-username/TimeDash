@@ -11,11 +11,11 @@ export const actionMethods = {
         if (newSpeed > max) newSpeed = max;
         if (newSpeed < min) newSpeed = min;
 
-        const newSettings = { ...this.settings, currentPlaybackSpeed: newSpeed };
+        const newSettings = { currentPlaybackSpeed: newSpeed };
+        this.settings.currentPlaybackSpeed = newSpeed;
 
         try {
             await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', settings: newSettings });
-            this.settings = newSettings;
             this.updateCurrentSpeed();
         } catch (error) {
             console.error('Failed to change speed:', error);
@@ -26,11 +26,11 @@ export const actionMethods = {
     async resetSpeed() {
         if (!this.settings) return;
         const defaultSpeed = this.settings.defaultPlaybackSpeed || 1.0;
-        const newSettings = { ...this.settings, currentPlaybackSpeed: defaultSpeed };
+        const newSettings = { currentPlaybackSpeed: defaultSpeed };
+        this.settings.currentPlaybackSpeed = defaultSpeed;
 
         try {
             await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', settings: newSettings });
-            this.settings = newSettings;
             this.updateCurrentSpeed();
         } catch (error) {
             console.error('Failed to reset speed:', error);

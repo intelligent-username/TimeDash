@@ -59,16 +59,20 @@ function applyStorageSettingsMethods(StorageManager) {
     };
 
     StorageManager.prototype.setSettings = async function setSettings(newSettings) {
-        try {
-            const currentSettings = await this.getSettings();
-            const updatedSettings = { ...currentSettings, ...newSettings };
-            await chrome.storage.local.set({ settings: updatedSettings });
-            this.settingsCache = updatedSettings;
-            return true;
-        } catch (error) {
-            console.error('Failed to set settings:', error);
-            return false;
-        }
+        const write = (this.settingsWriteChain || Promise.resolve()).then(async () => {
+            try {
+                const currentSettings = await this.getSettings();
+                const updatedSettings = { ...currentSettings, ...newSettings };
+                await chrome.storage.local.set({ settings: updatedSettings });
+                this.settingsCache = updatedSettings;
+                return true;
+            } catch (error) {
+                console.error('Failed to set settings:', error);
+                return false;
+            }
+        });
+        this.settingsWriteChain = write;
+        return write;
     };
 
     StorageManager.prototype.resetSettings = async function resetSettings() {
